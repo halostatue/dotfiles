@@ -1,0 +1,21 @@
+# General SSH configuration
+ForwardAgent yes
+HashKnownHosts no
+UseRoaming no
+ControlMaster auto
+ControlPersist 5m
+ServerAliveCountMax 6
+ServerAliveInterval 30
+VerifyHostKeyDNS yes
+
+Host *
+  UseKeychain yes
+  AddKeysToAgent yes
+{{ if (lookPath "ssh-chain") }}
+Host *^*
+  ProxyCommand ssh-chain %h %p
+{{ end -}}
+{{ if index . "ssh" "hosts" }}{{ range .ssh.hosts }}
+Host {{ .host }}{{ range .config }}
+  {{ . }}{{ end }}
+{{ end }}{{ end -}}

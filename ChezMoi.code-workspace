@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../.dotfiles"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../../../.config/chezmoi"
+		}
+	]
+}

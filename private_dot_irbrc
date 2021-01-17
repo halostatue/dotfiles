@@ -1,0 +1,73 @@
+#!/usr/bin/ruby
+
+rubyrc = File.expand_path('../.rubyrc', __FILE__)
+if File.exist? rubyrc
+  load rubyrc
+  include RubyRCInit
+end
+
+begin
+  require 'irb/ext/completion'
+rescue LoadError
+  require 'irb/completion'
+end
+
+require 'rubygems'
+
+def _init_(library)
+  library = { library => library } if library.kind_of? String
+  library.each_pair do |gem_name, require_name|
+    begin
+      gem gem_name if gem_name
+      require require_name
+      yield if block_given?
+    rescue Exception => exception
+      puts "Gem #{gem_name} cannot be initialized (#{exception.to_s.chomp})."
+    end
+  end
+end
+
+_init_('wirble') { Wirble.init }
+_init_('awesome_print')
+_init_('looksee')
+
+=begin
+def copy(str)
+  IO.popen('pbcopy', 'w') { |f| f << str.to_s }
+end
+
+def copy_history
+  history = Readline::HISTORY.entries
+  index = history.rindex("exit") || -1
+  content = history[(index+1)..-2].join("\n")
+  puts content
+  copy content
+end
+
+def paste
+  `pbpaste`
+end
+=end
+
+class Object
+  # list methods which aren't in superclass
+  def local_methods(obj = self)
+    (obj.methods - obj.class.superclass.instance_methods).sort
+  end
+end
+
+# Enable lambda prompts. http://twitter.com/acetoxy/status/26734736005
+class IRB::Irb
+  alias :original_prompt :prompt
+  def prompt(prompt, ltype, indent, line_no)
+    prompt = prompt.call if prompt.respond_to?(:call)
+    original_prompt(prompt, ltype, indent, line_no)
+  end
+end
+
+if defined? ::RubyRCInit
+  IRB.conf[:PROMPT][:SIMPLE].merge!(:PROMPT_I => lambda {
+    PROMPT.call(">>")
+  })
+  IRB.conf[:PROMPT_MODE] = :SIMPLE
+end

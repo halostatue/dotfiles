@@ -1,0 +1,6 @@
+{{- if (index . "github" "user") -}}
+---
+github.com:
+- user: {{ .github.user }}
+  oauth_token: {{ keyring "github-hub" .github.user }}
+{{- end -}}

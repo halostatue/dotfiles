@@ -1,0 +1,59 @@
+# Apply `f` to composite entities recursively, and to atoms
+def walk(f):
+  . as $in
+  | if type == "object" then
+      reduce keys_unsorted[] as $key ({}; . + { ($key): ($in[$key] | walk(f)) }) | f
+    elif type == "array" then
+      map( walk( f ) ) | f
+    else
+      f
+    end;
+
+def aldo_store_sql:
+  . as $in
+  | "UPDATE stores SET " + (
+    reduce ($in.good | keys)[] as $key ([]; . + [$key + " = '" + $in.good[$key] + "'"])
+    | join(", ")
+  ) + " WHERE id = " + ($in.store | tostring) + ";"
+  ;
+
+def aldo_store_values:
+  . as $in | reduce keys[] as $key ([]; . + [$in[$key]]);
+
+def aldo_stores_stores_sql:
+  aldo_store_values | map(. | aldo_store_sql) | join("\n");
+
+def etcs_clean_key_name:
+  .name | gsub("[- ]"; "_") | ascii_downcase;
+
+def etcs_clean_value:
+  if (.name | type) == "Contact ID" then (.value | tostring)
+  elif .value == "blank" then null
+  else .value end;
+
+def etcs_clean_kv:
+  {key: etcs_clean_key_name, value: etcs_clean_value};
+
+def etcs_filter_null:
+  reduce .[] as $item ([]; if ($item.value | length) == 0 then . else . +  [$item] end);
+
+def etcs_hoist:
+  map(.values | map(etcs_clean_kv) | etcs_filter_null | from_entries);
+
+def etcs_document:
+  map({type: "add", id: .contact_id, fields: .});
+
+def insomnia_clean_key_names:
+  . as $in
+  | if type == "object" then
+      reduce keys_unsorted[] as $key ({}; . + { ($key | gsub("[^a-z0-9A-Z_]"; "_")): ($in[$key] | insomnia_clean_key_names) })
+    elif type == "array" then
+      map( insomnia_clean_key_names )
+    else
+      .
+    end;
+
+def malls_force_all:
+  . as $in
+  | map(. | "RAILS_ENV=production bin/rake icmp:import:force_all[" + (.catalog) + "]")
+  | join("\n");

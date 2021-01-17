@@ -1,0 +1,6 @@
+{{- if (index . "ruby" "rubygems" "geminabox" "kinetic" ) -}}
+---
+:host: {{ keyring "kinetic-geminabox" .ruby.rubygems.geminabox.kinetic }}
+
+# vim: ft=yaml
+{{- end -}}

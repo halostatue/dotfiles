@@ -1,0 +1,5 @@
+# Configure gpg-agent
+
+default-cache-ttl 86400
+use-standard-socket
+{{ if lookPath "pinentry-mac" }}pinentry-program {{ lookPath "pinentry-mac" }}{{ end }}

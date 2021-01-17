@@ -1,0 +1,47 @@
+[alias]
+  # A typo that turned useful
+  addp = add -p
+
+  # This should be default. Whatever.
+  co = checkout
+
+  # If we type `git git log`, just run `git log`.
+  git = !git
+
+  # Get the name of the current branch
+  current-branch = !git symbolic-ref HEAD 2> /dev/null | sed -e 's!refs/heads/!!'
+
+  # Count the number of commits per person
+  count = shortlog -sn --no-merges
+
+  # Quickly amend a commit
+  fast-amend = commit --amend --no-edit
+
+  # Push the current HEAD to `origin`
+  push-head = !git push origin $(git symbolic-ref HEAD)
+
+  # Abbreviated status
+  st = status -sb -uno --ignore-submodules=untracked
+
+  # Shorter
+  staged = diff --cached
+
+  # Useful when resolving conflicts
+  stc = diff --stat --name-status --cached
+
+  # Show the root directory of the repo
+  root = !eval cd "$(pwd)/$(git rev-parse --show-cdup)" && pwd
+
+  # Fetch and pull
+  update-rebase = !git fetch -mp && git pull --rebase
+
+  # "very" garbage collect
+  vgc = repack -f -a -d --depth=250 --window=250
+
+  # Show files that have been otherwise ignored
+  ignored = ls-files --others -i --exclude-standard
+
+{{- if lookPath "fzf" -}}
+  # Show the log in fzf
+  fzflog = "!git log --color=always --format=\"%C(auto)%h%d %s %C(black)%C(bold)%cr\" \"${@}\" | fzf --ansi| awk '{print $1}' | pbcopy"
+{{- end -}}

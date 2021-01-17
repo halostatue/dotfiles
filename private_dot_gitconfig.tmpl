@@ -1,0 +1,149 @@
+[advice]
+  statusHints = false
+
+[apply]
+  whitespace = nowarn
+
+[branch]
+  autosetuprebase = always
+
+[color]
+  branch = auto
+  diff = auto
+  pager = true
+  status = auto
+  ui = auto
+
+[color "diff"]
+  meta = blue bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+  diff = always
+
+[color "branch"]
+  current = yellow reverse
+  local = yellow bold
+  remote = green bold
+  plain = red bold
+
+[color "status"]
+  added = green
+  changed = yellow bold
+  untracked = white bold
+
+[commit]
+  ; gpgSign = true
+
+[core]
+  autocrlf = input
+  compression = -1
+  editor = vim
+{{- if stat (joinPath .chezmoi.homedir ".gitignore") }}
+  excludesFile = /Users/austin/.gitignore
+{{- end }}
+{{- if lookPath "delta" }}
+  pager = delta
+{{- end }}
+  precomposeUnicode = true
+  safecrlf = true
+  whitespace = trailing-space,tab-in-indent,cr-at-eol,space-before-tab
+
+[fetch]
+  recurseSubmodules = on-demand
+
+[format]
+  pretty = %C(yellow)%h%C(reset) %C(red)%ad%C(reset) | %s%d %C(green)[%aN]%C(reset)
+
+[gc]
+  reflogexpire = 300
+  reflogexpireunreachable = 90
+
+{{ if (index . "github" "user") -}}
+[github]
+  user = {{ .github.user }}
+{{- end }}
+
+[grep]
+  extendRegexp = true
+  lineNumber = true
+
+[log]
+  date = short
+  decorate = auto
+  showSignature = false
+
+[pack]
+  # Autodetect thread count
+  threads = 0
+
+[pager]
+  # User a pager for `difftool`
+  difftool = true
+
+[pull]
+  ff = only
+
+[push]
+  default = simple
+  followtags = true
+  ; gpgSign = true
+
+[rebase]
+  # Remove merge commits during a rebase
+  autosquash = true
+  # Rebase cleanly by stashing then unstashing
+  autostash = true
+  # Increase safety of `git rebase -i`
+  missingCommitCheck = true
+
+[stash]
+  # Show the patch with `git stash show`
+  showPatch = true
+
+[status]
+  submoduleSummary = true
+
+[submodule]
+  fetchJobs = 0
+
+[tag]
+  forceSignAnnotated = true
+  ; gpgSign = true
+
+# URL shorthands
+[url "git@github.com:"]
+  insteadOf = "gh:"
+[url "git@gist.github.com:"]
+  insteadOf = "gist:"
+[url "git@bitbucket.org:"]
+  insteadOf = "bb:"
+
+[user]
+  # Don’t guess. Always use config. Override user.* defaults in the repo config
+  useConfigOnly = true
+  name = {{ .name }}
+  email = {{ .email }}
+  ; signingKey = …
+
+[web]
+{{ if lookPath "xdg-open" }}
+  browser = xdg-open
+{{ end }}
+{{ if lookPath "open" }}
+  browser = open
+{{ end }}
+
+[browser "gitscm"]
+  cmd = sh -c 'open http://git-scm.com/docs/$(basename $1 .html)' --
+
+[init]
+	defaultBranch = main
+
+[include]
+  path = ~/.git-config/aliases
+
+[include]
+  path = ~/.git-config/diff-merge
+
+# vim: ft=gitconfig syntax=gitconfig

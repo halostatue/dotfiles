@@ -1,0 +1,121 @@
+#!/usr/bin/env ruby
+# -*- encoding: utf-8 -*-
+
+require 'pathname'
+
+rubyrc = Pathname('~/.rubyrc').expand_path
+if rubyrc.exist?
+  load rubyrc
+  include RubyRCInit
+end
+
+class KCSApp
+  def initialize(id, secret)
+    @id, @secret = id, secret
+  end
+
+  def padlock(nonce)
+    require 'digest/sha2'
+    Digest::SHA256.hexdigest("#{@id}:#{nonce}:#{@secret}").upcase
+  end
+
+  def header(nonce)
+    require 'base64'
+    Base64.urlsafe_encode64("#{@id}:#{nonce}:#{padlock(nonce)}")
+  end
+
+  def verify(value)
+    require 'base64'
+    i, n, p = Base64.decode64(value).split(':')
+    fail "ID #{i} does not match #{@id}" unless @id == i
+    q = padlock(n)
+    fail "Padlocks do not match: provided #{p}, computed: #{q}" unless q == p.upcase
+    true
+  end
+end
+
+begin
+  Pry.config.editor = 'vim'
+
+  if Pry.plugins.has_key? "debugger"
+    Pry.commands.alias_command 'c', 'continue'
+    Pry.commands.alias_command 's', 'step'
+    Pry.commands.alias_command 'n', 'next'
+    Pry.commands.alias_command 'f', 'finish'
+  end
+
+  if defined? ::RubyRCInit
+    Pry.config.prompt = [
+      proc { PROMPT.call(">>") },
+      proc { PROMPT.call(" *") }
+    ]
+#   Pry.config.prompt = [
+#     proc { |obj, nest_level, _| "#{RUBY_VERSION} (#{obj}):#{nest_level} > " },
+#     proc { |obj, nest_level, _| "#{RUBY_VERSION} (#{obj}):#{nest_level} * " }
+#   ]
+#
+#
+# prompt_proc = lambda do |obj, nest_level, _|
+#   ruby_info = ""
+#   ruby_info << "#{Rails.version}@" if defined?(Rails)
+#   ruby_info << RUBY_VERSION
+#   ruby_info = "\e[32m#{ruby_info}\e[0m"
+#   nest_info = "#{nest_level}"
+#   obj_info  = "\e[33m#{obj}\e[0m"
+#   "[#{ruby_info}] #{nest_info}:(#{obj_info}) > "
+# end
+
+    if ::RubyRCInit.rails?
+      require 'logger'
+
+      if defined? ActiveRecord
+        ActiveRecord::Base.logger = Logger.new(STDOUT)
+        ActiveRecord::Base.clear_active_connections!
+      end
+
+      class Class
+        def core_ext
+          self.instance_methods.map { |m|
+            [m, self.instance_method(m).source_location] }.select { |m|
+              m[1] && m[1][0] =~/activesupport/ }.map { |m|
+                m[0] }.sort
+        end
+      end
+    end
+  end
+
+  default_command_set = Pry::CommandSet.new do
+    command "copy", "Copy argument to the clip-board" do |str|
+      IO.popen('pbcopy', 'w') { |f| f << str.to_s }
+    end
+
+    command "clear" do
+      system 'clear'
+      if ENV['RAILS_ENV']
+        output.puts "Rails Environment: #{ENV['RAILS_ENV']}"
+      end
+    end
+
+    if ENV['RAILS_ENV'] || defined?(Rails) && defined? ActiveRecord
+      command "sql", "Send sql over AR." do |query|
+        pp ActiveRecord::Base.connection.select_all(query)
+      end
+    end
+
+    command "caller_method" do |depth|
+      depth = depth.to_i || 1
+      if /^(.+?):(\d+)(?::in `(.*)')?/ =~ caller(depth+1).first
+        file   = Regexp.last_match[1]
+        line   = Regexp.last_match[2].to_i
+        method = Regexp.last_match[3]
+        output.puts [file, line, method]
+      end
+    end
+  end
+
+  Pry.config.commands.import default_command_set
+
+rescue Exception => ex
+  puts ex.message
+  puts ex.backtrace
+end
