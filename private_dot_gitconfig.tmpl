@@ -39,7 +39,7 @@
   autocrlf = input
   compression = -1
   editor = vim
-{{- if stat (joinPath .chezmoi.homedir ".gitignore") }}
+{{- if stat (joinPath .chezmoi.homeDir ".gitignore") }}
   excludesFile = /Users/austin/.gitignore
 {{- end }}
 {{- if lookPath "delta" }}
