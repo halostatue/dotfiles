@@ -3,12 +3,8 @@
   mnemonicprefix = true
   renames = copies
   submodule = log
-{{- if lookPath "ksdiff" }}
-  guitool = Kaleidoscope
-{{ end -}}
-{{- if lookPath "delta" }}
-  tool = delta
-{{ end -}}
+  {{ if lookPath "ksdiff" }}guitool = Kaleidoscope{{ end }}
+  {{ if lookPath "delta" }}tool = delta{{ end }}
 
 [diff "ruby"]
   funcname = ^ *\\(\\(class\\|module\\|def\\) .*\\)
@@ -19,31 +15,31 @@
 [difftool]
   prompt = false
 
-{{- if lookPath "icdiff" -}}
+{{ if lookPath "icdiff" -}}
 [difftool "icdiff"]
   cmd = icdiff --line-numbers "${LOCAL}" "${REMOTE}"
-{{- end -}}
+{{- end }}
 
-{{- if lookPath "delta" -}}
+{{ if lookPath "delta" -}}
 [difftool "delta"]
   cmd = delta \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
-{{- end -}}
+{{- end }}
 
 [merge]
   log = true
   conflictstyle = diff3
 
-{{- if lookPath "gvim" -}}
+{{ if lookPath "gvim" -}}
 [mergetool "gvimdiff"]
   cmd = gvim -d --remote-wait-silent "${LOCAL}" "${MERGED}" "${REMOTE}"
   trustExitCode = true
-{{- end -}}
+{{- end }}
 
-{{- if lookPath "vim" -}}
+{{ if lookPath "vim" -}}
 [mergetool "vimdiff"]
   cmd = vim -d "${LOCAL}" "${MERGED}" "${REMOTE}"
   trustExitCode = true
-{{- end -}}
+{{- end }}
 
 {{ if lookPath "ksdiff" -}}
 [difftool "Kaleidoscope"]
@@ -52,4 +48,4 @@
 [mergetool "Kaleidoscope"]
   cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
   trustExitCode = true
-{{- end -}}
+{{- end }}

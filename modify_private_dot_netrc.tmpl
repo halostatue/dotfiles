@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+def add_if_missing(input, pattern, line)
+  unless input.find { |r| r =~ pattern }
+    input << line << "\n"
+  end
+end
+
+input = STDIN.readlines
+
+{{ if index . "github" "user" -}}
+add_if_missing(
+  input,
+  /machine api.github.com login {{ .github.user }}/,
+  'machine api.github.com login {{ .github.user }} {{ keyring "vim-rhubarb" .github.user }}'
+)
+{{- end }}
+
+puts input.join

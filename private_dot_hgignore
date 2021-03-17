@@ -1,3 +1,6 @@
+# Use shell-style glob syntax
+syntax: glob
+
 *.swp
 *~
 .AppleDB

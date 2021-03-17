@@ -126,6 +126,25 @@ use_nvm()
   if [[ -e ~/.nvm/nvm.sh ]]; then
     unsafe source ~/.nvm/nvm.sh
     nvm use "${version}"
+  elif [[ -f ~/.local/share/nvm/.index ]]; then
+    # This works with jorgebucaran/fish.nvm v2, a fish-specific alternative to
+    # nvm. The version of Node requested must be installed before use.
+    version="$(
+      ruby -e $'
+        version=ARGV.shift
+        version=version.strip.gsub(/^v/, "")
+        match=ARGF.readlines.find { |l| l =~ /#{Regexp.escape(version)}/ }
+        puts match.split(/\\s/).first if match
+      ' "${version}" ~/.local/share/nvm/.index
+    )"
+
+    [[ -z "${version}" ]] && return
+
+    if [[ -d ~/.local/share/nvm/"${version}"/bin ]]; then
+      PATH_add "$(cd ~/.local/share/nvm || exit; pwd -P)/${version}"/bin
+      export NVM_BIN
+      NVM_BIN=~/.local/share/nvm/"${version}"/bin
+    fi
   elif [[ -f ~/.config/nvm/index ]]; then
     # This works with jorgebucaran/fish-nvm, a fish-specific alternative to
     # nvm. The version of Node requested must be installed before use.

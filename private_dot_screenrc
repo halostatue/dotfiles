@@ -1,0 +1,163 @@
+# don't use the hardstatus line for system messages, use reverse video instead
+# (we'll be using it for the list of tab windows - see hardstatus alwayslastline
+# below)
+hardstatus off
+#
+# use the caption line for the computer name, load, hstatus (as set by zsh), & time
+# the caption line gets repeated for each window being displayed (using :split),
+# so we'll use color cues to differentiate the caption of the current, active
+# window, and the others.
+#    always                  - display the caption continuously.  Since
+#                              hardstatus is 'alwayslastline', it will be on the
+#                              next to last line.
+#    "%?%F"                  - if (leading '%?') this region has focus ('%F') 
+#                              (e.g. it's the only region being displayed, or,
+#                              if in split-screen mode, it's the currently active
+#                              region)
+#      "%{= Kk}"               - set the colorscheme to blac[k] on grey (bright blac[K]),
+#                                with no other effects (standout, underline, etc.)
+#    "%:"                    - otherwise ('%:' between a pair of '%?'s)
+#      "%{=u kR}"              - set the colorscheme to [R]ed on blac[k], and
+#                                underline it, but no other effects (bold, standout, etc.) 
+#    "%?"                    - end if (trailing '%?')
+#    "  %h "                 - print two spaces, then the [h]ardstatus of the
+#                              current tab window (as set by zsh - see zshrc) and
+#                              then another space.
+#    "%-024="                - either pad (with spaces) or truncate the previous
+#                              text so that the rest of the caption string starts
+#                              24 characters ('024') from the right ('-') edge of
+#                              the caption line.
+#                              NOTE: omitting the '0' before the '24' would pad
+#                              or truncate the text so it would be 24% from the
+#                              right.
+#    "%{+b}                  - add ('+') [b]old to the current text effects, but
+#                              don't change the current colors.
+#    " %C:%s%a %D %d %M %Y"  - print the [C]urrent time, a colon, the [s]econds,
+#                              whether it's [a]m or pm, the [D]ay name, the [d]ay
+#                              of the month, the [M]onth, and the [Y]ear.
+#                              (this takes up 24 characters, so the previous
+#                              pad/truncate command makes sure the clock doesn't
+#                              get pushed off of the caption line)
+#    "%{= dd}"               - revert to the [d]efault background and [d]efault
+#                              foreground colors, respectively, with no ('= ')
+#                              other effects.
+caption always           "%?%F%{= Kk}%:%{=u kR}%?  %h %-024=%{+b} %C%a %D %d %M %Y%{= db}"
+# use the hardstatus line for the window list
+#    alwayslastline      - always display the hardstatus as the last line of the
+#                          terminal
+#    "%{= kR} %-Lw"      - change to a blac[k] background with bright [R]ed text,
+#                          and print all the tab [w]indow numbers and titles in
+#                          the [L]ong format (ie with flags) upto ('-') the
+#                          current tab window
+#    "%{=b Kk} %n%f %t " - change to grey (bright blac[K]) background with
+#                          [b]old blac[k] text, with no other effects, and print
+#                          the [n]umber of the current tab window, any [f]lags it
+#                          might have, and the [t]itle of the current tab window
+#                          (as set by zsh - see zshrc).
+#                          NOTE: the color match with the caption line makes it
+#                          appear as if a 'tab' is dropping down from the caption
+#                          line, highlighting the number & title of the current
+#                          tab window.  Nifty, ain't it)
+#    "%{-}%+Lw "         - revert to the previous color scheme (red on black)
+#                          and print all the tab [w]indow numbers and titles in
+#                          the [L]ong format (ie with flags) after ('+') the
+#                          current tab window.
+#    "%=%{= dd}"         - pad all the way to the right (since there is no text
+#                          that follows this) and revert to the [d]efault
+#                          background and [d]efault foreground colors, with no
+#                          ('= ') other effects.
+hardstatus alwayslastline "%{= kR} %-Lw%{= Kk} %n%f %t %{-}%+Lw %=%{= dd}"
+
+shelltitle "$ |bash"
+
+# no annoying audible bell, please
+vbell off
+
+# don't display the copyright page
+startup_message off
+
+# set every new windows hardstatus line to somenthing descriptive
+defhstatus "screen: ^En (^Et)"
+
+defscrollback 10000
+
+# osx terminal is running UTF-8
+encoding utf8
+defencoding utf8
+
+# make the shell in every window a login shell
+shell -$SHELL
+
+
+################
+#
+# keybindings
+#
+
+#remove some stupid / dangerous key bindings
+bind k
+bind ^k
+bind .
+bind ^\
+bind \\
+bind ^h
+bind h
+bind ^S # this is control character for secondary machines
+# I don't want to switch visual/audible bells
+bind g
+bind ^g
+
+#make them better
+bind 'K' kill
+bind '}' history
+
+# vi-like window switching
+bind h prev
+bind ^h prev
+bind l next
+bind ^l next
+
+# redraw
+bind r redisplay
+bind ^r redisplay
+
+# Yet another hack:
+# Prepend/append register [/] to the paste if ^a^] is pressed.
+# This lets me have autoindent mode in vi.
+register [ "\033:se noai\015a"
+register ] "\033:se ai\015a"
+bind ^] paste [.]
+
+
+term "rxvt-256color"
+
+# Used in .vimrc
+setenv SCREEN_RUNNING 1
+
+################
+#
+# default windows
+#
+
+#screen 0 
+#screen 1 
+#select 0
+#screen -t 40 2 rlogin server
+
+# caption always "%3n %t%? @%u%?%? [%h]%?%=%c"
+# hardstatus alwaysignore
+# hardstatus alwayslastline "%Lw"
+
+#hardstatus on
+#hardstatus alwayslastline
+#hardstatus string "%{.bW}%?%-Lw%?%{.rW}%n*%f %t%?(%u)%?%{-}%?%+Lw%? %=%{..G}%H%=%{..Y} %D %d/%M/%Y %C:%s%a "
+# shows blue line with list of windows and current one hilighted
+
+# bind = resize =
+# bind + resize +1
+# bind - resize -1
+# bind _ resize max
+#
+# defnonblock 1
+# blankerprg rain -d 100
+# idle 30 blanker
