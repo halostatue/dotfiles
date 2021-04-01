@@ -1,0 +1,32 @@
+Execute (lib#capitalize pass):
+  AssertEqual 'Foo', lib#capitalize('foo')
+  AssertEqual 'Foo_bar_baz', lib#capitalize('foo_bar_baz')
+
+Execute (lib#camel_case pass):
+  AssertEqual 'fooBarBaz', lib#camel_case('foo_bar_baz')
+
+Execute (lib#camel_case fail):
+  AssertNotEqual 'foo_BarBaz', lib#camel_case('foo_bar_baz')
+  AssertNotEqual 'FooBarBaz', lib#camel_case('foo_bar_baz')
+
+Execute (lib#capital_camel_case pass):
+  AssertEqual 'FooBarBaz', lib#capital_camel_case('foo_bar_baz')
+
+Execute (lib#capital_camel_case fail):
+  AssertNotEqual 'Foo_BarBaz', lib#capital_camel_case('foo_bar_baz')
+  AssertNotEqual 'fooBarBaz', lib#capital_camel_case('foo_bar_baz')
+
+Execute (lib#underscore pass simple):
+  AssertEqual 'foo_bar_baz', lib#underscore('FooBarBaz')
+
+Execute (lib#underscore pass acronym at the end):
+  AssertEqual 'safe_html', lib#underscore('SafeHTML')
+
+Execute (lib#dasherize pass simple):
+  AssertEqual 'foo-bar-baz', lib#dasherize('FooBarBaz')
+
+Execute (lib#dasherize pass acronym at the end):
+  AssertEqual 'safe-html', lib#dasherize('SafeHTML')
+
+Execute (lib#lowercase pass):
+  AssertEqual 'foo',  lib#lowercase('Foo')
