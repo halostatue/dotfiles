@@ -22,7 +22,7 @@ xnoremap > >gv
 xnoremap < <gv
 
 " Move the view to the top/centre/bottom
-noremap <expr> zz (winline() == (winheight(0) + 1) / 2)
+noremap <expr> gzz (winline() == (winheight(0) + 1) / 2)
       \ ? 'zt'
       \ : (winline() == 1)
       \ ? 'zb'

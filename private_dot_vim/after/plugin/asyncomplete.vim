@@ -15,6 +15,6 @@ if exists('*vsnip#jumpable')
         \ ? '<Plug>(vsnip-jump-prev)'
         \ : '<S-Tab>'
 else
-  inoremap <expr> <Tab> pumvisible() ? '<C-n>' : '\<Tab>'
-  inoremap <expr> <S-Tab> pumvisible() ? '\<C-p>' : '\<S-Tab>'
+  inoremap <expr> <Tab> pumvisible() ? '<C-n>' : '<Tab>'
+  inoremap <expr> <S-Tab> pumvisible() ? '<C-p>' : '<S-Tab>'
 endif
