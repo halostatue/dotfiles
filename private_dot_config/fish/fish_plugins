@@ -10,7 +10,6 @@ halostatue/fish-brew@v1.x
 halostatue/fish-direnv@v1.x
 halostatue/fish-docker@v1.x
 halostatue/fish-elixir@v1.x
-halostatue/fish-fzf@v2.x
 halostatue/fish-go@v1.x
 halostatue/fish-haskell@v1.x
 halostatue/fish-kerl@v1.x
@@ -22,15 +21,15 @@ halostatue/fish-ssh-agent@v1.x
 halostatue/fish-utils-core@v1.x
 halostatue/fish-utils-net@v1.x
 halostatue/fish-utils@v2.x
-jethrokuan/fzf
 jethrokuan/z
-jorgebucaran/bax.fish
+PatrickF1/fzf.fish
+jorgebucaran/replay.fish
 jorgebucaran/fishtape
 jorgebucaran/getopts.fish
 jorgebucaran/nvm.fish
 jorgebucaran/spark.fish
 laughedelic/brew-completions
-laughedelic/pisces
+jorgebucaran/autopair.fish
 matchai/fish-mock
 nju33/fish-age
 oh-my-fish/plugin-aws

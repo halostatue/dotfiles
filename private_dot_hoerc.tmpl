@@ -1,16 +1,16 @@
 ---
 exclude: !ruby/regexp /(tmp|swp)$|CVS|TAGS|\.(svn|git|hg|DS_Store)|Gemfile\.lock|\.gemspec/
-{{- if (index . "ruby" "hoe" "email") -}}
+{{ if (index . "ruby" "hoe" "email") -}}
 email:
   to:
-  - ruby-talk@ruby-lang.org
+    - ruby-talk@ruby-lang.org
   user: {{ .ruby.hoe.email }}
   pass: {{ keyring "gmail-hoe" .ruby.hoe.email }}
   host: smtp.gmail.com
   port: submission
   auth: plain
   tls: true
-{{- end -}}
+{{- end }}
 signing_key_file: ~/.gem/gem-private_key.pem
 signing_cert_file: ~/.gem/gem-public_cert.pem
 publish_on_announce: true

@@ -1,3 +1,14 @@
 ChezMoi.code-workspace
 tags
 .gitignore
+Casks.fish
+Crates.fish
+Kegs.fish
+LICENCE.md
+MacApps.fish
+Node.fish
+Pipx.fish
+README.md
+Rubygems.fish
+Gobin
+fishfile.maybe
