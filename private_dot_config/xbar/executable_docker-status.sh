@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #
-# <bitbar.title>Docker Status</bitbar.title>
-# <bitbar.version>v1.2</bitbar.version>
-# <bitbar.author>Manoj Mahalingam</bitbar.author>
-# <bitbar.author.github>manojlds</bitbar.author.github>
-# <bitbar.image>https://cloud.githubusercontent.com/assets/191378/12255368/1e671b32-b919-11e5-8166-6d975396f408.png</bitbar.image>
-# <bitbar.desc>Displays the status of docker machines and running containers</bitbar.desc>
-# <bitbar.dependencies>shell,docker</bitbar.dependencies>
+# <xbar.title>Docker Status</xbar.title>
+# <xbar.version>v1.2</xbar.version>
+# <xbar.author>Manoj Mahalingam</xbar.author>
+# <xbar.author.github>manojlds</xbar.author.github>
+# <xbar.image>https://cloud.githubusercontent.com/assets/191378/12255368/1e671b32-b919-11e5-8166-6d975396f408.png</xbar.image>
+# <xbar.desc>Displays the status of docker machines and running containers</xbar.desc>
+# <xbar.dependencies>shell,docker</xbar.dependencies>
 #
 # Docker status plugin
 # by Manoj Mahalingam (@manojlds)
@@ -22,7 +22,7 @@ function containers() {
   if [ -z "$CONTAINERS" ]; then
     echo "No running containers"
   else
-    LAST_CONTAINER=$(echo "$CONTAINERS" | tail -n1 )
+    LAST_CONTAINER=$(echo "$CONTAINERS" | tail -n1)
     echo "${CONTAINERS}" | while read -r CONTAINER; do
       CONTAINER_NAME=$(echo "$CONTAINER" | awk -F"|" '{print $1}')
       CONTAINER_ID=$(echo "$CONTAINER" | awk -F"|" '{print $2}')
@@ -30,21 +30,21 @@ function containers() {
       SYM="├ 💻 "
       if [ "$CONTAINER" = "$LAST_CONTAINER" ]; then SYM="└ 💻 "; fi
       case "$CONTAINER_STATE" in
-        *Up*) echo "$SYM $CONTAINER_NAME | color=green bash=\"$(command -v docker)\" param1=stop param2=$CONTAINER_ID terminal=false refresh=true";;
-        *Exited*) echo "$SYM $CONTAINER_NAME | color=red bash=\"$(command -v docker)\" param1=start param2=$CONTAINER_ID terminal=false refresh=true";;
+      *Up*) echo "$SYM $CONTAINER_NAME | color=green bash=\"$(command -v docker)\" param1=stop param2=$CONTAINER_ID terminal=false refresh=true" ;;
+      *Exited*) echo "$SYM $CONTAINER_NAME | color=red bash=\"$(command -v docker)\" param1=start param2=$CONTAINER_ID terminal=false refresh=true" ;;
       esac
     done
   fi
 }
 
-if command -v docker-machine > /dev/null; then
-    DOCKER_MACHINES="$(docker-machine ls -q)"
+if command -v docker-machine >/dev/null; then
+  DOCKER_MACHINES="$(docker-machine ls -q)"
 fi
-if command -v dlite > /dev/null; then
-    DLITE="$(command -v dlite)"
+if command -v dlite >/dev/null; then
+  DLITE="$(command -v dlite)"
 fi
-if command -v docker > /dev/null; then
-    DOCKER_NATIVE="$(command -v docker)"
+if command -v docker >/dev/null; then
+  DOCKER_NATIVE="$(command -v docker)"
 fi
 
 if test -z "$DOCKER_MACHINES" && test -z "$DLITE" && test -z "$DOCKER_NATIVE"; then
