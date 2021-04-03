@@ -79,6 +79,7 @@
 [pack]
   # Autodetect thread count
   threads = 0
+  writeReverseIndex = true
 
 [pager]
   # User a pager for `difftool`
@@ -141,7 +142,7 @@
   cmd = sh -c 'open http://git-scm.com/docs/$(basename $1 .html)' --
 
 [init]
-	defaultBranch = main
+  defaultBranch = main
 
 [include]
   path = ~/.git-config/aliases
