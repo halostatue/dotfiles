@@ -1,1 +1,0 @@
-~/.config/xbar/numContainers.sh

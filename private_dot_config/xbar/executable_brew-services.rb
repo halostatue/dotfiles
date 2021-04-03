@@ -19,46 +19,50 @@ BAR_COLORS = true
 
 require 'pathname'
 
-SCRIPT_PATH = Pathname.new($0).realpath()
-BREW = "/usr/local/bin/brew"
 BREW_LINK = "http://brew.sh/"
-BREW_SERVICES = "/usr/local/Homebrew/Library/Taps/homebrew/homebrew-services/cmd/services.rb"
 BREW_SERVICES_LINK = "https://github.com/Homebrew/homebrew-services"
 
-REFRESH = "---\nRefresh | refresh=true"
+SCRIPT_PATH = Pathname($0).realpath
+
+brew = %w(~/.brew/bin /opt/homebrew/bin /usr/local/bin).map { |path| Pathname(path).join('brew') }.find(&:executable?)
+
+if brew
+  BREW = brew
+  services = brew.dirname.dirname
+  services = services.join('Homebrew') if brew.to_path =~ %r{^/usr/local}
+  services = services.join('Library/Taps/Homebrew/homebrew-services/cmd/services.rb')
+  BREW_SERVICES = services if services.exist?
+end
 
 if BAR_COLORS
-  DARK_MODE=`defaults read -g AppleInterfaceStyle 2> /dev/null`.strip
+  DARK_MODE = %x(defaults read -g AppleInterfaceStyle 2> /dev/null).strip
   RESET_COLOR = DARK_MODE == 'Dark' ? "\e[37m" : "\e[30m"
 else
   RESET_COLOR = "\e[37m"
 end
 
-if !File.exist?(BREW)
+unless BREW
   puts [
     "Homebrew not installed | color=red",
     "---",
     "Install Homebrew... | href=#{BREW_LINK}",
     REFRESH,
   ].join("\n")
-  exit(1)
+  exit
 end
-if !File.exist?(BREW_SERVICES)
+
+unless BREW_SERVICES
   puts [
     "Homebrew Services not installed | color=red",
     "---",
     "Install Homebrew Services... | href=#{BREW_SERVICES_LINK}",
     REFRESH,
   ].join("\n")
-  exit(1)
-end
-
-def green(string)
-  "\e[1m\e[32m#{string}#{RESET_COLOR}"
+  exit
 end
 
 def service(command, name)
-  "bash=\"#{BREW}\"" \
+  "shell=\"#{BREW}\"" \
     + " param1=services param2=#{command} param3=\"#{name}\"" \
     + " terminal=false refresh=true"
 end
@@ -66,7 +70,7 @@ end
 def menu(name, status, user)
   if status == "started"
     [
-      "#{name} | color=#4FFF50",
+      "#{name} | color=green",
       "--Restart | #{service("restart", name)}",
       "--Stop | #{service("stop", name)}",
       "-----",
@@ -87,7 +91,7 @@ def plural(count)
   count <= 1 ? "#{count} Service" : "#{count} Services"
 end
 
-output = `#{BREW} services list`.split("\n")[1..-1]
+output = %x(#{BREW} services list).split("\n")[1..-1]
 
 services = output && output.reduce({started: 0, menus: []}) do |acc, service|
   name, status, user, _plist = service.split
@@ -99,21 +103,22 @@ end
 total = (output || []).length
 started = services[:started]
 menus = services[:menus].join("\n")
-all = ""
-if total > 0
-  all = """
-All
---Start #{plural(total - started)} | #{service("start", "--all")}
---Stop #{plural(started)} | #{service("stop", "--all")}
---Restart #{plural(total)} | #{service("restart", "--all")}
-"""
-end
 
-puts """
-#{started != 0 && BAR_COLORS ? green(started) : started}/#{total}
+all =
+  if total > 1
+    <<~ALL_MENU
+    ---
+    All
+    --Start #{plural(total - started)} | #{service("start", "--all")}
+    --Stop #{plural(started)} | #{service("stop", "--all")}
+    --Restart #{plural(total)} | #{service("restart", "--all")}
+    ALL_MENU
+  end
+
+puts <<-MENU
+#{started}/#{total}
 ---
 #{menus}
----
-#{all}
-#{REFRESH}
-"""
+#{all}---
+Refresh | refresh=true
+MENU
