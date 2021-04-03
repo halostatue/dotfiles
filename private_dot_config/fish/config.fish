@@ -17,6 +17,9 @@ function __source_or_create -a name type
     end
 end
 
+set -qg EDITOR
+or set -g EDITOR (which vim)
+
 set -qU PROJECT_PATHS
 or set -U PROJECT_PATHS \
     ~/dev/kinetic \
@@ -69,14 +72,14 @@ if command -sq fzf
     function kp --description "Kill processes"
         set -l __kp__pid ''
 
-        if contains -- '--tcp' $argv
+        if contains -- --tcp $argv
             set __kp__pid (lsof -Pwni tcp | sed 1d | eval "fzf $FZF_DEFAULT_OPTS -m --header='[kill:tcp]'" | awk '{print $2}')
         else
             set __kp__pid (ps -ef | sed 1d | eval "fzf $FZF_DEFAULT_OPTS -m --header='[kill:process]'" | awk '{print $2}')
         end
 
-        if test "x$__kp__pid" != "x"
-            if test "x$argv[1]" != "x"
+        if test "x$__kp__pid" != x
+            if test "x$argv[1]" != x
                 echo $__kp__pid | xargs kill $argv[1]
             else
                 echo $__kp__pid | xargs kill -9
@@ -89,8 +92,8 @@ if command -sq fzf
         set -l __ks__pid (lsof -Pwni tcp | sed 1d | eval "fzf $FZF_DEFAULT_OPTS -m --header='[kill:tcp]'" | awk '{print $2}')
         set -l __ks__kc $argv[1]
 
-        if test "x$__ks__pid" != "x"
-            if test "x$argv[1]" != "x"
+        if test "x$__ks__pid" != x
+            if test "x$argv[1]" != x
                 echo $__ks__pid | xargs kill $argv[1]
             else
                 echo $__ks__pid | xargs kill -9
@@ -104,11 +107,11 @@ if command -sq fzf
     end
 
     function gcb --description "delete git branches"
-        set delete_mode '-d'
+        set delete_mode -d
 
-        if contains -- '--force' $argv
+        if contains -- --force $argv
             set force_label ':force'
-            set delete_mode '-D'
+            set delete_mode -D
         end
 
         set -l branches_to_delete (git branch | sed -E 's/^[* ] //g' | fzf -m --header="[git:branch:delete$force_label]")
@@ -234,18 +237,18 @@ if functions -q is:mac
     function acorn
         open -a Acorn $argv
     end
-    complete -c acorn -d "Image" -a "*.{png,jpg,jpeg,psd}"
-    complete -c acorn -d "Acorn" -a "*.acorn"
+    complete -c acorn -d Image -a "*.{png,jpg,jpeg,psd}"
+    complete -c acorn -d Acorn -a "*.acorn"
 
     function alpha
         open -a ImageAlpha $argv
     end
-    complete -c alpha -d "Image" -a "*.{png,gif}"
+    complete -c alpha -d Image -a "*.{png,gif}"
 
     function optim
         open -a ImageOptim $argv
     end
-    complete -c optim -d "Image" -a "*.{png,jpg,jpeg,gif}"
+    complete -c optim -d Image -a "*.{png,jpg,jpeg,gif}"
 
     function by
         open -a Byword $argv
@@ -335,10 +338,10 @@ if command -sq code-insiders
 end
 
 if command -sq pngcrush
-    function crush -d "pngcrush"
+    function crush -d pngcrush
         pngcrush -e _sm.png -rem alla -brute -reduce $argv
     end
-    complete -c crush -d "PNG" -a "*.png"
+    complete -c crush -d PNG -a "*.png"
 end
 
 function degit -d "Remove all traces of git from a folder"
@@ -362,11 +365,11 @@ function 64font -d "encode a given font file as base64 and output css background
 end
 
 function lt -d "List directory from oldest to newest"
-    ls -Atr1 $argv && echo "------Newest--"
+    ls -Atr1 $argv && echo ------Newest--
 end
 
 function ltr -d "List directory from newest to oldest"
-    ls -At1 $argv && echo "------Oldest--"
+    ls -At1 $argv && echo ------Oldest--
 end
 
 # function __should_na --on-variable PWD
@@ -424,6 +427,16 @@ command -sq pipx
 and command -sq register-python-argcomplete
 and register-python-argcomplete --shell fish pipx | source
 
-set -U pisces_only_insert_at_eol 1
+# set -U pisces_only_insert_at_eol 1
+
+set fzf_fish_custom_keybindings
+
+bind \ct __fzf_search_current_dir
+bind \cr __fzf_search_history
+bind \cv $fzf_search_vars_cmd
+
+# The following two key binding use Alt as an additional modifier key to avoid conflicts
+bind \e\cl __fzf_search_git_log
+bind \e\cs __fzf_search_git_status
 
 emit fish_postexec
