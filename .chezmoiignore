@@ -1,3 +1,4 @@
+Brewfile
 ChezMoi.code-workspace
 tags
 .gitignore
@@ -10,5 +11,5 @@ Node.fish
 Pipx.fish
 README.md
 Rubygems.fish
-Gobin
+Gobin.fish
 fishfile.maybe

@@ -18,7 +18,7 @@ function __source_or_create -a name type
 end
 
 set -qg EDITOR
-or set -g EDITOR (which vim)
+or set -xg EDITOR (which vim)
 
 set -qU PROJECT_PATHS
 or set -U PROJECT_PATHS \
@@ -428,8 +428,6 @@ and command -sq register-python-argcomplete
 and register-python-argcomplete --shell fish pipx | source
 
 # set -U pisces_only_insert_at_eol 1
-
-set fzf_fish_custom_keybindings
 
 bind \ct __fzf_search_current_dir
 bind \cr __fzf_search_history
