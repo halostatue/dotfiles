@@ -38,4 +38,4 @@ PatrickF1/colored_man_pages.fish
 sijad/gitignore
 IlanCosman/spout
 halostatue/fish-utils-net@v1.x
-halostatue/plugin-aws
+halostatue/plugin-aws@patch-1
