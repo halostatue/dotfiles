@@ -19,7 +19,6 @@ halostatue/fish-rake@v1.x
 halostatue/fish-rust@v1.x
 halostatue/fish-ssh-agent@v1.x
 halostatue/fish-utils-core@v1.x
-halostatue/fish-utils-net@v1.x
 halostatue/fish-utils@v2.x
 jethrokuan/z
 PatrickF1/fzf.fish
@@ -32,10 +31,11 @@ laughedelic/brew-completions
 jorgebucaran/autopair.fish
 matchai/fish-mock
 nju33/fish-age
-oh-my-fish/plugin-aws
 oh-my-fish/plugin-cd
 oh-my-fish/plugin-license
 oh-my-fish/plugin-tab
 PatrickF1/colored_man_pages.fish
 sijad/gitignore
 IlanCosman/spout
+halostatue/fish-utils-net@v1.x
+halostatue/plugin-aws

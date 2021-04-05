@@ -207,8 +207,9 @@ function magic_enter
     end
 end
 
+contains enter (bind -K); and bind -k enter magic_enter
+
 bind \cq magic_enter
-bind -k enter magic_enter
 bind \r magic_enter
 bind \n magic_enter
 
