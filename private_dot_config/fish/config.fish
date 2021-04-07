@@ -199,7 +199,7 @@ function magic_enter
             eval $MAGIC_ENTER_OTHER_COMMAND
         end
 
-        echo ""
+        printf "\n\n"
 
         commandline -f repaint
     else
