@@ -1,0 +1,10 @@
+#!/bin/sh
+
+case :"${1}": in
+:--copy: | :-C:)
+  git rev-parse --abbrev-ref HEAD | tr -d '\n ' | pbcopy
+  ;;
+*)
+  git rev-parse --abbrev-ref HEAD
+  ;;
+esac

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+error_msg()
+{
+  echo "$1"
+  exit 1
+}
+
+usage()
+{
+  error_msg "usage: ${0} VAULT_PASSWORD_FILE KEYWORD or --help" >&2
+}
+
+file_exists() {
+  if [[ -f "${1}" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# call usage when wrong number of parameters given
+[[ "${#}" -ne 2 ]] && usage
+
+VAULT_PASSFILE="${1}"
+
+# vault password must exist
+if file_exists "${VAULT_PASSFILE}"; then
+  grep -ril ANSIBLE_VAULT group_vars/ |
+    while read -r N; do
+      echo "${N}:"
+      ansible-vault view --vault-pass "${VAULT_PASSFILE}" "${N}" | grep "${2}"
+    done
+else
+  error_msg "vault passfile not found (${VAULT_PASSFILE})"
+fi
