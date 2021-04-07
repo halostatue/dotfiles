@@ -8,9 +8,6 @@
   # If we type `git git log`, just run `git log`.
   git = !git
 
-  # Get the name of the current branch
-  current-branch = !git symbolic-ref HEAD 2> /dev/null | sed -e 's!refs/heads/!!'
-
   # Count the number of commits per person
   count = shortlog -sn --no-merges
 
