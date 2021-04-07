@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Usage: git-up
 #        git-reup
@@ -14,23 +14,26 @@
 
 set -e
 
-PULL_ARGS="$@"
+declare is_reup
+is_reup=false
+test "$(basename "${0}")" = "git-reup" && is_reup=true
+
+PULL_ARGS=("${@}")
 
 # when invoked as git-reup, run as `git pull --rebase'
-test "$(basename $0)" = "git-reup" &&
-PULL_ARGS="--rebase $PULL_ARGS"
+$is_reup && PULL_ARGS=(--rebase "${PULL_ARGS[@]}")
 
-git pull $PULL_ARGS
+git pull "${PULL_ARGS[@]}"
 
 # show diffstat of all changes if we're pulling with --rebase. not
 # sure why git-pull only does this when merging.
-test "$(basename $0)" = "git-reup" && {
+$is_reup && {
     echo "Diff:"
-    git --no-pager diff --color --stat HEAD@{1}.. |
-    sed 's/^/ /'
+    git --no-pager diff --color --stat HEAD@'{1}'.. |
+        sed 's/^/ /'
 }
 
 # show an abbreviated commit log of stuff that was just merged.
 echo "Log:"
-git log --color --pretty=oneline --abbrev-commit HEAD@{1}.. |
-sed 's/^/  /'
+git log --color --pretty=oneline --abbrev-commit HEAD@'{1}'.. |
+    sed 's/^/  /'
