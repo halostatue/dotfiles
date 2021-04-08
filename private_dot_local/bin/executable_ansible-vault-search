@@ -1,13 +1,11 @@
 #!/bin/bash
 
-error_msg()
-{
+error_msg() {
   echo "$1"
   exit 1
 }
 
-usage()
-{
+usage() {
   error_msg "usage: ${0} VAULT_PASSWORD_FILE KEYWORD or --help" >&2
 }
 

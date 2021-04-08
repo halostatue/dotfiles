@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # A very slightly quicker way to credit an author on the latest commit.
 #
@@ -11,4 +11,4 @@
 #   git credit "Zach Holman" zach@example.com
 #
 
-git commit --amend --author "$1 <$2>" -C "${3:-HEAD}"
+git commit --amend --author "$1 <$2>" -C "${3:-"HEAD"}"
