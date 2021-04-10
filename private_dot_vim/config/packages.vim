@@ -241,6 +241,9 @@ function! s:packager_init() abort
 
   " Loaded only for specific filetypes on demand. Requires autocommands below.
   call packager#add('kristijanhusak/vim-js-file-import', { 'do': 'npm install', 'type': 'opt' }) " https://github.com/kristijanhusak/vim-js-file-import
+
+  call packager#add('voldikss/vim-floaterm') " https://github.com/voldikss/vim-floaterm
+  call packager#add('skywind3000/vim-quickui') " https://github.com/skywind3000/vim-quickui
 endfunction
 
 command! -nargs=* -bar PackagerRefresh call s:packager_init() | call packager#install(<args>)

@@ -1,0 +1,4 @@
+--exclude=_build
+--exclude=.elixir_ls
+--exclude=deps
+--exclude=priv/static

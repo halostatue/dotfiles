@@ -83,7 +83,7 @@ set iskeyword+=-
 " current buffer.
 set browsedir=current
 
-set background=dark cscopeverbose cursorline colorcolumn=80,100,120
+set background=dark cscopeverbose cursorline colorcolumn=+1,+10,+20
 set display=lastline formatoptions=tcqr1nj
 set history=10000 laststatus=2
 set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+

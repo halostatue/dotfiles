@@ -1,0 +1,11 @@
+--exclude=bower_components
+--exclude=coverage
+--exclude=dist
+--exclude=gulp
+--exclude=node_modules
+--exclude=package-lock.json
+--exclude=project.json
+--exclude=public
+--exclude=tmp
+--exclude=vendor
+--exclude=yarn.lock

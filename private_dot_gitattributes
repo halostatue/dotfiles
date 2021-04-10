@@ -1,3 +1,15 @@
-*.pbxproj -crlf -diff -merge
 * text=auto
+*.css diff=css
+*.erl diff=erlang
+*.ex diff=elixir
+*.exs diff=elixir
+*.hrl diff=erlang
+*.markdown diff=markdown
+*.md diff=markdown
+*.mdown diff=markdown
+*.pbxproj -crlf -diff -merge
+*.py diff=python
+*.rb diff=ruby
+*.rust diff=rust
+*.tex diff=tex
 sqitch.conf text whitespace=blank-at-eol,space-before-tab,trailing-space

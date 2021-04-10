@@ -13,3 +13,7 @@ README.md
 Rubygems.fish
 Gobin.fish
 fishfile.maybe
+{{ if not (lookPath "alacritty") }}
+.config/fish/alacritty.fish
+.config/alacritty/alacritty.yml
+{{ end }}

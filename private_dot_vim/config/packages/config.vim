@@ -142,10 +142,19 @@ let g:markdown_fenced_languages = [
       \ 'xml',
       \ ]
 let g:markdown_syntax_conceal = 0
+let g:markdown_minlines = 100
+
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_conceal_code_blocks = 0
 let g:vim_markdown_fenced_languages = ['html', 'python', 'bash=sh']
-let g:markdown_minlines = 100
+let g:vim_markdown_frontmatter = 1
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_json_frontmatter = 1
+let g:vim_markdown_no_default_key_mappings = 1
+let g:vim_markdown_no_extensions_in_markdown = 1
+let g:vim_markdown_strikethrough = 1
+let g:vim_markdown_toc_autofit = 1
+let g:vim_markdown_toml_frontmatter = 1
 
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.html.eex,*.vue'
 let g:closetag_xhtml_filenames = '*.xhtml,*.jsx'
@@ -162,15 +171,6 @@ let g:closetag_close_shortcut = '<leader>>'
 let g:tagalong_additional_filetypes = [
       \ 'eex.html', 'vue', 'jsx'
       \ ]
-
-let g:vim_markdown_toc_autofit = 1
-let g:vim_markdown_conceal = 0
-let g:vim_markdown_conceal_code_blocks = 0
-let g:vim_markdown_frontmatter = 1
-let g:vim_markdown_toml_frontmatter = 1
-let g:vim_markdown_json_frontmatter = 1
-let g:vim_markdown_strikethrough = 1
-let g:vim_markdown_no_extensions_in_markdown = 1
 
 let g:pencil_neutral_headings = 1
 let g:pencil_gutter_color = 1

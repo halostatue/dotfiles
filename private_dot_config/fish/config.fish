@@ -17,8 +17,12 @@ function __source_or_create -a name type
     end
 end
 
-set -qg EDITOR
-or set -xg EDITOR (which vim)
+set -qg EDITOR; or set -gx EDITOR (which vim)
+set -gq VISUAL; or set -gx VISUAL (which vim)
+set -gq PAGER; or set -gx PAGER (which bat)
+
+set -gq COMPOSER_DOCKER_CLI_BUILD; or set -gx COMPOSER_DOCKER_CLI_BUILD 1
+set -gq DOCKER_BUILDKIT; or set -gx DOCKER_BUILDKIT 1
 
 set -qU PROJECT_PATHS
 or set -U PROJECT_PATHS \
@@ -437,5 +441,7 @@ bind \cv $fzf_search_vars_cmd
 # The following two key binding use Alt as an additional modifier key to avoid conflicts
 bind \e\cl __fzf_search_git_log
 bind \e\cs __fzf_search_git_status
+
+command -sq fortune; and fortune -s
 
 emit fish_postexec

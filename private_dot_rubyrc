@@ -1,78 +1,76 @@
-#!/usr/bin/env ruby
+# frozen_string_litera: true
 # Shared code for irbrc/pryrc.
 
-module RubyRCInit
-  module_function
+def rails?
+  defined?(::Rails) && Rails.env
+end
 
-  def rails_console?
-    ENV['RAILS_ENV'] &&
-      $0.in?(%w(irb script/rails rails_console zeus\ command:\ console))
+def bench(repetitions = 100, &block)
+  require "benchmark"
+
+  Benchmark.bmbm do |b|
+    b.report { repetitions.times(&block) }
   end
+  nil
+end
 
-  def rails?
-    (defined?(::Rails) && Rails.env)
+def time(times = 1)
+  require "benchmark"
+  ret = nil
+  Benchmark.bm { |x| x.report { times.times { ret = yield } } }
+  ret
+end
+
+def load_gem(library)
+  library = {library => library} if library.is_a?(String)
+  library.each_pair do |gem_name, require_name|
+    gem gem_name if gem_name
+    require require_name
+    yield if block_given?
+  rescue LoadError
+    nil
+  rescue
+    nil
   end
+end
 
-  unless defined?(TIME)
-    TIME = proc { Time.now.strftime("%H:%M:%S") }
-  end
-
-  unless defined?(PROMPT)
-    PROMPT = if rails_console?
-               proc { |x|
-                 env  = Rails.env.first(3).upcase
-                 time = RubyRCInit::TIME.call
-                 "#{env} #{time} #{x} "
-               }
-             else
-               proc { |x|
-                 time = RubyRCInit::TIME.call
-                 "#{time} #{x} "
-               }
-             end
-  end
-
-  def bench(repetitions = 100, &block)
-    require 'benchmark'
-
-    Benchmark.bmbm do |b|
-      b.report { repetitions.times(&block) }
-    end
+if rails? && defined?(ActiveRecord)
+  def change_log(stream)
+    require "logger"
+    ActiveRecord::Base.logger = Logger.new(stream)
+    ActiveRecord::Base.clear_active_connections!
     nil
   end
 
-  def time(times = 1)
-    require 'benchmark'
-    ret = nil
-    Benchmark.bm { |x| x.report { times.times { ret = yield } } }
-    ret
+  def show_log
+    change_log($stdout)
   end
 
-  if rails_console? && defined?(ActiveRecord)
-    def change_log(stream)
-      ActiveRecord::Base.logger = Logger.new(stream)
-      ActiveRecord::Base.clear_active_connections!
-      nil
-    end
+  def hide_log
+    change_log(nil)
+  end
 
-    def show_log
-      change_log(STDOUT)
-    end
+  def log_off
+    puts "== Logging to log file."
+    ActiveRecord::Base.logger.level = 1 # warn (?)
+    nil
+  end
 
-    def hide_log
-      change_log(nil)
-    end
+  def log_on
+    puts "== Logging to console."
+    ActiveRecord::Base.logger.level = 0 # debug (?)
+    nil
+  end
 
-    def log_off
-      puts "== Logging to log file."
-      ActiveRecord::Base.logger.level = 1  # warn (?)
-      nil
-    end
-
-    def log_on
-      puts "== Logging to console."
-      ActiveRecord::Base.logger.level = 0  # debug (?)
-      nil
+  class Class
+    def core_ext
+      instance_methods.map { |m|
+        [m, instance_method(m).source_location]
+      }.select { |m|
+        m[1] && m[1][0] =~ /activesupport/
+      }.map { |m|
+        m[0]
+      }.sort
     end
   end
 end
@@ -80,104 +78,106 @@ end
 def Array.toy(n = 10, &block)
   Array.new(n, &(block || ->(i) { i + 1 }))
 end
+
 def Hash.toy(n = 10)
   Hash[Array.toy(n).zip(Array.toy(n) { |c| (96 + (c + 1)).chr })]
 end
 
 def yore
   yield
-rescue Exception => ex
+rescue Exception => ex # standard:disable Lint/RescueException
   ex
 end
 
 class Object
-  # Generate the class inheritance tree, in ASCII.
-  def classtree(root = self.class, options = {})
-    colourize = options[:colourize] || RUBY_PLATFORM !~ /win32|mingw/
-    output = options[:output] || $stdout
-
-    # get children of root
-    children = {}
-    maxlength = root.to_s.length
-    ObjectSpace.each_object(Class) do |klass|
-      if (root != klass && klass.ancestors.include?(root))
-        (children[klass.superclass] ||= []) << klass
-        maxlength = klass.to_s.length if klass.to_s.length > maxlength
-      end
-    end
-    maxlength += 3
-
-    # print nice ascii class inheritance tree
-    indentation = " " * 4
-    (c = {}).default = ""
-    if colourize
-      c[:lines]       = "\033[34;1m"
-      c[:dots]        = "\033[31;1m"
-      c[:class_names]  = "\033[33;1m"
-      c[:module_names] = "\033[32;1m"
-      c[:method_names] = "\033[39;m"
-    end
-
-    rprint = proc do |current_root, prefix|
-      ind_s = maxlength - current_root.to_s.length
-      if options[:show_methods] # show methods (but don't show mixed in modules)
-        output.puts prefix.tr('`', '|')
-        #     methods = (current_root.instance_methods - (begin current_root.superclass.instance_methods; rescue NameError; []; end))
-        methods = current_root.instance_methods(false).sort
-        strings = methods.collect do |m|
-          if children[current_root].nil?
-            s = " " * maxlength
-          else
-            ind = " " * (maxlength - indentation.length - 1)
-            s = "#{c[:lines]}#{indentation}|#{ind}"
-          end
-
-        "#{prefix.tr('`', ' ')}#{s}#{c[:dots]}:.. #{c[:method_names]}#{m.to_s}"
-        end
-
-        strings[0] = "#{prefix}#{c[:lines]}- #{c[:class_names]}#{current_root.to_s} #{c[:dots]}"
-        if not methods[0].nil?
-          ind = '.' * ind_s
-          strings[0] << "#{ind} #{c[:method_names]}#{methods[0]}"
-        end
-
-        strings.each {|s| output.puts(s) }
-      else
-        s = "#{prefix}#{c[:lines]}- #{c[:class_names]}#{current_root.to_s}"
-        if not options[:no_modules]
-          modules = current_root.included_modules - [Kernel]
-          if modules.size > 0
-            ind = ' ' * ind_s
-            s << "#{ind}#{c[:lines]}[ #{c[:module_names]}"
-            s << modules.join("#{c[:lines]}, #{c[:module_names]}")
-            s << "#{c[:lines]} ]"
-          end
-        end
-        output.puts(s)
-      end
-      if not children[current_root].nil?
-        children[current_root].sort! {|a, b| a.to_s <=> b.to_s}
-        children[current_root].each do |child|
-          s = (child == children[current_root].last) ? '`' : '|'
-          rprint[child, "#{prefix.tr('`', ' ')}#{indentation}#{c[:lines]}#{s}"]
-        end
-      end
-    end
-
-    rprint.call(root, "")
-    nil
+  # list methods which aren't in superclass
+  def local_methods(obj = self)
+    (obj.methods - obj.class.superclass.instance_methods).sort
   end
 
-  # Generate the class inheritance tree, in ASCII,
-  def classtree_methods(root = self.class, options = {})
-    classtree(root, options.merge({:show_methods => true}))
-  end
+  if defined?(ObjectSpace)
+    # Generate the class inheritance tree, in ASCII.
+    def classtree(root = self.class, options = {})
+      colourize = options[:colourize] || RUBY_PLATFORM !~ /win32|mingw/
+      output = options[:output] || $stdout
 
-  # def ri(method = nil)
-  #   unless method && method =~ /^[A-Z]/ # if class isn't specified
-  #     klass = self.kind_of?(Class) ? name : self.class.name
-  #     method = [klass, method].compact.join('#')
-  #   end
-  #   system 'ri', method.to_s
-  # end
+      # get children of root
+      children = {}
+      maxlength = root.to_s.length
+      ObjectSpace.each_object(Class) do |klass|
+        if root != klass && klass.ancestors.include?(root)
+          (children[klass.superclass] ||= []) << klass
+          maxlength = klass.to_s.length if klass.to_s.length > maxlength
+        end
+      end
+      maxlength += 3
+
+      # print nice ascii class inheritance tree
+      indentation = " " * 4
+      (c = {}).default = ""
+      if colourize
+        c[:lines] = "\033[34;1m"
+        c[:dots] = "\033[31;1m"
+        c[:class_names] = "\033[33;1m"
+        c[:module_names] = "\033[32;1m"
+        c[:method_names] = "\033[39;m"
+      end
+
+      rprint = proc do |current_root, prefix|
+        ind_s = maxlength - current_root.to_s.length
+        if options[:show_methods] # show methods (but don't show mixed in modules)
+          output.puts prefix.tr("`", "|")
+          #     methods = (current_root.instance_methods - (begin current_root.superclass.instance_methods; rescue NameError; []; end))
+          methods = current_root.instance_methods(false).sort
+          strings = methods.collect do |m|
+            if children[current_root].nil?
+              s = " " * maxlength
+            else
+              ind = " " * (maxlength - indentation.length - 1)
+              s = "#{c[:lines]}#{indentation}|#{ind}"
+            end
+
+            "#{prefix.tr("`", " ")}#{s}#{c[:dots]}:.. #{c[:method_names]}#{m}"
+          end
+
+          strings[0] = "#{prefix}#{c[:lines]}- #{c[:class_names]}#{current_root} #{c[:dots]}"
+          if !methods[0].nil?
+            ind = "." * ind_s
+            strings[0] << "#{ind} #{c[:method_names]}#{methods[0]}"
+          end
+
+          strings.each { |s| output.puts(s) }
+        else
+          s = "#{prefix}#{c[:lines]}- #{c[:class_names]}#{current_root}"
+          if !(options[:no_modules])
+            modules = current_root.included_modules - [Kernel]
+            if modules.size > 0
+              ind = " " * ind_s
+              s << "#{ind}#{c[:lines]}[ #{c[:module_names]}"
+              s << modules.join("#{c[:lines]}, #{c[:module_names]}")
+              s << "#{c[:lines]} ]"
+            end
+          end
+          output.puts(s)
+        end
+        if !children[current_root].nil?
+          children[current_root].sort! { |a, b| a.to_s <=> b.to_s }
+          children[current_root].each do |child|
+            s = child == children[current_root].last ? "`" : "|"
+            rprint[child, "#{prefix.tr("`", " ")}#{indentation}#{c[:lines]}#{s}"]
+          end
+        end
+      end
+
+      rprint.call(root, "")
+      nil
+    end
+
+    # Generate the class inheritance tree, in ASCII,
+    def classtree_methods(root = self.class, options = {})
+      classtree(root, options.merge({show_methods: true}))
+    end
+  end
 end
+
+load_gem "awesome_print"

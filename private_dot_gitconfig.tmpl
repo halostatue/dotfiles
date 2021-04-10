@@ -14,13 +14,6 @@
   status = auto
   ui = auto
 
-[color "diff"]
-  meta = blue bold
-  frag = magenta bold
-  old = red bold
-  new = green bold
-  diff = always
-
 [color "branch"]
   current = yellow reverse
   local = yellow bold
@@ -34,16 +27,29 @@
 
 [commit]
   ; gpgSign = true
+{{- if stat (joinPath .chezmoi.homeDir ".config/git/commit-message") }}
+  template = {{ joinPath .chezmoi.homeDir ".config/git/commit-message" }}
+{{- end }}
 
 [core]
+  abbrev = 12
+{{- if stat (joinPath .chezmoi.homeDir ".gitattributes" )}}
+  attributesFile = {{ joinPath .chezmoi.homeDir ".gitattributes" }}
+{{- end }}
   autocrlf = input
   compression = -1
+{{- if lookPath "nvim" }}
+  editor = nvim
+{{- else -}}
   editor = vim
+{{- end }}
 {{- if stat (joinPath .chezmoi.homeDir ".gitignore") }}
-  excludesFile = /Users/austin/.gitignore
+  excludesFile = {{ joinPath .chezmoi.homeDir ".gitignore" }}
 {{- end }}
 {{- if lookPath "delta" }}
   pager = delta
+{{- else if lookPath "diff-so-fancy" -}}
+  pager = diff-so-fancy | less --tabs=4 -RFX
 {{- end }}
   precomposeUnicode = true
   safecrlf = true
@@ -90,7 +96,7 @@
 
 [push]
   default = simple
-  followtags = true
+  followTags = true
   ; gpgSign = true
 
 [rebase]
@@ -145,9 +151,9 @@
   defaultBranch = main
 
 [include]
-  path = ~/.git-config/aliases
+  path = ~/.config/git/aliases
 
 [include]
-  path = ~/.git-config/diff-merge
+  path = ~/.config/git/diff-merge
 
 # vim: ft=gitconfig syntax=gitconfig

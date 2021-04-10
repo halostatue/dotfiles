@@ -1,3 +1,5 @@
+# vim: ft=gitconfig
+
 [alias]
   # A typo that turned useful
   addp = add -p
@@ -37,6 +39,12 @@
 
   # Show files that have been otherwise ignored
   ignored = ls-files --others -i --exclude-standard
+
+  ls = log --color --graph --pretty=format:'%C(yellow)%d%Creset %Cgreen(%cr)%Creset %C(bold blue)[%an]%Creset %s %Cred(%h)%Creset' --abbrev-commit
+
+  ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%an]" --decorate --numstat
+
+  t = !tig "$@"
 
 {{- if lookPath "fzf" -}}
   # Show the log in fzf

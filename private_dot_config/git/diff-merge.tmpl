@@ -1,16 +1,39 @@
+# vim: ft=gitconfig
+
+[color "diff"]
+  meta = blue bold
+  frag = magenta bold
+  old = red bold
+  new = green bold
+  diff = always
+
 [diff]
   compactionHeuristic = true
   mnemonicprefix = true
   renames = copies
   submodule = log
-  {{ if lookPath "ksdiff" }}guitool = Kaleidoscope{{ end }}
-  {{ if lookPath "delta" }}tool = delta{{ end }}
+{{- if lookPath "ksdiff" }}
+  guitool = Kaleidoscope
+{{- end }}
+{{- if lookPath "delta" }}
+  tool = delta
+{{- end }}
+
+[diff "elixir"]
+  funcname = ^ *\\(\\(defmodule\\|defimpl\\|defprotocol\\|def\\) .*\\)
+
+[diff "erlang"]
+
+[diff "markdown"]
+
+[diff "python"]
 
 [diff "ruby"]
   funcname = ^ *\\(\\(class\\|module\\|def\\) .*\\)
 
-[diff "elixir"]
-  funcname = ^ *\\(\\(defmodule\\|defimpl\\|defprotocol\\|def\\) .*\\)
+[diff "rust"]
+
+[diff "tex"]
 
 [difftool]
   prompt = false
