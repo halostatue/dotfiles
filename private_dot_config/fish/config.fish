@@ -19,7 +19,10 @@ end
 
 set -qg EDITOR; or set -gx EDITOR (which vim)
 set -gq VISUAL; or set -gx VISUAL (which vim)
-set -gq PAGER; or set -gx PAGER (which bat)
+
+if command -sq bat
+    set -gq PAGER; or set -gx PAGER (which bat) --style plain
+end
 
 set -gq COMPOSER_DOCKER_CLI_BUILD; or set -gx COMPOSER_DOCKER_CLI_BUILD 1
 set -gq DOCKER_BUILDKIT; or set -gx DOCKER_BUILDKIT 1
