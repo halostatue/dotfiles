@@ -1,21 +1,26 @@
 #! /usr/bin/env bash
 # shellcheck source=/dev/null
 
-unsafe() {
-  local res
+if has unstrict_env; then
+  unsafe() {
+    unstrict_env "$@"
+  }
+else
+  unsafe() {
+    local res
 
-  set +u
+    set +u
 
-  "${@}"
+    "$@"
 
-  res=${?}
-  set -u
+    res=${?}
+    set -u
 
-  return "${res}"
-}
+    return "${res}"
+  }
+fi
 
-layout_haskell()
-{
+layout_haskell() {
   PATH_add ~/.cabal/bin
   [ -d .cabal-sandbox ] || cabal sandbox init
   PATH_add .cabal-sandbox/bin
@@ -23,11 +28,10 @@ layout_haskell()
   GHC_PACKAGE_PATH="$(cabal exec -- sh -c "echo \$GHC_PACKAGE_PATH")"
 }
 
-find_up_()
-{
+find_up_() {
   (
     while true; do
-      for v in "${@}"; do
+      for v in "$@"; do
         if [[ -f "${v}" ]]; then
           echo "${PWD}/${v}"
           return 0
@@ -43,23 +47,21 @@ find_up_()
   )
 }
 
-read_version_file()
-{
+read_version_file() {
   local file
-  file="$(find_up_ "${@}")"
+  file="$(find_up_ "$@")"
 
   [[ -z "${file}" ]] && return
 
   watch_file "${file}"
-  ruby -e "puts ARGF.readline" 2> /dev/null "${file}"
+  ruby -e "puts ARGF.readline" "${file}" 2>/dev/null
 }
 
-use_kerl()
-{
+use_kerl() {
   has kerl || return
 
   local version
-  version="${1}"
+  version="$1"
 
   [[ "${version}" == --auto ]] && version="$(read_version_file .erlang-version)"
   [[ -z "${version}" ]] && return
@@ -79,12 +81,11 @@ use_kerl()
   [[ -f "${activate}" ]] && unsafe source "${activate}"
 }
 
-use_kiex()
-{
+use_kiex() {
   has kiex || return
 
   local version
-  version="${1}"
+  version="$1"
 
   [[ "${version}" == --auto ]] && version="$(read_version_file .elixir-version)"
   [[ -z "${version}" ]] && return
@@ -106,8 +107,26 @@ use_kiex()
   [[ -f "${activate}" ]] && unsafe source "${activate}"
 }
 
-use_docker-machine()
-{
+use_kx() {
+  has kx || return
+
+  local version
+  version="$1"
+
+  [[ "${version}" == --auto ]] && version="$(read_version_file .elixir-version)"
+  [[ -z "${version}" ]] && return
+
+  local activate
+  # direnv _always_ works with bash
+  activate="$(USERSHELL=bash kx source ${version})" || {
+    echo >&2 "Error: Missing elixir version: $version. Install using kx."
+    return 1
+  }
+
+  [[ -f "${activate}" ]] && unsafe source "${activate}"
+}
+
+use_docker-machine() {
   local env machine_cmd
   env="${1:-default}"
   echo Docker machine: "${env}"
@@ -115,10 +134,15 @@ use_docker-machine()
   eval "${machine_cmd}"
 }
 
-use_nvm()
-{
+re_join() {
+  local IFS="$1"
+  shift
+  printf "%s" "$*"
+}
+
+use_nvm() {
   local version
-  version="${1}"
+  version="$1"
 
   [[ "${version}" == --auto ]] && version="$(read_version_file .node-version .nvmrc)"
   [[ -z "${version}" ]] && return
@@ -129,19 +153,24 @@ use_nvm()
   elif [[ -f ~/.local/share/nvm/.index ]]; then
     # This works with jorgebucaran/fish.nvm v2, a fish-specific alternative to
     # nvm. The version of Node requested must be installed before use.
+    local -a installed
+    installed=($(echo ~/.local/share/nvm/* | sed -e "s!$HOME/.local/share/nvm/!!g" -e s/v//g))
+
+    local installed_re
+    installed_re="$(re_join '|' "${installed[@]}")"
+
     version="$(
-      ruby -e $'
-        version=ARGV.shift
-        version=version.strip.gsub(/^v/, "")
-        match=ARGF.readlines.find { |l| l =~ /#{Regexp.escape(version)}/ }
-        puts match.split(/\\s/).first if match
-      ' "${version}" ~/.local/share/nvm/.index
+      grep -E "${installed_re}" ~/.local/share/nvm/.index |
+        grep "${version}" | cut -f1 -d' '
     )"
 
     [[ -z "${version}" ]] && return
 
     if [[ -d ~/.local/share/nvm/"${version}"/bin ]]; then
-      PATH_add "$(cd ~/.local/share/nvm || exit; pwd -P)/${version}"/bin
+      PATH_add "$(
+        cd ~/.local/share/nvm || exit
+        pwd -P
+      )/${version}"/bin
       export NVM_BIN
       NVM_BIN=~/.local/share/nvm/"${version}"/bin
     fi
@@ -160,17 +189,19 @@ use_nvm()
     [[ -z "${version}" ]] && return
 
     if [[ -d ~/.config/nvm/"${version}"/bin ]]; then
-      PATH_add "$(cd ~/.config/nvm || exit; pwd -P)/${version}"/bin
+      PATH_add "$(
+        cd ~/.config/nvm || exit
+        pwd -P
+      )/${version}"/bin
       export NVM_BIN
       NVM_BIN=~/.config/nvm/"${version}"/bin
     fi
   fi
 }
 
-use_chruby()
-{
+use_chruby() {
   local version
-  version="${1}"
+  version="$1"
 
   [[ "${version}" == --auto ]] && version="$(read_version_file .ruby-version)"
   [[ -z "${version}" ]] && return

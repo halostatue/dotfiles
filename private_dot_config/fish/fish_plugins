@@ -6,14 +6,13 @@ evanlucas/fish-kubectl-completions
 franciscolourenco/done
 gokulsoumya/f
 halostatue/fish-battery@v1.x
-halostatue/fish-brew@v1.x
+halostatue/fish-brew@v2.x
 halostatue/fish-direnv@v1.x
 halostatue/fish-docker@v1.x
 halostatue/fish-elixir@v1.x
-halostatue/fish-go@v1.x
-halostatue/fish-haskell@v1.x
+halostatue/fish-go@v2.x
+halostatue/fish-haskell@v2.x
 halostatue/fish-kerl@v1.x
-halostatue/fish-kiex@v1.x
 halostatue/fish-macos@v2.x
 halostatue/fish-rake@v1.x
 halostatue/fish-rust@v1.x
@@ -39,3 +38,6 @@ sijad/gitignore
 IlanCosman/spout
 halostatue/fish-utils-net@v1.x
 halostatue/plugin-aws@patch-1
+lilyball/nix-env.fish
+jorgebucaran/gitio.fish
+jorgebucaran/humantime.fish

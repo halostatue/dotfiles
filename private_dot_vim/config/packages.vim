@@ -95,6 +95,8 @@ function! s:packager_init() abort
   call packager#add('junegunn/gv.vim') " https://github.com/junegunn/gv.vim
   call packager#add('mhinz/vim-signify') " https://github.com/mhinz/vim-signify
   call packager#add('rhysd/git-messenger.vim') " https://github.com/rhysd/git-messenger.vim
+  call packager#add('jreybert/vimagit') " https://github.com/jreybert/vimagit
+  " call packager#add('jaxbot/github-issues.vim') " https://github.com/jaxbot/github-issues.vim
   " }}}
 
   " Launch screen {{{

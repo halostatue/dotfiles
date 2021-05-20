@@ -220,8 +220,6 @@ bind \cq magic_enter
 bind \r magic_enter
 bind \n magic_enter
 
-# set -gx HOMEBREW_FORCE_VENDOR_RUBY 1
-
 functions -q fallback
 or function fallback --description 'allow a fallback value for variable'
     if test (count $argv) = 1
@@ -446,5 +444,7 @@ bind \e\cl __fzf_search_git_log
 bind \e\cs __fzf_search_git_status
 
 command -sq fortune; and fortune -s
+
+test -s "$HOME/.local/share/kx/scripts/kx.fish" && source "$HOME/.local/share/kx/scripts/kx.fish"
 
 emit fish_postexec

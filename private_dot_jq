@@ -52,8 +52,3 @@ def insomnia_clean_key_names:
     else
       .
     end;
-
-def malls_force_all:
-  . as $in
-  | map(. | "RAILS_ENV=production bin/rake icmp:import:force_all[" + (.catalog) + "]")
-  | join("\n");

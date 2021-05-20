@@ -2,7 +2,6 @@ scriptencoding utf-8
 
 packadd goyo.vim
 packadd limelight.vim
-packadd vimwiki
 
 " Distraction-free writing mode
 let g:pencil#textwidth = 80
