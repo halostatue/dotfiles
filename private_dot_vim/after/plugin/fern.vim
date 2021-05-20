@@ -6,10 +6,10 @@ if mapcheck('<C-F>.', 'n') ==# ''
   nmap <C-F>b :Fern bookmark:/// -drawer<CR>
 endif
 
-if !exists('g:fern_preview_loaded')
-  let g:fern_preview_loaded = 1
-  call extend(g:fern#mapping#mappings, ['preview'])
-endif
+" if !exists('g:fern_preview_loaded')
+"   let g:fern_preview_loaded = 1
+"   call extend(g:fern#mapping#mappings, ['preview'])
+" endif
 
 " function! s:init_fern() abort
 "   # NOP for now
