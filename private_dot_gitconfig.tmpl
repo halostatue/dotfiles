@@ -68,7 +68,7 @@
   reflogexpire = 300
   reflogexpireunreachable = 90
 
-{{ if (index . "github" "user") -}}
+{{ if ne (dig "github" "user" "<missing>" .) "<missing>" -}}
 [github]
   user = {{ .github.user }}
 {{- end }}

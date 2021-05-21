@@ -1,4 +1,4 @@
-{{- if (index . "github" "user") -}}
+{{- if ne (dig "github" "user" "<missing>" .) "<missing>" -}}
 ---
 github.com:
     user: {{ .github.user }}

@@ -30,7 +30,7 @@
 # If you have more than 1 secret key in your keyring, you may want to
 # uncomment the following option and set your preferred keyid.
 
-{{ if (index . "gnupg" "default_key") -}}
+{{ if ne (dig "gnupg" "default_key" "<missing>" .) "<missing>" -}}
 default-key {{ .gnupg.default_key }}
 {{- end }}
 

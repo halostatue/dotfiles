@@ -8,7 +8,7 @@ end
 
 input = STDIN.readlines
 
-{{ if index . "github" "user" -}}
+{{ if ne (dig "github" "user" "<missing>" .) "<missing>" -}}
 add_if_missing(
   input,
   /machine api.github.com login {{ .github.user }}/,

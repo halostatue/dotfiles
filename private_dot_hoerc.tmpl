@@ -1,6 +1,6 @@
 ---
 exclude: !ruby/regexp /(tmp|swp)$|CVS|TAGS|\.(svn|git|hg|DS_Store)|Gemfile\.lock|\.gemspec/
-{{ if (index . "ruby" "hoe" "email") -}}
+{{ if ne (dig "ruby" "hoe" "email" "<missing>" .) "<missing>" -}}
 email:
   to:
     - ruby-talk@ruby-lang.org

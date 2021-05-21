@@ -1,4 +1,4 @@
-{{- if (index . "ruby" "rubygems" "geminabox" "kinetic" ) -}}
+{{- if ne (dig "ruby" "rubygems" "geminabox" "kinetic"  "<missing>" .) "<missing>" -}}
 ---
 :host: {{ keyring "kinetic-geminabox" .ruby.rubygems.geminabox.kinetic }}
 

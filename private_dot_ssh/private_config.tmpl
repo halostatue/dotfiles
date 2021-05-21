@@ -15,7 +15,7 @@ Host *
 Host *^*
   ProxyCommand ssh-chain %h %p
 {{ end -}}
-{{ if index . "ssh" "hosts" }}{{ range .ssh.hosts }}
+{{ if gt ((dig "ssh" "hosts" (list) .) | len) 0 }}{{ range .ssh.hosts }}
 Host {{ .host }}{{ range .config }}
   {{ . }}{{ end }}
 {{ end }}{{ end -}}
