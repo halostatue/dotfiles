@@ -37,6 +37,7 @@ module.exports = {
     },
   ],
   handlers: [
+    /*
     {
       match: (match) => {
         return (
@@ -52,10 +53,12 @@ module.exports = {
       },
       browser: 'Firefox',
     },
+    */
     {
       match: ({ keys }) => keys.option,
       browser: '/Applications/Browserosaurus.app',
     },
+    /*
     {
       match: finicky.matchHostnames([
         'halogenmobile.atlassian.net',
@@ -66,6 +69,7 @@ module.exports = {
       ]),
       browser: '/Applications/JIRA.app',
     },
+    */
     {
       match: ({ url }) => url.host === 'meet.google.com',
       browser: 'Google Chrome',

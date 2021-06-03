@@ -2,8 +2,6 @@
 ForwardAgent yes
 HashKnownHosts no
 UseRoaming no
-ControlMaster auto
-ControlPersist 5m
 ServerAliveCountMax 6
 ServerAliveInterval 30
 VerifyHostKeyDNS yes
@@ -11,6 +9,10 @@ VerifyHostKeyDNS yes
 Host *
   UseKeychain yes
   AddKeysToAgent yes
+  ControlMaster auto
+  ControlPath ~/.ssh/sockets/%r@%h-%p
+  ControlPersist 5m
+
 {{ if (lookPath "ssh-chain") }}
 Host *^*
   ProxyCommand ssh-chain %h %p
