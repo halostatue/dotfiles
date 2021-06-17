@@ -427,21 +427,20 @@ end
 
 # set_color 8aC374 && figlet -f block -w 80 "The Lab"
 
-command -sq starship; and starship init fish | source
+if command -sq starship
+    starship init fish | source
+    starship completions | source
+end
+
 
 command -sq pipx
 and command -sq register-python-argcomplete
 and register-python-argcomplete --shell fish pipx | source
 
-# set -U pisces_only_insert_at_eol 1
-
-bind \ct __fzf_search_current_dir
-bind \cr __fzf_search_history
-bind \cv $fzf_search_vars_cmd
-
-# The following two key binding use Alt as an additional modifier key to avoid conflicts
-bind \e\cl __fzf_search_git_log
-bind \e\cs __fzf_search_git_status
+fzf_configure_bindings \
+    --directory=\ct \
+    --git_log=\cgl \
+    --git_status=\cgs
 
 command -sq fortune; and fortune -s
 

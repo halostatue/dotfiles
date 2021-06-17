@@ -4,6 +4,8 @@
 # Timeout for starship to scan files (in milliseconds).
 # scan_timeout = 30 # default 30
 
+command_timeout = 1100
+
 # Configure the order in which the prompt module occurs.
 # prompt_order= """\
 #     $username\
@@ -143,7 +145,7 @@ format = '[$symbol$version]($style) '
 [line_break]
 
 [memory_usage]
-format = "$symbol [${ram}( | ${swap})]($style) "	
+format = "$symbol [${ram}( | ${swap})]($style) "
 
 [nim]
 format = '[$symbol$version]($style) '
