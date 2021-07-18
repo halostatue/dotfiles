@@ -10,7 +10,7 @@ set -gx HOMEBREW_BAT 1
 set -gx HOMEBREW_DISPLAY_INSTALL_TIMES 1
 
 {{- if ne (dig "homebrew" "github" "user" "<missing>" .) "<missing>" }}
-set -gx HOMEBREW_GITHUB_API_TOKEN '{{ .homebrew.github.user }}:{{ keyring "homebrew-github-api" .homebrew.github.user }}'
+set -gx HOMEBREW_GITHUB_API_TOKEN '{{ keyring "homebrew-github-api" .homebrew.github.user }}'
 {{- end }}
 
 {{- if ne (dig "homebrew" "github" "packages" "user" "<missing>" .) "<missing>" }}

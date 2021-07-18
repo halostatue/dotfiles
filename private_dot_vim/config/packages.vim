@@ -78,6 +78,7 @@ function! s:packager_init() abort
   call packager#add('lambdalisue/fern-mapping-mark-children.vim') " https://github.com/lambdalisue/fern-mapping-mark-children.vim
   call packager#add('lambdalisue/fern-mapping-project-top.vim') " https://github.com/lambdalisue/fern-mapping-project-top.vim
   call packager#add('lambdalisue/fern-mapping-quickfix.vim') " https://github.com/lambdalisue/fern-mapping-quickfix.vim
+  call packager#add('yuki-yano/fern-preview.vim') " https://github.com/yuki-yano/fern-preview.vim
   " }}}
 
   " File Picker: CtrlP, CommandT, what? {{{
@@ -133,6 +134,7 @@ function! s:packager_init() abort
   call packager#add('tpope/vim-rake', { 'type': 'opt' }) " https://github.com/tpope/vim-rake
   call packager#add('tpope/vim-bundler', { 'type': 'opt' }) " https://github.com/tpope/vim-bundler
   call packager#add('lambdalisue/vim-backslash') " https://github.com/lambdalisue/vim-backslash
+  call packager#add('eliba2/vim-node-inspect') " https://github.com/eliba2/vim-node-inspect'
   " }}}
   " }}}
 

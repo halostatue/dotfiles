@@ -10,7 +10,7 @@ export HOMEBREW_BAT=1
 export HOMEBREW_DISPLAY_INSTALL_TIMES=1
 
 {{- if ne (dig "homebrew" "github" "user" "<missing>" .) "<missing>" }}
-export HOMEBREW_GITHUB_API_TOKEN="{{ .homebrew.github.user }}:{{ keyring "homebrew-github-api" .homebrew.github.user }}"
+export HOMEBREW_GITHUB_API_TOKEN="{{ keyring "homebrew-github-api" .homebrew.github.user }}"
 {{- end }}
 
 {{- if ne (dig "homebrew" "github" "packages" "user" "<missing>" .) "<missing>" }}

@@ -447,3 +447,7 @@ command -sq fortune; and fortune -s
 test -s "$HOME/.local/share/kx/scripts/kx.fish" && source "$HOME/.local/share/kx/scripts/kx.fish"
 
 emit fish_postexec
+
+# tabtab source for packages
+# uninstall by removing these lines
+[ -f ~/.config/tabtab/fish/__tabtab.fish ]; and . ~/.config/tabtab/fish/__tabtab.fish; or true

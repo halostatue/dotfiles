@@ -12,7 +12,7 @@ input = STDIN.readlines
 add_if_missing(
   input,
   /machine api.github.com login {{ .github.user }}/,
-  'machine api.github.com login {{ .github.user }} {{ keyring "vim-rhubarb" .github.user }}'
+  'machine api.github.com login {{ .github.user }} password {{ keyring "vim-rhubarb" .github.user }}'
 )
 {{- end }}
 

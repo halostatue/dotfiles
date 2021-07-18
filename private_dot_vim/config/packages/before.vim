@@ -28,6 +28,7 @@ if exists(":Man") != 2 | runtime ftplugin/man.vim | endif
 let g:polyglot_disabled = [
       \   'sensible',
       \   'go',
+      \   'bzl',
       \ ]
 
 " Is configuration
