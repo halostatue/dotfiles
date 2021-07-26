@@ -195,7 +195,7 @@ function restoremysql
 end
 
 function magic_enter
-    if test -z (string join0 (commandline))
+    if test -z (string join0 -- (commandline))
         if __fish_is_git_repository
             set -q MAGIC_ENTER_GIT_COMMAND
             or set MAGIC_ENTER_GIT_COMMAND 'git status -u .'

@@ -32,8 +32,20 @@ module.exports = {
   },
   rewrite: [
     {
-      match: ({ url }) => Boolean(url.search),
+      match: () => true,
       url: rewriteRemoveTracking,
+    },
+    {
+      match: /vk\.com\/away.php/,
+      url({ url }) {
+        const match = url.search.match(/to=(.+)/)
+
+        if (!match) {
+          return url
+        }
+
+        return decodeURIComponent(decodeURIComponent(match[1]))
+      },
     },
   ],
   handlers: [
