@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+name='*'
+
+output='Reservations[].Instances[].{ID: InstanceId,Hostname: PublicDnsName,Name: Tags[?Key==`Name`].Value | [0],PrivateID: PrivateIpAddress, Type: InstanceType, Launched: LaunchTime}'
+
+while test $# -gt 0; do
+  case "${1}" in
+  -h | --help)
+    echo "aws-running-instances - show information on running ec2 instances"
+    echo " "
+    echo "usage:"
+    echo "  aws-running-instances [options] [pattern]"
+    echo " "
+    echo "options:"
+    echo "  -h, --help      show brief help"
+    echo "  -s, --short     show less informationinformation"
+    echo " "
+    echo "example: "
+    echo "  aws-running-instances --short sftp"
+    exit 0
+    ;;
+  -s | --short)
+    output='Reservations[].Instances[].{Name: Tags[?Key==`Name`].Value | [0],PrivateID: PrivateIpAddress, Hostname: PublicDnsName}'
+    shift
+    ;;
+  -r | --region)
+    region=(--region "$2")
+    shift 2
+    ;;
+  *)
+    name="*${1}*"
+    shift
+    ;;
+  esac
+done
+
+aws2 ec2 describe-instances \
+  --filter Name=instance-state-name,Values=running Name=tag:Name,Values=${name} \
+  "${region[@]}" \
+  --output table \
+  --query "${output}"

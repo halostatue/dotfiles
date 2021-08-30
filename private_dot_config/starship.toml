@@ -65,7 +65,7 @@ format = '[$symbol$profile(\($region\))]($style) '
 [battery]
 disabled = true
 
-[character]      # The name of the module we are configuring is "character"
+[character] # The name of the module we are configuring is "character"
 error_symbol = "[✖](bold red)"
 
 [cmake]

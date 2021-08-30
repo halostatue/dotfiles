@@ -4,7 +4,7 @@ scriptencoding utf-8
 if !has('nvim') | finish | endif
 
 if has('nvim-0.5')
-  set fillchars=vert:\│,fold:\·,sep:\│
+  set fillchars=vert:\│,fold:\·,foldsep:\│
 else
   set fillchars=vert:\│,fold:\·
 endif

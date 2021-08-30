@@ -1,0 +1,62 @@
+#! /bin/bash
+
+declare version image var cmd user uname_s
+version="${VERSION:-2.2.7}"
+image="${IMAGE:-amazon/aws-cli:${version}}"
+
+if ((!$#)); then
+  docker run --rm -it "${image}"
+  exit $?
+fi
+
+cmd="$1"
+
+declare -a mounts passopt
+passopt=(
+  -e PYTHONIOENCODING=utf-8
+  -e LANG=en_US.UTF-8
+  -e LC_ALL=en_US.UTF-8
+  -e LC_CTYPE=en_US.UTF-8
+)
+mounts=(
+  --mount "type=bind,src=$(pwd),dst=/aws"
+)
+
+[[ -d "${HOME}"/.aws ]] &&
+  mounts+=(--mount "type=bind,src=${HOME}/.aws,dst=/root/.aws")
+
+if [[ -n "${AWS_CONFIG_FILE}" ]]; then
+  [[ -f "${AWS_CONFIG_FILE}" ]] || touch "${AWS_CONFIG_FILE}"
+  mounts+=(--mount "type=bind,src=${AWS_CONFIG_FILE},dst=/root/.aws/config")
+fi
+
+if [[ -n "${AWS_SHARED_CREDENTIALS_FILE}" ]]; then
+  [[ -f "${AWS_SHARED_CREDENTIALS_FILE}" ]] || touch "${AWS_SHARED_CREDENTIALS_FILE}"
+
+  if [[ "${cmd}" == configure ]]; then
+    mounts+=(--mount "type=bind,src=${AWS_SHARED_CREDENTIALS_FILE},dst=/root/.aws/credentials")
+  else
+    mounts+=(--mount "type=bind,src=${AWS_SHARED_CREDENTIALS_FILES},dst=/root/.aws/credentials,readonly")
+  fi
+elif [[ -f "${HOME}"/.aws/credentials ]] && [[ "${cmd}" != configure ]]; then
+  mounts+=(--mount "type=bind,src=${HOME}/.aws/credentials,dst=/root/.aws/credentials,readonly")
+fi
+
+for var in \
+  AWS_ACCESS_KEY_ID AWS_CA_BUNDLE AWS_CLI_AUTO_PROMPT AWS_CLI_FILE_ENCODING AWS_DEFAULT_OUTPUT \
+  AWS_DEFAULT_REGION AWS_EC2_METADATA_DISABLED AWS_MAX_ATTEMPTS AWS_PAGER AWS_PROFILE \
+  AWS_RETRY_MODE AWS_ROLE_SESSION_NAME AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN \
+  AWS_STS_REGIONAL_ENDPOINTS; do
+  [[ -n "${!var}" ]] && passopt+=("-e" "${var}=${!var}")
+done
+
+if [[ "${cmd}" == completer ]]; then
+  shift
+  passopt+=(--entrypoint=aws_completer)
+fi
+
+docker run --rm -i --network host \
+  "${mounts[@]}" \
+  "${passopt[@]}" \
+  "${image}" \
+  "$@"

@@ -1,0 +1,9 @@
+#! /bin/bash
+
+declare share
+share=$(
+  cd ~/.local/share/schemaspy || exit 1
+  pwd -P
+)
+
+java -jar "${share}"/schemaspy.jar -dp "${share}"/postgresql-42.2.23.jar "${@}"

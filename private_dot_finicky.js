@@ -32,28 +32,41 @@ module.exports = {
   },
   rewrite: [
     {
-      match: () => true,
-      url: rewriteRemoveTracking,
-    },
-    {
       match: /vk\.com\/away.php/,
       url({ url }) {
-        const match = url.search.match(/to=(.+)/)
+        const match = url.search.split('&').find((parameter) => parameter.startsWith('to='))
 
         if (!match) {
           return url
         }
 
-        return decodeURIComponent(decodeURIComponent(match[1]))
+        return decodeURIComponent(decodeURIComponent(match.split('=')[1]))
       },
+    },
+    {
+      match: /id\.atlassian\.com\/login\/initiate\/slack\/external/,
+      url({ url }) {
+        const match = url.search.split('&').find((parameter) => parameter.startsWith('target_link_uri='))
+
+        if (!match) {
+          return url
+        }
+
+        return decodeURIComponent(match.split('=')[1])
+      },
+    },
+    {
+      match: () => true,
+      url: rewriteRemoveTracking,
     },
   ],
   handlers: [
-    /*
     {
       match: (match) => {
+        const keys = finicky.getKeys()
+
         return (
-          (match.keys.option || match.keys.command) &&
+          (keys.option || keys.command) &&
           finicky.matchHostnames([
             'halogenmobile.atlassian.net',
             'jira.com',
@@ -65,9 +78,8 @@ module.exports = {
       },
       browser: 'Firefox',
     },
-    */
     {
-      match: ({ keys }) => keys.option,
+      match: () => finicky.getKeys().option,
       browser: '/Applications/Browserosaurus.app',
     },
     /*
