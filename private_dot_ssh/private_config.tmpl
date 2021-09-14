@@ -9,6 +9,9 @@ Host *
   UseKeychain yes
   AddKeysToAgent yes
 
+Host github.com
+  UpdateHostKeys yes
+
 {{- if gt (.ssh.keys | len) 0 -}}
   {{ range .ssh.keys -}}
     {{- if stat (joinPath $.chezmoi.homeDir ".ssh" .) }}

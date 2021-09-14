@@ -17,3 +17,4 @@ fishfile.maybe
 .config/fish/alacritty.fish
 .config/alacritty/alacritty.yml
 {{ end }}
+example.init.lua
