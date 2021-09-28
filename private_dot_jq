@@ -1,13 +1,84 @@
+# bag(stream) uses a two-level dictionary: .[type][tostring]
+# So given a bag, $b, to recover a count for an entity, $e, use
+# $e | $b[type][tostring]
+def bag(stream):
+  reduce stream as $x (
+      {};
+      .[$x | type][$x | tostring] += 1
+  ) ;
+
+def bag: bag(.[]) ;
+
+def bag_to_entries:
+  [
+    to_entries[]
+    | .key as $type
+    | .value
+    | to_entries[]
+    | { key: (if $type == "string" then .key else .key | fromjson end), value }
+  ] ;
+
+# Produce a stream of the distinct elements in the given stream
+def uniques(stream):
+  bag(stream)
+  | to_entries[]
+  | .key as $type
+  | .value
+  | to_entries[]
+  | if $type == "string" then .key else .key | fromjson end ;
+
+# Emit an array of [value, frequency] pairs, sorted by value
+def histogram(stream):
+  bag(stream)
+  | bag_to_entries
+  | sort_by( .key )
+  | map( [.key, .value] ) ;
+
 # Apply `f` to composite entities recursively, and to atoms
 def walk(f):
   . as $in
   | if type == "object" then
-      reduce keys_unsorted[] as $key ({}; . + { ($key): ($in[$key] | walk(f)) }) | f
+      reduce keys_unsorted[] as $key (
+        {};
+        . + { ($key): ($in[$key] | walk(f)) }
+      ) | f
     elif type == "array" then
       map( walk( f ) ) | f
     else
       f
     end;
+
+# Given an array of values as input, generate a stream of values of the
+# maximal elements as determined by f.
+# Notes:
+# 1. If the input is [] then the output stream is empty.
+# 2. If f evaluates to null for all the input elements,
+#    then the output stream will be the stream of all the input items.
+def maximal_by(f):
+  (map(f) | max) as $mx
+  | .[] | select(f == $mx);
+
+# Emit a stream of the f-maximal elements of the given stream on the assumption
+# that `[stream]==[stream]`
+def maximals_by_(stream; f):
+   (reduce stream as $x (
+      null;
+      ($x | f) as $y | if . == null or . < $y then $y else . end
+   )) as $mx
+   | stream
+   | select(f == $mx);
+
+# Emit a stream of the f-maximal elements of the stream, s:
+def maximals_by(s; f):
+  reduce s as $x (
+    [];
+    ($x | f) as $y
+    | if length == 0 then [$x]
+      else (.[0] | f) as $v
+      | if $y == $v then . + [$x] elif $y > $v then [$x] else . end
+      end
+  )
+  | .[] ;
 
 def aldo_store_sql:
   . as $in
@@ -52,3 +123,4 @@ def insomnia_clean_key_names:
     else
       .
     end;
+
