@@ -1,12 +1,57 @@
 const trackingExclusions = {
-  startsWith: ['utm_', 'uta_'],
-  equals: ['fblid', 'gclid', 'atlOrigin'],
-  matches: [],
+  startsWith: [
+    '_bta_',
+    '_ga',
+    '_hsenc',
+    '_hsmi',
+    '_ke',
+    '_openstat',
+    'hsa_',
+    'mc_',
+    'mtm_',
+    'ns_',
+    'oly_',
+    'piwik_',
+    'pk_',
+    'soc_',
+    'sr_',
+    'stm_',
+    'trk_',
+    'uta_',
+    'utm_',
+    'vero_',
+  ],
+  equals: [
+    'mkwid',
+    'msclkid',
+    'otc',
+    'pcrid',
+    'rb_clickid',
+    'dm_i',
+    'ef_id',
+    'epik',
+    'ICID',
+    'atlOrigin',
+    'fbclid',
+    'gclid',
+    'gclsrc',
+    'gdffi',
+    'icid',
+    'ighsid',
+    'mkt_tok',
+    'ncid',
+    'ocid',
+    'ref',
+    'spm',
+    'srcid',
+    's_kwcid',
+  ],
+  matches: [/redirect_.*?mongo_id/, /referer/],
 }
 
 const rejectKeyStartingWith = (key, { startsWith }) => startsWith.some((pattern) => key.startsWith(pattern))
-const rejectKeyEquals = (key, { equals }) => equals.some((pattern) => key == pattern)
-const rejectKeyMatches = (key, { matches }) => matches.some((pattern) => key.matches(pattern))
+const rejectKeyEquals = (key, { equals }) => equals.some((pattern) => key === pattern)
+const rejectKeyMatches = (key, { matches }) => matches.some((pattern) => key.match(pattern))
 
 const excludeKey = (key, exclusions = trackingExclusions) =>
   rejectKeyMatches(key, exclusions) || rejectKeyStartingWith(key, exclusions) || rejectKeyEquals(key, exclusions)
