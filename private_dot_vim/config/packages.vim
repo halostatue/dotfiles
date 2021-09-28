@@ -191,6 +191,7 @@ function! s:packager_init() abort
   call packager#add('pechorin/any-jump.vim') " https://github.com/pechorin/any-jump.vim
   call packager#add('AndrewRadev/inline_edit.vim') " https://github.com/AndrewRadev/inline_edit.vim
   call packager#add('AndrewRadev/multichange.vim') " https://github.com/AndrewRadev/multichange.vim
+  call packager#add('machakann/vim-swap') " https://github.com/machakann/vim-swap
   " }}}
 
   " Text Editing {{{
