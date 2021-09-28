@@ -6,12 +6,10 @@ if fn.empty(fn.glob(install_path)) > 0 then
   fn.system({'git', 'clone', 'https://github.com/wbthomason/packer.nvim', install_path})
 
   vim.cmd [[
-    packadd packer.nvim
-
     augroup vim-packer-install
        autocmd!
        autocmd VimEnter * if exists(':PackerSync') | PackerSync | endif
-       autocmd BufWritePost packages.lua source <afile> | PackerCompile
+       autocmd BufWritePost plugins.lua source <afile> | PackerCompile
      augroup END
    endif
   ]]

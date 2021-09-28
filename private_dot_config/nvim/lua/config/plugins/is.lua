@@ -1,3 +1,5 @@
+require('astronauta.keymap')
+
 local nmap = vim.keymap.nmap
 
 nmap { 'n', '<Plug>(is-nohl)<Plug>(anzu-n-with-echo)zz' }

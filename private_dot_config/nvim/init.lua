@@ -38,5 +38,9 @@ g.ayucolor = 'dark'
 -- silent! colorscheme deep-space
 -- silent! colorscheme deus
 
+vim.cmd [[colorscheme modus-vivendi]]
+
+vim.opt.guifont = 'FiraCode-Retina:h10'
+
 -- set secure
 vim.opt.secure = true

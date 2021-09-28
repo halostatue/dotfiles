@@ -1,3 +1,5 @@
+require('astronauta.keymap')
+
 local inoremap = vim.keymap.inoremap
 local nmap = vim.keymap.nmap
 local nnoremap = vim.keymap.nnoremap

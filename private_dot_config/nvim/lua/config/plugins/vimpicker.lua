@@ -1,3 +1,7 @@
+-- This has been disabled.
+
+require('astronauta.keymap')
+
 local nmap = vim.keymap.nmap
 
 nmap { '<leader>pe', '<Plug>(PickerEdit)', unique = true }

@@ -1,6 +1,3 @@
-vim.g.vimsyn_embed = 'lmpPrt'
-vim.g.endwise_abbreviations = 1
-
 -- Load on demand. Yanked from junegunn/vim-plug.
 -- function! s:on_demand(cmd, names) abort
 --   execute printf(
@@ -24,8 +21,6 @@ noremap N Nzz
 ]]
 
 -- Utility
-vim.g.direnv_silent_load = 1
-vim.g.EditorConfig_exclude_patterns = { 'fugitive://.*', 'fern://.*' }
 -- vim.g.dadbod_manage_dbext = 1
 
 -- call s:on_demand('Vitalize', ['vital.vim'])
