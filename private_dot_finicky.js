@@ -77,8 +77,14 @@ module.exports = {
   },
   rewrite: [
     {
+      match: ({ url }) => url.host.endsWith('medium.com'),
+      url: ({ url }) => {
+        return { ...url, host: 'scribe.rip' }
+      },
+    },
+    {
       match: /vk\.com\/away.php/,
-      url({ url }) {
+      url: ({ url }) => {
         const match = url.search.split('&').find((parameter) => parameter.startsWith('to='))
 
         if (!match) {
@@ -90,7 +96,7 @@ module.exports = {
     },
     {
       match: /id\.atlassian\.com\/login\/initiate\/slack\/external/,
-      url({ url }) {
+      url: ({ url }) => {
         const match = url.search.split('&').find((parameter) => parameter.startsWith('target_link_uri='))
 
         if (!match) {

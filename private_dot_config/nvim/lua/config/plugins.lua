@@ -206,10 +206,12 @@ return require('packer').startup({function()
   -- https://github.com/amadeus/vim-mjml
   -- https://github.com/dmix/elvish.vim
   -- https://github.com/fatih/vim-go
+  -- https://github.com/luizribeiro/vim-cooklang
   use {
     'amadeus/vim-mjml',
     'dmix/elvish.vim',
     { 'fatih/vim-go', ft = 'go', run = ':GoInstallBinaries' },
+    'luizribeiro/vim-cooklang',
   }
 
   -- Treesitter and adjacent libraries
