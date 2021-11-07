@@ -119,6 +119,7 @@ function! s:packager_init() abort
   call packager#add('amadeus/vim-mjml') " https://github.com/amadeus/vim-mjml
   call packager#add('dmix/elvish.vim') " https://github.com/dmix/elvish.vim
   call packager#add('fatih/vim-go', { 'do': ':GoInstallBinaries', 'type': 'opt' }) " https://github.com/fatih/vim-go
+  call packager#add('luizribeiro/vim-cooklang') " https://github.com/luizribeiro/vim-cooklang
 
   " if has('nvim-0.5')
   "   call packager#add('nvim-treesitter/nvim-treesitter') " https://github.com/nvim-treesitter/nvim-treesitter
