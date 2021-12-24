@@ -1,7 +1,5 @@
-go install github.com/shurcooL/Go-Package-Store/cmd/Go-Package-Store@latest
 go install github.com/klauspost/asmfmt/cmd/asmfmt@latest
 go install moul.io/assh@latest
-go install github.com/shurcooL/binstale@latest
 go install github.com/kisielk/errcheck@latest
 go install github.com/mkchoi212/fac@latest
 go install github.com/davidrjenni/reftools/cmd/fillstruct@latest
@@ -32,6 +30,14 @@ go install github.com/fatih/motion@latest
 go install github.com/tj/node-prune/cmd/node-prune@latest
 go install github.com/variadico/noti/cmd/noti@latest
 go install github.com/ichinaski/pxl@latest
-go install stale: github.com/boyter/scc@latest
+go install github.com/boyter/scc@latest
 go install github.com/svent/sift@latest
 go install github.com/asciimoo/wuzz@latest
+go install github.com/square/certstrap@latest
+go install github.com/rs/curlie@latest
+go install github.com/wagoodman/dive@latest
+go install github.com/go-delve/delve@latest
+go install github.com/wader/fq@latest
+go install github.com/evilmartians/lefthook@latest
+go install github.com/kovetskiy/mark@latest
+go install github.com/mgechev/revive@latest

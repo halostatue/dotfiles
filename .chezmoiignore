@@ -1,4 +1,6 @@
 Brewfile
+Gemfile
+Gemfile.lock
 ChezMoi.code-workspace
 tags
 .gitignore
