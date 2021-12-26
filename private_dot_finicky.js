@@ -131,7 +131,7 @@ module.exports = {
     },
     {
       match: () => finicky.getKeys().option,
-      browser: '/Applications/Browserosaurus.app',
+      browser: '/Applications/Setapp/OpenIn.app',
     },
     /*
     {

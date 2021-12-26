@@ -15,8 +15,9 @@ README.md
 Rubygems.fish
 Gobin.fish
 fishfile.maybe
+example-nvim.init.lua
+
 {{ if not (lookPath "alacritty") }}
 .config/fish/alacritty.fish
 .config/alacritty/alacritty.yml
 {{ end }}
-example.init.lua

@@ -124,3 +124,5 @@ def insomnia_clean_key_names:
       .
     end;
 
+def failed_rubocop_files:
+  .files | map(select(.offenses != []) | .path) | .[];

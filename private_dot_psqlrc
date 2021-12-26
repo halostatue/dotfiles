@@ -17,8 +17,8 @@
 \pset format wrapped
 \pset linestyle unicode
 \pset border 2
--- \pset null ¤
-\pset null 「NULL」
+\pset null ¤
+-- \pset null 「NULL」
 \setenv PAGER 'less -SX'
 
 \timing on

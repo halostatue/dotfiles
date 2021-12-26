@@ -2,6 +2,8 @@ scriptencoding utf-8
 
 " let &guifont="CascadiaCode-Light:h10"
 let &guifont="FiraCode-Retina:h10"
+let &guifont="FiraCodeRoman-Regular:h10"
+let &guifont="JetBrainsMono-Regular:h10"
 
 if has('gui_win32')
   noremap <A-Space> :simalt ~<CR>
