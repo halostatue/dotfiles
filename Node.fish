@@ -1,3 +1,21 @@
+#! /usr/bin/env fish
+
+npm i -g \
+    npm
+
+# Peer dependencies. These are used to prevent complaints.
+npm i -g \
+    graphql \
+    graphql-config \
+    yargs \
+    @graphql-inspector/config \
+    bson-ext \
+    yo \
+    generator-ronin \
+    openapi-types
+
+npm upgrade -g npm
+
 npm i -g \
     @2fd/graphdoc \
     @cyclonedx/bom \
