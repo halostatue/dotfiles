@@ -226,6 +226,7 @@ return require('packer').startup({function()
   -- https://github.com/windwp/nvim-ts-autotag
   -- https://github.com/JoosepAlviste/nvim-ts-context-commentstring
   -- https://github.com/SmiteshP/nvim-gps
+  -- https://github.com/IndianBoy42/tree-sitter-just
   use {
     { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' },
     'nvim-treesitter/nvim-treesitter-refactor',
@@ -235,6 +236,7 @@ return require('packer').startup({function()
     'windwp/nvim-ts-autotag',
     'JoosepAlviste/nvim-ts-context-commentstring',
     'SmiteshP/nvim-gps',
+    'IndianBoy42/tree-sitter-just',
   }
 
   -- TODO

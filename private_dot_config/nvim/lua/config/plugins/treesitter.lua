@@ -70,6 +70,7 @@ require('twilight').setup {
   -- exclude = {}, -- exclude these filetypes
 }
 
+require('tree-sitter-just').setup()
 
 -- Uncomment only if issue shows up
 -- vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(

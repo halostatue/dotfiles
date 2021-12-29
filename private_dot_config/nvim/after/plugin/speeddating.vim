@@ -1,3 +1,5 @@
 scriptencoding utf-8
 
-SpeedDatingFormat %Y.%m.%d
+if exists(':SpeedDatingFormat')
+  SpeedDatingFormat %Y.%m.%d
+endif
