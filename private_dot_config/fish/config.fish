@@ -450,4 +450,8 @@ emit fish_postexec
 
 # tabtab source for packages
 # uninstall by removing these lines
-[ -f ~/.config/tabtab/fish/__tabtab.fish ]; and . ~/.config/tabtab/fish/__tabtab.fish; or true
+test -f ~/.config/tabtab/fish/__tabtab.fish
+and . ~/.config/tabtab/fish/__tabtab.fish; or true
+
+test -S ~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+and set -x SSH_AUTH_SOCK ~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh

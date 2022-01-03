@@ -27,7 +27,6 @@
   untracked = white bold
 
 [commit]
-  ; gpgSign = true
 {{- if stat (joinPath .chezmoi.homeDir ".config/git/commit-message") }}
   template = {{ joinPath .chezmoi.homeDir ".config/git/commit-message" }}
 {{- end }}
@@ -99,7 +98,6 @@
 [push]
   default = simple
   followTags = true
-  ; gpgSign = true
 
 [rebase]
   # Remove merge commits during a rebase
@@ -121,7 +119,6 @@
 
 [tag]
   forceSignAnnotated = true
-  ; gpgSign = true
 
 # URL shorthands
 [url "git@github.com:"]
@@ -136,7 +133,6 @@
   useConfigOnly = true
   name = {{ .name }}
   email = {{ .email }}
-  ; signingKey = …
 
 [web]
 {{ if lookPath "xdg-open" }}
@@ -160,5 +156,8 @@
 
 [include]
   path = ~/.config/git/diff-merge
+
+[include]
+  path = ~/.config/git/signatures
 
 # vim: ft=gitconfig syntax=gitconfig

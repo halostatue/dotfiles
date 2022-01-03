@@ -1,3 +1,5 @@
+{{- $secretive := joinPath $.chezmoi.homeDir "/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh" -}}
+{{- $ssh := joinPath $.chezmoi.homeDir ".ssh" -}}
 # General SSH configuration
 ForwardAgent yes
 HashKnownHosts no
@@ -6,6 +8,8 @@ ServerAliveInterval 30
 VerifyHostKeyDNS yes
 
 Host *
+{{- if stat $secretive }}
+  IdentityAgent {{ $secretive }}{{ end }}
   UseKeychain yes
   AddKeysToAgent yes
 
@@ -14,9 +18,9 @@ Host github.com
 
 {{- if gt (.ssh.keys | len) 0 -}}
   {{ range .ssh.keys -}}
-    {{- if stat (joinPath $.chezmoi.homeDir ".ssh" .) }}
+    {{- if stat (joinPath $ssh .) }}
 Host *
-  IdentityFile {{ joinPath $.chezmoi.homeDir ".ssh" . }}
+  IdentityFile {{ joinPath $ssh . }}
     {{- end }}
   {{- end }}
 {{- end }}

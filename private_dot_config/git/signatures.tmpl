@@ -1,0 +1,22 @@
+# vim: ft=gitconfig
+
+{{- if hasKey . "git" -}}
+{{-   if hasKey .git "signing" -}}
+{{-     if hasKey .git.signing "key" }}
+[commit]
+  gpgSign = true
+
+[push]
+  gpgSign = true
+
+[tag]
+  gpgSign = true
+
+[gpg]
+  format = {{ or (.git.signing.format) "gpg" }}
+
+[user]
+  signingKey = {{ .git.signing.key }}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
