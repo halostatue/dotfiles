@@ -15,6 +15,11 @@
 [gpg]
   format = {{ or (.git.signing.format) "gpg" }}
 
+{{ if eq .git.signing.format "ssh" }}
+[gpg "ssh"]
+  allowedSignersFile = {{ joinPath joinPath .chezmoi.homeDir ".ssh/allowed_signers" }}
+{{ end -}}
+
 [user]
   signingKey = {{ .git.signing.key }}
 {{-     end -}}
