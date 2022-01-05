@@ -1,43 +1,51 @@
-go install github.com/klauspost/asmfmt/cmd/asmfmt@latest
-go install moul.io/assh@latest
-go install github.com/kisielk/errcheck@latest
-go install github.com/mkchoi212/fac@latest
-go install github.com/davidrjenni/reftools/cmd/fillstruct@latest
-go install github.com/pengwynn/flint@latest
-go install github.com/mrnugget/fzz@latest
-go install github.com/shurcooL/git-branches@latest
-go install github.com/isacikgoz/gitin@latest
-go install github.com/ramya-rao-a/go-outline@latest
-go install github.com/acroca/go-symbols@latest
-go install github.com/mdempsky/gocode@latest
-go install github.com/rogpeppe/godef@latest
-go install github.com/zmb3/gogetdoc@latest
-go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-go install github.com/fatih/gomodifytags@latest
-go install github.com/jstemmer/gotags@latest
-go install github.com/koron/iferr@latest
-go install github.com/josharian/impl@latest
-go install gopkg.in/Netflix-Skunkworks/go-jira.v1/cmd/jira@latest
-go install github.com/mikepea/go-jira-ui/jira-ui@latest
-go install github.com/karan/joe@latest
-go install github.com/gsamokovarov/jump@latest
-go install honnef.co/go/tools@latest
-go install github.com/linde12/kod@latest
-go install github.com/segmentio/ksuid/cmd/ksuid@latest
-go install github.com/nishanths/license@latest
-go install github.com/magefile/mage@latest
-go install github.com/fatih/motion@latest
-go install github.com/tj/node-prune/cmd/node-prune@latest
-go install github.com/variadico/noti/cmd/noti@latest
-go install github.com/ichinaski/pxl@latest
-go install github.com/boyter/scc@latest
-go install github.com/svent/sift@latest
-go install github.com/asciimoo/wuzz@latest
-go install github.com/square/certstrap@latest
-go install github.com/rs/curlie@latest
-go install github.com/wagoodman/dive@latest
-go install github.com/go-delve/delve@latest
-go install github.com/wader/fq@latest
-go install github.com/evilmartians/lefthook@latest
-go install github.com/kovetskiy/mark@latest
-go install github.com/mgechev/revive@latest
+#! /usr/bin/env fish
+
+function __i
+    set -l p
+    for p in $argv
+        echo ">>> Installing "$p
+        if go install $p
+            echo "<<< Installed "$p
+        else
+            echo "!!! Error installing "$p
+        end
+    end
+end
+
+__i github.com/acroca/go-symbols@latest
+__i github.com/asciimoo/wuzz@latest
+__i github.com/boyter/scc@latest
+__i github.com/davidrjenni/reftools/cmd/fillstruct@latest
+__i github.com/evilmartians/lefthook@latest
+__i github.com/fatih/gomodifytags@latest
+__i github.com/fatih/motion@latest
+__i github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+__i github.com/gsamokovarov/jump@latest
+__i github.com/ichinaski/pxl@latest
+__i github.com/josharian/impl@latest
+__i github.com/jstemmer/gotags@latest
+__i github.com/kisielk/errcheck@latest
+__i github.com/go-delve/delve/cmd/dlv@latest
+__i github.com/klauspost/asmfmt/cmd/asmfmt@latest
+__i github.com/koron/iferr@latest
+__i github.com/kovetskiy/mark@latest
+__i github.com/linde12/kod@latest
+__i github.com/magefile/mage@latest
+__i github.com/mdempsky/gocode@latest
+__i github.com/mgechev/revive@latest
+__i github.com/mikepea/go-jira-ui/jira-ui@latest
+__i github.com/mkchoi212/fac@latest
+__i github.com/mrnugget/fzz@latest
+__i github.com/nishanths/license@latest
+__i github.com/pengwynn/flint@latest
+__i github.com/ramya-rao-a/go-outline@latest
+__i github.com/rogpeppe/godef@latest
+__i github.com/rs/curlie@latest
+__i github.com/segmentio/ksuid/cmd/ksuid@latest
+__i github.com/shurcooL/git-branches@latest
+__i github.com/square/certstrap@latest
+__i github.com/svent/sift@latest
+__i github.com/tj/node-prune@latest
+__i github.com/variadico/noti/cmd/noti@latest
+__i github.com/wader/fq@latest
+__i github.com/zmb3/gogetdoc@latest
