@@ -170,8 +170,9 @@ use_nvm() {
     installed_re="$(re_join '|' "${installed[@]}")"
 
     version="$(
-      grep -E "${installed_re}" ~/.local/share/nvm/.index |
-        grep "${version}" | cut -f1 -d' '
+      ruby -e \
+        "puts ARGF.readlines.grep(/${installed_re}/).grep(%r{${version}}).last.split.first" \
+        ~/.local/share/nvm/.index
     )"
 
     [[ -z "${version}" ]] && return

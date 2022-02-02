@@ -162,7 +162,7 @@ module.exports = {
       browser: 'Microsoft Edge',
     },
     {
-      match: finicky.matchHostnames('zoom.us'),
+      match: ({ url }) => url.host.endsWith('zoom.us'),
       browser: 'Firefox',
     },
   ],

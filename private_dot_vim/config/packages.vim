@@ -121,6 +121,7 @@ function! s:packager_init() abort
   call packager#add('fatih/vim-go', { 'do': ':GoInstallBinaries', 'type': 'opt' }) " https://github.com/fatih/vim-go
   call packager#add('luizribeiro/vim-cooklang') " https://github.com/luizribeiro/vim-cooklang
   call packager#add('browserslist/vim-browserslist') " https://github.com/browserslist/vim-browserslist
+  call packager#add('janet-lang/janet.vim') " https://github.com/janet-lang/janet.vim
 
   " if has('nvim-0.5')
   "   call packager#add('nvim-treesitter/nvim-treesitter') " https://github.com/nvim-treesitter/nvim-treesitter
