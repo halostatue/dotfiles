@@ -1,21 +1,12 @@
-Brewfile
-Gemfile
-Gemfile.lock
+Setup/*
 ChezMoi.code-workspace
-tags
 .gitignore
-Casks.fish
-Crates.fish
-Kegs.fish
+justfile
 LICENCE.md
-MacApps.fish
-Node.fish
-Pipx.fish
 README.md
-Rubygems.fish
-Gobin.fish
 fishfile.maybe
 example-nvim.init.lua
+Secrets/*
 
 {{ if not (lookPath "alacritty") }}
 .config/fish/alacritty.fish

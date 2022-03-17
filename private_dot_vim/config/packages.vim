@@ -51,6 +51,7 @@ function! s:packager_init() abort
   call packager#add('AndrewRadev/quickpeek.vim') " https://github.com/AndrewRadev/quickpeek.vim
   call packager#add('chrisbra/Recover.vim') " https://github.com/chrisbra/Recover.vim
   call packager#add('junegunn/vim-emoji') " https://github.com/junegunn/vim-emoji
+  call packager#add('thinca/vim-localrc') " https://github.com/thinca/vim-localrc
   if !has('nvim')
     call packager#add('rhysd/vim-healthcheck', { 'type': 'opt' }) " https://github.com/rhysd/vim-healthcheck
   endif
@@ -105,16 +106,16 @@ function! s:packager_init() abort
   " }}}
 
   " Languages {{{
-    " Polyglot provides syntax and indentation for the following syntaxes I
-    " care about: ansible, applescript, C/C++, Crystal, CSV, Cucumber/Gherkin,
-    " Dart, D, Dockerfile / Docker-Compose, Elixir, Elm, Erlang, Fish, Git,
-    " Gleam, GraphQL, HTML, JavaScript, jq, JSON, Julia, Kotlin, Lua, Markdown,
-    " Nim, Objective-C, Perl, PLpgSQL, PlantUML, Pony, Python, Raku, RAML,
-    " Reason, Ruby, Rust, SCSS, Shell, Svelte, SVG, Swift, Terraform, TOML,
-    " Vue, XML, and Zig.
-    "
-    " It may be recommended to add the following languages as needed for
-    " additional features:
+  " Polyglot provides syntax and indentation for the following syntaxes I
+  " care about: ansible, applescript, C/C++, Crystal, CSV, Cucumber/Gherkin,
+  " Dart, D, Dockerfile / Docker-Compose, Elixir, Elm, Erlang, Fish, Git,
+  " Gleam, GraphQL, HTML, JavaScript, jq, JSON, Julia, Kotlin, Lua, Markdown,
+  " Nim, Objective-C, Perl, PLpgSQL, PlantUML, Pony, Python, Raku, RAML,
+  " Reason, Ruby, Rust, SCSS, Shell, Svelte, SVG, Swift, Terraform, TOML,
+  " Vue, XML, and Zig.
+  "
+  " It may be recommended to add the following languages as needed for
+  " additional features:
   call packager#add('sheerun/vim-polyglot') " https://github.com/sheerun/vim-polyglot
   call packager#add('amadeus/vim-mjml') " https://github.com/amadeus/vim-mjml
   call packager#add('dmix/elvish.vim') " https://github.com/dmix/elvish.vim
@@ -122,12 +123,14 @@ function! s:packager_init() abort
   call packager#add('luizribeiro/vim-cooklang') " https://github.com/luizribeiro/vim-cooklang
   call packager#add('browserslist/vim-browserslist') " https://github.com/browserslist/vim-browserslist
   call packager#add('janet-lang/janet.vim') " https://github.com/janet-lang/janet.vim
+  call packager#add('clavery/vim-dwre') " https://github.com/clavery/vim-dwre
 
   " if has('nvim-0.5')
   "   call packager#add('nvim-treesitter/nvim-treesitter') " https://github.com/nvim-treesitter/nvim-treesitter
   " end
 
-  call packager#add('gko/vim-coloresque') " https://github.com/gko/vim-coloresque
+  " call packager#add('gko/vim-coloresque') " https://github.com/gko/vim-coloresque
+  call packager#add('ap/vim-css-color') " https://github.com/ap/vim-css-color
 
   " Language Utilities {{{
   call packager#add('sbdchd/neoformat') " https://github.com/sbdchd/neoformat
@@ -198,6 +201,7 @@ function! s:packager_init() abort
   " }}}
 
   " Text Editing {{{
+  call packager#add('mzlogin/vim-markdown-toc') " https://github.com/mzlogin/vim-markdown-toc
   call packager#add('reedes/vim-pencil') " https://github.com/reedes/vim-pencil
   call packager#add('junegunn/goyo.vim', { 'type': 'opt' }) " https://github.com/junegunn/goyo.vim
   call packager#add('junegunn/limelight.vim', { 'type': 'opt' }) " https://github.com/junegunn/limelight.vim

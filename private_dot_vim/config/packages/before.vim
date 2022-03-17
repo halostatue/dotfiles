@@ -26,10 +26,11 @@ if exists(":Man") != 2 | runtime ftplugin/man.vim | endif
 " - sensible disables a copy of vim-sensible
 " - ftdetect disables filetype detection
 let g:polyglot_disabled = [
-      \   'sensible',
-      \   'go',
-      \   'bzl',
-      \ ]
+                  \   'autoindent',
+                  \   'bzl',
+                  \   'go',
+                  \   'sensible',
+                  \ ]
 
 " Is configuration
 let g:is#do_default_mappings = 0

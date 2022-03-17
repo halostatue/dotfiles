@@ -1,7 +1,7 @@
 #! /bin/bash
 
 declare version image var cmd user uname_s
-version="${VERSION:-2.2.7}"
+version="${VERSION:-2.4.27}"
 image="${IMAGE:-amazon/aws-cli:${version}}"
 
 if ((!$#)); then

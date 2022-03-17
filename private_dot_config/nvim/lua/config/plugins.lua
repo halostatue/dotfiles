@@ -209,6 +209,7 @@ return require('packer').startup({function()
   -- https://github.com/luizribeiro/vim-cooklang
   -- https://github.com/browserslist/vim-browserslist
   -- https://github.com/janet-lang/janet.vim
+  -- https://github.com/clavery/vim-dwre
   use {
     'amadeus/vim-mjml',
     'dmix/elvish.vim',
@@ -216,6 +217,7 @@ return require('packer').startup({function()
     'luizribeiro/vim-cooklang',
     'browserslist/vim-browserslist',
     'janet-lang/janet.vim',
+    'clavery/vim-dwre',
   }
 
   -- Treesitter and adjacent libraries
@@ -378,6 +380,11 @@ return require('packer').startup({function()
   -- https://github.com/folke/zen-mode.nvim
   use { 'folke/zen-mode.nvim',
     opt = true, cmd = [[ZenMode]], config = [[require('config.plugins.zenmode')]],
+  }
+
+  -- https://github.com/mzlogin/vim-markdown-toc
+  use {
+    'mzlogin/vim-markdown-toc'
   }
 
   -- https://github.com/junegunn/goyo.vim

@@ -176,3 +176,54 @@ let g:pencil_neutral_headings = 1
 let g:pencil_gutter_color = 1
 let g:pencil_terminal_italics = 1
 let g:pencil#conceallevel = 0
+
+" Neoformat configuration
+
+let g:neoformat_enabled_c = ['clangformat'] " ['uncrustify', 'clangformat', 'astyle']
+let g:neoformat_enabled_cpp = ['clangformat'] " ['uncrustify', 'clangformat', 'astyle']
+let g:neoformat_enabled_cs = ['clangformat'] " ['uncrustify', 'astyle', 'clangformat']
+let g:neoformat_enabled_d = ['dfmt'] " ['uncrustify', 'dfmt']
+let g:neoformat_enabled_html = [
+      \ 'htmlbeautify', 'prettierd', 'prettier', 'prettydiff'
+      \ ] " ['htmlbeautify', 'prettierd', 'prettier', 'tidy', 'prettydiff']
+let g:neoformat_enabled_java = [
+      \ 'clangformat', 'prettierd', 'prettier'
+      \ ] " ['uncrustify', 'astyle', 'clangformat', 'prettierd', 'prettier']
+let g:neoformat_enabled_javascript = [
+      \ 'standard', 'semistandard', 'prettierd', 'prettier', 'denofmt'
+      \ ] " ['jsbeautify', 'standard', 'semistandard', 'prettierd', 'prettier', 'prettydiff', 'clangformat',
+          " 'esformatter', 'prettiereslint', 'eslint_d', 'denofmt']
+let g:neoformat_enabled_javascriptreact = [
+      \ 'standard', 'semistandard', 'prettierd', 'prettier', 'denofmt'
+      \ ] " ['jsbeautify', 'standard', 'semistandard', 'prettierd', 'prettier', 'prettydiff', 'esformatter',
+          " 'prettiereslint', 'eslint_d', 'denofmt']
+let g:neoformat_enabled_json = [
+      \ 'prettierd', 'prettier', 'jq', 'denofmt'
+      \ ] " ['jsbeautify', 'prettydiff', 'prettierd', 'prettier', 'jq', 'fixjson', 'denofmt']
+let g:neoformat_enabled_markdown = [
+      \ 'prettierd', 'prettier', 'denofmt'
+      \ ] " ['remark', 'prettierd', 'prettier', 'denofmt']
+let g:neoformat_enabled_objc = ['clangformat'] " ['uncrustify', 'clangformat', 'astyle']
+let g:neoformat_enabled_ruby = ['rufo', 'rubybeautify', 'standard', 'rubocop'] " ['rufo', 'rubybeautify', 'rubocop']
+let g:neoformat_enabled_typescript = [
+      \ 'prettierd', 'prettier', 'denofmt'
+      \ ] " ['tsfmt', 'prettierd', 'prettier', 'prettiereslint', 'tslint', 'eslint_d', 'clangformat', 'denofmt']
+let g:neoformat_enabled_typescriptreact = [
+      \ 'prettierd', 'prettier', 'denofmt'
+      \ ] " ['tsfmt', 'prettierd', 'prettier', 'prettiereslint', 'tslint', 'eslint_d', 'clangformat', 'denofmt']
+let g:neoformat_enabled_xhtml = ['prettydiff'] " ['tidy', 'prettydiff']
+let g:neoformat_enabled_xml = ['prettierd', 'prettier'] " ['tidy', 'prettydiff', 'prettierd', 'prettier']
+
+" let g:neoformat_basic_format_align = 1 " Enable alignment
+" let g:neoformat_basic_format_retab = 1 " Enable tab to spaces conversion
+" let g:neoformat_basic_format_trim = 1 " Enable trimmming of trailing whitespace
+let g:neoformat_try_node_exe = 1 " Try a formatter in `node_modules/.bin`
+
+" function! neoformat#formatters#ruby#standard() abort
+"      return {
+"         \ 'exe': 'standardrb',
+"         \ 'args': ['--auto-correct', '--stdin', '"%:p"', '2>/dev/null', '|', 'sed "1,/^====================$/d"'],
+"         \ 'stdin': 1,
+"         \ 'stderr': 1
+"         \ }
+" endfunction

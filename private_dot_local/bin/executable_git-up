@@ -11,14 +11,15 @@
 #
 # Stolen from Ryan Tomayko
 # http://github.com/rtomayko/dotfiles/blob/rtomayko/bin/git-up
-#
-# ❯ git fetch -mp && git reup && git branch -vv && git submodule update --init --recursive
 
 set -euo pipefail
 
 declare is_reup
 is_reup=false
 test "$(basename "${0}")" = "git-reup" && is_reup=true
+
+# Quietly perform a fetch with prune
+git fetch --multiple --prune --quiet
 
 declare -a pull_args
 
@@ -32,16 +33,26 @@ fi
 ${is_reup} && pull_args=(--rebase "${pull_args[@]}")
 
 git pull "${pull_args[@]}"
+echo
 
 # show diffstat of all changes if we're pulling with --rebase. not
 # sure why git-pull only does this when merging.
 ${is_reup} && {
-  echo "Diff:"
-  git --no-pager diff --color --stat HEAD@'{1}'.. |
-    sed 's/^/ /'
+  declare diff
+  diff=$(git --no-pager diff --color --stat HEAD@'{1}'.. | sed 's/^/ /')
+
+  [[ -z "${diff}" ]] || printf "Diff:\n%s\n\n" "${diff}"
 }
 
 # show an abbreviated commit log of stuff that was just merged.
-echo "Log:"
-git log --color --pretty=oneline --abbrev-commit HEAD@'{1}'.. |
-  sed 's/^/  /'
+{
+  declare log
+  log=$(git log --color --pretty=oneline --abbrev-commit HEAD@'{1}'.. | sed 's/^/  /')
+  [[ -z "${log}" ]] || printf "Log:\n%s\n\n" "${log}"
+}
+
+echo "Branches:"
+git branch -vv
+
+# Update any submodules
+git submodule --quiet update --init --recursive
