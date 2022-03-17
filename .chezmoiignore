@@ -1,4 +1,4 @@
-Setup/*
+Setup/
 ChezMoi.code-workspace
 .gitignore
 justfile
@@ -6,7 +6,7 @@ LICENCE.md
 README.md
 fishfile.maybe
 example-nvim.init.lua
-Secrets/*
+Secrets/
 
 {{ if not (lookPath "alacritty") }}
 .config/fish/alacritty.fish
