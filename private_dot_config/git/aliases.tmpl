@@ -74,6 +74,8 @@
   pr-summary = !git log --reverse --format=\"- **%s** (%h)%n%n%w(74,2,2)%b\" \"${REVIEW_BASE:-origin/master}\"..HEAD
   head = rev-parse HEAD
 
+  save ="!f() { if [ \"$#\" -lt 1 ]; then echo \"No revision given! You must specify a valid ref.\"; exit 1; fi; if [ \"$#\" -lt 2 ]; then echo \"No file(s) given! Files must be specified.\"; exit 1; fi; dir=\"`git rev-parse--show-toplevel`\"; ref=\"$1\"; shift; cd \"${dir}\"; dest=\"`echo \"${ref}\" | sed 's-/-_-g'`\"; for f in \"$@\"; do git show \"${ref}:${f}\" \"${f}.${dest}\"; done; }"
+
 {{ if lookPath "fzf" }}
   # Show the log in fzf
   fzflog = "!git log --color=always --format=\"%C(auto)%h%d %s %C(black)%C(bold)%cr\" \"${@}\" | fzf --ansi| awk '{print $1}' | pbcopy"

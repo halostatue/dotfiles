@@ -52,8 +52,8 @@ UrlSearchParams.prototype.toString = function () {
   const dict = this[__URLSearchParams__]
   const query = []
   for (const key in dict) {
-    const name = encode(key)
-    for (const i = 0, value = dict[key]; i < value.length; i++) {
+    let name = encode(key)
+    for (let i = 0, value = dict[key]; i < value.length; i++) {
       query.push(name + '=' + encode(value[i]))
     }
   }
@@ -61,7 +61,7 @@ UrlSearchParams.prototype.toString = function () {
 }
 
 // Implement forEach
-UrlSearchParams.forEach = function (callback, thisArg) {
+UrlSearchParams.prototype.forEach = function (callback, thisArg) {
   const dict = parseToDict(this.toString())
   Object.getOwnPropertyNames(dict).forEach(function (name) {
     dict[name].forEach(function (value) {
@@ -71,7 +71,7 @@ UrlSearchParams.forEach = function (callback, thisArg) {
 }
 
 // Sort all name-value pairs
-UrlSearchParams.sort = function () {
+UrlSearchParams.prototype.sort = function () {
   const dict = parseToDict(this.toString())
   const keys = []
   for (const k in dict) {
@@ -92,21 +92,21 @@ UrlSearchParams.sort = function () {
 }
 
 // Returns an iterator allowing to go through all keys of the key/value pairs contained in this object.
-UrlSearchParams.keys = function () {
+UrlSearchParams.prototype.keys = function () {
   const items = []
   this.forEach((_item, name) => items.push(name))
   return makeIterator(items)
 }
 
 // Returns an iterator allowing to go through all values of the key/value pairs contained in this object.
-UrlSearchParams.values = function () {
+UrlSearchParams.prototype.values = function () {
   const items = []
   this.forEach((item) => items.push(item))
   return makeIterator(items)
 }
 
 // Returns an iterator allowing to go through all key/value pairs contained in this object.
-UrlSearchParams.entries = function () {
+UrlSearchParams.prototype.entries = function () {
   const items = []
   this.forEach((item, name) => items.push([name, item]))
   return makeIterator(items)
@@ -452,8 +452,6 @@ module.exports = {
     {
       match: /safelinks\.protection\.outlook\.com/,
       url: ({ url }) => {
-        finicky.log(url.search)
-
         const match = getUrlParam(url, 'url')
 
         if (!match) {

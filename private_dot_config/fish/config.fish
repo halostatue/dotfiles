@@ -30,11 +30,12 @@ set -gq DOCKER_BUILDKIT; or set -gx DOCKER_BUILDKIT 1
 set -qU PROJECT_PATHS
 or set -U PROJECT_PATHS \
     ~/dev/kinetic \
-    ~/dev/kinetic/aldo \
-    ~/dev/kinetic/kcp \
+    ~/dev/ascendis \
     ~/oss \
     ~/oss/mime-types-org \
-    ~/oss/halostatue
+    ~/oss/halostatue \
+    ~/oss/terraform \
+    ~/oss/private
 
 __source_or_create platforms/(string lower (uname -s)) platform
 __source_or_create hosts/(string lower (string replace -r '\.(local|home)' '' (hostname))) host
@@ -42,24 +43,10 @@ __source_or_create users/(string lower (whoami)) user
 
 functions -e __source_or_create
 
-functions -q has:keg
-and has:keg chruby-fish
-and begin
+if functions -q has:keg; and has:keg chruby-fish
     source (brew --prefix chruby-fish)/share/chruby/chruby.fish
     # source (brew --prefix chruby-fish)/share/chruby/auto.fish
     set -Ux RUBIES $RUBIES
-end
-
-if command -sq erl
-    function erlv -d 'Show the current erlang version'
-        set -l v (erl -eval 'io:fwrite(erlang:system_info(otp_release)), halt().' -noshell)
-        set -l e (dirname (dirname (command -s erl)))
-        set -l ff $e{,/lib/erlang}/releases/$v/OTP_{VERSION,RELEASE}
-        for f in $ff
-            test -f $f
-            and cat $f
-        end
-    end
 end
 
 if command -sq fzf
@@ -127,28 +114,6 @@ if command -sq fzf
             git branch $delete_mode $branches_to_delete
         end
     end
-
-    if command -sq brew
-        function bip --description "Install brew plugins"
-            set -l inst (brew search | eval "fzf $FZF_DEFAULT_OPTS -m --header='[brew:install]'")
-
-            if not test (count $inst) = 0
-                for prog in $inst
-                    brew install "$prog"
-                end
-            end
-        end
-
-        function bcp --description "Remove brew plugins"
-            set -l inst (brew leaves | eval "fzf $FZF_DEFAULT_OPTS -m --header='[brew:uninstall]'")
-
-            if not test (count $inst) = 0
-                for prog in $inst
-                    brew uninstall "$prog"
-                end
-            end
-        end
-    end
 end
 
 functions -q path:unique
@@ -177,16 +142,9 @@ function json-clean
     pbpaste | jq . | pbcopy
 end
 
-function lowes_clean_dump
-    pushd ~/dev/kinetic/lowes
-    and env DATABASE_POSTGRESQL_NAME=lowes_loyalty_clean mix do ecto.drop, ecto.create, ecto.migrate
-    and popd
-end
-
 function restoredb
     # pg_restore --verbose --clean -Fc -x --if-exists -d $database $filename
     # pg_restore --verbose --clean --create -Fc -x --if-exists $filename
-
     pg_restore --verbose --clean -Fc -x --if-exists -j4 --no-acl --no-owner $argv[1]
 end
 
@@ -235,11 +193,9 @@ or function get_ext --description "Get the file extension from the argument"
     echo $splits[-1]
 end
 
-
 ## App shortcuts with completion for filetype
 
-if functions -q is:mac
-    and is:mac
+if functions -q is:mac; and is:mac
     function acorn
         open -a Acorn $argv
     end
@@ -306,8 +262,9 @@ if functions -q is:mac
         open "dash://man:"(urlenc $argv)
     end
 
-    # flying through bundle identifiers more efficiently than `osascript`, faster than `defaults read`, it's `bid` to the rescue!
-    # fuzzy string matching, returns title and bundle id for first match
+    # flying through bundle identifiers more efficiently than `osascript`,
+    # faster than `defaults read`, it's `bid` to the rescue! fuzzy
+    # string matching, returns title and bundle id for first match
     # `bid preview`
     function bid -d "Get bundle id for app name"
         # (and remove ".app" and escapes from the end if it exists due to autocomplete)
@@ -334,12 +291,6 @@ if functions -q is:mac
         else
             echo "$location: $bundleid"
         end
-    end
-end
-
-if command -sq code-insiders
-    function code
-        code-insiders $argv
     end
 end
 
@@ -370,14 +321,6 @@ function 64font -d "encode a given font file as base64 and output css background
     echo "$argv encoded as font and copied to clipboard"
 end
 
-function lt -d "List directory from oldest to newest"
-    ls -Atr1 $argv && echo ------Newest--
-end
-
-function ltr -d "List directory from newest to oldest"
-    ls -At1 $argv && echo ------Oldest--
-end
-
 # function __should_na --on-variable PWD
 #   set -l cmd (history --max=1|awk '{print $1;}')
 #   set -l cds cd z j popd g
@@ -385,16 +328,6 @@ end
 #     test -s (basename $PWD)".taskpaper" && ~/scripts/fish/na
 #   end
 # end
-
-# function ...;cd ../..;end
-# function ....;cd ../../..;end
-
-# function ax -d "Make file executable"
-#   chmod a+x $argv
-# end
-
-# function cat;bat --style plain --theme OneHalfDark $argv;end
-# function c;clear;end
 
 # function flush -d "Flush DNS cache"
 #   sudo dscacheutil -flushcache;sudo killall -HUP mDNSResponder
@@ -418,7 +351,7 @@ end
 # end
 
 # function urlenc -d "url encode the passed string"
-#   if test (count $argv) > 0
+#   if test (count $argv) -gt 0
 #     echo -n "$argv" | perl -pe's/([^-_.~A-Za-z0-9])/sprintf("%%%02X", ord($1))/seg'
 #   else
 #     command cat | perl -pe's/([^-_.~A-Za-z0-9])/sprintf("%%%02X", ord($1))/seg'
@@ -432,30 +365,37 @@ if command -sq starship
     starship completions fish | source
 end
 
-
-command -sq pipx
-and command -sq register-python-argcomplete
-and register-python-argcomplete --shell fish pipx | source
+if command -sq pipx; and command -sq register-python-argcomplete
+    register-python-argcomplete --shell fish pipx | source
+end
 
 fzf_configure_bindings \
     --directory=\ct \
     --git_log=\cgl \
     --git_status=\cgs
 
-command -sq fortune; and fortune -s
-
 test -s "$HOME/.local/share/kx/scripts/kx.fish" && source "$HOME/.local/share/kx/scripts/kx.fish"
-
-emit fish_postexec
 
 # tabtab source for packages
 # uninstall by removing these lines
-test -f ~/.config/tabtab/fish/__tabtab.fish
-and source ~/.config/tabtab/fish/__tabtab.fish; or true
+if test -f ~/.config/tabtab/fish/__tabtab.fish
+    source ~/.config/tabtab/fish/__tabtab.fish
+    or true
+end
 
-test -S ~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
-and set -x SSH_AUTH_SOCK ~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+# If using Secretive.
+if test -S ~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+    set -x SSH_AUTH_SOCK ~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+end
 
-test -f ~/.iterm2_shell_integration.fish
-and set -q ITERM_PROFILE
-and source ~/.iterm2_shell_integration.fish
+if test -f ~/.iterm2_shell_integration.fish; and set -q ITERM_PROFILE
+    source ~/.iterm2_shell_integration.fish
+end
+
+test (ssh-add -l | wc -l) -gt 0
+or ssh-add --apple-load-keychain >/dev/null
+
+command -sq fortune
+and fortune -s
+
+emit fish_postexec

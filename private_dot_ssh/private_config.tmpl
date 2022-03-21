@@ -1,4 +1,9 @@
-{{- $secretive := joinPath $.chezmoi.homeDir "/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh" -}}
+{{-
+$secretive := joinPath $.chezmoi.homeDir "/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
+-}}
+{{-
+$1passwordSSH := joinPath $.chezmoi.homeDir "Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+-}}
 {{- $ssh := joinPath $.chezmoi.homeDir ".ssh" -}}
 # General SSH configuration
 ForwardAgent yes
@@ -9,7 +14,9 @@ VerifyHostKeyDNS yes
 
 Host *
 {{- if stat $secretive }}
-  IdentityAgent {{ $secretive }}{{ end }}
+  IdentityAgent "{{ $secretive }}"{{ end }}
+{{- if stat $1passwordSSH }}
+  IdentityAgent "{{ $1passwordSSH }}"{{ end }}
   UseKeychain yes
   AddKeysToAgent yes
 
