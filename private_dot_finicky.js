@@ -411,16 +411,8 @@ module.exports = {
   },
   rewrite: [
     {
-      match: ({ url }) => url.host.endsWith('medium.com'),
-      url: ({ url }) => ({ ...url, host: 'scribe.rip' }),
-    },
-    {
-      match: ({ url }) => url.host === 'twitter.com',
-      url: ({ url }) => ({ ...url, host: nitterHost() }),
-    },
-    {
       match: ({ opener, urlString }) =>
-        opener.bundleId === 'com.tinyspeck.slacmacgap' && /login_initiate_redirect/.test(urlString),
+        opener.bundleId === 'com.tinyspeck.slacmacgap' || /openid\/connect\/login_initiate_redirect/.test(urlString),
       url: ({ url }) => {
         const jwt = getUrlParam(url, 'login_hint')
 
@@ -429,13 +421,21 @@ module.exports = {
         }
 
         try {
-          const targetURI = jwt_decode(jwt)['https://slack.com/target_uri']
-
+          const decoded = jwt_decode(jwt)
+          const targetURI = decoded['https://slack.com/target_uri']
           return targetURI ?? url
         } catch (_error) {
           return url
         }
       },
+    },
+    {
+      match: ({ url }) => url.host.endsWith('medium.com'),
+      url: ({ url }) => ({ ...url, host: 'scribe.rip' }),
+    },
+    {
+      match: ({ url }) => url.host === 'twitter.com',
+      url: ({ url }) => ({ ...url, host: nitterHost() }),
     },
     {
       match: /vk\.com\/away.php/,

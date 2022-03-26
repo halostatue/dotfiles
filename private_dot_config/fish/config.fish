@@ -400,6 +400,11 @@ if test -f ~/.iterm2_shell_integration.fish; and set -q ITERM_PROFILE
     source ~/.iterm2_shell_integration.fish
 end
 
+if test -x ~/.bun/bin/bun
+    set -Uq BUN_INSTALL; or set -Ux BUN_INSTALL $HOME/.bun
+    contains $HOME/.bun/bin $fish_user_paths; or fish_add_path $HOME/.bun/bin
+end
+
 test (ssh-add -l | wc -l) -gt 0
 or ssh-add --apple-load-keychain >/dev/null
 

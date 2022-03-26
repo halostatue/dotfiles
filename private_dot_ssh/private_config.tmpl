@@ -1,10 +1,8 @@
-{{-
-$secretive := joinPath $.chezmoi.homeDir "/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh"
--}}
-{{-
-$1passwordSSH := joinPath $.chezmoi.homeDir "Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
--}}
 {{- $ssh := joinPath $.chezmoi.homeDir ".ssh" -}}
+{{- $agent := joinPath $.chezmoi.homeDir "/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" -}}
+{{- if not (stat $agent) -}}
+{{-   $agent = joinPath $.chezmoi.homeDir "/Library/Containers/com.maxgoedjen.agent.SecretAgent/Data/socket.ssh" -}}
+{{- end -}}
 # General SSH configuration
 ForwardAgent yes
 HashKnownHosts no
@@ -12,30 +10,34 @@ ServerAliveCountMax 6
 ServerAliveInterval 30
 VerifyHostKeyDNS yes
 
+# There appears to be a bug where the _last_ identity file is used when using 1Password, but
+# it just works if the identity files are not specified.
+{{- if and (not (contains "1password" $agent)) ((gt .ssh.keys | len) 0) -}}
+{{-   range .ssh.keys -}}
+{{-     if stat (joinPath $ssh .) }}
+IdentityFile {{ joinPath $ssh . }}
+{{-     end -}}
+{{-   end }}
+{{- end }}
+
+{{ if stat $agent -}}
 Host *
-{{- if stat $secretive }}
-  IdentityAgent "{{ $secretive }}"{{ end }}
-{{- if stat $1passwordSSH }}
-  IdentityAgent "{{ $1passwordSSH }}"{{ end }}
+  IdentityAgent "{{ $agent }}"
+{{- end }}
+
+Host *
   UseKeychain yes
   AddKeysToAgent yes
 
-Host github.com
+Host github.com bitbucket.org
   UpdateHostKeys yes
-
-{{- if gt (.ssh.keys | len) 0 -}}
-  {{ range .ssh.keys -}}
-    {{- if stat (joinPath $ssh .) }}
-Host *
-  IdentityFile {{ joinPath $ssh . }}
-    {{- end }}
-  {{- end }}
-{{- end }}
 
 {{- if (lookPath "ssh-chain") }}Host *^*
   ProxyCommand ssh-chain %h %p{{ end }}
 
-{{- if gt ((dig "ssh" "hosts" (list) .) | len) 0 }}{{ range .ssh.hosts }}
+{{- if gt ((dig "ssh" "hosts" (list) .) | len) 0 -}}
+{{-   range .ssh.hosts }}
 Host {{ .host }}{{ range .config }}
   {{ . }}{{ end }}
-{{ end }}{{ end -}}
+{{    end }}
+{{- end -}}
