@@ -13,7 +13,6 @@ halostatue/fish-elixir@v1.x
 halostatue/fish-go@v2.x
 halostatue/fish-haskell@v2.x
 halostatue/fish-kerl@v1.x
-halostatue/fish-macos@v2.x
 halostatue/fish-rake@v1.x
 halostatue/fish-rust@v1.x
 halostatue/fish-utils-core@v1.x
@@ -28,7 +27,6 @@ jorgebucaran/spark.fish
 laughedelic/brew-completions
 jorgebucaran/autopair.fish
 matchai/fish-mock
-nju33/fish-age
 oh-my-fish/plugin-cd
 oh-my-fish/plugin-license
 oh-my-fish/plugin-tab
@@ -40,3 +38,4 @@ halostatue/plugin-aws@patch-1
 lilyball/nix-env.fish
 jorgebucaran/gitio.fish
 jorgebucaran/humantime.fish
+halostatue/fish-macos@v3.x

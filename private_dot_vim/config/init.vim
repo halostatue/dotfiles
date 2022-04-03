@@ -4,3 +4,5 @@ scriptencoding utf-8
 " packages are loaded.
 
 runtime config/defaults.vim
+
+autocmd User DirenvLoaded normal lh
