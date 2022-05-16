@@ -209,7 +209,9 @@ return require('packer').startup({function()
   -- https://github.com/luizribeiro/vim-cooklang
   -- https://github.com/browserslist/vim-browserslist
   -- https://github.com/janet-lang/janet.vim
+  -- Stupid SF and SFCC stuff
   -- https://github.com/clavery/vim-dwre
+  -- https://github.com/ejholmes/vim-forcedotcom
   use {
     'amadeus/vim-mjml',
     'dmix/elvish.vim',
@@ -218,6 +220,7 @@ return require('packer').startup({function()
     'browserslist/vim-browserslist',
     'janet-lang/janet.vim',
     'clavery/vim-dwre',
+    'ejholmes/vim-forcedotcom',
   }
 
   -- Treesitter and adjacent libraries

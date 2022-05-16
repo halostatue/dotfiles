@@ -2,7 +2,7 @@
 --langmap=vue:.vue
 # vue-commands in <template>
 --regex-vue=/^(<template>)$/\1/t,template/{scope=set}{exclusive}
---regex-vue=/^\S*(.*(v-if=|v-for=|v-show=|ref=)("[^"]*"))/\2\3/c,vue-command/{scope=ref}
+--regex-vue=/^\S*(.*(v-if=|v-for=|v-show=|ref=)("[^"]*"))/\2\3/c,vue/{scope=ref}
 --regex-vue=/^(<\/template>)$/\1//{scope=pop}{exclusive}{placeholder}
 # css in <template>
 --regex-vue=/^(<style.*)$/style/s,script/{scope=set}{exclusive}

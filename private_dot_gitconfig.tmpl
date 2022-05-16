@@ -40,7 +40,7 @@
   compression = -1
 {{- if lookPath "nvim" }}
   editor = nvim
-{{- else -}}
+{{ else }}
   editor = vim
 {{- end }}
 {{- if stat (joinPath .chezmoi.homeDir ".gitignore") }}

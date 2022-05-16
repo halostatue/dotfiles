@@ -480,11 +480,23 @@ module.exports = {
   ],
   handlers: [
     {
+      match: ({ url }) => url.host.endsWith('bitbucket.org') && url.pathname.startsWith('/ascendis-ca/'),
+      browser: 'Microsoft Edge',
+    },
+    {
+      match: () => finicky.getKeys().option,
+      browser: '/Applications/Setapp/OpenIn.app',
+    },
+    {
       match: (match) => {
-        const keys = finicky.getKeys()
-
+        return finicky.matchHostnames(['ascendis.atlassian.net'])(match)
+      },
+      browser: 'Microsoft Edge',
+    },
+    {
+      match: (match) => {
         return (
-          (keys.option || keys.command) &&
+          finicky.getKeys().command &&
           finicky.matchHostnames([
             'halogenmobile.atlassian.net',
             'jira.com',
@@ -495,10 +507,6 @@ module.exports = {
         )
       },
       browser: 'Firefox',
-    },
-    {
-      match: () => finicky.getKeys().option,
-      browser: '/Applications/Setapp/OpenIn.app',
     },
     /*
     {

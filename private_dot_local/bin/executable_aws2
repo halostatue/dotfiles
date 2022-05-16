@@ -9,7 +9,14 @@ if ((!$#)); then
   exit $?
 fi
 
-cmd="$1"
+case "$0" in
+aws_completer)
+  cmd=completer
+  ;;
+*)
+  cmd="$1"
+  ;;
+esac
 
 declare -a mounts passopt
 passopt=(

@@ -84,6 +84,7 @@ function! s:packager_init() abort
 
   " File Picker: CtrlP, CommandT, what? {{{
   call packager#add('srstevenson/vim-picker') " https://github.com/srstevenson/vim-picker
+  call packager#add('liuchengxu/vim-clap', { 'do': ':Clap install-binary!' }) " https://github.com/liuchengxu/vim-clap
   " }}}
   " }}}
 
@@ -123,7 +124,9 @@ function! s:packager_init() abort
   call packager#add('luizribeiro/vim-cooklang') " https://github.com/luizribeiro/vim-cooklang
   call packager#add('browserslist/vim-browserslist') " https://github.com/browserslist/vim-browserslist
   call packager#add('janet-lang/janet.vim') " https://github.com/janet-lang/janet.vim
+  " Stupid SF and SFCC garbage
   call packager#add('clavery/vim-dwre') " https://github.com/clavery/vim-dwre
+  call packager#add('ejholmes/vim-forcedotcom') " https://github.com/ejholmes/vim-forcedotcom
 
   " if has('nvim-0.5')
   "   call packager#add('nvim-treesitter/nvim-treesitter') " https://github.com/nvim-treesitter/nvim-treesitter
@@ -186,7 +189,8 @@ function! s:packager_init() abort
   " }}}
 
   " Code manipulation {{{
-  call packager#add('preservim/tagbar') " https://github.com/preservim/tagbar
+  " call packager#add('preservim/tagbar') " https://github.com/preservim/tagbar
+  call packager#add('liuchengxu/vista.vim') " https://github.com/liuchengxu/vista.vim
   call packager#add('tommcdo/vim-exchange') " https://github.com/tommcdo/vim-exchange
   call packager#add('tpope/vim-commentary') " https://github.com/tpope/vim-commentary
   call packager#add('tpope/vim-endwise') " https://github.com/tpope/vim-endwise
@@ -256,6 +260,10 @@ function! s:packager_init() abort
 
   call packager#add('voldikss/vim-floaterm') " https://github.com/voldikss/vim-floaterm
   call packager#add('skywind3000/vim-quickui') " https://github.com/skywind3000/vim-quickui
+
+  " Status bar {{{
+  call packager#add('liuchengxu/eleline.vim') " https://github.com/liuchengxu/eleline.vim
+  " }}}
 endfunction
 
 command! -nargs=* -bar PackagerRefresh call s:packager_init() | call packager#install(<args>)

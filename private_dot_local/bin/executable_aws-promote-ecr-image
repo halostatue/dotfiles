@@ -1,0 +1,153 @@
+#!/usr/bin/env bash
+
+# desired functionality
+# promote --environment staging --tag git-something
+# promote --environment prod --tag staging
+# promote --environment prod --tag git-something --force
+# promote --environment prod-eu --tag staging
+# promote --environment prod-eu --tag git-something --force
+
+halt() {
+  local -r message=${1}
+
+  echo ${message}
+  exit 1
+}
+
+set_docker_account() {
+  local -r account=${1}
+  local -r region=${2}
+}
+
+set_account_details() {
+  local -r profile=${1}
+
+  if [[ ${profile} == kc-dev ]]; then
+    export AWS_PROFILE=kc-dev
+    export AWS_ACCOUNT=234363134851
+    export AWS_REGION=us-east-2
+
+  elif [[ ${profile} == kc-prod ]]; then
+    export AWS_PROFILE=kc-prod
+    export AWS_ACCOUNT=552612509449
+    export AWS_REGION=us-east-2
+
+  elif [[ ${profile} == kc-prod-eu ]]; then
+    export AWS_PROFILE=kc-prod-eu
+    export AWS_ACCOUNT=552612509449
+    export AWS_REGION=eu-central-1
+  else
+    halt "ec_login error - unknown environment ${profile}"
+  fi
+
+  docker_account=${AWS_ACCOUNT}.dkr.ecr.${AWS_REGION}.amazonaws.com
+}
+
+ecr_login() {
+  local -r profile=${1}
+
+  set_account_details ${profile}
+
+  aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${docker_account}
+  echo "connected to: ${docker_account}"
+}
+
+APP=kc-promote-booking
+REPOSITORY=kcs-appointment-booking
+
+while test $# -gt 0; do
+  case "${1}" in
+  -h | --help)
+    echo "${APP} - promote booking to a higher environment"
+    echo " "
+    echo "This program is generally called by the CI/CD server and "
+    echo "is used to promote the booking docker image to either staging"
+    echo "or production."
+    echo " "
+    echo "usage:"
+    echo "  ${APP} [options]"
+    echo " "
+    echo "options:"
+    echo "  -h, --help          show brief help"
+    echo "  -f, --force         force the promotion"
+    echo "  -e, --environment   promote to environment (staging|prod|prod-eu)"
+    echo "  -t, --tag           the tag to promote"
+    echo " "
+    echo "example: "
+    echo " ${APP} --tag staging-latest --environment prod"
+    exit 0
+    ;;
+
+  -e | --environment)
+    shift
+
+    case "${1}" in
+    staging)
+      environment=staging
+      shift
+      ;;
+
+    prod)
+      environment=prod
+      shift
+      ;;
+
+    prod-eu)
+      environment=prod-eu
+      shift
+      ;;
+
+    *)
+      halt "error: environment must be in (staging|prod|prod-eu)"
+      ;;
+    esac
+    ;;
+
+  -t | --tag)
+    shift
+    tag=${1}
+    shift
+    ;;
+
+  -f | --force)
+    shift
+    force=1
+    ;;
+
+  *)
+    echo "error: unknown parameter - ${1}"
+    exit 1
+    ;;
+
+  esac
+done
+
+[[ -z ${environment} ]] && halt "error: environment is required"
+[[ -z ${tag} ]] && halt "error: tag is required"
+[[ ${force} ]] && halt "error: force is not implemented. Promote through staging"
+
+# TODO We will aloway push to prod for the first little bit. The command line flags
+# are aspirational.
+set_account_details kc-dev
+dev_account=${docker_account}
+set_account_details kc-prod
+prod_account=${docker_account}
+
+now=$(date +%Y%m%d%H%M%S)
+
+ecr_login kc-dev
+docker pull ${dev_account}/${REPOSITORY}:${tag}
+
+docker tag ${dev_account}/${REPOSITORY}:${tag} ${dev_account}/${REPOSITORY}:prod-latest
+docker tag ${dev_account}/${REPOSITORY}:${tag} ${dev_account}/${REPOSITORY}:prod-${now}
+docker push ${dev_account}/${REPOSITORY}:prod-latest
+docker push ${dev_account}/${REPOSITORY}:prod-${now}
+
+# TODO make this work with staging as well...
+ecr_login kc-prod
+docker tag ${dev_account}/${REPOSITORY}:${tag} ${prod_account}/${REPOSITORY}:${tag}
+docker tag ${dev_account}/${REPOSITORY}:${tag} ${prod_account}/${REPOSITORY}:prod-latest
+docker tag ${dev_account}/${REPOSITORY}:${tag} ${prod_account}/${REPOSITORY}:prod-${now}
+docker push ${prod_account}/${REPOSITORY}:${tag}
+docker push ${prod_account}/${REPOSITORY}:prod-latest
+docker push ${prod_account}/${REPOSITORY}:prod-${now}
