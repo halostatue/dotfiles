@@ -19,6 +19,6 @@ PatrickF1/colored_man_pages.fish
 halostatue/fish-utils-net@v1.x
 halostatue/plugin-aws@patch-1
 lilyball/nix-env.fish
-halostatue/fish-macos@v4.x
 IlanCosman/clownfish
 IlanCosman/tide@v5
+halostatue/fish-macos@v4.x
