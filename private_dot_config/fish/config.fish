@@ -11,50 +11,55 @@ end
 # Set up local configuration files
 __local_config platform host user
 
-set -qg EDITOR
-or set -gx EDITOR (which vim)
-
-set -gq VISUAL
-or set -gx VISUAL (which vim)
-
-if command -sq bat
-    set -gq PAGER
-    or set -gx PAGER (which bat) --style plain
+if not set --query --global EDITOR
+    set --global --export EDITOR (which vim)
 end
 
-set -gq COMPOSER_DOCKER_CLI_BUILD
-or set -gx COMPOSER_DOCKER_CLI_BUILD 1
+if not set --query --global VISUAL
+    set --global --export VISUAL $EDITOR
+end
 
-set -gq DOCKER_BUILDKIT
-or set -gx DOCKER_BUILDKIT 1
+if command --query bat && not set --query --global PAGER
+    set --global --export PAGER (which bat) --style plain
+end
 
-set -qU PROJECT_PATHS
-or set -U PROJECT_PATHS \
-    ~/dev/kinetic \
-    ~/dev/ascendis \
-    ~/oss \
-    ~/oss/mime-types-org \
-    ~/oss/halostatue \
-    ~/oss/terraform \
-    ~/oss/private
+if not set --query --global COMPOSER_DOCKER_CLI_BUILD
+    set --global --export COMPOSER_DOCKER_CLI_BUILD 1
+end
 
+if not set --query --global DOCKER_BUILDKIT
+    set --global --export DOCKER_BUILDKIT 1
+end
 
-functions --query path:unique
-and path:unique --test $HOME/.local/bin $HOME/.bin $HOME/bin
+if not set --query --universal PROJECT_PATHS
+    set --universal PROJECT_PATHS \
+        ~/dev/kinetic \
+        ~/dev/ascendis \
+        ~/oss \
+        ~/oss/mime-types-org \
+        ~/oss/halostatue \
+        ~/oss/terraform \
+        ~/oss/private
+end
 
-functions --query path:make_unique
-and path:make_unique
+if functions --query path:unique
+    path:unique --test $HOME/.local/bin $HOME/.bin $HOME/bin
+end
+
+if functions --query path:make_unique
+    path:make_unique
+end
 
 set CDPATH . ~/.links/ ~/dev ~/dev/kinetic ~/oss ~/oss/github ~
 
-if command -sq pngcrush
+if command --query pngcrush
     function crush -d pngcrush
         pngcrush -e _sm.png -rem alla -brute -reduce $argv
     end
     complete -c crush -d PNG -a "*.png"
 end
 
-if command -sq pandoc
+if command --query pandoc
     function docx2md --description "Convert docx to markdown: docx2md [source] [target]"
         pandoc -o "$2" --extract-media=(dirname "$argv[2]") "$argv[1]"
     end
@@ -95,7 +100,7 @@ test -s "$HOME/.local/share/kx/scripts/kx.fish"
 and source "$HOME/.local/share/kx/scripts/kx.fish"
 
 if status is-interactive
-    if command -sq fzf
+    if command --query fzf
         function fp --description 'Search your $PATH'
             set -l loc (echo $PATH | tr ' ' '\n' | eval "fzf $FZF_DEFAULT_OPTS --header='[find:path]'")
 
@@ -142,7 +147,7 @@ if status is-interactive
             end
         end
 
-        if command -sq rg
+        if command --query rg
             set -gx FZF_DEFAULT_COMMAND 'rg --files --no-ignore-vcs --hidden'
         end
 
@@ -203,34 +208,48 @@ if status is-interactive
     bind \r magic_enter
     bind \n magic_enter
 
-    fzf_configure_bindings \
+    set --local __setup_fzf_bindings \
         --directory=\ct \
         --git_log=\cgl \
         --git_status=\cgs \
         --processes=\cgp \
         --history
 
-    command -sq zoxide
-    and zoxide init fish | source
+    if not command --query atuin mcfly
+        set --erase __setup_fzf_bindings[-1]
+    end
+
+    fzf_configure_bindings $__setup_fzf_bindings
+
+    set --erase __setup_fzf_bindings
+
+    if command --query atuin
+        atuin init fish | source
+        atuin gen-completions --shell fish | source
+    else if command --query mcfly
+        mcfly init fish | source
+    end
+
+    if command --query zoxide
+        zoxide init fish | source
+    end
 
     if not functions --query tide
-        if command -sq starship
+        if command --query starship
             starship init fish | source
             starship completions fish | source
         end
     end
 
-    if command -sq pipx && command -sq register-python-argcomplete
+    if command --query pipx && command --query register-python-argcomplete
         register-python-argcomplete --shell fish pipx | source
     end
 
     # tabtab source for packages
     # uninstall by removing these lines
-    test -f ~/.config/tabtab/fish/__tabtab.fish
-    and source ~/.config/tabtab/fish/__tabtab.fish
-
-    command -sq fortune
-    and fortune -s
+    if test -f ~/.config/tabtab/fish/__tabtab.fish
+        source ~/.config/tabtab/fish/__tabtab.fish
+    end
 end
 
 if test -x ~/.bun/bin/bun
@@ -239,6 +258,10 @@ if test -x ~/.bun/bin/bun
 
     contains $HOME/.bun/bin $fish_user_paths
     or fish_add_path $HOME/.bun/bin
+end
+
+if command --query fortune && status is-interact0ve
+    fortune -s
 end
 
 emit fish_postexec
