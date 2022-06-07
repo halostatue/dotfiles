@@ -19,10 +19,6 @@ if not set --query --global VISUAL
     set --global --export VISUAL $EDITOR
 end
 
-if command --query bat && not set --query --global PAGER
-    set --global --export PAGER (which bat) --style plain
-end
-
 if not set --query --global COMPOSER_DOCKER_CLI_BUILD
     set --global --export COMPOSER_DOCKER_CLI_BUILD 1
 end
@@ -250,6 +246,10 @@ if status is-interactive
     if test -f ~/.config/tabtab/fish/__tabtab.fish
         source ~/.config/tabtab/fish/__tabtab.fish
     end
+
+    if command --query hof
+        hof completion fish | string replace -r '(alias _="hof")' '#$1' | source
+    end
 end
 
 if test -x ~/.bun/bin/bun
@@ -260,8 +260,48 @@ if test -x ~/.bun/bin/bun
     or fish_add_path $HOME/.bun/bin
 end
 
-if command --query fortune && status is-interact0ve
+if set --query PNPM_HOME
+    mkdir -p $PNPM_HOME
+    fish_add_path --path $PNPM_HOME
+end
+
+if command --query fortune && status is-interactve
     fortune -s
 end
+
+if command --query bat
+    abbr --universal --add cat bat
+
+    set --query PAGER
+    or set --global --export PAGER bat --style plain
+
+    set --query MANPAGER
+    or set --global --export MANPAGER "sh -c 'col -bx | bat --language man --plain'"
+else if command --query batcat
+    abbr --universal --add cat batcat
+
+    set --query PAGER
+    or set --global --export PAGER batcat --style plain
+
+    set --query MANPAGER
+    or set --global --export MANPAGER "sh -c 'col -bx | batcat --language man --plain'"
+end
+
+if command --query exa
+    abbr --universal --add ls exa
+    abbr --universal --add lg 'exa --git'
+    abbr --universal --add l 'exa -lah'
+    abbr --universal --add la 'exa -a'
+    abbr --universal --add ll 'exa -l'
+    abbr --universal --add lt 'exa -lT'
+else
+    abbr --universal --add l 'ls -lAh'
+    abbr --universal --add la 'ls -A'
+    abbr --universal --add ll 'ls -l'
+end
+
+set -Ux FZF_DEFAULT_OPTS "--color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4"
+
+ulimit -n 10480
 
 emit fish_postexec

@@ -129,3 +129,6 @@ if status is-interactive
         source ~/.iterm2_shell_integration.fish
     end
 end
+
+set --query --global PNPM_HOME
+or set --global --export PNPM_HOME ~/Library/pnpm

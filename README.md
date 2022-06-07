@@ -34,6 +34,12 @@ chezmoi init halostatue/chezmoi-dotfiles
 - https://github.com/mattfoster/zshkit
 - https://github.com/robbyrussell/oh-my-zsh
 
+## Other Things to Know
+
+- https://git.herrbischoff.com/awesome-macos-command-line/about/
+
+  - `~/Library/Google/GoogleSoftwareUpdate/GoogleSoftwareUpdate.bundle/Contents/Resources/ksinstall --nuke`
+
 [multiple]: https://github.com/halostatue/ryanb-dotfiles-fork
 [incarnations]: https://github.com/halostatue/zsh-focused-dotfiles
 [chezmoi]: https://chezmoi.io

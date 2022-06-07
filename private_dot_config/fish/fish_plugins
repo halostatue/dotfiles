@@ -22,3 +22,4 @@ lilyball/nix-env.fish
 IlanCosman/clownfish
 IlanCosman/tide@v5
 halostatue/fish-macos@v4.x
+reitzig/sdkman-for-fish

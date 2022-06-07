@@ -29,6 +29,7 @@ let g:polyglot_disabled = [
                   \   'autoindent',
                   \   'bzl',
                   \   'go',
+                  \   'cue',
                   \   'sensible',
                   \ ]
 

@@ -1,15 +1,25 @@
 # frozen_string_literal: true
 
-require 'pathname'
+require "irb/completion"
+require "pp"
+require "json"
+require "pathname"
 
 rubyrc = Pathname("~/.rubyrc").expand_path
 load rubyrc if rubyrc.exist?
 
-begin
-  require "irb/ext/completion"
-rescue LoadError
-  require "irb/completion"
-end
-
 load_gem("wirble") { Wirble.init }
 load_gem("looksee")
+
+# IRB.conf[:HISTORY_FILE] = File.join(ENV['XDG_CACHE_HOME'], 'irb_history')
+
+# IRB.conf[:SAVE_HISTORY] = 1000
+
+# IRB.conf[:PROMPT][:MY_PROMPT] = {
+#   AUTO_INDENT: true,
+#   PROMPT_I: '> ',
+#   PROMPT_S: '',
+#   PROMPT_C: '',
+#   RETURN: "=> %s\n\n"
+# }
+# IRB.conf[:PROMPT_MODE] = :MY_PROMPT

@@ -1,0 +1,16 @@
+--exclude=.git
+--exclude=.pijul
+--exclude=.hg
+--exclude=log
+--exclude=tmp
+
+--fields=+l
+--fields=+n
+--fields=+z
+--fields=+Z
+
+--exclude=tests
+--exclude=test
+
+--exclude=.projections.json
+--exclude=coveralls.json

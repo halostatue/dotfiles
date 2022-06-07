@@ -1,22 +1,43 @@
 #! /usr/bin/env fish
 
-npm i -g \
-    npm
+if ! command --query npm
+    echo >&2 NPM is not installed.
+    return 1
+end
 
-# Peer dependencies. These are used to prevent complaints.
-npm i -g \
+# Upgrade to latest NPM. Also globally install both yarn and pnpm
+set --local pnpm_version latest
+
+switch (node --version)
+    case 'v10*'
+        set pnpm_version 5
+    case 'v11*', 'v12*'
+        set pnpm_version 6
+    case 'v13*','v14*', 'v15*', 'v16*', 'v17*', 'v18*'
+        set pnpm_version 7
+end
+
+npm install --global npm@latest yarn@latest pnpm@$pnpm_version
+
+pnpm install --global --quiet \
     graphql \
+    graphql@15 \
     graphql-config \
+    graphql-config@3 \
     yargs \
+    yargs@15 \
     @graphql-inspector/config \
+    @graphql-inspector/config@2 \
+    @graphql-inspector/loaders@2 \
+    @graphql-tools/utils@8 \
     bson-ext \
+    core-js@3 \
     yo \
     generator-ronin \
     openapi-types
 
-npm upgrade -g npm
-
-npm i -g \
+# Install useful packages with pnpm
+pnpm install --global \
     @2fd/graphdoc \
     @cyclonedx/bom \
     @graphql-cli/codegen \
@@ -27,10 +48,12 @@ npm i -g \
     @graphql-cli/similar \
     @graphql-cli/validate \
     @graphql-inspector/cli \
-    @redocly/openapi-cli \
+    @redocly/cli \
     @vue/cli \
     @vue/devtools \
+    @withgraphite/graphite-cli \
     ajv-cli \
+    apollo \
     apollo-codegen \
     fx \
     graphql \
@@ -42,7 +65,6 @@ npm i -g \
     json5 \
     knex \
     logsene-cli \
-    pnpm \
     prettier \
     quicktype \
     raml2html \
@@ -56,5 +78,4 @@ npm i -g \
     sass-migrator \
     svgo \
     swagger-cli \
-    typescript \
-    yarn
+    typescript

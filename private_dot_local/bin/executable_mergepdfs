@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+  cat <<USAGE
+Usage: $(basename "$0") OUTPUT INPUT...
+
+Merges one or more PDFs. On macOS, tries to use the script from the
+Combine PDF Pages automator action. Otherwise, tries to use ghostscript.
+USAGE
+}
+
+case $# in
+0)
+  echo >&2 "Error: No arguments provided."
+  echo >&2
+  usage >&2
+  exit 1
+  ;;
+1)
+  echo >&2 "Error: No input files provided."
+  echo >&2
+  usage >&2
+  exit 1
+  ;;
+esac
+
+declare output
+output="$1"
+shift
+
+if [[ -x "/System/Library/Automator/Combine PDF Pages.action/Contents/Resources/join.py" ]]; then
+  "/System/Library/Automator/Combine PDF Pages.action/Contents/Resources/join.py" -o "${output}" "$@"
+else
+  gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile="${output}" "$@"
+fi

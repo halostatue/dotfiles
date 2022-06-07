@@ -1,4 +1,4 @@
-*.swp
+*.un~
 *~
 .AppleDB
 .AppleDesktop
@@ -15,14 +15,19 @@
 .com.apple.timemachine.donotpresent
 .directory
 .fseventsd
+.netrwhist
 .svn/*
-Icon
+.vscode/
+.x/
+Icon
 Network Trash Folder
+Session.vim
 TAGS
 Temporary Items
 Thumbs.db
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
 desktop.ini
 ehthumbs.db
 svn-commit.*
 tags
-.x/

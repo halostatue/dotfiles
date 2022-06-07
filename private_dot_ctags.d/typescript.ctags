@@ -4,6 +4,7 @@
 --exclude=gulp
 --exclude=node_modules
 --exclude=package-lock.json
+--exclude=pnpm-lock.yaml
 --exclude=project.json
 --exclude=public
 --exclude=tmp

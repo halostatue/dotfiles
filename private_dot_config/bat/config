@@ -1,0 +1,49 @@
+# This is `bat`s configuration file. Each line either contains a comment or
+# a command-line option that you want to pass to `bat` by default. You can
+# run `bat --help` to get a list of all possible configuration options.
+
+# --theme="1337"
+# --theme="Coldark-Cold"
+# --theme="Coldark-Dark"
+# --theme="DarkNeon"
+# --theme="Dracula"
+# --theme="GitHub"
+# --theme="Monokai Extended"
+# --theme="Monokai Extended Bright"
+# --theme="Monokai Extended Light"
+# --theme="Monokai Extended Origin"
+# --theme="Nord"
+--theme="OneHalfDark"
+# --theme="OneHalfLight"
+# --theme="Solarized (dark)"
+# --theme="Solarized (light)"
+# --theme="Sublime Snazzy"
+# --theme="TwoDark"
+# --theme="Visual Studio Dark+"
+# --theme="ansi"
+# --theme="base16"
+# --theme="base16-256"
+# --theme="gruvbox-dark"
+# --theme="gruvbox-light"
+# --theme="zenburn"
+
+# --italic-text=always
+
+# --style=full
+# --style=auto
+# --style=plain
+# --style=changes
+# --style=header
+# --style=header-filename
+# --style=header-filesize
+# --style=grid
+# --style=rule
+# --style=numbers
+# --style=snip
+
+# --paging=never
+# --pager="less --RAW-CONTROL-CHARS --quit-if-one-screen --mouse"
+
+# --map-syntax "*.ino:C++"
+# --map-syntax ".ignore:Git Ignore"
+

@@ -124,6 +124,10 @@ function! s:packager_init() abort
   call packager#add('luizribeiro/vim-cooklang') " https://github.com/luizribeiro/vim-cooklang
   call packager#add('browserslist/vim-browserslist') " https://github.com/browserslist/vim-browserslist
   call packager#add('janet-lang/janet.vim') " https://github.com/janet-lang/janet.vim
+  call packager#add('evanleck/vim-svelte') " https://github.com/evanleck/vim-svelte
+  " call packager#add('jjo/vim-cue') " https://github.com/jjo/vim-cue
+  call packager#add('hofstadter-io/cue.vim') " https://github.com/hofstadter-io/cue.vim
+
   " Stupid SF and SFCC garbage
   call packager#add('clavery/vim-dwre') " https://github.com/clavery/vim-dwre
   call packager#add('ejholmes/vim-forcedotcom') " https://github.com/ejholmes/vim-forcedotcom
