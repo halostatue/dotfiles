@@ -1,15 +1,39 @@
-* text=auto
-*.css diff=css
-*.erl diff=erlang
+# Elixir
 *.ex diff=elixir
 *.exs diff=elixir
+mix.lock merge=binary
+
+# Erlang
+*.erl diff=erlang
 *.hrl diff=erlang
+rebar.lock merge=binary
+
+# TeX
+*.tex diff=tex
+
+# Rust
+*.rust diff=rust
+
+# CSS
+*.css diff=css
+
+# Ruby
+*.rb diff=ruby
+Gemfile diff=ruby
+Rakefile diff=ruby
+*.gemspec diff=ruby
+
+# Python
+*.py diff=python
+
+# Markdown
 *.markdown diff=markdown
 *.md diff=markdown
 *.mdown diff=markdown
-*.pbxproj -crlf -diff -merge
-*.py diff=python
-*.rb diff=ruby
-*.rust diff=rust
-*.tex diff=tex
+*.mkdown diff=markdown
+
+# Xcode projects
+*.pbxproj text -crlf -diff -merge
+
+# Sqitch configuration
 sqitch.conf text whitespace=blank-at-eol,space-before-tab,trailing-space

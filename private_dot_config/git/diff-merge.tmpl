@@ -1,42 +1,40 @@
 # vim: ft=gitconfig
 
-[color "diff"]
+[color.diff]
   meta = blue bold
   frag = magenta bold
   old = red bold
   new = green bold
-  diff = always
+
+[color.diff-highlight]
+	oldNormal = "blue"
+	oldHighlight = "blue reverse"
+	newNormal = "yellow"
+	newHighlight = "yellow reverse" diff = always
 
 [diff]
   compactionHeuristic = true
+  indentHeuristic = true
+  algorithm = histogram
   mnemonicprefix = true
   renames = copies
   submodule = log
 {{- if lookPath "ksdiff" }}
   guitool = Kaleidoscope
 {{- end }}
-{{- if lookPath "delta" }}
+{{- if lookPath "difft" }}
+  tool = difftastic
+{{- else if lookPath "delta" -}}
   tool = delta
 {{- end }}
 
-[diff "elixir"]
-  funcname = ^ *\\(\\(defmodule\\|defimpl\\|defprotocol\\|def\\) .*\\)
-
-[diff "erlang"]
-
-[diff "markdown"]
-
-[diff "python"]
-
-[diff "ruby"]
-  funcname = ^ *\\(\\(class\\|module\\|def\\) .*\\)
-
-[diff "rust"]
-
-[diff "tex"]
-
 [difftool]
   prompt = false
+
+{{ if lookPath "difftastic" -}}
+[difftool "difftastic"]
+  cmd = difft "$LOCAL" "$REMOTE"
+{{- end }}
 
 {{ if lookPath "icdiff" -}}
 [difftool "icdiff"]
@@ -51,6 +49,7 @@
 [merge]
   log = true
   conflictstyle = diff3
+  ff = false
 
 {{ if lookPath "gvim" -}}
 [mergetool "gvimdiff"]

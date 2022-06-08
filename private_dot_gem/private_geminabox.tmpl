@@ -1,6 +1,6 @@
-{{- if ne (dig "ruby" "rubygems" "geminabox" "kinetic"  "<missing>" .) "<missing>" -}}
+{{- if kindIs "map" (dig "ruby" "rubygems" "geminabox" "" .) -}}
+{{-   $e := .ruby.rubygems.geminabox }}
+{{-   $v := (onepasswordDetailsFields $e.name $e.vault $e.account) -}}
 ---
-:host: {{ keyring "kinetic-geminabox" .ruby.rubygems.geminabox.kinetic }}
-
-# vim: ft=yaml
-{{- end -}}
+:host: "https://{{ $v.username.value }}:{{ $v.credential.value }}@{{ $v.hostname.value }}/"
+{{- end }}

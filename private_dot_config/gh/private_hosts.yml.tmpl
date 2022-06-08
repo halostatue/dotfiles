@@ -1,6 +1,8 @@
-{{- if ne (dig "github" "user" "<missing>" .) "<missing>" -}}
+{{- if kindIs "map" (dig "github" "tokens" "github_gh" "" .) -}}
+{{-   $e := .github.tokens.github_gh -}}
+{{-   $v := (onepasswordDetailsFields $e.name $e.vault $e.account) -}}
 ---
 github.com:
-    user: {{ .github.user }}
-    oauth_token: {{ keyring "github-gh-oauth" .github.user }}
-{{- end -}}
+  user: {{ $v.username.value | quote }}
+  oauth_token: {{ $v.credential.value | quote }}
+{{- end }}

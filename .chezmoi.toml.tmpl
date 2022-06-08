@@ -1,0 +1,96 @@
+{{- $email := promptString "Email" -}}
+{{- $name := promptString "Name" -}}
+{{- $githubUsername := promptString "Github Username" -}}
+
+[data]
+email = {{ $email | quote }}
+name = {{ $name | quote }}
+
+## AWS credentials array, pulled from 1Password documents. This will be used
+## to concatenate multiple fragment documents into ~/.aws/credentials.
+##
+[data.aws]
+credentials = [
+  # { type = "1p", name = "personal", vault = "Personal", account = "zieglers" },
+]
+
+## Git supports GPG or SSH-based key-signing. If using SSH key signing, set
+## format to "ssh", and either specify the key *path* or the special key string
+## "key::ssh-TYPE VALUE IDENTITY".
+##
+# [data.git.signing]
+# format = "ssh"
+# key = "key::ssh-TYPE VALUE IDENTITY"
+
+[data.github]
+user = {{ $githubUsername | quote }}
+
+## Add GitHub token options here. Only 1Password retrieval is # supported, and
+## the type is expected to be an API Credential type with at least "user" and
+## "credential" values set.
+##
+## We look for the following tokens:
+##
+## - homebrew_api (~/.config/brew/config.fish.tmpl, ~/.config/brew/config.sh.tmpl)
+## - homebrew_packages (~/.config/brew/config.fish.tmpl, ~/.config/brew/config.sh.tmpl)
+## - github_keystore (~/.github_keystore)
+## - vim_rhubarb (~/.netrc)
+## - github_hub (~/.config/hub)
+## - github_gh (~/.config/gh/hosts.yml)
+##
+# [data.github.tokens.homebrew_api]
+# type = "1p"
+# name = "***"
+# vault = "***"
+# account = "***"
+
+## Rubygems Configuration
+##
+# [data.ruby.rubygems.geminabox]
+# type = "1p"
+# name = "***"
+# vault = "***"
+# account = "***"
+#
+# [data.ruby.rubygems.apikey]
+# type = "1p"
+# name = "***"
+# vault = "***"
+# account = "***"
+
+## If using GPG, set the default key here.
+##
+# [data.gnupg]
+# default_key = ""
+
+[data.ruby.hoe]
+email = {{ $email | quote }}
+
+[data.ruby.rubygems]
+user = {{ $email | quote }}
+
+## If using geminabox, set the admin users here.
+##
+# [data.ruby.rubygems.geminabox]
+# type = "1p"
+# name = "***"
+# vault = "***"
+# account = "***"
+
+## Set the key names to be used here. These are the private key file names,
+## without reference to ~/.ssh
+##
+[data.ssh]
+keys = [
+]
+
+## Build the SSH configuration file with hosts specified here. In each array entry,
+## the "host" key is the pattern for the `Host …` line. The config array is the list
+## of host-specific configuration entries to follow.
+##
+# [[data.ssh.hosts]]
+# config = [
+#   "HostName bastion-host-name",
+#   "LocalForward localhost:15432 database-host-name:5432",
+# ]
+# host = "database-tunnel"

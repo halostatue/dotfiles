@@ -8,11 +8,13 @@ end
 
 input = STDIN.readlines
 
-{{ if ne (dig "github" "user" "<missing>" .) "<missing>" -}}
+{{ if kindIs "map" (dig "github" "tokens" "vim_rhubarb" "" .) -}}
+{{-   $e := .github.tokens.vim_rhubarb }}
+{{-   $v := (onepasswordDetailsFields $e.name $e.vault $e.account) -}}
 add_if_missing(
   input,
-  /machine api.github.com login {{ .github.user }}/,
-  'machine api.github.com login {{ .github.user }} password {{ keyring "vim-rhubarb" .github.user }}'
+  /machine api.github.com login {{ $v.username.value }}/,
+  'machine api.github.com login {{ $v.username.value }} password {{ $v.credential.value }}'
 )
 {{- end }}
 

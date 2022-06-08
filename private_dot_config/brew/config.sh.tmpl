@@ -4,20 +4,23 @@
 
 {{- if lookPath "bat" }}
 export HOMEBREW_BAT=1
-# export HOMEBREW_BAT_CONFIG_PATH=$HOME/.bat/config
 {{- end }}
 
 export HOMEBREW_DISPLAY_INSTALL_TIMES=1
 
-{{- if hasKey . "homebrew" -}}
-{{-   if hasKey .homebrew "api_token" }}
-export HOMEBREW_GITHUB_API_TOKEN="{{ keyring "homebrew-github-api" .github.user }}"
+{{ if kindIs "map" (dig "github" "tokens" "" .) -}}
+{{-   if kindIs "map" (get .github.tokens "homebrew_api") -}}
+{{-     $e := .github.tokens.homebrew_api -}}
+{{-     $v := (onepasswordDetailsFields $e.name $e.vault $e.account) -}}
+export HOMEBREW_GITHUB_API_TOKEN={{ $v.credential.value | quote }}
 {{-   end }}
 
-{{-  if hasKey .homebrew "packages" }}
-export HOMEBREW_GITHUB_PACKAGES_TOKEN="{{ keyring "homebrew-github-packages" .homebrew.packages.user }}"
-export HOMEBREW_GITHUB_PACKAGES_USER="{{ .homebrew.packages.user }}"
-{{-   end }}
+{{-   if kindIs "map" (get .github.tokens "homebrew_packages") -}}
+{{-     $e := .github.tokens.homebrew_packages }}
+{{-     $v := (onepasswordDetailsFields $e.name $e.vault $e.account) -}}
+export HOMEBREW_GITHUB_PACKAGES_TOKEN={{ $v.credential.value | quote }}
+export HOMEBREW_GITHUB_PACKAGES_USER={{ $v.username.value | quote }}
+{{-   end -}}
 {{- end }}
 
 # export HOMEBREW_NO_ANALYTICS=1

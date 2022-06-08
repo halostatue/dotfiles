@@ -2,6 +2,9 @@
   statusHints = false
 	skippedCherryPicks = false
 
+[help]
+  autocorrect = 5
+
 [apply]
   whitespace = nowarn
 
@@ -27,21 +30,22 @@
   untracked = white bold
 
 [commit]
+  cleanup = scissors
+  verbose = true
 {{- if stat (joinPath .chezmoi.homeDir ".config/git/commit-message") }}
   template = {{ joinPath .chezmoi.homeDir ".config/git/commit-message" }}
 {{- end }}
 
 [core]
   abbrev = 12
-{{- if stat (joinPath .chezmoi.homeDir ".config/git/attributes" )}}
-  attributesFile = {{ joinPath .chezmoi.homeDir ".config/git/attributes" }}
-{{- end }}
   autocrlf = input
   compression = -1
-{{- if lookPath "nvim" }}
-  editor = nvim
-{{ else }}
   editor = vim
+  precomposeUnicode = true
+  safecrlf = true
+  whitespace = trailing-space,tab-in-indent,cr-at-eol,space-before-tab
+{{- if stat (joinPath .chezmoi.homeDir ".config/git/attributes" )}}
+  attributesFile = {{ joinPath .chezmoi.homeDir ".config/git/attributes" }}
 {{- end }}
 {{- if stat (joinPath .chezmoi.homeDir ".config/git/ignore") }}
   excludesFile = {{ joinPath .chezmoi.homeDir ".config/git/ignore" }}
@@ -49,20 +53,21 @@
 {{- if lookPath "delta" }}
   pager = delta
 {{- else if lookPath "diff-so-fancy" -}}
-  pager = diff-so-fancy | less --tabs=4 -RFX
+  pager = "diff-so-fancy | less --tabs=4 -RFX"
 {{- end }}
-  precomposeUnicode = true
-  safecrlf = true
-  whitespace = trailing-space,tab-in-indent,cr-at-eol,space-before-tab
 
 [feature]
   manyFiles = true
 
 [fetch]
   recurseSubmodules = on-demand
+  prune = true
 
 [format]
   pretty = %C(yellow)%h%C(reset) %C(red)%ad%C(reset) | %s%d %C(green)[%aN]%C(reset)
+
+[pretty]
+	simple-oneline = "%C(yellow)%h%C(auto)%d %s <%C(green)%aN%C(reset)> (%C(blue)%ar%C(reset))"
 
 [gc]
   reflogexpire = 300
@@ -86,6 +91,7 @@
   # Autodetect thread count
   threads = 0
   writeReverseIndex = true
+  useSparse = true
 
 [pager]
   # User a pager for `difftool`
@@ -100,12 +106,12 @@
   followTags = true
 
 [rebase]
-  # Remove merge commits during a rebase
   autosquash = true
-  # Rebase cleanly by stashing then unstashing
   autostash = true
-  # Increase safety of `git rebase -i`
   missingCommitCheck = true
+
+[credential]
+  helper = cache --timeout=3600
 
 [stash]
   # Show the patch with `git stash show`
@@ -118,7 +124,12 @@
   fetchJobs = 0
 
 [tag]
-  forceSignAnnotated = true
+  sort = version:refname
+
+[versionsort]
+  suffix = ""
+  suffix = "-rc"
+  suffix = "-pre"
 
 # URL shorthands
 [url "git@github.com:"]
@@ -153,6 +164,12 @@
 
 [hub]
   protocol = ssh
+
+[sendemail]
+	annotate = true
+	confirm = always
+	thread = true
+	supersscc = self
 
 [include]
   path = ~/.config/git/aliases

@@ -1,9 +1,36 @@
-*.un~
-*~
+# Compiled sources {{{
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+# }}}
+
+# Packages {{{
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.xz
+*.zip
+# }}}
+
+# Logs and databases {{{
+*.log
+*.sqlite
+*.sqlitedb
+# }}}
+
+# OS Files {{{
 .AppleDB
 .AppleDesktop
 .AppleDouble
 .DS_Store
+.DS_Store?
 .DocumentRevisions-V100
 .LSOverride
 .Spotlight-V100
@@ -16,18 +43,60 @@
 .directory
 .fseventsd
 .netrwhist
-.svn/*
-.vscode/
-.x/
 Icon
 Network Trash Folder
-Session.vim
-TAGS
 Temporary Items
 Thumbs.db
-[._]*.s[a-w][a-z]
-[._]s[a-w][a-z]
 desktop.ini
 ehthumbs.db
-svn-commit.*
+# }}}
+
+# Codekits {{
+.sass-cache/
+.codekit-config.json
+config.codekit
+# }}
+
+# Configs {{{
+.envrc
+.env
+.env.*
+# }}}
+
+# Editors {{{
+*.un~
+*~
+Session.vim
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+.idea/
+.svn/
+.vscode/
+*.sublime-project
+.tern-project
+# }}}
+
+# Temporary Files {{{
+tmp/
+*.tmp
+.x/
+# }}}
+
+# Other {{{
+.rake_tasks
+.meteor/
 tags
+tags.*
+TAGS
+.*_history
+perf.data*
+oprofile_data
+.tool-versions-e
+svn-commit.*
+.elixir_ls/
+/.direnv
+.vagrant/
+erl_crash.dump
+# }}}
+
+# vim: ft=gitignore

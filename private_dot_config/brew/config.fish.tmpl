@@ -3,25 +3,28 @@
 # See https://docs.brew.sh/Manpage#environment
 
 {{- if lookPath "bat" }}
-set -gx HOMEBREW_BAT 1
-# set -gx HOMEBREW_BAT_CONFIG_PATH $HOME/.bat/config
+set --global --export HOMEBREW_BAT 1
 {{- end }}
 
-set -gx HOMEBREW_DISPLAY_INSTALL_TIMES 1
+set --global --export HOMEBREW_DISPLAY_INSTALL_TIMES 1
 
-{{- if hasKey . "homebrew" -}}
-{{-   if hasKey .homebrew "api_token" }}
-set -gx HOMEBREW_GITHUB_API_TOKEN '{{ keyring "homebrew-github-api" .github.user }}'
+{{ if kindIs "map" (dig "github" "tokens" "" .) -}}
+{{-   if kindIs "map" (get .github.tokens "homebrew_api") -}}
+{{-     $e := .github.tokens.homebrew_api -}}
+{{-     $v := (onepasswordDetailsFields $e.name $e.vault $e.account) -}}
+set --global --export HOMEBREW_GITHUB_API_TOKEN {{ $v.credential.value | quote }}
 {{-   end }}
 
-{{-  if hasKey .homebrew "packages" }}
-set -gx HOMEBREW_GITHUB_PACKAGES_TOKEN '{{ keyring "homebrew-github-packages" .homebrew.packages.user }}'
-set -gx HOMEBREW_GITHUB_PACKAGES_USER "{{ .homebrew.packages.user }}"
-{{-   end }}
+{{-   if kindIs "map" (get .github.tokens "homebrew_packages") -}}
+{{-     $e := .github.tokens.homebrew_packages -}}
+{{-     $v := (onepasswordDetailsFields $e.name $e.vault $e.account) -}}
+set --global --export HOMEBREW_GITHUB_PACKAGES_TOKEN {{ $v.credential.value | quote }}
+set --global --export HOMEBREW_GITHUB_PACKAGES_USER {{ $v.username.value | quote }}
+{{-   end -}}
 {{- end }}
 
-# set -gx HOMEBREW_NO_ANALYTICS 1
-# set -gx HOMEBREW_NO_AUTO_UPDATE 1
-# set -gx HOMEBREW_NO_GITHUB_API 1
+# set --global --export HOMEBREW_NO_ANALYTICS 1
+# set --global --export HOMEBREW_NO_AUTO_UPDATE 1
+# set --global --export HOMEBREW_NO_GITHUB_API 1
 
-set -gx HOMEBREW_NO_INSECURE_REDIRECT 1
+set --global --export HOMEBREW_NO_INSECURE_REDIRECT 1

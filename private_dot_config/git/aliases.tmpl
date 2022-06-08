@@ -16,6 +16,9 @@
   # Quickly amend a commit
   fast-amend = commit --amend --no-edit
 
+  # Quickly amend a commit, but allow editing of the message
+  fast-edit = commit --amend --reuse-message HEAD
+
   # Push the current HEAD to `origin`
   push-head = !git push origin $(git symbolic-ref HEAD)
 
@@ -73,6 +76,11 @@
   # Show a markdown-formatted summary of commits from {REVIEW_BASE:-origin/master} until HEAD
   pr-summary = !git log --reverse --format=\"- **%s** (%h)%n%n%w(74,2,2)%b\" \"${REVIEW_BASE:-origin/master}\"..HEAD
   head = rev-parse HEAD
+
+  todo = grep -Ee '\\bTODO:?\\b'
+  fixme = grep -Ee '\\bFIX(ME)?:?\\b'
+
+	# cleanup = "!git branch --format=\"%(if:notequals=*)%(HEAD)%(then)%(if:notequals=${1:-master})%(refname:lstrip=2)%(then)%(refname:lstrip=2)%(end)%(end)\" --merged master | xargs -rpxL1 git branch -d"
 
   save ="!f() { if [ \"$#\" -lt 1 ]; then echo \"No revision given! You must specify a valid ref.\"; exit 1; fi; if [ \"$#\" -lt 2 ]; then echo \"No file(s) given! Files must be specified.\"; exit 1; fi; dir=\"`git rev-parse--show-toplevel`\"; ref=\"$1\"; shift; cd \"${dir}\"; dest=\"`echo \"${ref}\" | sed 's-/-_-g'`\"; for f in \"$@\"; do git show \"${ref}:${f}\" \"${f}.${dest}\"; done; }"
 
