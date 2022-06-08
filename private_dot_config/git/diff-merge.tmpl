@@ -13,6 +13,7 @@
 	newHighlight = "yellow reverse" diff = always
 
 [diff]
+  colorMoved = default
   compactionHeuristic = true
   indentHeuristic = true
   algorithm = histogram
@@ -26,6 +27,12 @@
   tool = difftastic
 {{- else if lookPath "delta" -}}
   tool = delta
+{{- end }}
+
+{{ if lookPath "delta" -}}
+[delta]
+  navigate = true
+  side-by-side = true
 {{- end }}
 
 [difftool]
