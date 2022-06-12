@@ -38,14 +38,6 @@ if not set --query --universal PROJECT_PATHS
         ~/oss/private
 end
 
-if functions --query path:unique
-    path:unique --test $HOME/.local/bin $HOME/.bin $HOME/bin
-end
-
-if functions --query path:make_unique
-    path:make_unique
-end
-
 set CDPATH . ~/.links/ ~/dev ~/dev/kinetic ~/oss ~/oss/github ~
 
 if command --query pngcrush

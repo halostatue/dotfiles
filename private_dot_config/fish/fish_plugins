@@ -8,7 +8,6 @@ halostatue/fish-haskell@v2.x
 halostatue/fish-kerl@v1.x
 halostatue/fish-rake@v1.x
 halostatue/fish-rust@v1.x
-halostatue/fish-utils-core@v1.x
 halostatue/fish-utils@v2.x
 PatrickF1/fzf.fish
 jorgebucaran/fishtape
@@ -21,5 +20,6 @@ halostatue/plugin-aws@patch-1
 lilyball/nix-env.fish
 IlanCosman/clownfish
 IlanCosman/tide@v5
+halostatue/fish-utils-core@v2.x
 halostatue/fish-macos@v4.x
 reitzig/sdkman-for-fish

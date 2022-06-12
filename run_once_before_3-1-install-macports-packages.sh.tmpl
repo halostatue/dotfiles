@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+{{ if (eq .chezmoi.os "darwin") -}}
+
+if ! command -v port >/dev/null 2>&1; then
+  declare macports_version os_version pattern url
+  pattern="https://github.com/macports/macports-base/releases/download/v%s/MacPorts-%s-%s.pkg"
+  macports_version=2.7.2
+
+  case "$(sw_vers -productVersion)" in
+    10.5 | 10.5.*) os_version="10.5-Leopard" ;;
+    10.6 | 10.6.*) os_version="10.6-SnowLeopard" ;;
+    10.7 | 10.7.*) os_version="10.7-Lion" ;;
+    10.8 | 10.8.*) os_version="10.8-MountainLion" ;;
+    10.9 | 10.9.*) os_version="10.9-Mavericks" ;;
+    10.10 | 10.10.*) os_version="10.10-Yosemite" ;;
+    10.11 | 10.11.*) os_version="10.11-ElCapitan" ;;
+    10.12 | 10.12.*) os_version="10.12-Sierra" ;;
+    10.13 | 10.13.*) os_version="10.13-HighSierra" ;;
+    10.14 | 10.14.*) os_version="10.14-Mojave" ;;
+    10.15 | 10.15.*) os_version="10.15-Catalina" ;;
+    10.16 | 10.16.* | 11 | 11.*) os_version="11-BigSur" ;;
+    12 | 12.*) os_version="12-Monterey" ;;
+    13 | 13.*)
+      os_version="13-Ventura"
+      echo >&2 "OS Version ${os_version} is not yet supported."
+      exit 1
+      ;;
+  esac
+
+  url="$(printf "${pattern}" "${macports_version}" "${macports_version}" "${os_version}")"
+
+  cd "$(mktemp -d)"
+
+  curl "${url}" -o MacPorts.pkg
+  sudo installer -pkg MacPorts.pkg -target /
+
+  export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+fi
+
+sudo port-tclsh "{{ .chezmoi.sourceDir }}/Setup/restore-ports.tcl" "{{ .chezmoi.sourceDir }}/Setup/Ports.installed"
+sudo port unsetrequested installed
+xargs sudo port setrequested < "{{ .chezmoi.sourceDir }}/Setup/Ports.requested"
+
+set -euo pipefail
+
+tmp="${PWD}"/build.$$
+
+mkdir -p "${tmp}"
+cd "${tmp}"
+
+remove-tmp() {
+  rm -rf "${tmp}"
+}
+
+trap remove-tmp EXIT
+
+git clone https://github.com/halostatue/macports-ports-override.git
+cd macports-ports-override
+
+current="$(port -q installed autoconf | awk '/(active)/ { print $1, $2; }')"
+pushd autoconf@2.69
+sudo port install
+sudo port activate "${current}"
+popd
+
+pushd ruby-build
+sudo port install +standalone
+popd
+{{- end }}

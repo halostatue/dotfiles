@@ -3,3 +3,4 @@ private_dot_vim/spell/*.spl
 Gemfile.lock
 Secrets/*
 !Secrets/.keep
+Brewfile.lock.json

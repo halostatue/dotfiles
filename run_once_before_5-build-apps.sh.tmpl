@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+cd "$(mktemp -d)"
+
+# PG Modeler
+build-pg-modeler() (
+{{ if (eq .chezmoi.os "darwin") -}}
+  PATH="/opt/local/libexec/qt5/bin:${PATH}"
+{{- end }}
+
+  if ! command -v qmake; then
+    echo "Cannot build pg-modeler; qmake not found (is Qt 5 installed)"
+    return
+  fi
+
+  git clone https://github.com/pgmodeler/pgmodeler.git
+  cd pgmodeler
+  git checkout main
+
+  /opt/local/libexec/qt5/bin/qmake \
+    PGSQL_LIB="$(pg_config --libdir)/libpq.dylib" \
+    PGSQL_INC="$(pg_config --includedir)" \
+    -r pgmodeler.pro
+  make -j "$(expr "$(getconf _NPROCESSORS_ONLN)" + 1)"
+  make install
+)
+
+build-git-switch-user() {
+  git clone https://github.com/cquintana92/git-switch-user.git
+  pushd git-switch-user
+  cargo install --locked --path .
+  popd
+}
+
+build-unused-code() {
+  git clone https://github.com/unused-code/unused
+  pushd unused
+  declare -a features
+{{- if (and (eq .chezmoi.os "darwin") (not (eq .chezmoi.arch "arm64"))) }}
+  features=(--features mimalloc)
+{{- end }}
+
+  cargo install --locked --path . "${features[@]}"
+  popd
+}
+
+build-pg-modeler
+build-git-switch-user
+build-unused-code

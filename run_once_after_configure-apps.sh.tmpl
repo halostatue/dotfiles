@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+{{ if (eq .chezmoi.os "darwin") -}}
+# GPG settings
+#
+gpg-connect-agent reloadagent /bye
+
+# https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh
+chmod -R go-w "$(brew --prefix)/share"
+
+# TextEdit settings
+#
+killall TextEdit
+# Set default TextEdit document format as plain text
+defaults write com.apple.TextEdit "RichText" -bool "false"
+# Open and save files as UTF-8
+defaults write com.apple.TextEdit PlainTextEncoding -int 4
+defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
+
+# Make chezmoi use Git with SSH
+#
+cd "{{ .chezmoi.sourceDir }}"
+CHEZMOI_SSH_URL="$(git remote get-url origin | sed -Ene's#https://([^/]*)/([^/]*/.*.git)#git@\1:\2#p')"
+[[ -z ${CHEZMOI_SSH_URL} ]] || git remote set-url origin ${CHEZMOI_SSH_URL}
+{{- end }}

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+{{ if (eq .chezmoi.os "darwin") -}}
+if ! command -v brew >/dev/null 2>&1; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+  HOMEBREW_PREFIX={{ ternary "/opt/homebrew" "/usr/local" (eq .chezmoi.arch "arm64") }}
+  eval "$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+fi
+
+HOMEBREW_CASK_OPTS=--no-quarantine brew bundle --file "{{ .chezmoi.sourceDir }}/Setup/Brewfile"
+{{- end }}
