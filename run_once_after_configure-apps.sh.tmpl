@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 {{ if (eq .chezmoi.os "darwin") -}}
+osascript -e 'tell application "System Preferences" to quit'
+
 # GPG settings
 #
 gpg-connect-agent reloadagent /bye
@@ -12,10 +14,20 @@ chmod -R go-w "$(brew --prefix)/share"
 #
 killall TextEdit
 # Set default TextEdit document format as plain text
-defaults write com.apple.TextEdit "RichText" -bool "false"
+defaults write com.apple.TextEdit RichText -bool false
 # Open and save files as UTF-8
 defaults write com.apple.TextEdit PlainTextEncoding -int 4
 defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
+
+# Expand save panel by default
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+
+# Expand print panel by default
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
+defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
+# Automatically quit printer app once the print jobs complete
+defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
 
 # Make chezmoi use Git with SSH
 #

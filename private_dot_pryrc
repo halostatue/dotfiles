@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require "pathname"
+require "pry-doc"
+require "pry-coolline"
 
 rubyrc = Pathname("~/.rubyrc").expand_path
 load rubyrc if rubyrc.exist?

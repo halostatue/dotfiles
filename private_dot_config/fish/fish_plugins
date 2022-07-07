@@ -1,6 +1,5 @@
 franciscolourenco/done
 halostatue/fish-brew@v2.x
-halostatue/fish-direnv@v1.x
 halostatue/fish-docker@v1.x
 halostatue/fish-elixir@v1.x
 halostatue/fish-go@v2.x
@@ -20,6 +19,10 @@ halostatue/plugin-aws@patch-1
 lilyball/nix-env.fish
 IlanCosman/clownfish
 IlanCosman/tide@v5
-halostatue/fish-utils-core@v2.x
 halostatue/fish-macos@v4.x
 reitzig/sdkman-for-fish
+jorgebucaran/fisher
+halostatue/fish-machine-config@v1.x
+halostatue/fish-utils-core
+halostatue/fish-utils-core@v2.x
+halostatue/fish-direnv@v1.x

@@ -4,12 +4,14 @@ if not functions --query fisher
         set XDG_CONFIG_HOME ~/.config
     end
 
-    curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
-    fish -c fisher
+    curl -sSL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish \
+        -o $XDG_CONFIG_HOME/fish/functions/fisher.fish
 end
 
-# Set up local configuration files
-__local_config platform host user
+# Set up local machine configuration files
+if functions --query __machine_config
+    __machine_config platform host user
+end
 
 if not set --query --global EDITOR
     set --global --export EDITOR (which vim)
@@ -241,6 +243,10 @@ if status is-interactive
 
     if command --query hof
         hof completion fish | string replace -r '(alias _="hof")' '#$1' | source
+    end
+
+    if command --query op
+        op completion fish | source
     end
 end
 
