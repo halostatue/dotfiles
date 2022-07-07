@@ -43,7 +43,3 @@ Secrets/
 .config/fish/alacritty.fish
 .config/alacritty/alacritty.yml
 {{ end }}
-
-Library/Application Support/espanso/
-Library/Application Support/espanso/packages/espanso-latex/
-Library/Preferences/espanso/
