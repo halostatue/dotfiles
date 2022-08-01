@@ -3,11 +3,6 @@
 {{ if (eq .chezmoi.os "darwin") -}}
 osascript -e 'tell application "System Preferences" to quit'
 
-if command -v gsed > /dev/null 2>&1; then
-  grep -q pam_tid.so /etc/pam.d/sudo ||
-    sudo gsed -i '2iauth        sufficient     pam_tid.so' /etc/pam.d/sudo
-fi
-
 # Dock settings
 #
 defaults write com.apple.dock orientation -string "right"

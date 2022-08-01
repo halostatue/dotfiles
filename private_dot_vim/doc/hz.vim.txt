@@ -138,20 +138,6 @@ hz#buffer#timer({bufnr}, {callback}, [interval])           *hz#buffer#timer()*
 
   [interval] is 500 ms if omitted.
 
-hz#bufferize#do({command})                                 *hz#bufferize#do()*
-  Execute a command, capturing (appending) its output to a buffer. It works
-  with hidden buffers as well as visible buffers.
-
-  Copied from functions by Andrew Radev.
-
-hz#bufferize#bufnr({command})                           *hz#bufferize#bufnr()*
-  Return the buffer number if the buffer has a window visible on this tabpage.
-  Return a negative buffer number if the buffer is not visible.
-
-hz#bufferize#messages()                              *hz#bufferize#messages()*
-  Bufferizes the `messages` command with an update callback. If messages are
-  already bufferized, does nothing.
-
 hz#cache#root()                                              *hz#cache#root()*
   Return the cache root path.
 

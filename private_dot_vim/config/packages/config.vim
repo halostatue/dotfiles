@@ -227,3 +227,5 @@ let g:neoformat_try_node_exe = 1 " Try a formatter in `node_modules/.bin`
 "         \ 'stderr': 1
 "         \ }
 " endfunction
+
+nmap <C-W><S-C> <Plug>(choosewin)
