@@ -1,0 +1,280 @@
+#=============================================================================
+# basic.toml --- basic configuration example for SpaceVim
+# Copyright (c) 2016-2021 Wang Shidong & Contributors
+# Author: Wang Shidong < wsdjeg at 163.com >
+# URL: https://spacevim.org
+# License: GPLv3
+#=============================================================================
+
+# All SpaceVim option below [option] section
+[options]
+bootstrap_before = "hzsvim#before"
+bootstrap_after = "hzsvim#after"
+
+guifont = "IBMPlexMono:h11"
+
+# layer: colorscheme
+colorscheme = "gruvbox"
+colorscheme_bg = "dark"
+# dark only: "molokai", "srcery", "onedark", "jellybeans", "palenight", "nord"
+# both: "one", "gruvbox", "NeoSolarized", "hybrid", "material", "dracula", "SpaceVim"
+
+# layer: autocomplete
+# autocomplete_method = "asyncomplete" # https://github.com/prabirshrestha/asyncomplete.vim
+# autocomplete_method = "coc"          # coc https://github.com/neoclide/coc.nvim
+# autocomplete_method = "completor"    # https://github.com/maralla/completor.vim
+# autocomplete_method = "deoplete"     # https://github.com/Shougo/deoplete.nvim (nvim only)
+# autocomplete_method = "neocomplete" # neocomplete https://github.com/Shougo/neocomplete.vim
+# autocomplete_method = "ycm" # :h g:spacevim_enable_ycm https://github.com/ycm-core/YouCompleteMe
+# autocomplete_parens = false
+# snippet_engine = "neosnippet" # https://github.com/Shougo/neosnippet.vim
+# snippet_engine = "ultisnips"  # https://github.com/SirVer/ultisnips
+
+# layer: checkers
+# lint_engine = "neomake" #
+
+# layer: core
+# filemanager = "nerdtree" # default
+# filemanager = "defx"
+
+# layer: statusline
+statusline_separator = "nil"   # default: "arrow"
+statusline_iseparator = "bar"  # default: "bar"
+buffer_index_type = 4          # 0: 1 ➛ ➊, 1: 1 ➛ ➀, 2: 1 ➛ ⓵, 3: 1 ➛ ¹, 4: 1 ➛ 1
+enable_statusline_mode = false # default: true
+# statusline_left_sections = []
+# statusline_right_sections = []
+# "winnr" window number
+# "syntax checking"
+# "filename" file name
+# "fileformat" file format
+# "major mode"
+# "minor mode lighters"
+# "cursorpos" cursor position
+# "percentage" content range
+# "date" date
+# "time" time
+# "whitespace" line number with trailing space at the end
+# "battery status" battery status
+# "input method" input method
+# "search status" search index
+
+# Disable guicolors in basic mode, many terminal do not support 24bit
+# true colors
+enable_guicolors = false
+
+# Enable vim compatible mode, avoid changing origin vim key bindings
+vimcompatible = true
+# windows_leader = 's'
+# enable_language_specific_leader = true
+# windows_smartclose = 'q'
+# escape_key_binding = ''
+
+# Disable statusline separator, if you want to use other value, please
+# install nerd fonts
+windows_index_type = 3
+
+enable_tabline_filetype_icon = false
+statusline_unicode = false
+
+# Enable autocomplete layer
+[[layers]]
+name = "autocomplete"
+# auto_completion_complete_with_key_sequence = "nil"
+# auto_completion_complete_with_key_sequence_delay = 1 # s
+# auto_completion_delay = 50                           # ms
+# auto_completion_enable_snippets_in_popup = false
+# auto_completion_return_key_behavior = "complete"
+# auto_completion_return_key_behavior = "smart"
+# auto_completion_tab_key_behavior = "complete"
+# auto_completion_tab_key_behavior = "cycle"
+# auto_completion_tab_key_behavior = "smart"
+
+[[layers]]
+name = "checkers"
+# lint_on_the_fly = false  # Syntax checking on the fly feature, disabled by default.
+# lint_on_save = true      # Run syntax checking when saving a file.
+# show_cursor_error = true # Enable/Disable displaying error below current line.
+# lint_exclude_filetype = [] # Set the filetypes which does not enable syntax checking.
+
+# [[layers]]
+# name = "colorschemes"
+
+# [[layers]]
+# name = "core"
+# filetree_show_hidden = false
+# enable_smooth_scrolling = true
+# filetree_opened_icon = ""
+# filetree_closed_icon = ""
+
+[[layers]]
+name = "debugger"
+# debugger_plugin = "vim-vebugger"
+debugger_plugin = "vimspector"
+
+# [[layers]]
+# name = "default"
+
+[[layers]]
+name = "edit"
+
+[[layers]]
+name = "format"
+# format_method = "neoformat" # default
+# format_method = "codefmt"
+# format_on_save = true
+# silent_format = true
+
+# [[layers]]
+# name = "fzf"
+
+[[layers]]
+name = "git"
+git_plugin = "git" # gina, fugitive, git
+
+[[layers]]
+name = "github"
+
+[[layers]]
+name = "gtags"
+
+[[layers]]
+name = "incsearch"
+
+# [[layers]]
+# name = "lang#aspectj"
+
+[[layers]]
+name = "lang#c"
+
+[[layers]]
+name = "lang#crystal"
+
+[[layers]]
+name = "lang#d"
+
+[[layers]]
+name = "lang#dart"
+
+[[layers]]
+name = "lang#dockerfile"
+
+[[layers]]
+name = "lang#elixir"
+
+[[layers]]
+name = "lang#elm"
+
+[[layers]]
+name = "lang#erlang"
+
+[[layers]]
+name = "lang#fennel"
+
+[[layers]]
+name = "lang#go"
+
+[[layers]]
+name = "lang#graphql"
+
+[[layers]]
+name = "lang#html"
+
+[[layers]]
+name = "lang#janet"
+
+[[layers]]
+name = "lang#java"
+
+[[layers]]
+name = "lang#javascript"
+
+[[layers]]
+name = "lang#jsonnet"
+
+[[layers]]
+name = "lang#julia"
+
+[[layers]]
+name = "lang#latex"
+
+[[layers]]
+name = "lang#lisp"
+
+[[layers]]
+name = "lang#lua"
+
+[[layers]]
+name = "lang#markdown"
+enabled_formatter = ["prettier"]
+
+[[layers]]
+name = "lang#nim"
+
+[[layers]]
+name = "lang#nix"
+
+[[layers]]
+name = "lang#ocaml"
+
+[[layers]]
+name = "lang#org"
+
+[[layers]]
+name = "lang#pony"
+
+[[layers]]
+name = "lang#prolog"
+
+[[layers]]
+name = "lang#python"
+
+[[layers]]
+name = "lang#r"
+
+[[layers]]
+name = "lang#ruby"
+
+[[layers]]
+name = "lang#rust"
+
+[[layers]]
+name = "lang#sh"
+
+[[layers]]
+name = "lang#tcl"
+
+[[layers]]
+name = "lang#toml"
+
+[[layers]]
+name = "lang#typescript"
+
+[[layers]]
+name = "lang#vim"
+
+[[layers]]
+name = "lang#vue"
+
+[[layers]]
+name = "lang#xml"
+
+[[layers]]
+name = "lang#zig"
+
+[[layers]]
+name = "lsp"
+filetypes = ["rust"]
+[layers.override_cmd]
+rust = ["rust-analyzer"]
+
+[[layers]]
+name = "shell"
+default_position = "top"
+default_height = 30
+
+[[layers]]
+name = "test"
+
+[[layers]]
+name = "tools#dash"

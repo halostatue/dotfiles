@@ -1,0 +1,11 @@
+[mix-text]
+command = "mix"
+args = ["test"]
+
+[mix-coveralls]
+command = "mix"
+args = ["coveralls"]
+
+[mix-dialyzer]
+command = "mix"
+args = ["dialyzer"]

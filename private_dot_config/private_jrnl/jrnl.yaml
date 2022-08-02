@@ -1,0 +1,18 @@
+colors:
+  body: none
+  date: none
+  tags: none
+  title: none
+default_hour: 9
+default_minute: 0
+editor: /opt/homebrew/bin/vim
+encrypt: false
+highlight: true
+indent_character: '|'
+journals:
+  default: /Users/austin/.local/share/jrnl/journal.txt
+linewrap: 79
+tagsymbols: '#@'
+template: false
+timeformat: '%Y-%m-%d %H:%M'
+version: v2.8.4

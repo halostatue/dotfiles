@@ -1,9 +1,11 @@
 scriptencoding utf-8
 
 let s:dir = hz#xdg_path('data', 'site')
-call hz#mkpath(s:dir)
+call hz#mkpath(s:dir, true)
 
-let &packpath = s:dir . ',' . &packpath
+if &packpath !~# s:dir
+  let &packpath = s:dir . ',' . &packpath
+endif
 
 let s:dir = s:dir . '/pack/packager/opt/vim-packager'
 

@@ -9,8 +9,6 @@ g.startify_change_to_vcs_root = 1
 g.startify_change_cmd = 'cd'
 
 g.startify_commands = {
-  { u = { 'Update plugins', 'PackerUpdate' } },
-  { c = { 'Clean plugins', 'PackerClena' } },
-  { t = { 'Time startup', 'StartupTime' } },
-  { s = { 'Start Prosession', 'Prosession .' } },
+  {u = {'Update plugins', 'PackerUpdate'}}, {c = {'Clean plugins', 'PackerClena'}},
+  {t = {'Time startup', 'StartupTime'}}, {s = {'Start Prosession', 'Prosession .'}}
 }

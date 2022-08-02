@@ -196,7 +196,7 @@ function! s:packager_init() abort
   " https://github.com/lambdalisue/vim-backslash
   call packager#add('lambdalisue/vim-backslash')
 
-  " Colorscheme
+  " Colorschemes
   " https://github.com/tyrannicaltoucan/vim-quantum
   call packager#add('tyrannicaltoucan/vim-quantum')
   " https://github.com/cocopon/iceberg.vim
@@ -212,6 +212,19 @@ function! s:packager_init() abort
 
   " Autoclose parentheses: https://github.com/mattn/vim-lexiv
   call packager#add('mattn/vim-lexiv')
+
+  " LSP Options
+  " " https://github.com/dense-analysis/ale
+  " call packager#add('dense-analysis/ale')
+  " https://github.com/neoclide/coc.nvim
+  call packager#add('neoclide/coc.nvim', { 'branch': 'release' })
+  " https://github.com/autozimu/LanguageClient-neovim
+  " call packager#add('autozimu/LanguageClient-neovim')
+  " https://github.com/natebosch/vim-lsc
+  " call packager#add('natebosch/vim-lsc')
+  " https://github.com/prabirshrestha/vim-lsp
+  " call packager#add('prabirshrestha/vim-lsp')
+  " https://github.com/rhysd/vim-lsp-ale
 
   " LSP and tag view display: https://github.com/liuchengxu/vista.vim
   call packager#add('liuchengxu/vista.vim')
@@ -243,7 +256,6 @@ function! s:packager_init() abort
   " Highlight conflict markers: https://github.com/rhysd/conflict-marker.vim
   call packager#add('rhysd/conflict-marker.vim')
 
-  " Task running & quickfix {{{
   " Asynchronous execution to quickfix: https://github.com/hauleth/asyncdo.vim
   call packager#add('hauleth/asyncdo.vim')
   " Tame quickfix: https://github.com/romainl/vim-qf
@@ -251,7 +263,6 @@ function! s:packager_init() abort
   " Make enhancements (configured like projectionist): https://github.com/igemnace/vim-makery
   call packager#add('igemnace/vim-makery')
 
-  " Splits management {{{
   " Choose a window by letter: https://github.com/t9md/vim-choosewin
   call packager#add('t9md/vim-choosewin')
   " Zoom windows: https://github.com/dhruvasagar/vim-zoom
@@ -262,15 +273,6 @@ function! s:packager_init() abort
 
   " Multi-language Test Runner: https://github.com/vim-test/vim-test
   call packager#add('vim-test/vim-test')
-
-  " VimL lint: https://github.com/Vimjas/vint
-  call packager#add('Vimjas/vint', { 'type': 'opt' })
-
-  " Vimscript Test: https://github.com/junegunn/vader.vim
-  call packager#add('junegunn/vader.vim', { 'type': 'opt' })
-
-  " Vimscript Test: https://github.com/thinca/vim-themis
-  call packager#add('thinca/vim-themis', { 'type': 'opt' })
 
   " Gist commands: https://github.com/mattn/gist-vim
   call packager#add('mattn/gist-vim', { 'type': 'opt' })
@@ -284,7 +286,6 @@ function! s:packager_init() abort
   " Floating terminal: https://github.com/voldikss/vim-floaterm
   call packager#add('voldikss/vim-floaterm')
 
-  " Status bar {{{
   " https://github.com/liuchengxu/eleline.vim
   call packager#add('liuchengxu/eleline.vim')
   " https://github.com/rbong/vim-crystalline
@@ -294,7 +295,13 @@ function! s:packager_init() abort
 
   " Development utility to bundle useful modules: https://github.com/vim-jp/vital.vim
   call packager#add('vim-jp/vital.vim', { 'type': 'opt' })
-  " }}}
+  " VimL lint: https://github.com/Vimjas/vint
+  call packager#add('Vimjas/vint', { 'type': 'opt' })
+  " Vimscript Test: https://github.com/junegunn/vader.vim
+  call packager#add('junegunn/vader.vim', { 'type': 'opt' })
+  " Vimscript Test: https://github.com/thinca/vim-themis
+  call packager#add('thinca/vim-themis', { 'type': 'opt' })
+
 endfunction
 
 command! -nargs=* -bar PackagerRefresh call s:packager_init() | call packager#install(<args>)
