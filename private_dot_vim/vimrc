@@ -33,7 +33,8 @@ runtime config/keys.vim
 "
 runtime config/packages/config.vim
 
-colorscheme quantum
+" colorscheme quantum
+colorscheme evening
 
 " let g:afterglow_blackout=1
 " let g:afterglow_italic_comments=1

@@ -1,7 +1,7 @@
 scriptencoding utf-8
 
 let s:dir = hz#xdg_path('data', 'site')
-call hz#mkpath(s:dir, true)
+call hz#mkpath(s:dir, v:true)
 
 if &packpath !~# s:dir
   let &packpath = s:dir . ',' . &packpath

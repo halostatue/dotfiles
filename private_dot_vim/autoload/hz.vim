@@ -401,35 +401,32 @@ let s:is.sudo = $SUDO_USER !=# '' && $USER !=# $SUDO_USER
 let s:is.tmux = exists('$TMUX')
 
 function! hz#coc_extensions() abort
-  execute CocInstall coc-ansible
-  execute CocInstall coc-css
-  execute CocInstall coc-cssmodules
-  execute CocInstall coc-deno
-  execute CocInstall coc-diagnostic
-  execute CocInstall coc-docker
-  execute CocInstall coc-elixir
-  execute CocInstall coc-eslint
-  execute CocInstall coc-explorer
-  execute CocInstall coc-flutter
-  execute CocInstall coc-gist
-  execute CocInstall coc-git
-  execute CocInstall coc-go
-  execute CocInstall coc-graphql
-  execute CocInstall coc-html
-  execute CocInstall coc-json
-  execute CocInstall coc-julia
-  execute CocInstall coc-markdownlint
-  execute CocInstall coc-prettier
-  execute CocInstall coc-pyright
-  execute CocInstall coc-rust-analyzer
-  execute CocInstall coc-sh
-  execute CocInstall coc-snippets
-  execute CocInstall coc-solargraph
-  execute CocInstall coc-spell-checker
-  execute CocInstall coc-sql
-  execute CocInstall coc-svelte
-  execute CocInstall coc-toml
-  execute CocInstall coc-tsserver
-  execute CocInstall coc-vetur
-  execute CocInstall coc-zig
+  " execute "CocInstall coc-ansible"
+  " execute "CocInstall coc-css"
+  " execute "CocInstall coc-diagnostic"
+  " execute "CocInstall coc-docker"
+  " execute "CocInstall coc-elixir"
+  " execute "CocInstall coc-eslint"
+  " execute "CocInstall coc-explorer"
+  " execute "CocInstall coc-flutter"
+  " execute "CocInstall coc-gist"
+  " execute "CocInstall coc-git"
+  " execute "CocInstall coc-go"
+  " execute "CocInstall coc-html"
+  " execute "CocInstall coc-json"
+  " execute "CocInstall coc-julia"
+  " execute "CocInstall coc-markdownlint"
+  " execute "CocInstall coc-prettier"
+  " execute "CocInstall coc-pyright"
+  " execute "CocInstall coc-rust-analyzer"
+  " execute "CocInstall coc-sh"
+  " execute "CocInstall coc-snippets"
+  " execute "CocInstall coc-solargraph"
+  " execute "CocInstall coc-spell-checker"
+  " execute "CocInstall coc-sql"
+  " execute "CocInstall coc-svelte"
+  " execute "CocInstall coc-toml"
+  " execute "CocInstall coc-tsserver"
+  " execute "CocInstall coc-vetur"
+  " execute "CocInstall coc-zig"
 endfunction

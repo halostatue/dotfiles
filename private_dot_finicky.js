@@ -54,7 +54,11 @@ UrlSearchParams.prototype.toString = function () {
   for (const key in dict) {
     let name = encode(key)
     for (let i = 0, value = dict[key]; i < value.length; i++) {
-      query.push(name + '=' + encode(value[i]))
+      if (value[i]) {
+        query.push(name + '=' + encode(value[i]))
+      } else {
+        query.push(name)
+      }
     }
   }
   return query.join('&')

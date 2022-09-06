@@ -71,7 +71,6 @@ Session.vim
 [._]s[a-w][a-z]
 .idea/
 .svn/
-.vscode/
 *.sublime-project
 .tern-project
 # }}}

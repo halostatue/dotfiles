@@ -12,5 +12,5 @@ let g:startify_commands = [
       \ {'u': ['Update plugins', 'PackagerUpdate']},
       \ {'c': ['Clean plugins', 'PackagerClean']},
       \ {'t': ['Time startup', 'StartupTime']},
-      \ {'s': ['Start Prosession', 'Prosession .']}
+      \ {'s': ['Start Prosession', 'packadd vim-obsession | packadd vim-prosession | Prosession .']}
       \ ]

@@ -81,7 +81,10 @@ function! s:packager_init() abort
   " Session Management
   " Handle Vim sessions like a pro: https://github.com/dhruvasagar/vim-prosession
   " Continuously updated session files: https://github.com/tpope/vim-obsession
-  call packager#add('dhruvasagar/vim-prosession', { 'requires': 'tpope/vim-obsession' })
+  call packager#add('dhruvasagar/vim-prosession', {
+        \   'type': 'opt',
+        \   'requires': [['tpope/vim-obsession', { 'type': 'opt' }]]
+        \ })
 
   " Preview the contents of registers: https://github.com/junegunn/vim-peekaboo
   call packager#add('junegunn/vim-peekaboo')
@@ -226,6 +229,9 @@ function! s:packager_init() abort
   " call packager#add('prabirshrestha/vim-lsp')
   " https://github.com/rhysd/vim-lsp-ale
 
+  " https://github.com/vn-ki/coc-clap
+  call packager#add('vn-ki/coc-clap')
+
   " LSP and tag view display: https://github.com/liuchengxu/vista.vim
   call packager#add('liuchengxu/vista.vim')
 
@@ -302,6 +308,8 @@ function! s:packager_init() abort
   " Vimscript Test: https://github.com/thinca/vim-themis
   call packager#add('thinca/vim-themis', { 'type': 'opt' })
 
+  " https://github.com/alker0/chezmoi.vim
+  call packager#add('alker0/chezmoi.vim', { 'type': 'opt' })
 endfunction
 
 command! -nargs=* -bar PackagerRefresh call s:packager_init() | call packager#install(<args>)
