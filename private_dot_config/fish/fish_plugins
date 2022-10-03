@@ -15,7 +15,6 @@ jorgebucaran/autopair.fish
 oh-my-fish/plugin-tab
 PatrickF1/colored_man_pages.fish
 halostatue/fish-utils-net@v1.x
-halostatue/plugin-aws@patch-1
 lilyball/nix-env.fish
 IlanCosman/clownfish
 IlanCosman/tide@v5

@@ -1,8 +1,0 @@
-{{- if kindIs "map" (dig "github" "tokens" "github_hub" "" .) -}}
-{{-   $e := .github.tokens.github_hub -}}
-{{-   $v := (onepasswordDetailsFields $e.name $e.vault $e.account) -}}
----
-github.com:
-- user: {{ $v.username.value | quote }}
-  oauth_token: {{ $v.credential.value | quote }}
-{{- end }}

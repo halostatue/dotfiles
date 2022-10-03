@@ -87,5 +87,6 @@
       "args": [],
       "filetypes": ["vim", "eruby", "markdown"]
     }
-  }
+  },
+  "svelte.enable-ts-plugin": true
 }

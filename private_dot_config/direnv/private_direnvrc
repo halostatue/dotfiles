@@ -118,7 +118,7 @@ use_kx() {
 
   local matching_version
   matching_version="$(
-    kx list installed | awk "/${version}/ { print \$1 }" | sort -ru | head -1
+    kx list installed --elixir "${version}" --short | awk "{ print \$1 }" | sort -ru | head -1
   )"
 
   if [[ -z "${matching_version}" ]]; then

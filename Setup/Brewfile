@@ -115,8 +115,6 @@ brew "go"
 brew "gojq"
 # Everything you need to get started with Heroku
 brew "heroku/brew/heroku"
-# Add GitHub support to git on the command-line
-brew "hub"
 # Cost estimates for Terraform
 brew "infracost"
 # Lightweight and flexible command-line JSON processor
