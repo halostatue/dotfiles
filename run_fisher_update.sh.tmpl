@@ -2,9 +2,16 @@
 
 set -ueo pipefail
 
+case "${CHEZMOI_SKIP_SCRIPTS:-}" in
+*fisher-update* | true | '*' | 1) exit ;;
+esac
+
+home_path="{{ .chezmoi.homeDir }}"
+readonly home_path
+
 declare cache_path config_path
-cache_path="${XDG_CACHE_HOME:-"{{ joinPath .chezmoi.homeDir ".cache" }}"}"
-config_path="${XDG_CONFIG_HOME:-"{{ joinPath .chezmoi.homeDir ".config" }}"}"
+cache_path="${XDG_CACHE_HOME:-"${home_path}/.cache"}"
+config_path="${XDG_CONFIG_HOME:-"${home_path}/.config"}"
 
 declare digest_path digest_file stored_digest
 digest_path="${cache_path}/chezmoi/install"
@@ -27,5 +34,5 @@ current_digest="$(openssl dgst -sha256 "${fish_plugins}")"
 
 if [[ "${stored_digest}" != "${current_digest}" ]]; then
   fish -c "fisher update"
-  echo "${current_digest}" > "${digest_file}"
+  echo "${current_digest}" >"${digest_file}"
 fi

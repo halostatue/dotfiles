@@ -2,14 +2,24 @@
 
 set -euo pipefail
 
-{{ if (eq .chezmoi.os "darwin") -}}
+case "${CHEZMOI_SKIP_SCRIPTS:-}" in
+*install-macports-packages* | true | '*' | 1) exit ;;
+esac
 
-if ! command -v port >/dev/null 2>&1; then
-  declare macports_version os_version pattern url
-  pattern="https://github.com/macports/macports-base/releases/download/v%s/MacPorts-%s-%s.pkg"
-  macports_version=2.7.2
+source_dir="{{ .chezmoi.sourceDir }}"
+readonly source_dir
 
-  case "$(sw_vers -productVersion)" in
+case "$(uname -s)" in
+Darwin)
+  tmp="$(mktemp -d)"
+  readonly tmp
+
+  if ! command -v port >/dev/null 2>&1; then
+    declare MACPORTS_VERSION os_version pattern url
+    pattern="https://github.com/macports/macports-base/releases/download/v%s/MacPorts-%s-%s.pkg"
+    MACPORTS_VERSION=2.7.2
+
+    case "$(sw_vers -productVersion)" in
     10.5 | 10.5.*) os_version="10.5-Leopard" ;;
     10.6 | 10.6.*) os_version="10.6-SnowLeopard" ;;
     10.7 | 10.7.*) os_version="10.7-Lion" ;;
@@ -28,45 +38,40 @@ if ! command -v port >/dev/null 2>&1; then
       echo >&2 "OS Version ${os_version} is not yet supported."
       exit 1
       ;;
-  esac
+    esac
 
-  url="$(printf "${pattern}" "${macports_version}" "${macports_version}" "${os_version}")"
+    url="$(printf "${pattern}" "${MACPORTS_VERSION}" "${MACPORTS_VERSION}" "${os_version}")"
 
-  cd "$(mktemp -d)"
+    (
+      cd "${tmp}"
+      curl "${url}" -o MacPorts.pkg
+      sudo installer -pkg MacPorts.pkg -target /
+    )
 
-  curl "${url}" -o MacPorts.pkg
-  sudo installer -pkg MacPorts.pkg -target /
+    export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+  fi
 
-  export PATH=/opt/local/bin:/opt/local/sbin:$PATH
-fi
+  sudo port-tclsh "${source_dir}/Setup/restore-ports.tcl" "${source_dir}/Setup/Ports.installed"
+  sudo port unsetrequested installed
+  xargs sudo port setrequested <"${source_dir}/Setup/Ports.requested"
 
-sudo port-tclsh "{{ .chezmoi.sourceDir }}/Setup/restore-ports.tcl" "{{ .chezmoi.sourceDir }}/Setup/Ports.installed"
-sudo port unsetrequested installed
-xargs sudo port setrequested < "{{ .chezmoi.sourceDir }}/Setup/Ports.requested"
+  (
+    cd "${tmp}"
+    git clone https://github.com/halostatue/macports-ports-override.git
+    cd macports-ports-override
 
-set -euo pipefail
+    (
+      declare current
+      current="$(port -q installed autoconf | awk '/(active)/ { print $1, $2; }')"
+      cd autoconf@2.69
+      sudo port install
+      sudo port activate "${current}"
+    )
 
-tmp="${PWD}"/build.$$
-
-mkdir -p "${tmp}"
-cd "${tmp}"
-
-remove-tmp() {
-  rm -rf "${tmp}"
-}
-
-trap remove-tmp EXIT
-
-git clone https://github.com/halostatue/macports-ports-override.git
-cd macports-ports-override
-
-current="$(port -q installed autoconf | awk '/(active)/ { print $1, $2; }')"
-pushd autoconf@2.69
-sudo port install
-sudo port activate "${current}"
-popd
-
-pushd ruby-build
-sudo port install +standalone
-popd
-{{- end }}
+    (
+      cd ruby-build
+      sudo port install +standalone
+    )
+  )
+  ;;
+esac

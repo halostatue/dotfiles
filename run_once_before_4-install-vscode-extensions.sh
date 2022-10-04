@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
+case "${CHEZMOI_SKIP_SCRIPTS:-}" in
+*install-vscode-extensions* | true | '*' | 1) exit ;;
+esac
+
 if ! command -v code >/dev/null 2>&1; then
   return
 fi

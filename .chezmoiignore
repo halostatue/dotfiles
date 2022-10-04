@@ -117,6 +117,7 @@ Secrets/
 Setup/
 example-nvim.init.lua
 fishfile.maybe
+Justfile
 justfile
 
 {{ if not (lookPath "alacritty") }}

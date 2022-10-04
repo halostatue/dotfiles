@@ -1,37 +1,45 @@
 #!/usr/bin/env bash
 
-{{ if (eq .chezmoi.os "darwin") -}}
-osascript -e 'tell application "System Preferences" to quit'
+set -euo pipefail
 
-# GPG settings
-#
-gpg-connect-agent reloadagent /bye
+case "${CHEZMOI_SKIP_SCRIPTS:-}" in
+*configure-apps* | true | '*' | 1) exit ;;
+esac
 
-# https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh
-chmod -R go-w "$(brew --prefix)/share"
+case "$(uname -s)" in
+Darwin)
+  osascript -e 'tell application "System Preferences" to quit'
 
-# TextEdit settings
-#
-killall TextEdit
-# Set default TextEdit document format as plain text
-defaults write com.apple.TextEdit RichText -bool false
-# Open and save files as UTF-8
-defaults write com.apple.TextEdit PlainTextEncoding -int 4
-defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
+  # GPG settings
+  gpg-connect-agent reloadagent /bye
 
-# Expand save panel by default
-defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
-defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+  # https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh
+  chmod -R go-w "$(brew --prefix)/share"
 
-# Expand print panel by default
-defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
-defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
-# Automatically quit printer app once the print jobs complete
-defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
+  # TextEdit settings
+  killall TextEdit
+  # Set default TextEdit document format as plain text
+  defaults write com.apple.TextEdit RichText -bool false
+  # Open and save files as UTF-8
+  defaults write com.apple.TextEdit PlainTextEncoding -int 4
+  defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
+
+  # Expand save panel by default
+  defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
+  defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
+
+  # Expand print panel by default
+  defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
+  defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
+
+  # Automatically quit printer app once the print jobs complete
+  defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
+  ;;
+esac
 
 # Make chezmoi use Git with SSH
-#
-cd "{{ .chezmoi.sourceDir }}"
-CHEZMOI_SSH_URL="$(git remote get-url origin | sed -Ene's#https://([^/]*)/([^/]*/.*.git)#git@\1:\2#p')"
-[[ -z ${CHEZMOI_SSH_URL} ]] || git remote set-url origin ${CHEZMOI_SSH_URL}
-{{- end }}
+(
+  cd "{{ .chezmoi.sourceDir }}"
+  CHEZMOI_SSH_URL="$(git remote get-url origin | sed -Ene's#https://([^/]*)/([^/]*/.*.git)#git@\1:\2#p')"
+  [[ -z ${CHEZMOI_SSH_URL} ]] || git remote set-url origin "${CHEZMOI_SSH_URL}"
+)

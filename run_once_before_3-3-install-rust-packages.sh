@@ -2,32 +2,38 @@
 
 set -euo pipefail
 
+case "${CHEZMOI_SKIP_SCRIPTS:-}" in
+*isntall-rust-packages* | true | '*' | 1) exit ;;
+esac
+
 if ! command -v rustup >/dev/null 2>&1; then
   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
   source "${HOME}"/.cargo/env
 fi
 
-{{ if (eq .chezmoi.os "darwin") -}}
-if command -v port >/dev/null 2>&1; then
-  # There are known issues with Macports libiconv for Rust packages.
-  sudo port -q deactivate -f libiconv >/dev/null 2>&1
+case "$(uname -s)" in
+Darwin)
+  if command -v port >/dev/null 2>&1; then
+    # There are known issues with Macports libiconv for Rust packages.
+    sudo port -q deactivate -f libiconv >/dev/null 2>&1
 
-  reenable-libiconv() {
-    sudo port -q activate libiconv >/dev/null 2>&1
-  }
+    reenable-libiconv() {
+      sudo port -q activate libiconv >/dev/null 2>&1
+    }
 
-  trap reenable-libiconv EXIT
-fi
-{{- end }}
+    trap reenable-libiconv EXIT
+  fi
+  ;;
+esac
 
 install-package() {
   local -a args pre
   local i
   for i in "$@"; do
     case "${i}" in
-      --) break ;;
-      +*) pre=("${pre[@]}" "${i}") ;;
-      *) args=("${args[@]}" "${i}") ;;
+    --) break ;;
+    +*) pre=("${pre[@]}" "${i}") ;;
+    *) args=("${args[@]}" "${i}") ;;
     esac
   done
 

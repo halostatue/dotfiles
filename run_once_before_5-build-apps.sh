@@ -2,17 +2,26 @@
 
 set -euo pipefail
 
+case "${CHEZMOI_SKIP_SCRIPTS:-}" in
+*build-apps* | true | '*' | 1) exit ;;
+esac
+
 cd "$(mktemp -d)"
 
 # PG Modeler
 build-pg-modeler() (
-{{ if (eq .chezmoi.os "darwin") -}}
-  PATH="/opt/local/libexec/qt5/bin:${PATH}"
-{{- end }}
+  if [[ "$(uname -s)" == Darwin ]] && [[ -d /opt/local/libexec/qt5/bin ]]; then
+    PATH="/opt/local/libexec/qt5/bin:${PATH}"
+  fi
 
   if ! command -v qmake; then
-    echo "Cannot build pg-modeler; qmake not found (is Qt 5 installed)"
-    return
+    echo "Cannot build pg-modeler; 'qmake' not found. Is Qt 5 installed?"
+    return 1
+  fi
+
+  if ! command -v pg_config; then
+    echo "Cannot build pg-modeler; 'pg_config' not found. Is Postgres installed?"
+    return 1
   fi
 
   git clone https://github.com/pgmodeler/pgmodeler.git
@@ -27,24 +36,23 @@ build-pg-modeler() (
   make install
 )
 
-build-git-switch-user() {
+build-git-switch-user() (
   git clone https://github.com/cquintana92/git-switch-user.git
-  pushd git-switch-user
+  cd git-switch-user
   cargo install --locked --path .
-  popd
-}
+)
 
-build-unused-code() {
+build-unused-code() (
   git clone https://github.com/unused-code/unused
-  pushd unused
+  cd unused
   declare -a features
-{{- if (and (eq .chezmoi.os "darwin") (not (eq .chezmoi.arch "arm64"))) }}
-  features=(--features mimalloc)
-{{- end }}
+
+  if [[ "$(uname -s)" == Darwin ]] && [[ "$(uname -m)" != arm64 ]]; then
+    features=(--features mimalloc)
+  fi
 
   cargo install --locked --path . "${features[@]}"
-  popd
-}
+)
 
 build-pg-modeler
 build-git-switch-user
