@@ -58,7 +58,6 @@ config.codekit
 # }}
 
 # Configs {{{
-.envrc
 .env
 .env.*
 # }}}

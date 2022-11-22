@@ -41,3 +41,8 @@ Host {{ .host }}{{ range .config }}
   {{ . }}{{ end }}
 {{    end }}
 {{- end -}}
+
+{{- $colima := joinPath $.chezmoi.homeDir ".colima/ssh_config" -}}
+{{- if stat $colima }}
+Include {{ $colima }}
+{{- end }}

@@ -6,7 +6,7 @@ case "${CHEZMOI_SKIP_SCRIPTS:-}" in
 *fisher-update* | true | '*' | 1) exit ;;
 esac
 
-home_path="{{ .chezmoi.homeDir }}"
+home_path="${CHEZMOI_HOME_DIR}"
 readonly home_path
 
 declare cache_path config_path

@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+echo run_once_before_2-1-configure-system.sh
+
 case "${CHEZMOI_SKIP_SCRIPTS:-}" in
 *configure-system* | true | '*' | 1) exit ;;
 esac

@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+echo run_once_before_3-1-install-macports-packages.sh.tmpl
+
 case "${CHEZMOI_SKIP_SCRIPTS:-}" in
 *install-macports-packages* | true | '*' | 1) exit ;;
 esac

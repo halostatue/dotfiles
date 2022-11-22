@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+echo run_once_before_3-2-install-homebrew-packages.sh.tmpl
+
 case "${CHEZMOI_SKIP_SCRIPTS:-}" in
 *install-homebrew-packages* | true | '*' | 1) exit ;;
 esac

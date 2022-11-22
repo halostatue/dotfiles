@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+echo run_once_before_4-install-vscode-extensions.sh
+
 case "${CHEZMOI_SKIP_SCRIPTS:-}" in
 *install-vscode-extensions* | true | '*' | 1) exit ;;
 esac

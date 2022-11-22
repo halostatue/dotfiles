@@ -1,35 +1,60 @@
-# vim: ft=gitconfig
+{{- /* Initialize variables for use in this file */ -}}
+{{- $delta := lookPath "delta" -}}
+{{- $diffGuitool := "" -}}
+{{- $diffTool := "" -}}
+{{- $difftastic := lookPath "difft" -}}
+{{- $gvim := lookPath "gvim" -}}
+{{- $gvimCommand := "" -}}
+{{- $icdiff := lookPath "icdiff" -}}
+{{- $ksdiff := lookPath "ksdiff" -}}
+{{- $mvim := lookPath "mvim" -}}
+{{- $vim := lookPath "vim" -}}
 
-[color.diff]
-  meta = blue bold
-  frag = magenta bold
-  old = red bold
-  new = green bold
+{{- /* Set the values  */ -}}
+{{- if $ksdiff -}}
+{{-   $diffGuitool = "Kaleidoscope" -}}
+{{- end -}}
+{{- if $difftastic -}}{{- /* difftastic */ -}}
+{{-   $diffTool = "difftastic" -}}
+{{- else if $delta -}}
+{{-   $diffTool = "delta" -}}
+{{- else if $icdiff -}}
+{{-   $diffTool = "icdiff" -}}
+{{- end -}}
+{{- if $gvim -}}
+{{-   $gvimCommand = "gvim" -}}
+{{- else if $mvim -}}
+{{-   $gvimCommand = "mvim" -}}
+{{- end -}}
 
-[color.diff-highlight]
-	oldNormal = "blue"
-	oldHighlight = "blue reverse"
-	newNormal = "yellow"
-	newHighlight = "yellow reverse" diff = always
+# [color.diff]
+#   meta = blue bold
+#   frag = magenta bold
+#   old = red bold
+#   new = green bold
+#
+# [color.diff-highlight]
+# 	oldNormal = "blue"
+# 	oldHighlight = "blue reverse"
+# 	newNormal = "yellow"
+# 	newHighlight = "yellow reverse" diff = always
 
 [diff]
+  algorithm = histogram
   colorMoved = default
   compactionHeuristic = true
   indentHeuristic = true
-  algorithm = histogram
   mnemonicprefix = true
   renames = copies
   submodule = log
-{{- if lookPath "ksdiff" }}
-  guitool = Kaleidoscope
+{{- if $diffGuitool }}
+  guitool = {{ $diffGuitool | quote }}
 {{- end }}
-{{- if lookPath "difft" }}
-  tool = difftastic
-{{- else if lookPath "delta" -}}
-  tool = delta
+{{- if $diffTool }}
+  tool = {{ $diffTool | quote }}
 {{- end }}
 
-{{ if lookPath "delta" -}}
+{{ if $delta -}}
 [delta]
   navigate = true
   side-by-side = true
@@ -38,19 +63,19 @@
 [difftool]
   prompt = false
 
-{{ if lookPath "difftastic" -}}
+{{ if $difftastic -}}
 [difftool "difftastic"]
   cmd = difft "$LOCAL" "$REMOTE"
 {{- end }}
 
-{{ if lookPath "icdiff" -}}
+{{ if $icdiff -}}
 [difftool "icdiff"]
   cmd = icdiff --line-numbers "${LOCAL}" "${REMOTE}"
 {{- end }}
 
-{{ if lookPath "delta" -}}
+{{ if $delta -}}
 [difftool "delta"]
-  cmd = delta \"$LOCAL\" \"$REMOTE\" \"$MERGED\"
+  cmd = delta "${LOCAL}" "${REMOTE}" "${MERGED}"
 {{- end }}
 
 [merge]
@@ -58,23 +83,25 @@
   conflictstyle = diff3
   ff = false
 
-{{ if lookPath "gvim" -}}
-[mergetool "gvimdiff"]
-  cmd = gvim -d --remote-wait-silent "${LOCAL}" "${MERGED}" "${REMOTE}"
+{{ if or $gvim $mvim -}}
+[mergetool "gvim"]
+  cmd = {{ $gvimCommand }} -d --remote-wait-silent "${LOCAL}" "${MERGED}" "${REMOTE}"
   trustExitCode = true
 {{- end }}
 
-{{ if lookPath "vim" -}}
+{{ if $vim -}}
 [mergetool "vimdiff"]
   cmd = vim -d "${LOCAL}" "${MERGED}" "${REMOTE}"
   trustExitCode = true
 {{- end }}
 
-{{ if lookPath "ksdiff" -}}
+{{ if $ksdiff -}}
 [difftool "Kaleidoscope"]
-  cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+  cmd = ksdiff --partial-changeset --relative-path "${MERGED}" -- "${LOCAL}" "${REMOTE}"
 
 [mergetool "Kaleidoscope"]
-  cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+  cmd = ksdiff --merge --output "${MERGED}" --base "${BASE}" -- "${LOCAL}" --snapshot "${REMOTE}" --snapshot
   trustExitCode = true
 {{- end }}
+
+# vim: ft=gitconfig

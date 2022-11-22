@@ -53,5 +53,6 @@ colorscheme evening
 " silent! colorscheme apprentice
 " silent! colorscheme deep-space
 silent! colorscheme deus
+silent! colorscheme penumbradark++
 
 set secure

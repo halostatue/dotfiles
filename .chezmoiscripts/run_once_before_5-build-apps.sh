@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+echo run_once_before_5-build-apps.sh
+
 case "${CHEZMOI_SKIP_SCRIPTS:-}" in
 *build-apps* | true | '*' | 1) exit ;;
 esac
@@ -10,6 +12,8 @@ cd "$(mktemp -d)"
 
 # PG Modeler
 build-pg-modeler() (
+  [[ -d /Applications/pgModeler.app ]] && return 0
+
   if [[ "$(uname -s)" == Darwin ]] && [[ -d /opt/local/libexec/qt5/bin ]]; then
     PATH="/opt/local/libexec/qt5/bin:${PATH}"
   fi
@@ -37,12 +41,16 @@ build-pg-modeler() (
 )
 
 build-git-switch-user() (
+  [[ -x "${HOME}"/.cargo/bin/git-switch-user ]] && return 0
+
   git clone https://github.com/cquintana92/git-switch-user.git
   cd git-switch-user
   cargo install --locked --path .
 )
 
 build-unused-code() (
+  [[ -x "${HOME}"/.cargo/bin/unused ]] && return 0
+
   git clone https://github.com/unused-code/unused
   cd unused
   declare -a features
@@ -54,6 +62,16 @@ build-unused-code() (
   cargo install --locked --path . "${features[@]}"
 )
 
+build-tfschema() (
+  [[ -x "${HOME}"/go/bin/unused ]] && return 0
+
+  git clone https://github.com/minamijoyo/tfschema
+  cd tfschema
+
+  go install
+)
+
 build-pg-modeler
 build-git-switch-user
 build-unused-code
+build-tfschema

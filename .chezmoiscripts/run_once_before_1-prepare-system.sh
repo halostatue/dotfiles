@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+echo run_once_before_1-prepare-system.sh
+
 case "${CHEZMOI_SKIP_SCRIPTS:-}" in
 *prepare-system* | true | '*' | 1) exit ;;
 esac
@@ -9,7 +11,7 @@ esac
 case "$(uname -s)" in
 Darwin)
   # Install Rosetta on an Apple Silicon mac
-  if [[ "$(uname -m)" == arm64 ]] && ! [[ -f /Library/Apple/usr/share/rosetta/rosetts ]]; then
+  if [[ "$(uname -m)" == arm64 ]] && ! [[ -f /Library/Apple/usr/share/rosetta/rosetta ]]; then
     softwareupdate --install-rosetta --agree-to-license
   fi
 

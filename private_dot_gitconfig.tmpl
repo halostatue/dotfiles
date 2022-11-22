@@ -1,3 +1,44 @@
+{{- /* Initialize variables for use in this file */ -}}
+{{- $commitTemplate := "" -}}
+{{- $coreAttributesFile := "" -}}
+{{- $coreExcludesFile := "" -}}
+{{- $corePager := "" -}}
+{{- $githubUser := "" -}}
+{{- $githubToken := "" -}}
+{{- $sequenceEditor := "" -}}
+{{- $webBrowser := "" -}}
+
+{{- /* Set the values  */ -}}
+{{- if stat (joinPath .chezmoi.homeDir ".config/git/commit-message") -}}
+{{-   $commitTemplate = joinPath .chezmoi.homeDir ".config/git/commit-message" -}}
+{{- end -}}
+{{- if stat (joinPath .chezmoi.homeDir ".config/git/attributes") -}}
+{{-   $coreAttributesFile = joinPath .chezmoi.homeDir ".config/git/attributes" -}}
+{{- end -}}
+{{- if stat (joinPath .chezmoi.homeDir ".config/git/ignore") }}
+{{-   $coreExcludesFile = joinPath .chezmoi.homeDir ".config/git/ignore" -}}
+{{- end -}}
+{{- if lookPath "delta" -}}
+{{-   $corePager = "delta" -}}
+{{- else if lookPath "diff-so-fancy" -}}
+{{-   $corePager = "diff-so-fancy | less --tabs=4 -RFX" -}}
+{{- end -}}
+{{- if ne (dig "github" "user" "<missing>" .) "<missing>" -}}
+{{-   $githubUser = .github.user -}}
+{{-   if kindIs "map" (dig "github" "tokens" "emacs_paradox" "" .) -}}
+{{-     $e := .github.tokens.emacs_paradox -}}
+{{-     $githubToken = (onepasswordDetailsFields $e.name $e.vault $e.account).credential.value -}}
+{{-   end -}}
+{{- end -}}
+{{- if lookPath "interactive-rebase-tool" -}}
+{{-   $sequenceEditor = "interactive-rebase-tool" }}
+{{- end -}}
+{{- if lookPath "xdg-open" -}}
+{{-   $webBrowser = "xdg-open" -}}
+{{- else if lookPath "open" -}}
+{{-   $webBrowser = "open" -}}
+{{- end -}}
+
 [advice]
   statusHints = false
 	skippedCherryPicks = false
@@ -32,8 +73,8 @@
 [commit]
   cleanup = scissors
   verbose = true
-{{- if stat (joinPath .chezmoi.homeDir ".config/git/commit-message") }}
-  template = {{ joinPath .chezmoi.homeDir ".config/git/commit-message" }}
+{{- if $commitTemplate }}
+  template = {{ $commitTemplate }}
 {{- end }}
 
 [core]
@@ -44,16 +85,14 @@
   precomposeUnicode = true
   safecrlf = true
   whitespace = trailing-space,tab-in-indent,cr-at-eol,space-before-tab
-{{- if stat (joinPath .chezmoi.homeDir ".config/git/attributes" )}}
-  attributesFile = {{ joinPath .chezmoi.homeDir ".config/git/attributes" }}
+{{- if $coreAttributesFile }}
+  attributesFile = {{ $coreAttributesFile  | quote }}
 {{- end }}
-{{- if stat (joinPath .chezmoi.homeDir ".config/git/ignore") }}
-  excludesFile = {{ joinPath .chezmoi.homeDir ".config/git/ignore" }}
+{{- if $coreExcludesFile }}
+  excludesFile = {{ $coreExcludesFile | quote }}
 {{- end }}
-{{- if lookPath "delta" }}
-  pager = delta
-{{- else if lookPath "diff-so-fancy" -}}
-  pager = "diff-so-fancy | less --tabs=4 -RFX"
+{{- if $corePager }}
+  pager = {{ $corePager | quote }}
 {{- end }}
 
 [feature]
@@ -74,9 +113,12 @@
   reflogexpire = 300
   reflogexpireunreachable = 90
 
-{{ if ne (dig "github" "user" "<missing>" .) "<missing>" -}}
+{{ if $githubUser -}}
 [github]
-  user = {{ .github.user }}
+  user = {{ $githubUser | quote }}
+{{- if $githubToken }}
+  token = {{ $githubToken | quote }}
+{{- end -}}
 {{- end }}
 
 [grep]
@@ -89,13 +131,11 @@
   showSignature = false
 
 [pack]
-  # Autodetect thread count
   threads = 0
   writeReverseIndex = true
   useSparse = true
 
 [pager]
-  # User a pager for `difftool`
   difftool = true
 
 [pull]
@@ -116,7 +156,6 @@
   helper = cache --timeout=3600
 
 [stash]
-  # Show the patch with `git stash show`
   showPatch = true
 
 [status]
@@ -141,22 +180,16 @@
 [url "git@bitbucket.org:"]
   insteadOf = "bb:"
 
+# TODO: Remove configuration from this file and always require per-repo configuration
 [user]
-  # Don’t guess. Always use config. Override user.* defaults in the repo config
   useConfigOnly = true
   name = {{ .name }}
   email = {{ .email }}
 
+{{ if $webBrowser -}}
 [web]
-{{ if lookPath "xdg-open" }}
-  browser = xdg-open
-{{ end }}
-{{ if lookPath "open" }}
-  browser = open
-{{ end }}
-
-[browser "gitscm"]
-  cmd = sh -c 'open http://git-scm.com/docs/$(basename $1 .html)' --
+  browser = {{ $webBrowser | quote }}
+{{- end }}
 
 [init]
   defaultBranch = main
@@ -170,6 +203,11 @@
 	thread = true
 	supersscc = self
 
+{{ if $sequenceEditor -}}
+[sequence]
+  editor = {{ $sequenceEditor | quote }}
+{{- end }}
+
 [include]
   path = ~/.config/git/aliases
 
@@ -179,4 +217,4 @@
 [include]
   path = ~/.config/git/signatures
 
-# vim: ft=gitconfig syntax=gitconfig
+{{- /* vim: ft=gitconfig */ -}}

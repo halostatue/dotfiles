@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+echo run_once_before_3-3-install-rust-packages.sh
+
 case "${CHEZMOI_SKIP_SCRIPTS:-}" in
 *isntall-rust-packages* | true | '*' | 1) exit ;;
 esac
@@ -40,6 +42,7 @@ install-package() {
   cargo "${pre[@]}" install --quiet "${args[@]}" && printf "."
 }
 
+install-package shellharden -- A corrective bash syntax highlighter
 install-package ag -- CLI App to slice and dice logfiles
 install-package atuin -- atuin - magical shell history
 install-package bat -- A cat clone with wings
