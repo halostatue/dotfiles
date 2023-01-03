@@ -15,15 +15,18 @@ function i
     end
 end
 
+i filippo.io/age/cmd/...@latest # https://github.com/filosottile/age
 i github.com/aarzilli/gdlv@latest # https://github.com/aarzilli/gdlv
 i github.com/acroca/go-symbols@latest # https://github.com/acroca/go-symbols
 i github.com/benhoyt/goawk@latest # https://github.com/benhoyt/goawk
 i github.com/boyter/scc@latest # https://github.com/boyter/scc
+i github.com/cloudentity/oauth2c@latest # https://github.com/cloudentity/oauth2c
 i github.com/cycloidio/inframap@latest # https://github.com/cycloidio/inframap
 i github.com/davidrjenni/reftools/cmd/fillstruct@latest # https://github.com/davidrjenni/reftools
 i github.com/davidrjenni/reftools/cmd/fillswitch@latest # https://github.com/davidrjenni/reftools
 i github.com/davidrjenni/reftools/cmd/fixplurals@latest # https://github.com/davidrjenni/reftools
 i github.com/dosco/graphjin@latest # https://github.com/dosco/graphjin
+i github.com/editorconfig-checker/editorconfig-checker/cmd/editorconfig-checker@latest # https://github.com/editorconfig-checker/editorconfig-checker/cmd/editorconfig-checker
 i github.com/evilmartians/lefthook@latest # https://github.com/evilmartians/lefthook
 i github.com/fatih/gomodifytags@latest # https://github.com/fatih/gomodifytags
 i github.com/fatih/motion@latest # https://github.com/fatih/motion
@@ -45,10 +48,10 @@ i github.com/magefile/mage@latest # https://github.com/magefile/mage
 i github.com/mattn/efm-langserver@latest # https://github.com/mattn/efm-langserver
 i github.com/mgechev/revive@latest # https://github.com/mgechev/revive
 i github.com/minamijoyo/hcledit@latest # https://github.com/minamijoyo/hcledit
+i github.com/minamijoyo/myaws@latest # https://github.com/minamijoyo/myaws
 i github.com/minamijoyo/tfedit@latest # https://github.com/minamijoyo/tfedit
 i github.com/minamijoyo/tfmigrate@latest # https://github.com/minamijoyo/tfmigrate
 i github.com/minamijoyo/tfupdate@latest # https://github.com/minamijoyo/tfupdate
-i github.com/minamijoyo/myaws@latest # https://github.com/minamijoyo/myaws
 i github.com/mkchoi212/fac@latest # https://github.com/mkchoi212/fac
 i github.com/mrnugget/fzz@latest # https://github.com/mrnugget/fzz
 i github.com/multiprocessio/dsq@latest # https://github.com/multiprocessio/dsq
@@ -65,10 +68,11 @@ i github.com/tomwright/dasel/cmd/dasel@latest # https://github.com/tomwright/das
 i github.com/twpayne/chezmoi@latest # https://github.com/twpayne/chezmoi
 i github.com/wader/fq@latest # https://github.com/wader/fq
 i github.com/zmb3/gogetdoc@latest # https://github.com/zmb3/gogetdoc
-i golang.org/x/tools/gopls@latest # https://golang.org/x/tools/gopls
 i golang.org/x/tools/cmd/gorename@latest # https://golang.org/x/tools/cmd/gorename
+i golang.org/x/tools/gopls@latest # https://golang.org/x/tools/gopls
 i honnef.co/go/tools/cmd/keyify@latest # https://honnef.co/go/tools/cmd/keyify
 i honnef.co/go/tools/cmd/staticcheck@latest # https://honnef.co/go/tools/cmd/staticcheck
 i honnef.co/go/tools/cmd/structlayout-optimize@latest # https://honnef.co/go/tools/cmd/structlayout-optimize
 i honnef.co/go/tools/cmd/structlayout-pretty@latest # https://honnef.co/go/tools/cmd/structlayout-pretty
 i honnef.co/go/tools/cmd/structlayout@latest # https://honnef.co/go/tools/cmd/structlayout
+i github.com/mrtazz/checkmake/cmd/checkmake@latest # https://github.com/mrtazz/checkmake
