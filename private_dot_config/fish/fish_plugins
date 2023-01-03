@@ -18,10 +18,10 @@ halostatue/fish-utils-net@v1.x
 lilyball/nix-env.fish
 IlanCosman/clownfish
 IlanCosman/tide@v5
-halostatue/fish-macos@v4.x
 reitzig/sdkman-for-fish
 jorgebucaran/fisher
 halostatue/fish-machine-config@v1.x
 halostatue/fish-utils-core
 halostatue/fish-utils-core@v2.x
 halostatue/fish-direnv@v1.x
+halostatue/fish-macos@v5.x
