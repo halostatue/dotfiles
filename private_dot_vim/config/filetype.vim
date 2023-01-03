@@ -1,1 +1,0 @@
-scriptencoding utf-8

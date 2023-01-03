@@ -15,31 +15,59 @@ if exists('+shellslash') | set shellslash | endif
 " bell (`visualbell`), but really turn it off (`t_vb=`). Note that when the
 " GUI starts, `t_vb` gets reset to `<Esc>|f`, so config/autocmd.vim has an
 " autogroup that does this when the GUI is entered.
-set belloff=all noerrorbells novisualbell t_vb=
+set belloff=all
+set noerrorbells
+set novisualbell
+set t_vb=
 
 " Reasonably modern tab and indentation settings suitable for most languages
-set tabstop=2 softtabstop=2 shiftwidth=2 shiftround expandtab autoindent smarttab
+set autoindent
+set expandtab
+set shiftround
+set shiftwidth=2
+set smarttab
+set softtabstop=2
+set tabstop=2
 
 " Reasonable match settings.
-set showmatch cpoptions-=m matchtime=3 matchpairs+=<:>
+set cpoptions-=m
+set matchpairs+=<:>
+set matchtime=3
+set showmatch
 
 " Autoread changed files from disk if they do not conflict with a loaded
 " buffer; autowrite changed files to disk before executing certain commands.
-set autoread autowrite
+set autoread
+set autowrite
 
-set nomodeline " Turn off modeline detection.
-set nojoinspaces " One space after punctuation on line joins.
-set keymodel=startsel,stopsel " Start and stop selection using shift-cursor.
+" Turn off modeline detection.
+set nomodeline
+" One space after punctuation on line joins.
+set nojoinspaces
+" Start and stop selection using shift-cursor.
+set keymodel=startsel,stopsel
 
 " Sensible scrolling behaviours:
-set scrolljump=3 scrolloff=1 sidescroll=1 sidescrolloff=5
+set scrolljump=3
+set scrolloff=1
+set sidescroll=1
+set sidescrolloff=5
 
-set hidden " Display another buffer when current buffer isn't saved.
-set infercase " Ignore case on insert completion.
-set hlsearch ignorecase noshowmode smartcase incsearch
+" Display another buffer when current buffer isn't saved.
+set hidden
+" Ignore case on insert completion.
+set hlsearch
+set ignorecase
+set incsearch
+set infercase
+set noshowmode
+set smartcase
 
-set timeout timeoutlen=600 " Keymapping timeout.
-set updatetime=1000 " Crash recovery write every second, and CursorHold event timeout.
+" Keymapping timeout.
+set timeout
+set timeoutlen=600
+" Crash recovery write every second, and CursorHold event timeout.
+set updatetime=1000
 
 let &directory = hz#xdg_path('cache', 'swap//')
 call hz#mkpath(&directory, v:true)
@@ -53,46 +81,77 @@ call hz#mkpath(&backupdir, v:true)
 let &viewdir = hz#xdg_path('cache', 'view/')
 call hz#mkpath(&viewdir, v:true)
 
-set undofile nobackup writebackup
-set viewoptions+=unix,slash viewoptions-=options
-set sessionoptions+=unix,slash sessionoptions-=options
+set nobackup
+set sessionoptions+=unix,slash
+set sessionoptions-=options
+set undofile
+set viewoptions+=unix,slash
+set viewoptions-=options
+set nowritebackup
 
-set virtualedit+=block " Enable virtualedit in visual block mode
+" Enable virtualedit in visual block mode
+set virtualedit+=block
 
-if has('conceal') | set conceallevel=2 concealcursor=nc | endif
+if has('conceal')
+  set conceallevel=2
+  set concealcursor=nc
+endif
 
 " = Keyword completion options
 " == ins-completion search order: current buffer; other window buffers;
 " unloaded buffers; tags; current and included files; spell checking
 " dictionary; files in 'dictionary'; files in 'thesaurus'
-set complete+=kspell,k,s complete-=w,b,u,i
-if has('insert_expand') | set completeopt-=preview pumheight=20 | endif
+set complete+=kspell,k,s
+set complete-=w,b,u,i
+if has('insert_expand')
+  set completeopt-=preview
+  set pumheight=20
+endif
 
-" Add gems.tags to files searched for tags.
-set noequalalways nolazyredraw
+set noequalalways
+set nolazyredraw
 
 " Let windows be squeezed just their status bar (horizontal splits) or the
 " separator (vertical splits). Also make the help window a minimum of 10 rows
 " instead of 20.
-set winminheight=0 winminwidth=0 helpheight=10
+set helpheight=10
+set winminheight=0
+set winminwidth=0
 
-" Use dash as word separator.
+" Use dash as word separator. -- this should be language-specific
 set iskeyword+=-
 
 " The file browser starts from the directory of the current directory, not the
 " current buffer.
 set browsedir=current
-
-set background=dark cscopeverbose cursorline colorcolumn=+1,+10,+20
-set display=lastline formatoptions=tcqr1nj
-set history=10000 laststatus=2
+set colorcolumn=+1,+10,+20
+set cscopeverbose
+set cursorline
+set display=lastline
+set formatoptions=tcqr1nj
+set history=10000
+set laststatus=2
 set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
-set nofsync nostartofline shortmess=aoOTIcFA tabpagemax=50 showtabline=1
-set number relativenumber splitright noshowcmd ruler
-set diffopt& diffopt-=iwhite diffopt+=algorithm:histogram,indent-heuristic
+set nofsync
+set noshowcmd
+set nostartofline
+set number
+set relativenumber
+set ruler
+set shortmess=aoOTIcFA
+set showtabline=1
+set splitright
+set tabpagemax=50
+
+set diffopt&
+set diffopt-=iwhite
+set diffopt+=algorithm:histogram,indent-heuristic
 
 " Handle wildmenu matching
-set wildcharm=<C-Z> wildmode=list:longest,list:full wildoptions+=tagfile
+set wildcharm=<Tab>
+set wildmode=list:longest,list:full
+set wildoptions+=tagfile
+
 " Ignore the following file patterns when completing files.
 set wildignore+=.hg,.git,.svn
 set wildignore+=*.aux,*.out,*.toc,*.jpg,*.bmp,*.gif,*.png,*.jpeg
@@ -104,7 +163,9 @@ set wildignore+=*/vendor/gems/**,*/vendor/cache/**,*/.bundle/**,*/.sass-cache/**
 set wildignore+=*/_build/**,*/node_modules/**
 
 " Turn on the window title and make it a little more useful.
-set title titlelen=95
+set title
+set titlelen=95
+
 " The the title to FILE FLAGS (CWD) - SERVER
 "
 " - FILE: The minimum path to the file relative to the CWD.
@@ -118,14 +179,16 @@ let &titlestring =
 
 " Folding settings.
 
-set nofoldenable "foldmethod=marker foldcolumn=1 commentstring=#\ %s
+set nofoldenable
+" set commentstring=#\ %s
+" set foldcolumn=1
+" set foldmethod=marker
+
 set mouse=a
 
 " Prefer ripgrep, pt or ag over grep for :grep.
 if executable('rg')
   let &grepprg='rg --line-number --color never --no-heading $*'
-elseif executable('pt')
-  let &grepprg='pt --nogroup --nocolor $*'
 elseif executable('ag')
   let &grepprg='ag --nogroup --nocolor $*'
 else
@@ -133,27 +196,48 @@ else
 endif
 
 setglobal encoding=utf-8
-set tags-=./tags tags-=./tags; tags^=./tags; tags+=gems.tags showfulltag
+
+" Add gems.tags to files searched for tags.
+set tags-=./tags tags-=./tags;
+set tags^=./tags;
+set tags+=gems.tags
+set showfulltag
 
 let mapleader = "\<Space>"
 
 " Set linebreaking and wrapping rules.
 if has('linebreak')
-  set wrap linebreak showbreak=↪ whichwrap=b,s,h,l,<,>,~,[,]
-  if exists('+breakindent') | set breakindent | endif
+  set wrap
+  set linebreak
+  set showbreak=↪
+  set whichwrap=b,s,h,l,<,>,~,[,]
+
+  if exists('+breakindent')
+    set breakindent
+  endif
 else
   set nowrap
 endif
 
-" Allow color schemes to do bright colors without forcing bold.
-if &t_Co == 8 && $TERM !~# '^Eterm'
-  set t_Co=16
-elseif &t_Co >= 256
-  set termguicolors
-endif
+set termguicolors
+set background=dark
 
-" These files prevent running on their opposite, so just include both.
-runtime config/defaults/nvim.vim
-runtime config/defaults/vim.vim
+if has('autocmd') | filetype plugin indent on | endif
+if has('syntax') && !exists('g:syntax_on') | syntax enable | endif
+
+set viminfo^=!
+set fillchars+=vert:\│,fold:\·,foldsep:\│
 
 exe 'runtime config/defaults/' . hz#platform() . '.vim'
+
+" Prevent several default plug-ins from being loaded, because we don't want
+" them.
+let g:loaded_2html_plugin = 1 " Disable the TOhtml command.
+let g:loaded_getscriptPlugin = 1 " Disable GetLatestVimScripts
+let g:loaded_logiPat = 1 " Disable LogiPat
+let g:loaded_matchparen = 1 " Disable default matchparen
+let g:loaded_netrwPlugin = 1 " Disable netrw and prefer NERD-tree.
+let g:netrw_nogx = 1 " disable netrw's gx mapping.
+
+let g:loaded_vimballPlugin = 1 " Disable vimballs.
+let g:loaded_matchit = 1 " Disable matchit; using matchup instead
