@@ -44,4 +44,20 @@ let g:swap_no_default_key_mappings = 1
 " Share tags cache between vim and gvim
 let g:gutentags_cache_dir = hz#xdg_base('cache', 'tags')
 
-runtime config/packages/install_packager.vim
+let g:vim_svelte_plugin_use_typescript = 1
+let g:vim_svelte_plugin_use_sass = 1
+
+let g:svelte_indent_script = 0
+let g:svelte_indent_style = 0
+let g:svelte_preprocessors = ['typescript', 'scss']
+
+let g:splitjoin_split_mapping = "<Leader>S"
+let g:splitjoin_join_mapping = "<Leader>J"
+let g:splitjoin_quiet = v:true
+let g:splitjoin_ruby_do_block_split = v:false
+let g:splitjoin_python_brackets_on_separate_lines = v:true
+let g:splitjoin_html_attributes_bracket_on_new_line = v:true
+let g:splitjoin_java_argument_split_first_newline = v:true
+let g:splitjoin_java_argument_split_last_newline = v:true
+
+runtime config/plugins/install_packager.vim

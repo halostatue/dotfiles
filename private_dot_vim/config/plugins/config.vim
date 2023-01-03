@@ -16,7 +16,7 @@ function! s:demand_run(cmd, bang, l1, l2, args, names) abort
   execute printf('%s%s%s %s', (a:l1 == a:l2 ? '' : (a:l1.','.a:l2)), a:cmd, a:bang, a:args)
 endfunction
 
-" This is general configuration of packages. Some configuration is present in config/packages/before.vim; these
+" This is general configuration of plugins. Some configuration is present in config/plugins/before.vim; these
 " configurations are required to prevent certain defaults from being set.
 
 noremap n nzz

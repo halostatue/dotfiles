@@ -6,7 +6,7 @@ if 0 | finish | endif
 ""
 " 2021 Version of my vim configuration, starting from scratch.
 if !exists('g:hz_vim_config_version')
-  let g:hz_vim_config_version = '2021.0'
+  let g:hz_vim_config_version = '2023.0'
   lockvar g:hz_vim_config_version
 endif
 
@@ -15,23 +15,19 @@ endif
 if has('vim_starting') | set nocompatible | endif
 " vint: +ProhibitSetNoCompatible
 
-" Add ./hz/ to the vim runtime path for autoloading function completion.
-" if isdirectory(expand('$HOME/.vim'))
-"   let g:hz_vim_root_path = expand('$HOME/.vim')
-" elseif isdirectory(expand('$HOME/vimfiles'))
-"   let g:hz_vim_root_path = expand('$HOME/vimfiles')
-" end
-" let &runtimepath = &runtimepath . printf(',%s/hz', g:hz_vim_root_path)
+" Load various initialization scripts. All of these should be loaded before
+" packages are loaded, except the one below.
+try
+  packadd chezmoi.vim
+catch /^Vim\%((\a\+)\)\=:E919:/
+endtry
 
-runtime config/init.vim
-runtime config/packages.vim
+runtime config/defaults.vim
+runtime config/plugins.vim
 runtime config/abbreviations.vim
-runtime config/autocmd.vim
 runtime config/commands.vim
-" runtime config/filetype.vim
 runtime config/keys.vim
-"
-runtime config/packages/config.vim
+runtime config/plugins/config.vim
 
 " colorscheme quantum
 colorscheme evening
@@ -45,14 +41,16 @@ colorscheme evening
 " silent! colorscheme anderson
 " silent! colorscheme angr
 
-" let g:ayucolor="light"
-" let g:ayucolor="mirage"
-" let g:ayucolor="dark"
+" let g:ayucolor = "light"
+" let g:ayucolor = "mirage"
+" let g:ayucolor = "dark"
 " silent! colorscheme ayu
 
 " silent! colorscheme apprentice
 " silent! colorscheme deep-space
-silent! colorscheme deus
+" silent! colorscheme deus
 silent! colorscheme penumbradark++
+
+autocmd User DirenvLoaded normal lh
 
 set secure

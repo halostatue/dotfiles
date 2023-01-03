@@ -1,18 +1,20 @@
 scriptencoding utf-8
 
-runtime config/packages/before.vim
+runtime config/plugins/before.vim
 
 function! s:packager_init() abort
   packadd vim-packager
 
   call packager#init()
 
-  " `config/packages/install_packager.vim` will install this automatically, adding it here
+  " `config/plugins/install_packager.vim` will install this automatically, adding it here
   " makes it self-managing: https://github.com/kristijanhusak/vim-packager
   call packager#add('kristijanhusak/vim-packager', { 'type': 'opt' })
 
   " Improved incremental search: https://github.com/wincent/loupe
   call packager#add('wincent/loupe')
+
+  call packager#add('lambdalisue/suda.vim') " https://lambdalisue/suda.vim
 
   " Cross-File Search:
   " https://github.com/dyng/ctrlsf.vim
@@ -107,6 +109,15 @@ function! s:packager_init() abort
   " Add fzf support: https://github.com/junegunn/fzf
   call packager#add('junegunn/fzf')
 
+  " Add tooling to exchange objects https://github.com/tommcdo/vim-exchange
+  call packager#add('tommcdo/vim-exchange')
+
+  " Add tooling to change multiple objects https://github.com/AndrewRadev/multichange
+  call packager#add('AndrewRadev/multichange')
+
+  " Add tooling to swap list objects https://github.com/machakann/vim-swap
+  call packager#add('machakann/vim-swap')
+
   " Safely load local `.vimrc` and/or `.vimrc.lua` files:
   " https://github.com/jenterkin/vim-autosource
   call packager#add('jenterkin/vim-autosource')
@@ -170,7 +181,7 @@ function! s:packager_init() abort
   " Elvish shell: https://github.com/dmix/elvish.vim
   call packager#add('dmix/elvish.vim')
   " Go: https://github.com/fatih/vim-go
-  call packager#add('fatih/vim-go', { 'do': ':GoInstallBinaries', 'type': 'opt' })
+  call packager#add('fatih/vim-go', { 'do': ':GoInstallBinaries' })
   " Browserslist constraints: https://github.com/browserslist/vim-browserslist
   call packager#add('browserslist/vim-browserslist')
   " Janet lang: https://github.com/janet-lang/janet.vim
@@ -215,6 +226,9 @@ function! s:packager_init() abort
 
   " Autoclose parentheses: https://github.com/mattn/vim-lexiv
   call packager#add('mattn/vim-lexiv')
+
+	" Split and join code blocks: https://github.com/AndrewRadev/splitjoin.vim
+  call packager#add('AndrewRadev/splitjoin.vim')
 
   " LSP Options
   " " https://github.com/dense-analysis/ale
