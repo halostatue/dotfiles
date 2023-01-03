@@ -47,7 +47,7 @@ UrlSearchParams.prototype.set = function set(name, value) {
   this[__URLSearchParams__][name] = ['' + value]
 }
 
-// Returns a string containg a query string suitable for use in a URL.
+// Returns a string containing a query string suitable for use in a URL.
 UrlSearchParams.prototype.toString = function () {
   const dict = this[__URLSearchParams__]
   const query = []
