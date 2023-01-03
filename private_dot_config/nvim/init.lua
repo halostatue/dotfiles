@@ -1,36 +1,32 @@
--- 2021 Version of my vim configuration, starting from scratch,
--- translated to lua for nvim
-
-local g = vim.g
-local nvim_command = vim.api.nvim_command
-
-if not g.hz_nvim_config_version then
-  g.hz_nvim_config_version = '2021.0'
-  nvim_command [[lockvar g:hz_nvim_config_version]]
+-- This is the 2023 verison of my neovim configuration, translating my current vim
+-- configuration to lua.
+--
+if not vim.g.hz_nvim_config_version then
+  vim.g.hz_nvim_config_version = '2023.0'
+  vim.api.nvim_command([[lockvar g:hz_nvim_config_version]])
 end
 
 require('config.defaults')
-require('config.plugins')
+require('config.lazy')
 require('config.abbreviations')
 require('config.commands')
 require('config.keys')
-require('config.plugins.config')
 
 -- colorscheme duoduo
 
-g.afterglow_blackout = 1
-g.afterglow_italic_comments = 1
-g.afterglow_inherit_background = 1
+vim.g.afterglow_blackout = 1
+vim.g.afterglow_italic_comments = 1
+vim.g.afterglow_inherit_background = 1
 
--- silent! colorscheme afterglow
+-- vim.cmd [[colorscheme afterglow]]
 -- silent! colorscheme alduin
 
 -- silent! colorscheme anderson
 -- silent! colorscheme angr
 
-g.ayucolor = 'light'
-g.ayucolor = 'mirage'
-g.ayucolor = 'dark'
+vim.g.ayucolor = 'light'
+vim.g.ayucolor = 'mirage'
+vim.g.ayucolor = 'dark'
 
 -- silent! colorscheme ayu
 
@@ -38,9 +34,8 @@ g.ayucolor = 'dark'
 -- silent! colorscheme deep-space
 -- silent! colorscheme deus
 
-vim.cmd [[colorscheme modus-vivendi]]
-
-vim.opt.guifont = 'FiraCode-Retina:h10'
+-- vim.cmd [[colorscheme modus-vivendi]]
+vim.cmd([[colorscheme tokyonight]])
 
 -- set secure
 vim.opt.secure = true
