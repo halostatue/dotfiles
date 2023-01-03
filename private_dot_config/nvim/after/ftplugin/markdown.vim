@@ -1,12 +1,8 @@
 scriptencoding utf-8
 
-packadd goyo.vim
-packadd limelight.vim
-
 " Distraction-free writing mode
 let g:pencil#textwidth = 80
 let g:goyo_width = 80
-let g:vim_markdown_frontmatter = 1
 
 " Enable spellchecking for Markdown
 setlocal nolist

@@ -1,4 +1,4 @@
-vim.cmd [[
+vim.cmd([[
 ""
 " Close the QuickFix window if open; open if not.
 command! -nargs=0 -bar ToggleQuickfix call hz#_toggle_special_window('quickfix')
@@ -40,4 +40,4 @@ command! -nargs=0 -bar ToggleGJK call hz#_toggle_jk_mapping()
 "     setlocal nomodifiable nomodified readonly
 "   endfunction
 " endif
-]]
+]])

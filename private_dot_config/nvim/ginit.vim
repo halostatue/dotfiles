@@ -1,12 +1,17 @@
 scriptencoding utf-8
 
-" let &guifont="CascadiaCode-Light:h10"
-let &guifont="FiraCode-Retina:h10"
-
-if has('gui_win32')
+if has("gui_vimr")
+  VimRSetFontAndSize "IBM Plex Mono", 10
+elseif has('gui_win32')
   noremap <A-Space> :simalt ~<CR>
   inoremap <A-Space> <C-O>:simalt ~<CR>
   cnoremap <A-Space> <C-C><A-Space>
+else
+  " let &guifont="CascadiaCode-Light:h10"
+  " let &guifont="FiraCode-Retina:h10"
+  " let &guifont="FiraCodeRoman-Regular:h10"
+  " let &guifont="JetBrainsMono-Regular:h10"
+  let &guifont="IBM Plex Mono:h10"
 endif
 
 " Keep the system clipboard and the vim pasteboard separate. If this behaviour is not desired, uncomment the if
