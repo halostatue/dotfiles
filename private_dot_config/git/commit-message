@@ -12,7 +12,10 @@ Deploy Notes
 Technical Change Notes
 ======================
 
-##
+# ------------------------ >8 ------------------------
+# Do not modify or remove the line above.
+# Everything below it will be ignored.
+#
 # Our commit messages should be structured as follows. Each section
 # _after_ the commit title is introduced with a "heading 1" indicated by
 # underlining with `=` characters. We can't use a leading `#` because
@@ -44,4 +47,3 @@ Technical Change Notes
 #   needed. It _may_ include some _how_ of the change, but don’t get too
 #   technical or detailed as the code, documentation, and comments
 #   should cover that.
-##
