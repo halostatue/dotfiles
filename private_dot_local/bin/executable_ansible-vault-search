@@ -27,7 +27,7 @@ if file_exists "${VAULT_PASSFILE}"; then
   grep -ril ANSIBLE_VAULT group_vars/ |
     while read -r N; do
       echo "${N}:"
-      ansible-vault view --vault-pass "${VAULT_PASSFILE}" "${N}" | grep "${2}"
+      ansible-vault view --vault-password-file "${VAULT_PASSFILE}" "${N}" | grep "${2}" -A5
     done
 else
   error_msg "vault passfile not found (${VAULT_PASSFILE})"
