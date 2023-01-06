@@ -27,7 +27,7 @@
 # --theme="gruvbox-light"
 # --theme="zenburn"
 
-# --italic-text=always
+--italic-text=always
 
 # --style=full
 # --style=auto
