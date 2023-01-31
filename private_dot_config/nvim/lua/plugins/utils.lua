@@ -203,3 +203,7 @@ return {
 
 -- https://github.com/echasnovski/mini.nvim
 -- https://github.com/rockerBOO/awesome-neovim
+-- https://github.com/pechorin/u-keymapper.vim
+-- https://github.com/shortcuts/neovim-plugin-boilerplate
+-- https://github.com/Nexmean/caskey.nvim
+-- https://github.com/shortcuts/no-neck-pain.nvim

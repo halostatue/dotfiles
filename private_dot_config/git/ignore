@@ -84,7 +84,6 @@ tmp/
 .rake_tasks
 .meteor/
 tags
-tags.*
 TAGS
 .*_history
 perf.data*
