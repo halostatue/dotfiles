@@ -1,0 +1,50 @@
+#! /usr/bin/env bash
+
+declare needs_port port serve
+declare -a args
+
+port=8080
+needs_port=false
+serve=false
+args=()
+
+run-html2svg-help() {
+  if "${serve}"; then
+    docker run --rm fathyb/html2svg serve --help
+  else
+    docker run --rm fathyb/html2svg --help
+  fi
+
+  exit $?
+}
+
+run-html2svg() {
+  if "${serve}"; then
+    docker run --rm -it -p "${port}:${port}" fathyb/html2svg serve "$@"
+  else
+    docker run --rm fathyb/html2svg "$@"
+  fi
+
+  exit $?
+}
+
+while (($# > 0)); do
+  if "${needs_port}"; then
+    port="$1"
+    needs_port=false
+  else
+    case "$1" in
+    -p | --port) needs_port=true ;;
+    -h | --help)
+      run-html2svg-help
+      ;;
+
+    serve) serve=true ;;
+    *) args+=("$1") ;;
+    esac
+  fi
+
+  shift
+done
+
+run-html2svg "${args[@]}"

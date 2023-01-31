@@ -190,15 +190,17 @@ vim.opt.wildignore:append {
 vim.opt.title = true
 vim.opt.titlelen = 95
 
--- The the title to FILE FLAGS (CWD) - SERVER
---
--- - FILE: The minimum path to the file relative to the CWD.
--- - FLAGS: Modified and/or preview state of the file (may be empty)
--- - CWD: The (possibly) truncated current directory, relative to $HOME.
--- - SERVER: The current Vim server name (or VIM)
-vim.opt.titlestring = '%{expand("%:p:~:.")} %(%m%w%) %<'
-  .. '(%{printf("%.*S", &columns - len(expand("%:p:~:."))'
-  .. ', fnamemodify(getcwd(), ":~"))}) - %{v:servername}'
+vim.cmd([[
+function! AdaptiveTitleString() abort
+  if &filetype == 'help'
+    return '%t %h'
+  else
+    return '%(%m%w%) %t %< (%{fnamemodify(getcwd(), ":~")})'
+  endif
+endfunction
+]])
+
+vim.opt.titlestring = '%{%AdaptiveTitleString()%}'
 
 -- Folding settings.
 vim.opt.foldenable = false

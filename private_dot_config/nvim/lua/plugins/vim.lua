@@ -42,6 +42,7 @@ return {
   },
   { -- https://github.com/folke/which-key.nvim
     'folke/which-key.nvim',
+    event = { 'VeryLazy' },
   },
   -- { -- https://github.com/AckslD/nvim-whichkey-setup.lua
   --   'AckslD/nvim-whichkey-setup.lua',

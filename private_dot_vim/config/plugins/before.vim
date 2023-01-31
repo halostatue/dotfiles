@@ -60,4 +60,6 @@ let g:splitjoin_html_attributes_bracket_on_new_line = v:true
 let g:splitjoin_java_argument_split_first_newline = v:true
 let g:splitjoin_java_argument_split_last_newline = v:true
 
+let g:lsc_auto_map = v:true
+
 runtime config/plugins/install_packager.vim

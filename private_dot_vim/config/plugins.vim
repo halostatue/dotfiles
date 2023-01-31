@@ -108,12 +108,14 @@ function! s:packager_init() abort
 
   " Add fzf support: https://github.com/junegunn/fzf
   call packager#add('junegunn/fzf')
+  " https://github.com/junegunn/fzf.vim
+  call packager#add('junegunn/fzf.vim')
 
   " Add tooling to exchange objects https://github.com/tommcdo/vim-exchange
   call packager#add('tommcdo/vim-exchange')
 
-  " Add tooling to change multiple objects https://github.com/AndrewRadev/multichange
-  call packager#add('AndrewRadev/multichange')
+  " Add tooling to change multiple objects https://github.com/AndrewRadev/multichange.vim
+  call packager#add('AndrewRadev/multichange.vim')
 
   " Add tooling to swap list objects https://github.com/machakann/vim-swap
   call packager#add('machakann/vim-swap')
@@ -231,20 +233,39 @@ function! s:packager_init() abort
   call packager#add('AndrewRadev/splitjoin.vim')
 
   " LSP Options
-  " " https://github.com/dense-analysis/ale
+  " https://github.com/dense-analysis/ale
   " call packager#add('dense-analysis/ale')
-  " https://github.com/neoclide/coc.nvim
-  call packager#add('neoclide/coc.nvim', { 'branch': 'release' })
-  " https://github.com/autozimu/LanguageClient-neovim
-  " call packager#add('autozimu/LanguageClient-neovim')
-  " https://github.com/natebosch/vim-lsc
-  " call packager#add('natebosch/vim-lsc')
-  " https://github.com/prabirshrestha/vim-lsp
-  " call packager#add('prabirshrestha/vim-lsp')
   " https://github.com/rhysd/vim-lsp-ale
+  " call packager#add('rhysd/vim-lsp-ale')
+
+  " https://github.com/neoclide/coc.nvim
+  " call packager#add('neoclide/coc.nvim', { 'branch': 'release' })
 
   " https://github.com/vn-ki/coc-clap
-  call packager#add('vn-ki/coc-clap')
+  " call packager#add('vn-ki/coc-clap')
+
+  " https://github.com/autozimu/LanguageClient-neovim
+  " call packager#add('autozimu/LanguageClient-neovim')
+
+  " https://github.com/natebosch/vim-lsc
+  " call packager#add('natebosch/vim-lsc')
+
+  " https://github.com/prabirshrestha/vim-lsp
+  call packager#add('prabirshrestha/vim-lsp')
+  " https://github.com/mattn/vim-lsp-settings
+  call packager#add('mattn/vim-lsp-settings')
+  " https://github.com/prabirshrestha/asyncomplete.vim
+  call packager#add('prabirshrestha/asyncomplete.vim')
+  " https://github.com/prabirshrestha/asyncomplete-lsp.vim
+  " call packager#add('prabirshrestha/asyncomplete-lsp.vim')
+
+  " https://github.com/yegappan/lsp
+  " call packager#add('yegappan/lsp')
+  " https://github.com/normen/vim-lsp-settings-adapter
+  " call packager#add('normen/vim-lsp-settings-adapter')
+
+  " https://github.com/mattn/vim-lsp-settings
+  " call packager#add('mattn/vim-lsp-settings')
 
   " LSP and tag view display: https://github.com/liuchengxu/vista.vim
   call packager#add('liuchengxu/vista.vim')
