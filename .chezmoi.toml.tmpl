@@ -1,33 +1,52 @@
-{{- $email := promptString "Email" -}}
-{{- $name := promptString "Name" -}}
-{{- $githubUsername := promptString "Github Username" -}}
+{{- $email := promptStringOnce . "email" "Email" -}}
+{{- $name := promptStringOnce . "name" "Name" -}}
+{{- $github_username := promptStringOnce . "github.user" "Github Username" -}}
 
 [data]
-email = {{ $email | quote }}
-name = {{ $name | quote }}
+email = {{ $email | toToml }}
+name = {{ $name | toToml }}
 
-## AWS credentials array, pulled from 1Password documents. This will be used
-## to concatenate multiple fragment documents into ~/.aws/credentials.
+{{ if (. | dig "aws" "credentials" false) -}}
+{{- range .aws.credentials -}}
+[[data.aws.credentials]]
+{{ . | toToml}}
+{{ end -}}
+{{- else -}}
+## AWS credentials array, pulled from 1Password documents. This will be used to
+## concatenate multiple fragment documents into ~/.aws/credentials.
 ##
-[data.aws]
-credentials = [
-  # { type = "1p", name = "personal", vault = "Personal", account = "zieglers" },
-]
+## Each credential will look something like this one:
+# [[data.aws.credentials]]
+# account = 'ACCOUNT-NAME'
+# name = 'DOCUMENT-NAME-FRAGMENT' # Appended to `aws-credentials: `
+# type = '1p' # Always 1p for 1Password, for now
+# vault = 'VAULT-NAME'
+{{ end -}}
 
-## Git supports GPG or SSH-based key-signing. If using SSH key signing, set
-## format to "ssh", and either specify the key *path* or the special key string
-## "key::ssh-TYPE VALUE IDENTITY".
-##
+{{ if (. | dig "git" "signing" false) -}}
+[data.git.signing]
+{{ .git.signing | toToml }}
+{{- else -}}
+## Git supports GPG or SSH-based key-signing. If using SSH key signing, set format to
+## 'ssh', and either specify the key *path* or the special key string 'key::ssh-TYPE
+## VALUE IDENTITY'.
 # [data.git.signing]
-# format = "ssh"
-# key = "key::ssh-TYPE VALUE IDENTITY"
+# format = 'ssh'
+# key = 'key::ssh-TYPE VALUE IDENTITY'
+{{- end }}
 
 [data.github]
-user = {{ $githubUsername | quote }}
+user = {{ $github_username | toToml }}
 
-## Add GitHub token options here. Only 1Password retrieval is # supported, and
-## the type is expected to be an API Credential type with at least "user" and
-## "credential" values set.
+{{ if (. | dig "github" "tokens" false) }}
+{{- range $key, $value := .github.tokens -}}{{- if (typeIsLike "map[string]interface {}" $value) -}}
+[data.github.tokens.{{ $key }}]
+{{ $value | toToml }}
+{{ end -}}{{- end -}}
+{{- else -}}
+## Add GitHub token options here. Only 1Password retrieval is supported, and the type is
+## expected to be an API Credential type with at least 'user' and 'credential' values
+## set.
 ##
 ## We look for the following tokens:
 ##
@@ -39,58 +58,81 @@ user = {{ $githubUsername | quote }}
 ## - github_gh (~/.config/gh/hosts.yml)
 ##
 # [data.github.tokens.homebrew_api]
-# type = "1p"
-# name = "***"
-# vault = "***"
-# account = "***"
+# type = '1p'
+# name = '***'
+# vault = '***'
+# account = '***'
+{{- end -}}
 
+{{ if (. | dig "ruby" "rubygems" false) }}
+{{- range $key, $value := .ruby.rubygems -}}
+{{-   if (typeIsLike "map[string]interface {}" $value) -}}
+[data.ruby.rubygems.{{ $key }}]
+{{ $value | toToml }}
+{{ end -}}{{- end -}}
+{{- else -}}
 ## Rubygems Configuration
 ##
+## This uses the same format as GitHub token options.
 # [data.ruby.rubygems.geminabox]
-# type = "1p"
-# name = "***"
-# vault = "***"
-# account = "***"
+# type = '1p'
+# name = '***'
+# vault = '***'
+# account = '***'
 #
 # [data.ruby.rubygems.apikey]
-# type = "1p"
-# name = "***"
-# vault = "***"
-# account = "***"
+# type = '1p'
+# name = '***'
+# vault = '***'
+# account = '***'
+{{- end }}
 
+[data.ruby.hoe]
+email = {{ $email | toToml }}
+
+[data.ruby.rubygems]
+user = {{ $email | toToml }}
+
+{{ if (hasKey . "gnupg") -}}
+[data.gnupg]
+default_key = {{ .gnupg.default_key | toToml }}
+{{- else -}}
 ## If using GPG, set the default key here.
 ##
 # [data.gnupg]
-# default_key = ""
+# default_key = ''
+{{- end }}
 
-[data.ruby.hoe]
-email = {{ $email | quote }}
-
-[data.ruby.rubygems]
-user = {{ $email | quote }}
-
-## If using geminabox, set the admin users here.
-##
-# [data.ruby.rubygems.geminabox]
-# type = "1p"
-# name = "***"
-# vault = "***"
-# account = "***"
-
+{{ if (. | dig "ssh" "keys" false) -}}
+{{- range .ssh.keys -}}
+[[data.ssh.keys]]
+{{ . | toToml }}
+{{ end -}}
+{{- else -}}
 ## Set the key names to be used here. These are the private key file names,
 ## without reference to ~/.ssh
 ##
 [data.ssh]
-keys = [
-]
+keys = []
+{{- end }}
 
+{{ if (. | dig "ssh" "hosts" false) }}
+{{- range .ssh.hosts -}}
+[[data.ssh.hosts]]
+{{ . | toToml }}
+{{ end -}}
+{{- else -}}
 ## Build the SSH configuration file with hosts specified here. In each array entry,
-## the "host" key is the pattern for the `Host …` line. The config array is the list
+## the 'host' key is the pattern for the `Host …` line. The config array is the list
 ## of host-specific configuration entries to follow.
 ##
 # [[data.ssh.hosts]]
 # config = [
-#   "HostName bastion-host-name",
-#   "LocalForward localhost:15432 database-host-name:5432",
+#   'HostName bastion-host-name',
+#   'LocalForward localhost:15432 database-host-name:5432',
 # ]
-# host = "database-tunnel"
+# host = 'database-tunnel'
+{{- end }}
+
+[diff]
+exclude = ['scripts']
