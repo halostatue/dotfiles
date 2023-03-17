@@ -13,12 +13,12 @@
 # --theme="Monokai Extended Light"
 # --theme="Monokai Extended Origin"
 # --theme="Nord"
---theme="OneHalfDark"
+# --theme="OneHalfDark"
 # --theme="OneHalfLight"
 # --theme="Solarized (dark)"
 # --theme="Solarized (light)"
 # --theme="Sublime Snazzy"
-# --theme="TwoDark"
+--theme="TwoDark"
 # --theme="Visual Studio Dark+"
 # --theme="ansi"
 # --theme="base16"
@@ -46,4 +46,5 @@
 
 # --map-syntax "*.ino:C++"
 # --map-syntax ".ignore:Git Ignore"
-
+--map-syntax "vimrc:VimL"
+--map-syntax "zshrc:Bourne Again Shell (bash)"

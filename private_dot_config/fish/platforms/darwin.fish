@@ -1,8 +1,8 @@
 if status is-interactive
     set BROWSER open
 
-    if functions --query has:app
-        if has:app Marked
+    if functions --query has_app
+        if has_app Marked
             function marked --description 'Opens a markdown file or markdown files in a folder.'
                 for d in $argv
                     if test -d $d
@@ -15,7 +15,7 @@ if status is-interactive
             complete -c marked -d "Markdown File" -a "*.{md,mkd,mmd,markdown,mkdn}"
         end
 
-        if has:app Acorn
+        if has_app Acorn
             function acorn
                 open -a Acorn $argv
             end
@@ -23,7 +23,7 @@ if status is-interactive
             complete -c acorn -d Acorn -a "*.acorn"
         end
 
-        if has:app ImageAlpha
+        if has_app ImageAlpha
 
             function alpha
                 open -a ImageAlpha $argv
@@ -31,14 +31,14 @@ if status is-interactive
             complete -c alpha -d Image -a "*.{png,gif}"
         end
 
-        if has:app ImageOptim
+        if has_app ImageOptim
             function optim
                 open -a ImageOptim $argv
             end
             complete -c optim -d Image -a "*.{png,jpg,jpeg,gif}"
         end
 
-        if has:app Byword
+        if has_app Byword
             function by
                 open -a Byword $argv
             end
@@ -46,14 +46,14 @@ if status is-interactive
             complete -c by -d "Text File" -a "*.{text,txt}"
         end
 
-        if has:app 'Google Chrome'
+        if has_app 'Google Chrome'
             function chrome
                 open -a '/Applications/Google Chrome.app' $argv
             end
             complete -c chrome -d "HTML File" -a "*.{html,htm}"
         end
 
-        if has:app 'MultiMarkdown Composer'
+        if has_app 'MultiMarkdown Composer'
             function mmdc
                 open -a '/Applications/MultiMarkdown Composer.app' $argv
             end
@@ -61,14 +61,14 @@ if status is-interactive
             complete -c mmdc -d "Text File" -a "*.{text,txt}"
         end
 
-        if has:app TaskPaper
+        if has_app TaskPaper
             function tp
                 open -a TaskPaper $argv
             end
             complete -c tp -d "TaskPaper File" -a "*.taskpaper"
         end
 
-        if has:app Xcode
+        if has_app Xcode
             function xc
                 open -a Xcode $argv
             end
@@ -90,7 +90,7 @@ if status is-interactive
         end
         complete -c o -a (basename -s .app /Applications{,/Setapp}/*.app|awk '{printf "\"%s\" ", $0 }')
 
-        if has:app Dash
+        if has_app Dash
             function dash -d "Open argument in Dash"
                 open "dash://"(urlenc $argv)
             end
@@ -125,7 +125,7 @@ if status is-interactive
     # test (ssh-add -l | wc -l) -gt 0
     # or ssh-add --apple-load-keychain >/dev/null
 
-    if has:app iTerm && test -f ~/.iterm2_shell_integration.fish && set -q ITERM_PROFILE
+    if has_app iTerm && test -f ~/.iterm2_shell_integration.fish && set -q ITERM_PROFILE
         source ~/.iterm2_shell_integration.fish
     end
 end

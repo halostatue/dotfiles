@@ -119,7 +119,7 @@ set winminheight=0
 set winminwidth=0
 
 " Use dash as word separator. -- this should be language-specific
-set iskeyword+=-
+" set iskeyword+=-
 
 " The file browser starts from the directory of the current directory, not the
 " current buffer.

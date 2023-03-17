@@ -70,6 +70,11 @@ let g:ayucolor = "dark"
 
 " https://github.com/prabirshrestha/vim-lsp
 " https://github.com/mattn/vim-lsp-settings
+
+let g:lsp_settings_filetype_ruby = [
+      \ 'standardrb', 'ruby-lsp', 'solargraph', 'ruby_language_server', 'steep'
+      \ ]
+
 " https://github.com/prabirshrestha/asyncomplete.vim
 " https://github.com/prabirshrestha/asyncomplete-lsp.vim
 " https://github.com/hrsh7th/vim-vsnip-integ
@@ -133,11 +138,17 @@ let g:markdown_fenced_languages = [
       \ 'bash=sh',
       \ 'c++=cpp',
       \ 'css',
+      \ 'diff',
       \ 'elixir',
+      \ 'erlang',
       \ 'fish',
+      \ 'html',
       \ 'js=javascript',
       \ 'python',
       \ 'ruby',
+      \ 'rust',
+      \ 'scss',
+      \ 'sql',
       \ 'viml=vim',
       \ 'xml',
       \ ]
@@ -146,7 +157,24 @@ let g:markdown_minlines = 100
 
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_conceal_code_blocks = 0
-let g:vim_markdown_fenced_languages = ['html', 'python', 'bash=sh']
+let g:vim_markdown_fenced_languages = [
+      \ 'bash=sh',
+      \ 'c++=cpp',
+      \ 'css',
+      \ 'diff',
+      \ 'elixir',
+      \ 'erlang',
+      \ 'fish',
+      \ 'html',
+      \ 'js=javascript',
+      \ 'python',
+      \ 'ruby',
+      \ 'rust',
+      \ 'scss',
+      \ 'sql',
+      \ 'viml=vim',
+      \ 'xml',
+      \ ]
 let g:vim_markdown_frontmatter = 1
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_json_frontmatter = 1

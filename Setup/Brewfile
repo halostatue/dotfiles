@@ -1,11 +1,8 @@
 tap "commitdev/zero"
-tap "heroku/brew"
 tap "homebrew/autoupdate"
 tap "homebrew/bundle"
-tap "homebrew/cask"
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions"
-tap "homebrew/core"
 tap "homebrew/services"
 tap "puma/puma"
 tap "schappim/ocr"
@@ -13,339 +10,226 @@ tap "superfly/tap"
 tap "tilt-dev/tap"
 tap "turbot/tap"
 
-# CLI tool for working with Architecture Decision Records
-brew "adr-tools"
-# Email client that runs in your terminal
-brew "aerc"
-# Strip or convert ANSI codes into HTML, (La)Tex, RTF, or BBCode
-brew "ansifilter"
-# Spell checker with better logic than ispell
-brew "aspell"
-# Bourne-Again SHell, a UNIX command interpreter
-brew "bash"
-# Bash Automated Testing System
-brew "bats-core"
-# Insanely fast image printing in your terminal
-brew "catimg"
-# CloudFlare's PKI toolkit
-brew "cfssl"
-# Versatile and fast Unicode/ASCII/ANSI graphics renderer
-brew "chafa"
-# Manage your dotfiles across multiple diverse machines, securely
-brew "chezmoi"
-# Thin wrapper around chruby to make it work with the Fish shell
-brew "chruby-fish"
-# Statistics utility to count lines of code
-brew "cloc"
-# Container runtimes on MacOS (and Linux) with minimal setup
-brew "colima"
-# Tool for changing code across many languages
-brew "comby"
-# Allow startup developers to ship to production on day 1.
-brew "commitdev/zero/zero"
-# Container Signing
-brew "cosign"
-# Get, unpack, build, and install modules from CPAN
-brew "cpanminus"
-# Cross-platform, efficient and practical CSV/TSV toolkit in Golang
-brew "csvtk"
-# Open source multi-tool for exploring and publishing data
-brew "datasette"
-# Secure runtime for JavaScript and TypeScript
-brew "deno"
-# Good-lookin' diffs with diff-highlight and more
-brew "diff-so-fancy"
-# In-depth comparison of files, archives, and directories
-brew "diffoscope"
-# Load/unload environment variables based on $PWD
-brew "direnv"
-# Tool for exploring each layer in a docker image
-brew "dive"
-# Pack, ship and run any application as a lightweight container
-brew "docker"
-# Isolated development environments using Docker
-brew "docker-compose"
-# Platform keystore credential helper for Docker
-brew "docker-credential-helper"
-# Docker Credential Helper for Amazon ECR
-brew "docker-credential-helper-ecr"
-# Minify and secure Docker images
-brew "docker-slim"
-# TUI Client for Docker
-brew "docui"
-# Command-line DNS client
-brew "dog"
-# Convert text between DOS, UNIX, and Mac formats
-brew "dos2unix"
-# Disk Usage/Free Utility - a better 'df' alternative
-brew "duf"
-# Run arbitrary commands when files change
-brew "entr"
-# Validate EPUB files, version 2.0 and later
-brew "epubcheck"
-# Efficient Duplicate File Finder
-brew "fclones"
-# Banner-like program prints strings as ASCII art
-brew "figlet"
-# User-friendly command-line shell for UNIX-like operating systems
-brew "fish"
-# CLI application for interacting with a Cloudflare account
-brew "flarectl"
-# Scriptable ping program for checking if multiple hosts are up
-brew "fping"
-# Command-line fuzzy finder written in Go
-brew "fzf"
-# Fast, simple fuzzy text selector with an advanced scoring algorithm
-brew "fzy"
-# GNU awk utility
-brew "gawk"
-# GitHub command-line tool
-brew "gh"
-# Distributed revision control system
-brew "git"
-# Syntax-highlighting pager for git and diff output
-brew "git-delta"
-# Manage your git repositories in one place
-brew "gitbatch"
-# Render markdown on the CLI
-brew "glow"
-# Open source programming language to build simple/reliable/efficient software
-brew "go"
-# Pure Go implementation of jq
-brew "gojq"
-# Everything you need to get started with Heroku
-brew "heroku/brew/heroku"
-# Cost estimates for Terraform
-brew "infracost"
-# Lightweight and flexible command-line JSON processor
-brew "jq"
-# Easy building and installing of Erlang/OTP instances
-brew "kerl"
-# Kubernetes command-line interface
-brew "kubernetes-cli"
-# Lazier way to manage everything docker
-brew "lazydocker"
-# Simple terminal UI for git commands
-brew "lazygit"
-# International domain name library (IDNA2008, Punycode and TR46)
-brew "lnav"
-# Fully functional local AWS cloud stack
-brew "localstack"
-# Package manager for the Lua programming language
-brew "luarocks"
-# Mac App Store command-line interface
-brew "mas"
-# Collection of tools that nobody wrote when UNIX was young
-brew "moreutils"
-# Statically typed compiled systems programming language
-brew "nim"
-# Swiss-army knife of markup format conversion
-brew "pandoc"
-# Highly capable, feature-rich programming language
-brew "perl"
-# Execute binaries from Python packages in isolated environments
-brew "pipx"
-# Tool for managing OCI containers and pods
-brew "podman"
-# A tool to manage rack apps in development with puma
-brew "puma/puma/puma-dev"
-# Monitor data's progress through a pipe
-brew "pv"
-# Encoder and decoder for quoted-printable encoding
-brew "qprint"
-# Perl-powered file rename script with many helpful built-ins
-brew "rename"
-# Fast and accurate code counter with complexity and COCOMO estimates
-brew "scc"
-# Get any text on your screen into your clipboard.
-brew "schappim/ocr/ocr"
-# Static analysis and lint tool, for (ba)sh scripts
-brew "shellcheck"
-# Autoformat shell script source code
-brew "shfmt"
-brew "superfly/tap/flyctl"
-# Formatting technology for Swift source code
-brew "swift-format"
-# Formatting tool for reformatting Swift code
-brew "swiftformat"
-# Send macOS User Notifications from the command-line
-brew "terminal-notifier"
-# Reads from existing Cloud Providers and generates Terraform code
-brew "terracognita"
-# Tool to generate documentation from Terraform modules
-brew "terraform-docs"
-# CLI tool to generate terraform files from existing infrastructure
-brew "terraformer"
-# Linter for Terraform files
-brew "tflint"
-# Static analysis security scanner for your terraform code
-brew "tfsec"
-# Code-search similar to ack
-brew "the_silver_searcher"
-# Text interface for Git repositories
-brew "tig"
-# Making local Kubernetes clusters easy to set up and tear down
-brew "tilt-dev/tap/ctlptl"
-# A dev environment as code for microservice apps
-brew "tilt-dev/tap/tilt"
-# Instant terminal sharing
-brew "tmate"
-# Microsoft MS-TNEF attachment unpacker
-brew "tnef"
-# Steampipe exposes APIs and services as a high-performance relational database, giving you the ability to write SQL-based queries to explore, assess and report on dynamic data.
-brew "turbot/tap/steampipe"
-# CLI time zone visualizer
-brew "tz"
-# Maintained ctags implementation
-brew "universal-ctags"
-# JavaScript toolchain manager for reproducible environments
-brew "volta"
-# Executes a program periodically, showing output fullscreen
-brew "watch"
-# Execute commands when watched files change
-brew "watchexec"
-# Internet file retriever
-brew "wget"
-# Cross-platform C++ GUI toolkit
-brew "wxwidgets"
-# Linter for YAML files
-brew "yamllint"
-# Process YAML documents from the CLI
-brew "yq"
+brew "act" # Run your GitHub Actions locally 🚀
+brew "adr-tools" # CLI tool for working with Architecture Decision Records
+brew "aerc" # Email client that runs in your terminal
+brew "ansifilter" # Strip or convert ANSI codes into HTML, (La)Tex, RTF, or BBCode
+brew "antiword" # Utility to read Word (.doc) files
+brew "aria2" # Download with resuming and segmented downloading
+brew "ansifilter" # Strip or convert ANSI codes into HTML, (La)Tex, RTF, or BBCode
+brew "aspell" # Spell checker with better logic than ispell
+brew "bash" # Bourne-Again SHell, a UNIX command interpreter
+brew "bats-core" # Bash Automated Testing System
+brew "ca-certificates" # Mozilla CA certificate store
+brew "cabextract" # Extract files from Microsoft cabinet files
+brew "catimg" # Insanely fast image printing in your terminal
+brew "cfssl" # CloudFlare's PKI toolkit
+brew "chafa" # Versatile and fast Unicode/ASCII/ANSI graphics renderer
+brew "chrome-cli" # Control Google Chrome from the command-line
+brew "cloc" # Statistics utility to count lines of code
+brew "colima" # Container runtimes on MacOS (and Linux) with minimal setup
+brew "comby" # Tool for changing code across many languages
+brew "commitdev/zero/zero" # Allow startup developers to ship to production on day 1.
+brew "coreutils" # GNU File, Shell, and Text utilities
+brew "cosign" # Container Signing
+brew "csvtk" # Cross-platform, efficient and practical CSV/TSV toolkit in Golang
+brew "datasette" # Open source multi-tool for exploring and publishing data
+brew "dhex" # Ncurses based advanced hex editor featuring diff mode and more
+brew "diff-so-fancy" # Good-lookin' diffs with diff-highlight and more
+brew "diffoscope" # In-depth comparison of files, archives, and directories
+brew "direnv" # Load/unload environment variables based on $PWD
+brew "dive" # Tool for exploring each layer in a docker image
+brew "docker" # Pack, ship and run any application as a lightweight container
+brew "docker-buildx" # Docker CLI plugin for extended build capabilities with BuildKit
+brew "docker-compose" # Isolated development environments using Docker
+brew "docker-credential-helper" # Platform keystore credential helper for Docker
+brew "docker-credential-helper-ecr" # Docker Credential Helper for Amazon ECR
+brew "docker-slim" # Minify and secure Docker images
+brew "dog" # Command-line DNS client
+brew "dos2unix" # Convert text between DOS, UNIX, and Mac formats
+brew "duf" # Disk Usage/Free Utility - a better 'df' alternative
+brew "epubcheck" # Validate EPUB files, version 2.0 and later
+brew "fclones" # Efficient Duplicate File Finder
+brew "figlet" # Banner-like program prints strings as ASCII art
+brew "fish" # User-friendly command-line shell for UNIX-like operating systems
+brew "flarectl" # CLI application for interacting with a Cloudflare account
+brew "fping" # Scriptable ping program for checking if multiple hosts are up
+brew "fzf" # Command-line fuzzy finder written in Go
+brew "fzy" # Fast, simple fuzzy text selector with an advanced scoring algorithm
+brew "gawk" # GNU awk utility
+brew "gettext" # GNU internationalization (i18n) and localization (l10n) library
+brew "gh" # GitHub command-line tool
+brew "git" # Distributed revision control system
+brew "git-bug" # Distributed, offline-first bug tracker embedded in git, with bridges
+brew "git-delta" # Syntax-highlighting pager for git and diff output
+brew "gitbatch" # Manage your git repositories in one place
+brew "gnu-sed" # GNU implementation of the famous stream editor
+brew "jq" # Lightweight and flexible command-line JSON processor
+brew "kerl" # Easy building and installing of Erlang/OTP instances
+brew "lazydocker" # Lazier way to manage everything docker
+brew "lazygit" # Simple terminal UI for git commands
+brew "lnav" # International domain name library (IDNA2008, Punycode and TR46)
+brew "localstack" # Fully functional local AWS cloud stack
+brew "luarocks" # Package manager for the Lua programming language
+brew "make" # Utility for directing compilation
+brew "mas" # Mac App Store command-line interface
+brew "moreutils" # Collection of tools that nobody wrote when UNIX was young
+brew "neovim" # Ambitious Vim-fork focused on extensibility and agility
+brew "p7zip" # 7-Zip (high compression file archiver) implementation
+brew "pam-reattach" # PAM module for reattaching to the user's GUI (Aqua) session
+brew "pandoc" # Swiss-army knife of markup format conversion
+brew "pipx" # Execute binaries from Python packages in isolated environments
+brew "podman" # Tool for managing OCI containers and pods
+brew "puma/puma/puma-dev" # A tool to manage rack apps in development with puma
+brew "pv" # Monitor data's progress through a pipe
+brew "qprint" # Encoder and decoder for quoted-printable encoding
+brew "rename" # Perl-powered file rename script with many helpful built-ins
+brew "scc" # Fast and accurate code counter with complexity and COCOMO estimates
+brew "schappim/ocr/ocr" # Get any text on your screen into your clipboard.
+brew "scummvm" # Graphic adventure game interpreter
+brew "shellcheck" # Static analysis and lint tool, for (ba)sh scripts
+brew "shfmt" # Autoformat shell script source code
+brew "superfly/tap/flyctl" # Command-line tools for fly.io services
+brew "tag" # Manipulate and query tags on macOS files
+brew "tectonic" # Modernized, complete, self-contained TeX/LaTeX engine
+brew "terminal-notifier" # Send macOS User Notifications from the command-line
+brew "terracognita" # Reads from existing Cloud Providers and generates Terraform code
+brew "terraform-docs" # Tool to generate documentation from Terraform modules
+brew "terraformer" # CLI tool to generate terraform files from existing infrastructure
+brew "tflint" # Linter for Terraform files
+brew "tfsec" # Static analysis security scanner for your terraform code
+brew "the_silver_searcher" # Code-search similar to ack
+brew "tig" # Text interface for Git repositories
+brew "tilt-dev/tap/ctlptl" # Making local Kubernetes clusters easy to set up and tear down
+brew "tilt-dev/tap/tilt" # A dev environment as code for microservice apps
+brew "tmate" # Instant terminal sharing
+brew "tnef" # Microsoft MS-TNEF attachment unpacker
+brew "turbot/tap/steampipe" # Steampipe exposes APIs and services as a high-performance relational database, giving you the ability to write SQL-based queries to explore, assess and report on dynamic data.
+brew "tz" # CLI time zone visualizer
+brew "universal-ctags" # Maintained ctags implementation
+brew "watch" # Executes a program periodically, showing output fullscreen
+brew "watchexec" # Execute commands when watched files change
+brew "wget" # Internet file retriever
+brew "xq" # Command-line XML and HTML beautifier and content extractor
+brew "xz" # General-purpose data compression with high compression ratio
+brew "xmlstarlet" # XML command-line utilities
+brew "yamllint" # Linter for YAML files
+brew "yq" # Process YAML documents from the CLI
+brew "zstd" # Zstandard is a real-time compression algorithm
 
-# GPU-accelerated terminal emulator
-cask "alacritty"
-# Application launcher and productivity software
-cask "alfred"
-# Allows connection to a computer remotely
-cask "anydesk"
-# Text, code, and markup editor
-cask "bbedit"
-# E-books management software
-cask "calibre"
-# Use your phone as a high-quality webcam with image tuning controls
-cask "camo-studio"
-# Web debugging Proxy application
-cask "charles"
-# Organize files, archive e-mails, save Web pages and notes, search everything
-cask "eaglefiler"
-# Reimagine your terminal
-cask "fig"
-# Utility for customizing which browser to start
-cask "finicky"
-# Web browser
-cask "firefox"
-# Web browser
-cask "firefox-developer-edition"
-# Tool to turn a website into a desktop app
-cask "fluid"
+cask "alacritty" # GPU-accelerated terminal emulator
+cask "alfred" # Application launcher and productivity software
+cask "anki" # Spaced repetition flashcards
+cask "anydesk" # Allows connection to a computer remotely
+cask "bbedit" # Text, code, and markup editor
+cask "calibre" # E-books management software
+cask "charles" # Web debugging Proxy application
+cask "darktable" # Lightroom alternative
+cask "deeper" # Deep OS Personalization
+cask "devcleaner" # Xcode dev cleaner
+cask "dosbox" # DOS Emulator
+cask "eaglefiler" # Organize files, archive e-mails, save Web pages and notes, search everything
+cask "fig" # Reimagine your terminal
+cask "finicky" # Utility for customizing which browser to start
+cask "firefox" # Web browser
+cask "firefox-developer-edition" # Web browser
+cask "fluid" # Tool to turn a website into a desktop app
+cask "fvim" # F# Vim
+cask "gargoyle" # A cross-platform IO layer for an interactive fiction player
+cask "google-chrome" # Web browser
+cask "gpg-suite-no-mail" # Tools to protect your files
+cask "hazel" # Automated organization
+cask "hex-fiend" # Hex Editor
+cask "insomnia" # HTTP and GraphQL Client
+cask "iterm2" # Terminal emulator as alternative to Apple's Terminal app
+cask "itsycal" # Menu bar calendar
+cask "keyboardcleantool" # A keyboard cleaning tool
+cask "keycastr" # Open-source keystroke visualizer
+cask "kindle-previewer" # Preview and audit Kindle eBooks
+cask "koa11y" # Easily check for website accessibility issues
+cask "lapce" # Lightning-fast and Powerful Code Editor
+cask "macvim" # Text editor
+cask "mic-drop" # Quickly mute your microphone with a global shortcut or menu bar control
+cask "microsoft-edge" # Web browser
+cask "modern-csv" # CSV editor
+cask "monitorcontrol" # Control external display brightness and volume
+cask "monodraw" # Tool to create text-based art
+cask "moom" # Utility to move and zoom windows—on one display
+cask "notion" # App to write, plan, collaborate, and get organized
+cask "obsidian" # Knowledge base that works on top of a local folder of plain text Markdown files
+cask "opera-developer" # Web browser
+cask "podman-desktop" # Podman Desktop
+cask "publii" # Static site CMS
+cask "qlcolorcode" # QuickLook plug-in that renders source code with syntax highlighting
+cask "qlimagesize" # Display image info and preview unsupported formats in QuickLook
+cask "qlmarkdown" # QuickLook generator for Markdown files
+cask "qlstephen" # Quicklook plaintext files without a file extension
+cask "qlvideo" # Quicklook previews of video files
+cask "quicklook-json" # QuickLook support for JSON
+cask "rancher" # Kubernetes and container management on the desktop
+cask "rawtherapee" # Raw image processing
+cask "resolutionator" # Use any of your display's available resolutions
+cask "responsively" # Modified browser that helps in responsive web development
+cask "safari-technology-preview" # Web browser
+cask "scrivener" # Word processing software with a typewriter style
+cask "setapp" # Collection of apps available by subscription
+cask "shottr" # Screenshot tool
+cask "slack" # Team communication and collaboration software
+cask "spatterlight" # Interactive Fiction Player
+cask "tableflip" # App to edit markdown files in place
+cask "tad" # Desktop application for viewing and analyzing tabular data
+cask "utm" # Virtual machines UI using QEMU
+cask "vimr" # GUI for the Neovim text editor
+cask "viscosity" # OpenVPN client with AppleScript support
+cask "visual-studio-code" # Open-source code editor
+cask "vivaldi" # Web browser focusing on customization and control
+cask "webpquicklook" # QuickLook for WebP
+cask "xcodes" # Install and switch between multiple versions of Xcode
+
+## Fonts
+cask "font-anka-coder"
+cask "font-cascadia-code"
+cask "font-cascadia-code-pl"
+cask "font-cascadia-mono"
+cask "font-cascadia-mono-pl"
+cask "font-charis-sil"
+cask "font-cormorant-garamond"
 cask "font-courier-prime"
 cask "font-courier-prime-code"
 cask "font-courier-prime-medium-and-semi-bold"
 cask "font-courier-prime-sans"
-# Garamond typeface based on the 1592 Berner specimen
+cask "font-dm-mono"
+cask "font-dm-sans"
+cask "font-dm-serif-display"
+cask "font-dm-serif-text"
 cask "font-eb-garamond"
+cask "font-fantasque-sans-mono"
 cask "font-fira-code"
 cask "font-fira-mono"
 cask "font-hack"
 cask "font-hack-nerd-font"
-# Code font with monospaced ligatures
 cask "font-hasklig"
+cask "font-ia-writer-duo"
+cask "font-ia-writer-duospace"
+cask "font-ia-writer-mono"
+cask "font-ia-writer-quattro"
 cask "font-ibm-plex"
 cask "font-inconsolata"
 cask "font-input"
-# Sans-serif, slab-serif, monospace and quasi‑proportional typeface family
 cask "font-iosevka"
-# Monospaced typeface designed for programming in Julia
+cask "font-jetbrains-mono"
 cask "font-juliamono"
+cask "font-monofur-for-powerline"
+cask "font-monoid"
 cask "font-mononoki"
-# Iconic font collection with 3,600+ icons. Glyph collections: Font Awesome, Material Design Icons, Octicons, & more. Symbols only version.
-cask "font-nerd-symbols-only"
-# Web browser
-cask "google-chrome"
-# Tools to protect your files
-cask "gpg-suite-no-mail"
-# Automated organization
-cask "hazel"
-# HTTP and GraphQL Client
-cask "insomnia"
-# Terminal emulator as alternative to Apple's Terminal app
-cask "iterm2"
-# Menu bar calendar
-cask "itsycal"
-# Open-source keystroke visualizer
-cask "keycastr"
-# Preview and audit Kindle eBooks
-cask "kindle-previewer"
-# Easily check for website accessibility issues
-cask "koa11y"
-# Text editor
-cask "macvim"
-# Quickly mute your microphone with a global shortcut or menu bar control
-cask "mic-drop"
-# Web browser
-cask "microsoft-edge"
-# CSV editor
-cask "modern-csv"
-# Tool to create text-based art
-cask "monodraw"
-# Utility to move and zoom windows—on one display
-cask "moom"
-# App to write, plan, collaborate, and get organized
-cask "notion"
-# Knowledge base that works on top of a local folder of plain text Markdown files
-cask "obsidian"
-# Web browser
-cask "opera-developer"
-# QuickLook plug-in that renders source code with syntax highlighting
-cask "qlcolorcode"
-# Display image info and preview unsupported formats in QuickLook
-cask "qlimagesize"
-# QuickLook generator for Markdown files
-cask "qlmarkdown"
-cask "qlstephen"
-cask "qlvideo"
-cask "quicklook-json"
-# QuickLook generator for Adobe Swatch Exchange files
-cask "quicklookase"
-# Kubernetes and container management on the desktop
-cask "rancher"
-# Use any of your display's available resolutions
-cask "resolutionator"
-# Modified browser that helps in responsive web development
-cask "responsively"
-# Open source virtual/remote desktop application
-cask "rustdesk"
-# Web browser
-cask "safari-technology-preview"
-# Word processing software with a typewriter style
-cask "scrivener"
-# Collection of apps available by subscription
-cask "setapp"
-# Digital design and prototyping platform
-cask "sketch"
-# Team communication and collaboration software
-cask "slack"
-# App to edit markdown files in place
-cask "tableflip"
-# Desktop application for viewing and analyzing tabular data
-cask "tad"
-# Remote pair programming app
-cask "tuple"
-# Virtual machines UI using QEMU
-cask "utm"
-# GUI for the Neovim text editor
-cask "vimr"
-# OpenVPN client with AppleScript support
-cask "viscosity"
-# Open-source code editor
-cask "visual-studio-code"
-# Web browser focusing on customization and control
-cask "vivaldi"
-# Install and switch between multiple versions of Xcode
-cask "xcodes"
-# Share, organize and collaborate on designs
-cask "zeplin"
+cask "font-pt-serif"
+cask "font-recursive"
+cask "font-recursive-code"
+cask "font-source-serif-pro"
+cask "font-space-mono"
+cask "font-sudo"
+cask "font-symbols-only-nerd-font"
+cask "font-victor-mono"
 
 mas "1Blocker", id: 1365531024
 mas "1Password for Safari", id: 1569813296
@@ -363,7 +247,9 @@ mas "Esse", id: 1438921989
 mas "Exporter", id: 1099120373
 mas "GarageBand", id: 682658836
 mas "Grim Fandango", id: 1022841309
+mas "GRIS+", id: 1617349089
 mas "Grocery", id: 1195676848
+mas "History Book", id: 1619241039
 mas "Icon Slate", id: 439697913
 mas "Image2icon", id: 992115977
 mas "iMovie", id: 408981434
@@ -373,6 +259,7 @@ mas "Mactracker", id: 430255202
 mas "MarkDownload - Markdown Web Clipper", id: 1554029832
 mas "MenubarX", id: 1575588022
 mas "Mimeo Photos", id: 1282504627
+mas "Muse", id: 1501563902
 mas "Numbers", id: 409203825
 mas "One Thing", id: 1604176982
 mas "Pages", id: 409201541
@@ -390,5 +277,6 @@ mas "Tasks", id: 1502903102
 mas "TestFlight", id: 899247664
 mas "Typeface", id: 1062679359
 mas "Vinegar", id: 1591303229
+mas "WorldWideWeb", id: 1621370168
 mas "xScope", id: 889428659
 mas "Zen Pinball Party", id: 1536783591

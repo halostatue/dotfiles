@@ -14,6 +14,7 @@ use_nvm() {
     # This works with jorgebucaran/fish.nvm v2, a fish-specific alternative to
     # nvm. The version of Node requested must be installed before use.
     local -a installed
+    # shellcheck disable=SC2207
     installed=($(echo ~/.local/share/nvm/* | sed -e "s!$HOME/.local/share/nvm/!!g" -e s/v//g))
 
     local installed_re

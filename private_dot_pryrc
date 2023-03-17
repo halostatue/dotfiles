@@ -1,17 +1,10 @@
-# frozen_string_literal: true
-
+require "pp" unless defined?(pp) == "method" # standard:disable Lint/RedundantRequireStatement
 require "pathname"
-require "pry-doc"
-require "pry-coolline"
 
-rubyrc = Pathname("~/.rubyrc").expand_path
-load rubyrc if rubyrc.exist?
+Pathname(ENV.fetch("XDG_CONFIG_HOME") { Pathname(ENV["HOME"]).join(".config") })
+  .join("ruby/irbrc.d")
+  .glob("*.rb").each { |path| require path.to_path }
+
+load_gems "pry-doc", "pry-coolline"
 
 Pry.config.editor = "vim"
-
-if defined?(PryByeBug)
-  Pry.commands.alias_command "c", "continue"
-  Pry.commands.alias_command "s", "step"
-  Pry.commands.alias_command "n", "next"
-  Pry.commands.alias_command "f", "finish"
-end

@@ -6,76 +6,62 @@ if ! command --query npm
 end
 
 # Upgrade to latest NPM. Also globally install both yarn and pnpm
+set --local node_version (node --version)
 set --local pnpm_version latest
+set --local nvm_version latest
 
-switch (node --version)
-    case 'v10*'
-        set pnpm_version 5
-    case 'v11*', 'v12*'
-        set pnpm_version 6
-    case 'v13*','v14*', 'v15*', 'v16*', 'v17*', 'v18*'
-        set pnpm_version 7
+switch $node_version
+    case 'v12*'
+        set pnpm_version ^6
+        set nvm_version ^8
+        # case 'v14*', 'v16*', 'v18*'
+        #     set pnpm_version 7
 end
 
-npm install --global npm@latest yarn@latest pnpm@$pnpm_version
-
-pnpm install --global --quiet \
-    graphql \
-    graphql@15 \
-    graphql-config \
-    graphql-config@3 \
-    yargs \
-    yargs@15 \
-    @graphql-inspector/config \
-    @graphql-inspector/config@2 \
-    @graphql-inspector/loaders@2 \
-    @graphql-tools/utils@8 \
-    bson-ext \
-    core-js@3 \
-    yo \
-    generator-ronin \
-    openapi-types
+npm install --global --silent --quiet \
+    npm@$nvm_version \
+    yarn@latest \
+    pnpm@$pnpm_version
 
 # Install useful packages with pnpm
-pnpm install --global \
-    @2fd/graphdoc \
+pnpm install --global --silent \
     @cyclonedx/bom \
-    @graphql-cli/codegen \
-    @graphql-cli/coverage \
-    @graphql-cli/diff \
-    @graphql-cli/generate \
-    @graphql-cli/introspect \
-    @graphql-cli/similar \
-    @graphql-cli/validate \
-    @graphql-inspector/cli \
-    @redocly/cli \
-    @vue/cli \
-    @vue/devtools \
-    @withgraphite/graphite-cli \
-    ajv-cli \
-    apollo \
-    apollo-codegen \
-    fx \
-    graphql \
-    graphql-cli \
+    @fsouza/prettierd \
+    @graphql-codegen/cli '@types/node@>=13' @babel/core@^7 graphql@^16 \
+    @graphql-inspector/cli @graphql-tools/utils@^9 \
+    @magidoc/cli \
+    @mermaid-js/mermaid-cli \
+    @redocly/cli core-js@^3 webpack@^5 react-is@^16.8 \
+    alex \
+    apollo graphql@^14 \
+    eslint-cli \
     graphql-markdown \
     graphqldoc \
     insomnia-documenter \
-    install-peerdeps \
-    json5 \
-    knex \
-    logsene-cli \
+    pino-tiny \
     prettier \
     quicktype \
-    raml2html \
-    raml2html-full-markdown-theme \
-    raml2html-markdown-theme \
-    raml2html-markdown-theme-schema \
-    raml2html-printable-theme \
-    raml2html-slate-theme \
-    redoc-cli \
     sass \
     sass-migrator \
     svgo \
-    swagger-cli \
     typescript
+
+pnpm install --global --silent \
+    dockerfile-language-server-nodejs \
+    svelte-language-server \
+    typescript-language-server \
+    vim-language-server \
+    vls \
+    vscode-css-languageserver-bin \
+    vscode-html-languageserver-bin \
+    vscode-langservers-extracted \
+    yaml-language-server
+
+switch $node_version
+    case 'v12*'
+        # noop
+    case '*'
+        pnpm install --global --silent \
+            @withgraphite/graphite-cli \
+            spectaql
+end

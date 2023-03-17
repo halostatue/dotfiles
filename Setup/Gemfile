@@ -1,5 +1,6 @@
 gem "allocation_tracer"
 gem "appraisal"
+gem "bashly"
 gem "bridgetown"
 gem "bundler"
 gem "bundler-audit"

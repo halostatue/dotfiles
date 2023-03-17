@@ -257,7 +257,7 @@ function! s:packager_init() abort
   " https://github.com/prabirshrestha/asyncomplete.vim
   call packager#add('prabirshrestha/asyncomplete.vim')
   " https://github.com/prabirshrestha/asyncomplete-lsp.vim
-  " call packager#add('prabirshrestha/asyncomplete-lsp.vim')
+  call packager#add('prabirshrestha/asyncomplete-lsp.vim')
 
   " https://github.com/yegappan/lsp
   " call packager#add('yegappan/lsp')

@@ -1,0 +1,9 @@
+---
+# A YAML array of remote gem repositories to install gems from
+# :sources: []
+# Enable/disable automatic updating of repository metadata
+# :update_sources: true
+# Force specification of gem server host on push
+gem: --no-documen
+install: --no-document
+update: --no-document

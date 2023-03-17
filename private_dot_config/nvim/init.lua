@@ -37,5 +37,64 @@ vim.g.ayucolor = 'dark'
 -- vim.cmd [[colorscheme modus-vivendi]]
 vim.cmd([[colorscheme tokyonight]])
 
+if vim.g.vscode then
+  -- This block is running in VS Code. To tell VS Code to reload this file,
+  -- reload VS Code with Cmd-r.
+  --
+  -- For tips on how to use it effectively, see the excellent extension
+  -- documentation:
+  -- https://marketplace.visualstudio.com/items?itemName=asvetliakov.vscode-neovim
+  --
+  -- To see what to call a given keybinding (e.g. `editor.action.rename`),
+  -- see this page:
+  -- https://vscode-docs.readthedocs.io/en/stable/customization/keybindings/
+
+  vim.keymap.set(
+    'n',
+    'gr',
+    function() vim.fn.VSCodeNotify('editor.action.referenceSearch.trigger') end,
+    { remap = false }
+  )
+
+  vim.keymap.set(
+    'n',
+    'gR',
+    function() vim.fn.VSCodeNotify('editor.action.rename') end,
+    { remap = false }
+  )
+
+  -- Search for word under cursor
+  vim.keymap.set(
+    'n',
+    'K',
+    function()
+      vim.fn.VSCodeNotify(
+        'workbench.action.findInFiles',
+        { query = vim.fn.expand('<cword>') }
+      )
+    end,
+    { remap = false }
+  )
+
+  vim.keymap.set('x', 'gc', '<Plug>VSCodeCommentary', { remap = false })
+  vim.keymap.set('n', 'gc', '<Plug>VSCodeCommentary', { remap = false })
+  vim.keymap.set('o', 'gc', '<Plug>VSCodeCommentary', { remap = false })
+  vim.keymap.set('n', 'gcc', '<Plug>VSCodeCommentaryLine', { remap = false })
+
+  vim.keymap.set(
+    'n',
+    'S',
+    function() vim.fn.VSCodeNotify('search.action.focusNextSearchResult') end,
+    { remap = false }
+  )
+
+  vim.keymap.set(
+    'n',
+    '%',
+    function() vim.fn.VSCodeNotify('editor.action.jumpToBracket') end,
+    { remap = false }
+  )
+end
+
 -- set secure
 vim.opt.secure = true

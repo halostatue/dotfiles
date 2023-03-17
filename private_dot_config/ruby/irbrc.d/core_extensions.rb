@@ -1,89 +1,12 @@
-# frozen_string_litera: true
-# Shared code for irbrc/pryrc.
-
-def rails?
-  defined?(::Rails) && Rails.env
-end
-
-def bench(repetitions = 100, &block)
-  require "benchmark"
-
-  Benchmark.bmbm do |b|
-    b.report { repetitions.times(&block) }
-  end
-  nil
-end
-
-def time(times = 1)
-  require "benchmark"
-  ret = nil
-  Benchmark.bm { |x| x.report { times.times { ret = yield } } }
-  ret
-end
-
-def load_gem(library)
-  library = {library => library} if library.is_a?(String)
-  library.each_pair do |gem_name, require_name|
-    gem gem_name if gem_name
-    require require_name
-    yield if block_given?
-  rescue LoadError
-    nil
-  rescue
-    nil
-  end
-end
-
-if rails? && defined?(ActiveRecord)
-  def change_log(stream)
-    require "logger"
-    ActiveRecord::Base.logger = Logger.new(stream)
-    ActiveRecord::Base.clear_active_connections!
-    nil
-  end
-
-  def show_log
-    change_log($stdout)
-  end
-
-  def hide_log
-    change_log(nil)
-  end
-
-  def log_off
-    puts "== Logging to log file."
-    ActiveRecord::Base.logger.level = 1 # warn (?)
-    nil
-  end
-
-  def log_on
-    puts "== Logging to console."
-    ActiveRecord::Base.logger.level = 0 # debug (?)
-    nil
-  end
-
-  class Class
-    def core_ext
-      instance_methods.map { |m|
-        [m, instance_method(m).source_location]
-      }.select { |m|
-        m[1] && m[1][0] =~ /activesupport/
-      }.map { |m|
-        m[0]
-      }.sort
-    end
-  end
-end
-
 def Array.toy(n = 10, &block)
   Array.new(n, &(block || ->(i) { i + 1 }))
 end
 
 def Hash.toy(n = 10)
-  Hash[Array.toy(n).zip(Array.toy(n) { |c| (96 + (c + 1)).chr })]
+  Array.toy(n).zip(Array.toy(n) { |c| (96 + (c + 1)).chr }).to_h
 end
 
-def yore
+def maybe
   yield
 rescue Exception => ex # standard:disable Lint/RescueException
   ex
@@ -93,6 +16,10 @@ class Object
   # list methods which aren't in superclass
   def local_methods(obj = self)
     (obj.methods - obj.class.superclass.instance_methods).sort
+  end
+
+  def own_methods
+    (methods - Object.instance_methods - Object.methods).sort
   end
 
   if defined?(ObjectSpace)
@@ -163,7 +90,7 @@ class Object
         if !children[current_root].nil?
           children[current_root].sort! { |a, b| a.to_s <=> b.to_s }
           children[current_root].each do |child|
-            s = child == children[current_root].last ? "`" : "|"
+            s = (child == children[current_root].last) ? "`" : "|"
             rprint[child, "#{prefix.tr("`", " ")}#{indentation}#{c[:lines]}#{s}"]
           end
         end
@@ -179,5 +106,3 @@ class Object
     end
   end
 end
-
-load_gem "awesome_print"

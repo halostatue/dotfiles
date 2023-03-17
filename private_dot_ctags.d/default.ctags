@@ -24,8 +24,10 @@
 --exclude=tmp
 --exclude=vendor
 --exclude=venv
+
 --fields=+Z
 --fields=+l
 --fields=+n
 --fields=+z
+
 --recurse=yes

@@ -1,3 +1,4 @@
-.header on
+.headers ON
 .mode column
-.timer on
+.nullvaule [NULL]
+.timer On

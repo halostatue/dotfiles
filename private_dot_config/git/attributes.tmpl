@@ -1,0 +1,118 @@
+{{- /* Initialize variables for use in this file */ -}}
+{{- $antiword := lookPath "antiword" -}}
+{{- $catdoc := lookPath "catdoc" -}}
+{{- $catppt := lookPath "catppt" -}}
+{{- $delta := lookPath "delta" -}}
+{{- $difftastic := lookPath "difft" -}}
+{{- $djvutxt := lookPath "djvutxt" -}}
+{{- $docx2txt := lookPath "docx2txt.pl" -}}
+{{- $exiftool := lookPath "exiftool" -}}
+{{- $gvim := lookPath "gvim" -}}
+{{- $icdiff := lookPath "icdiff" -}}
+{{- $in2csv := lookPath "in2csv" -}}
+{{- $ksdiff := lookPath "ksdiff" -}}
+{{- $mvim := lookPath "mvim" -}}
+{{- $odt2txt := lookPath "odt2txt" -}}
+{{- $pandoc := lookPath "pandoc" -}}
+{{- $pdfinfo := lookPath "pdfinfo" -}}
+{{- $pdftotext := lookPath "pdftotext" -}}
+{{- $pptx2md := lookPath "pptx2md" -}}
+{{- $soffice := lookPath "soffice" -}}
+{{- $tika := lookPath "tika" -}}
+{{- $unrtf := lookPath "unrtf" -}}
+{{- $vim := lookPath "vim" -}}
+{{- $wvText := lookPath "wvText" -}}
+{{- $xlscat := lookPath "xlscat" -}}
+{{- $xlsx2csv := lookPath "xlsx2csv" -}}
+{{- $xlsx2csvPy := lookPath "xlsx2csv.py" -}}
+
+# See https://tekin.co.uk/2020/10/better-git-diff-output-for-ruby-python-elixir-and-more for more details
+
+*.ada diff=ada
+*.bib diff=bibtex
+*.cs diff=csharp
+*.css diff=css
+*.dts diff=dts
+*.f diff=fortran
+*.fountain diff=fountain
+*.go diff=golang
+*.html.erb diff=html
+*.java diff=java
+*.java diff=java
+*.kt diff=kotlin
+*.oct diff=octave
+*.org diff=orgmode
+*.pbxproj text -crlf -diff -merge
+*.php diff=php
+*.pl diff=perl
+*.py diff=python
+*.r diff=rstats
+*.rb diff=ruby
+*.swift diff=swift
+*.tex diff=tex
+*.texi* diff=texinfo
+*.{bash,sh} diff=bash
+*.{c++,h++} diff=cpp
+*.{c,h} diff=cpp
+*.{cc,hh} diff=cpp
+*.{cpp,hpp} diff=cpp
+*.{erl,hrl} diff=erlang
+*.{ex,exs} diff=elixir
+*.{html,xhtml} diff=html
+*.{lisp,el,clj} diff=lisp
+*.{m,mm} diff=objc
+*.{md,markdown,mkdown,mdown} diff=markdown
+*.{rs,rust} diff=rust
+*_spec.rb diff=rspec
+mix.lock merge=binary
+rebar.lock merge=binary
+sqitch.conf text whitespace=blank-at-eol,space-before-tab,trailing-space
+{Gemfile,*.gemspec} diff=ruby
+{Rakefile,*.rake} diff=ruby
+
+# Various Binary Document Types
+{{ if or $pdfinfo $pdftotext -}}
+*.pdf diff=pdf
+{{ end }}
+{{ if $exiftool -}}
+*.png diff=exif
+*.jpg diff=exif
+*.jpeg diff=exif
+*.gif diff=exif
+{{- end }}
+{{ if or $djvutxt $pdfinfo -}}
+*.djvu diff=djvu
+{{- end }}
+{{ if or $odt2txt $pandoc -}}
+*.odt diff=odt
+{{- end }}
+*.odp diff=libreoffice
+*.ods diff=libreoffice
+{{ if or $antiword $catdoc $wvText -}}
+*.doc diff=doc
+{{- end }}
+{{ if or $in2csv $soffice $xlscat -}}
+*.xls diff=xls
+{{- end }}
+*.ppt diff=ppt
+{{ if or $docx2txt $pandoc -}}
+*.docx diff=docx
+{{- end }}
+{{ if or $in2csv $soffice $xlsx2csv $xlsx2csvPy -}}
+*.xlsx diff=xlsx
+{{- end }}
+{{ if $pptx2md -}}
+*.pptx diff=pptx
+{{- end }}
+{{ if $unrtf -}}
+*.rtf diff=rtf
+{{- end }}
+{{ if $pandoc -}}
+*.epub diff=pandoc
+{{- end }}
+{{ if $tika -}}
+*.chm diff=tika
+*.mhtml? diff=tika
+*.{class,jar} diff=tika
+*.{rar,7z,zip} diff=tika
+{{- end }}
