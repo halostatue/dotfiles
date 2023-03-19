@@ -1,0 +1,11 @@
+cosign
+fswatch
+gh
+go
+git-extras
+minisign
+pam-reattach
+postgis3                       +postgresql13+proj8+raster+topology
+postgresql13-server
+ruby-build
+ruby-install

@@ -1,0 +1,55 @@
+- Re-shape an array of hashes:
+
+`{{cat path/to/file.json}} | jq '{{[.top[] | { letter: .sub }]}}'`
+
+- Cast a value to a number with `tonumber`:
+
+`{{ cat path/to/file.json}} | jq '{{map(.price |= tonumber)}}'`
+
+- Sort by a key (ascending):
+
+`{{ cat path/to/file.json}} | jq '{{sort_by(.price)}}'`
+
+- Sort by a key (descending):
+
+`{{ cat path/to/file.json}} | jq '{{sort_by(.price) | reverse}}'`
+
+- Show values from array of objects:
+
+`{{ cat path/to/file.json}} | jq '{{.[].text}}'`
+
+- Recursive descent location:
+
+`{{curl -A 'ua' https://www.reddit.com/r/food/new.json}} | jq '{{.. | .permalink?}}'`
+
+- Filter items from array of objects:
+
+`{{ cat path/to/file.json}} | jq '{{.[] | select(.time | startswith("2021"))}}'`
+
+- Filter non-null items from array:
+
+`{{ cat path/to/file.json}} | jq '{{. | select(.)}}'`
+
+- List keys:
+
+`{{ cat path/to/file.json}} | jq '{{.users | keys}}'`
+
+- Set value as variable:
+
+`{{ cat path/to/file.json}} | jq '{{.pattern as $pattern | . | select(.match == $pattern)}}'`
+
+- Return data passing a test:
+
+`{{ cat path/to/file.json}} | jq '{{. as $parent | select(.. | .year? == "2019") | $parent}}'`
+
+- Find data passing a test:
+
+`{{ cat path/to/file.json}} | jq '{{.. | select(.. | .year? == "2019")}}'`
+
+- Filter by string match:
+
+`{{ cat path/to/file.json}} | jq '{{select(.name | test("Gabe"))}}'`
+
+- Filter by string match (case-insensitive):
+
+`{{ cat path/to/file.json}} | jq '{{select(.name | test("gabe"; "i"))}}'`

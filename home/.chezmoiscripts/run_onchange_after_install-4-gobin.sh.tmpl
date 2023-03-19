@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+
+set -uo pipefail
+
+on-ERR() {
+  local status=$?
+  echo >&2 Error executing run_onchange_after_install-4-gobin.sh.tmpl
+  exit ${status}
+}
+
+trap on-ERR ERR
+
+declare verbose
+verbose="${CHEZMOI_VERBOSE:-false}"
+
+if "${verbose}"; then
+  echo 4: Install Go Binaries
+
+  if "${DEBUG_SCRIPTS:-false}"; then
+    set -x
+  fi
+fi
+
+if ! command -v go >/dev/null 2>/dev/null; then
+  echo >&2 "go is not installed"
+  exit 1
+fi
+
+# go-install TARGET URI [VERSION] [-- COMMENT INFORMATION]
+#
+# TARGET is mandatory, but ignored. (It's used to help sort the binary list.)
+#
+# If URI is missing what looks like a hostname (^(\w+.)+\w+/), github.com
+# will be prepended.
+#
+# If VERSION is omitted, latest will be specified.
+#
+# Comment information, if provided, must follow the literal --.
+#
+# Examples
+#
+# go-install age filippo.io/age/cmd/... v1 -- https://github.com/filosottile/age
+# # go install filippo.io/age/cmd...@v1
+#
+# go-install gldv aarzilli/gdlv -- https://github.com/aarzilli/gdlv
+# # go install github.com/aarzilli/gdlv@latest
+go-install() {
+  local -a args
+  local package_uri package_version
+  package_version=latest
+  args=()
+
+  while (($#)); do
+    case "$1" in
+    ::) break ;;
+    *) args+=("$1") ;;
+    esac
+
+    shift
+  done
+
+  set -- "${args[@]}"
+
+  shift # ignore $1
+  package_uri="$1"
+  shift
+
+  if ! echo "${package_uri}" | grep -Eq '^(?:\w+\.)+\w+/'; then
+    package_uri="github.com/${package_uri}"
+  fi
+
+  if (($#)); then
+    package_version="$1"
+  fi
+
+  if "${verbose}"; then
+    go install "${package_uri}@${package_version}"
+  else
+    go install "${package_uri}@${package_version}" >/dev/null 2>/dev/null
+  fi
+}
+
+# Gobin Hash: {{ include (joinPath .chezmoi.workingTree "Setup/Gobin") | sha256sum }}
+while read -r -a gobin; do
+  if [[ "${gobin[*]}" =~ ^\s*#.*$ ]] || [[ "${gobin[*]}" =~ ^\s*$ ]]; then
+    continue
+  fi
+
+  if ! go-install "${gobin[@]}"; then
+    echo >&2 "Error installing ${gobin[*]}"
+    exit 1
+  fi
+done <"${CHEZMOI_WORKING_TREE}/Setup/Gobin"
+
+# Installations that require manual installation
+(
+  set -e
+  cd "$(mktemp -d)"
+
+  if "${verbose}"; then
+    git clone https://github.com/minamijoyo/tfschema
+  else
+    git clone https://github.com/minamijoyo/tfschema >/dev/null 2>/dev/null
+  fi
+  cd tfschema
+
+  if "${verbose}"; then
+    go install .
+  else
+    go install . >/dev/null 2>/dev/null
+  fi
+)

@@ -1,0 +1,11 @@
+- Print lines that contain "foo" (like `grep`):
+
+`awk '/{{foo}}/' {{path/to/file}}`
+
+- Print lines that _don't_ contain "foo" (like `grep -v`):
+
+`awk '!/{{foo}}/' {{path/to/file}}`
+
+- Print lines that contain "foo" but don't contain "bar" (like `grep && grep -v`):
+
+`awk '/{{foo}}/ && !/{{bar}}/' {{path/to/file}}`

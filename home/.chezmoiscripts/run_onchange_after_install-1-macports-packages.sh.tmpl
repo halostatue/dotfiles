@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+set -uo pipefail
+
+on-ERR() {
+  local status=$?
+  echo >&2 Error executing run_onchange_after_install-1-macports-packages.sh.tmpl
+  exit ${status}
+}
+
+trap on-ERR ERR
+
+declare verbose
+verbose="${CHEZMOI_VERBOSE:-false}"
+
+if "${verbose}"; then
+  echo 1: Install MacPorts Ports
+
+  if "${DEBUG_SCRIPTS:-false}"; then
+    set -x
+  fi
+fi
+
+case "$(uname -s)" in
+Darwin)
+  if ! command -v port >/dev/null 2>/dev/null; then
+    if ! echo "${PATH}" | grep -q /opt/local/bin; then
+      export PATH=/opt/local/bin:/opt/local/sbin:"${PATH}"
+    fi
+  fi
+
+  if ! command -v port >/dev/null 2>/dev/null; then
+    if "${verbose}"; then
+      echo >&2 MacPorts is not installed
+      exit 1
+    fi
+
+    exit 0
+  fi
+
+  # Requested Ports Hash: {{ include (joinPath .chezmoi.workingTree "Setup/Ports") | sha256sum }}
+  while read -r -a port; do
+    if [[ "${port[*]}" =~ ^\s*#.*$ ]] || [[ "${port[*]}" =~ ^\s*$ ]]; then
+      continue
+    fi
+
+    if "${verbose}"; then
+      sudo port install "${port[@]}"
+    else
+      sudo port install "${port[@]}" >/dev/null 2>/dev/null
+    fi
+  done <"${CHEZMOI_WORKING_TREE}/Setup/Ports"
+  ;;
+esac

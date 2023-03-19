@@ -1,0 +1,239 @@
+{{- /* Initialize variables for use in this file */ -}}
+{{- $antiword := lookPath "antiword" -}}
+{{- $catdoc := lookPath "catdoc" -}}
+{{- $catppt := lookPath "catppt" -}}
+{{- $delta := lookPath "delta" -}}
+{{- $difftastic := lookPath "difft" -}}
+{{- $djvutxt := lookPath "djvutxt" -}}
+{{- $docx2txt := lookPath "docx2txt.pl" -}}
+{{- $exiftool := lookPath "exiftool" -}}
+{{- $gvim := lookPath "gvim" -}}
+{{- $icdiff := lookPath "icdiff" -}}
+{{- $in2csv := lookPath "in2csv" -}}
+{{- $ksdiff := lookPath "ksdiff" -}}
+{{- $mvim := lookPath "mvim" -}}
+{{- $odt2txt := lookPath "odt2txt" -}}
+{{- $pandoc := lookPath "pandoc" -}}
+{{- $pdfinfo := lookPath "pdfinfo" -}}
+{{- $pdftotext := lookPath "pdftotext" -}}
+{{- $pptx2md := lookPath "pptx2md" -}}
+{{- $soffice := lookPath "soffice" -}}
+{{- $tika := lookPath "tika" -}}
+{{- $unrtf := lookPath "unrtf" -}}
+{{- $vim := lookPath "vim" -}}
+{{- $wvText := lookPath "wvText" -}}
+{{- $xlscat := lookPath "xlscat" -}}
+{{- $xlsx2csv := lookPath "xlsx2csv" -}}
+{{- $xlsx2csvPy := lookPath "xlsx2csv.py" -}}
+
+{{- /* Set the values */ -}}
+{{- $diffGuitool := "" -}}
+{{- $diffTool := "" -}}
+{{- $gvimCommand := "" -}}
+{{- if $ksdiff -}}
+{{-   $diffGuitool = "Kaleidoscope" -}}
+{{- end -}}
+{{- if $difftastic -}}{{- /* difftastic */ -}}
+{{-   $diffTool = "difftastic" -}}
+{{- else if $delta -}}
+{{-   $diffTool = "delta" -}}
+{{- else if $icdiff -}}
+{{-   $diffTool = "icdiff" -}}
+{{- end -}}
+{{- if $gvim -}}
+{{-   $gvimCommand = "gvim" -}}
+{{- else if $mvim -}}
+{{-   $gvimCommand = "mvim" -}}
+{{- end -}}
+
+[diff]
+  algorithm = histogram
+  colorMoved = dimmed-zebra # zebra
+  compactionHeuristic = true
+  indentHeuristic = true
+  mnemonicprefix = true
+  noprefix = true # makes the paths resolvable...
+  renames = copies
+  submodule = log
+{{- if $diffGuitool }}
+  guitool = {{ $diffGuitool | quote }}
+{{- end }}
+{{- if $diffTool }}
+  tool = {{ $diffTool | quote }}
+{{- end }}
+
+[diff "lisp"]
+  xfuncname = "^(\\(.*)$"
+  # xfuncname = "^(\\((cl-)?def(un|macro|method).*)$"
+
+[diff "swift"]
+  xfuncname = ^[ \t]*((class|func)[ \t].*)$
+
+[diff "orgmode"]
+  xfuncname = "^(\\*+.*)$"
+
+[diff "rstats"]
+  xfuncname = "^([a-zA-z.]+ <- function.*)$"
+
+[diff "texinfo"]
+  # from http://git.savannah.gnu.org/gitweb/?p=coreutils.git;a=blob;f=.gitattributes;h=c3b2926c78c939d94358cc63d051a70d38cfea5d;hb=HEAD
+  xfuncname = "^@node[ \t][ \t]*\\([^,][^,]*\\)"
+{{ if $exiftool -}}
+
+[diff "exif"]
+  binary = true
+  textconv = exiftool
+{{- end }}
+{{ if or $pdfinfo $pdftotext -}}
+
+[diff "pdf"]
+  binary = true
+  cachetextconv = true
+  textconv = {{ if $pdftotext }}sh -c 'pdftotext -layout "$0" -enc UTF-8 -nopgbrk -q -'{{ else }}pdfinfo{{ end }}
+{{- end }}
+{{ if or $djvutxt $pdfinfo -}}
+
+[diff "djvu"]
+  binary = true
+  cachetextconv = true
+  textconv = {{ if $djvutxt }}djvutxt{{ else }}pdfinfo{{ end }}
+{{ end }}
+{{ if or $odt2txt $pandoc -}}
+
+[diff "odt"]
+  binary = true
+  cachetextconv = true
+  textconv = {{ if $odt2txt }}odt2txt{{ else }}pandoc --standalone --from=odt --to=plain{{ end }}
+{{- end }}
+{{ if or $antiword $catdoc $wvText -}}
+
+[diff "doc"]
+  binary = true
+  cachetextconv = true
+  textconv = {{if $wvText}}wvText{{ else if $antiword }}antiword -{{ else }}catdoc{{ end }}
+{{- end }}
+{{ if or $in2csv $soffice $xlscat -}}
+
+[diff "xls"]
+  binary = true
+  cachetextconv = true
+  textconv = {{ if $in2csv }}in2csv{{ else if $xlscat }}xlscat -a UTF-8{{ else }}soffice --headless --convert-to
+  csv{{ end }}
+{{ end }}
+{{ if or $docx2txt $pandoc -}}
+
+[diff "docx"]
+  binary = true
+  cachetextconv = true
+  textconv = {{ if $pandoc }}pandoc --standalone --from=docx --to=plain{{ else }}sh -c 'docx2txt.pl "$0" -'{{ end }}
+{{ end }}
+{{ if or $in2csv $soffice $xlsx2csv $xlsx2csvPy -}}
+
+[diff "xlsx"]
+  binary = true
+  cachetextconv = true
+  textconv = {{ if $xlsx2csv }}xlsx2csv{{ else if $xlsx2csvPy }}xlsx2csvPy{{ else if $in2csv }}in2csv{{ else }}soffice --headless --converto-to csv{{ end }}
+{{- end }}
+{{ if $pptx2md -}}
+
+[diff "pptx"]
+  binary = true
+  cachetextconv = true
+  textconv = sh -c 'pptx2md --disable_image --disable_wmf -i "$0" -o ~/.cache/git/presentation.md >/dev/null && cat ~/.cache/git/presentation.md'
+{{- end }}
+{{ if $unrtf -}}
+
+[diff "rtf"]
+  binary = true
+  cachetextconv = true
+  textconv = unrtf --text
+{{- end }}
+{{ if $pandoc -}}
+
+[diff "epub"]
+  binary = true
+  cachetextconv = true
+  textconv = pandoc --standalone --from=epub --to=plain
+{{- end }}
+{{ if $tika -}}
+
+[diff "tika"]
+  binary = true
+  cachetextconv = true
+  textconv = "tika --text" # [Tika](https://tika.apache.org/download.html)
+{{- end }}
+{{ if $soffice -}}
+
+[diff "libreoffice"]
+  binary = true
+  cachetextconv = true
+  textconv = "soffice --cat"
+{{- end }}
+{{ if $catppt -}}
+
+[diff "ppt"]
+  binary = true
+  cachetextconv = true
+  textconv = catppt
+{{- end }}
+{{ if $delta -}}
+
+[delta]
+  navigate = true
+  side-by-side = true
+  line-numbers = true
+
+[interactive]
+  diffFilter = delta --color-only
+
+{{- end }}
+[difftool]
+  prompt = false
+
+{{ if $difftastic -}}
+[difftool "difftastic"]
+  cmd = difft "$LOCAL" "$REMOTE"
+{{- end }}
+{{ if $icdiff -}}
+
+[difftool "icdiff"]
+  cmd = icdiff --line-numbers "${LOCAL}" "${REMOTE}"
+{{- end }}
+{{ if $delta -}}
+
+[difftool "delta"]
+  cmd = delta "${LOCAL}" "${REMOTE}" "${MERGED}"
+
+{{- end }}
+
+[merge]
+  log = true
+  conflictstyle = zdiff3
+  ff = only
+
+[mergetool]
+  keepBackup = false
+  prompt = false
+{{ if or $gvim $mvim -}}
+
+[mergetool "gvim"]
+  cmd = {{ $gvimCommand }} -d --remote-wait-silent "${LOCAL}" "${MERGED}" "${REMOTE}"
+  trustExitCode = true
+{{- end }}
+{{ if $vim -}}
+
+[mergetool "vimdiff"]
+  cmd = vim -d "${LOCAL}" "${MERGED}" "${REMOTE}"
+  trustExitCode = true
+{{- end }}
+{{ if $ksdiff -}}
+
+[difftool "Kaleidoscope"]
+  cmd = ksdiff --partial-changeset --relative-path "${MERGED}" -- "${LOCAL}" "${REMOTE}"
+
+[mergetool "Kaleidoscope"]
+  cmd = ksdiff --merge --output "${MERGED}" --base "${BASE}" -- "${LOCAL}" --snapshot "${REMOTE}" --snapshot
+  trustExitCode = true
+{{- end }}
+
+# vim: ft=gitconfig

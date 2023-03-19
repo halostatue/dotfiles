@@ -1,0 +1,363 @@
+{
+  "[ansible]": {
+    "editor.tabSize": 2
+  },
+  "[bazel]": {
+    "editor.formatOnSave": false
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[elixir]": {
+    "editor.defaultFormatter": "JakeBecker.elixir-ls"
+  },
+  "[graphql]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "HookyQR.beautify"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[rust]": {
+    "editor.defaultFormatter": "statiolake.vscode-rustfmt"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "octref.vetur"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[xml]": {
+    "editor.defaultFormatter": "DotJoshJohnson.xml"
+  },
+  "atlascode.bitbucket.issues.createJiraEnabled": true,
+  "atlascode.bitbucket.pipelines.explorerEnabled": false,
+  "atlascode.bitbucket.preferredRemotes": [
+    "origin",
+    "upstream"
+  ],
+  "atlascode.bitbucket.statusbar.enabled": false,
+  "atlascode.bitbucket.statusbar.showLogin": true,
+  "atlascode.bitbucket.statusbar.showUser": true,
+  "atlascode.jira.enabled": true,
+  "atlascode.jira.jqlList": [
+    {
+      "enabled": true,
+      "id": "ca784941-c358-41f4-a1a8-086b882c204e",
+      "monitor": true,
+      "name": "My halogenmobile Issues",
+      "query": "assignee = currentUser() AND resolution = Unresolved ORDER BY lastViewed DESC",
+      "siteId": "07fee6e6-7976-4da1-b16d-7428d7df575f"
+    },
+    {
+      "enabled": true,
+      "id": "1ba4fa1e-0549-4e92-bac6-aff42cf6498f",
+      "monitor": true,
+      "name": "My ascendis Issues",
+      "query": "assignee = currentUser() AND resolution = Unresolved ORDER BY lastViewed DESC",
+      "siteId": "fb834bd8-09b4-4a5a-b3b1-fdf1d96383d5"
+    }
+  ],
+  "atlascode.jira.statusbar.enabled": false,
+  "aws.profile": "profile:kc-dev",
+  "aws.telemetry": false,
+  "breadcrumbs.enabled": true,
+  "breadcrumbs.filePath": "off",
+  "cSpell.enableFiletypes": [
+    "liquid"
+  ],
+  "cSpell.enabledLanguageIds": [
+    "asciidoc",
+    "c",
+    "cpp",
+    "csharp",
+    "css",
+    "git-commit",
+    "go",
+    "graphql",
+    "handlebars",
+    "haskell",
+    "html",
+    "jade",
+    "java",
+    "javascript",
+    "javascriptreact",
+    "json",
+    "jsonc",
+    "latex",
+    "less",
+    "markdown",
+    "php",
+    "plaintext",
+    "python",
+    "pug",
+    "restructuredtext",
+    "rust",
+    "scala",
+    "scss",
+    "text",
+    "typescript",
+    "typescriptreact",
+    "yaml",
+    "yml",
+    "elixir",
+    "erlang"
+  ],
+  "cSpell.userWords": [
+    "behaviour",
+    "behaviours",
+    "CSRF",
+    "favourite",
+    "favourited",
+    "geolocation",
+    "halostatue",
+    "Kinetic’s",
+    "Licence"
+  ],
+  "debug.javascript.autoAttachFilter": "smart",
+  "editor.accessibilitySupport": "off",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.cursorBlinking": "phase",
+  "editor.cursorSmoothCaretAnimation": true,
+  "editor.cursorSurroundingLines": 5,
+  "editor.fontFamily": "JetBrains Mono NL, JetBrains Mono, IBM PlexMono, JetBrains Mono, Rec Mono Duotone, Fira Code, Iosevka,  Menlo, Monaco, monospace",
+  "editor.fontLigatures": "'dlig'",
+  "editor.fontSize": 12,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.lineNumbers": "relative",
+  "editor.linkedEditing": true,
+  "editor.minimap.enabled": false,
+  "editor.minimap.maxColumn": 50,
+  "editor.rulers": [
+    80,
+    100
+  ],
+  "editor.suggestSelection": "first",
+  "editor.tabSize": 2,
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "comment",
+        "settings": {
+          "fontStyle": "italic"
+        }
+      },
+      {
+        "scope": "variable.key.table",
+        "settings": {
+          "foreground": "#4EC9B0"
+        }
+      },
+      {
+        "scope": "variable.key.array",
+        "settings": {
+          "foreground": "#569CD6"
+        }
+      },
+      {
+        "scope": "constant.other.time",
+        "settings": {
+          "foreground": "#DCDCAA"
+        }
+      }
+    ]
+  },
+  "elixir.credo.credoConfiguration": "vscode",
+  "elixirLS.enableTestLenses": true,
+  "emmet.excludeLanguages": [
+    "markdown",
+    "typescriptreact",
+    "typescript"
+  ],
+  "emmet.includeLanguages": {
+    "vue-html": "html"
+  },
+  "emmet.showAbbreviationSuggestions": true,
+  "eslint.alwaysShowStatus": true,
+  "eslint.codeActionsOnSave.rules": [
+    "unused-imports/no-unused-imports"
+  ],
+  "eslint.format.enable": true,
+  "eslint.run": "onSave",
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.openEditors.visible": 0,
+  "extensions.experimental.affinity": {
+    "asvetliakov.vscode-neovim": 1
+  },
+  "files.associations": {
+    "*.env": "properties"
+  },
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.watcherExclude": {
+    "**/_build/**": true,
+    "**/deps/**": true
+  },
+  "git.allowForcePush": true,
+  "git.alwaysSignOff": true,
+  "git.autoStash": true,
+  "git.confirmForcePush": false,
+  "git.detectSubmodulesLimit": 20,
+  "git.fetchOnPull": true,
+  "git.path": "/opt/local/bin/git",
+  "git.pruneOnFetch": true,
+  "git.rebaseWhenSync": true,
+  "git.supportCancellation": true,
+  "github.customPullRequestDescription": "gitEditor",
+  "github.gitCommand": "/opt/local/bin/git",
+  "github.preferedMergeMethod": "rebase",
+  "githubPullRequests.defaultMergeMethod": "rebase",
+  "githubPullRequests.telemetry.enabled": false,
+  "github-actions.org-features": true,
+  "gitlens.advanced.telemetry.enabled": false,
+  "gitlens.blame.highlight.locations": [
+    "gutter",
+    "overview"
+  ],
+  "gitlens.views.compare.location": "gitlens",
+  "gitlens.views.fileHistory.location": "explorer",
+  "gitlens.views.lineHistory.location": "explorer",
+  "gitlens.views.repositories.location": "scm",
+  "gitlens.views.search.location": "gitlens",
+  "go.toolsManagement.autoUpdate": true,
+  "go.useLanguageServer": true,
+  "importSorter.generalConfiguration.sortOnBeforeSave": true,
+  "importSorter.importStringConfiguration.quoteMark": "single",
+  "javascript.format.enable": false,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "json.schemas": [],
+  "liveshare.authenticationProvider": "GitHub",
+  "markdown.extension.toc.levels": "2..2",
+  "markdown.extension.toc.updateOnSave": false,
+  "openInGitHub.defaultBranch": "main",
+  "prettier.requireConfig": true,
+  "pgFormatter.formatType": true,
+  "pgFormatter.wrapLimit": 90,
+  "redhat.telemetry.enabled": false,
+  "ruby.format": "standardrb",
+  "ruby.lint": {
+    "debride": false,
+    "fasterer": true,
+    "reek": false,
+    "rubocop": false,
+    "ruby": true,
+    "ruby-lint": false,
+    "standard": true
+  },
+  "rust-analyzer.callInfo.full": false,
+  "rust-analyzer.checkOnSave.command": "clippy",
+  "rust-analyzer.imports.granularity.group": "none",
+  "rust-analyzer.inlayHints.parameterHints.enable": false,
+  "rust-analyzer.updates.askBeforeDownload": false,
+  "rust-client.engine": "rust-analyzer",
+  "rust.clippy_preference": "on",
+  "search.exclude": {
+    "**/_build": true,
+    "**/deps": true
+  },
+  "search.showLineNumbers": true,
+  "search.smartCase": true,
+  "search.useGlobalIgnoreFiles": true,
+  "shellcheck.executablePath": "/opt/local/bin/shellcheck",
+  "telemetry.enableCrashReporter": false,
+  "telemetry.enableTelemetry": false,
+  "telemetry.telemetryLevel": "off",
+  "terminal.integrated.defaultProfile.osx": "fish",
+  "typescript.format.enable": false,
+  "typescript.surveys.enabled": false,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "vim.camelCaseMotion.enable": true,
+  "vim.easymotion": true,
+  "vim.incsearch": true,
+  "vim.leader": "<space>",
+  "vim.hlsearch": true,
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": [
+        "g",
+        "r"
+      ],
+      "commands": [
+        "editor.action.goToReferences"
+      ]
+    }
+  ],
+  "vim.sneak": true,
+  "vim.sneakUseIgnorecaseAndSmartcase": true,
+  "vim.useSystemClipboard": true,
+  "vscode-neovim.neovimExecutablePaths.darwin": "/opt/local/bin/nvim",
+  "vsicons.dontShowNewVersionMessage": true,
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "webhint.enableTelemetry": "enabled",
+  "window.closeWhenEmpty": true,
+  "window.zoomLevel": -1,
+  "workbench.editor.enablePreview": false,
+  "workbench.editor.enablePreviewFromQuickOpen": false,
+  "workbench.editor.splitSizing": "split",
+  "workbench.editor.tabCloseButton": "left",
+  "workbench.editor.untitled.hint": "hidden",
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter.notebook.ipynb"
+  },
+  "workbench.fontAliasing": "auto",
+  "workbench.iconTheme": "vscode-icons",
+  "workbench.settings.useSplitJSON": true,
+  "workbench.sideBar.location": "right",
+  "workbench.startupEditor": "newUntitledFile",
+  "yaml.customTags": [
+    "!And",
+    "!And sequence",
+    "!If",
+    "!If sequence",
+    "!Not",
+    "!Not sequence",
+    "!Equals",
+    "!Equals sequence",
+    "!Or",
+    "!Or sequence",
+    "!FindInMap",
+    "!FindInMap sequence",
+    "!Base64",
+    "!Join",
+    "!Join sequence",
+    "!Cidr",
+    "!Ref",
+    "!Sub",
+    "!Sub sequence",
+    "!GetAtt",
+    "!GetAZs",
+    "!ImportValue",
+    "!ImportValue sequence",
+    "!Select",
+    "!Select sequence",
+    "!Split",
+    "!Split sequence"
+  ],
+  "yaml.schemas": {
+    "file:///Users/austin/.vscode/extensions/atlassian.atlascode-2.10.12/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
+  },
+  "zeplin.enableTelemetry": false
+}

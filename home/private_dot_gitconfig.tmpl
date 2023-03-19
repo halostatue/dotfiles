@@ -1,0 +1,239 @@
+{{- /* Initialize variables for use in this file */ -}}
+{{- $commitTemplate := "" -}}
+{{- $coreAttributesFile := "" -}}
+{{- $coreExcludesFile := "" -}}
+{{- $corePager := "" -}}
+{{- $githubUser := "" -}}
+{{- $githubToken := "" -}}
+{{- $sequenceEditor := "" -}}
+{{- $webBrowser := "" -}}
+
+{{- /* Set the values  */ -}}
+{{- if stat (joinPath .chezmoi.homeDir ".config/git/commit-message") -}}
+{{-   $commitTemplate = joinPath .chezmoi.homeDir ".config/git/commit-message" -}}
+{{- end -}}
+{{- if stat (joinPath .chezmoi.homeDir ".config/git/attributes") -}}
+{{-   $coreAttributesFile = joinPath .chezmoi.homeDir ".config/git/attributes" -}}
+{{- end -}}
+{{- if stat (joinPath .chezmoi.homeDir ".config/git/ignore") }}
+{{-   $coreExcludesFile = joinPath .chezmoi.homeDir ".config/git/ignore" -}}
+{{- end -}}
+{{- if lookPath "delta" -}}
+{{-   $corePager = "delta" -}}
+{{- else if lookPath "diff-so-fancy" -}}
+{{-   $corePager = "diff-so-fancy | less --tabs=4 -RFX" -}}
+{{- end -}}
+{{- if ne (dig "github" "user" "<missing>" .) "<missing>" -}}
+{{-   $githubUser = .github.user -}}
+{{-   if kindIs "map" (dig "github" "tokens" "emacs_paradox" "" .) -}}
+{{-     $e := .github.tokens.emacs_paradox -}}
+{{-     $githubToken = (onepasswordDetailsFields $e.name $e.vault $e.account).credential.value -}}
+{{-   end -}}
+{{- end -}}
+{{- if lookPath "interactive-rebase-tool" -}}
+{{-   $sequenceEditor = "interactive-rebase-tool" }}
+{{- end -}}
+{{- if lookPath "xdg-open" -}}
+{{-   $webBrowser = "xdg-open" -}}
+{{- else if lookPath "open" -}}
+{{-   $webBrowser = "open" -}}
+{{- end -}}
+
+[advice]
+  statusHints = false
+	skippedCherryPicks = false
+
+[help]
+  autocorrect = 5
+
+[apply]
+  whitespace = nowarn
+
+[branch]
+  autosetuprebase = always
+  # sort = -committerdate
+
+[color]
+  branch = auto
+  diff = auto
+  pager = true
+  status = auto
+  ui = auto
+
+[color "branch"]
+  current = yellow reverse
+  local = yellow bold
+  remote = green bold
+  plain = red bold
+
+[color "status"]
+  added = green
+  changed = yellow bold
+  untracked = white bold
+
+[commit]
+  cleanup = scissors
+  verbose = true
+{{- if $commitTemplate }}
+  template = {{ $commitTemplate }}
+{{- end }}
+
+[core]
+  abbrev = 12
+  autocrlf = input
+  compression = -1
+  editor = vim
+  precomposeUnicode = true
+  safecrlf = true
+  whitespace = trailing-space,tab-in-indent,cr-at-eol,space-before-tab
+{{- if $coreAttributesFile }}
+  attributesFile = {{ $coreAttributesFile  | quote }}
+{{- end }}
+{{- if $coreExcludesFile }}
+  excludesFile = {{ $coreExcludesFile | quote }}
+{{- end }}
+{{- if $corePager }}
+  pager = {{ $corePager | quote }}
+{{- end }}
+
+[feature]
+  manyFiles = true
+
+[fetch]
+  recurseSubmodules = on-demand
+  prune = true
+
+[format]
+  pretty = %C(yellow)%h%C(reset) %C(red)%ad%C(reset) | %s%d %C(green)[%aN]%C(reset)
+  signOff = true
+
+[pretty]
+	simple-oneline = "%C(yellow)%h%C(auto)%d %s <%C(green)%aN%C(reset)> (%C(blue)%ar%C(reset))"
+
+[gc]
+  reflogexpire = 300
+  reflogexpireunreachable = 90
+
+{{ if $githubUser -}}
+[github]
+  user = {{ $githubUser | quote }}
+{{- if $githubToken }}
+  token = {{ $githubToken | quote }}
+{{- end -}}
+{{- end }}
+
+[grep]
+  extendRegexp = true
+  lineNumber = true
+
+[log]
+  date = short
+  decorate = auto
+  showSignature = false
+
+[pack]
+  threads = 0
+  writeReverseIndex = true
+  useSparse = true
+
+[pager]
+  difftool = true
+  # diff = delta
+  # log = delta
+  # reflog = delta
+  # show = delta
+
+[pull]
+  ff = only
+  rebase = true
+
+[push]
+  default = simple
+  followTags = true
+  autoSetupRemote = true
+
+[rebase]
+  autosquash = true
+  autostash = true
+  missingCommitCheck = true
+
+[credential]
+  helper = cache --timeout=3600
+
+[stash]
+  showPatch = true
+
+[status]
+  submoduleSummary = true
+
+[submodule]
+  fetchJobs = 0
+
+[tag]
+  sort = version:refname
+
+[versionsort]
+  suffix = ""
+  suffix = "-rc"
+  suffix = "-pre"
+
+# URL shorthands
+[url "git@github.com:"]
+  insteadOf = gh:
+[url "git@gist.github.com:"]
+  insteadOf = gist:
+[url "git@bitbucket.org:"]
+  insteadOf = bb:
+# TODO: These should be chezmoi-configurable
+[url "git@github.com:kineticcommerce/"]
+  insteadOf = kinetic:
+[url "git@github.com:halostatue/"]
+  insteadOf = halostatue:
+
+# TODO: Remove configuration from this file and always require per-repo configuration
+[user]
+  useConfigOnly = true
+  name = {{ .name }}
+  email = {{ .email }}
+
+{{ if $webBrowser -}}
+[web]
+  browser = {{ $webBrowser | quote }}
+{{- end }}
+
+[init]
+  # TODO: Possibly have a git template in chezmoi or an external
+  # templatedir = ~/.config/git/template
+  defaultBranch = main
+
+[rerere]
+  enabled = true
+
+[sendemail]
+	annotate = true
+	confirm = always
+	thread = true
+	supersscc = self
+
+{{ if $sequenceEditor -}}
+[sequence]
+  editor = {{ $sequenceEditor | quote }}
+{{- end }}
+
+# TODO: Template support for lfs and other filters
+# [filter "lfs"]
+#   clean = git-lfs clean -- %f
+#   smudge = git-lfs smudge -- %f
+#   process = git-lfs filter-process
+#   required = true
+
+[include]
+  path = ~/.config/git/aliases
+
+[include]
+  path = ~/.config/git/diff-merge
+
+[include]
+  path = ~/.config/git/signatures
+
+{{- /* vim: ft=gitconfig */ -}}

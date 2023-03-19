@@ -1,0 +1,3 @@
+- Get an attribute, like `href`:
+
+`cat {{index.html}} | pup '{{a attr{href} }}'`

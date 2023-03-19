@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+set -uo pipefail
+
+on-ERR() {
+  local status=$?
+  echo >&2 Error executing run_onchange_after_install-2-homebrew-packages.sh.tmpl
+  exit ${status}
+}
+
+trap on-ERR ERR
+
+declare verbose
+verbose="${CHEZMOI_VERBOSE:-false}"
+
+if "${verbose}"; then
+  echo 2: Install Homebrew Packages
+
+  if "${DEBUG_SCRIPTS:-false}"; then
+    set -x
+  fi
+fi
+
+case "$(uname -s)" in
+Darwin)
+  if ! command -v brew >/dev/null 2>&1; then
+    case "$(uname -m)" in
+    arm64) HOMEBREW_PREFIX="/opt/homebrew" ;;
+    *) HOMEBREW_PREFIX="/usr/local" ;;
+    esac
+
+    if ! [[ -x "${HOMEBREW_PREFIX}/bin/brew" ]]; then
+      if "${verbose}"; then
+        echo >&2 Homebrew is not installed
+        exit 1
+      fi
+
+      exit 0
+    fi
+
+    eval "$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+  fi
+
+  declare -a flags
+  flags=()
+
+  if ! "${verbose}"; then
+    flags+=(--quiet)
+  fi
+
+  # Brewfile: {{ include (joinPath .chezmoi.workingTree "Setup/Brewfile") | sha256sum }}
+  HOMEBREW_CASK_OPTS=--no-quarantine brew bundle "${flags[@]}" --file "${CHEZMOI_WORKING_TREE}/Setup/Brewfile"
+  ;;
+esac

@@ -33,7 +33,7 @@ brew "commitdev/zero/zero" # Allow startup developers to ship to production on d
 brew "coreutils" # GNU File, Shell, and Text utilities
 brew "cosign" # Container Signing
 brew "csvtk" # Cross-platform, efficient and practical CSV/TSV toolkit in Golang
-brew "datasette" # Open source multi-tool for exploring and publishing data
+# brew "datasette" # Open source multi-tool for exploring and publishing data
 brew "dhex" # Ncurses based advanced hex editor featuring diff mode and more
 brew "diff-so-fancy" # Good-lookin' diffs with diff-highlight and more
 brew "diffoscope" # In-depth comparison of files, archives, and directories
@@ -50,7 +50,6 @@ brew "dos2unix" # Convert text between DOS, UNIX, and Mac formats
 brew "duf" # Disk Usage/Free Utility - a better 'df' alternative
 brew "epubcheck" # Validate EPUB files, version 2.0 and later
 brew "fclones" # Efficient Duplicate File Finder
-brew "figlet" # Banner-like program prints strings as ASCII art
 brew "fish" # User-friendly command-line shell for UNIX-like operating systems
 brew "flarectl" # CLI application for interacting with a Cloudflare account
 brew "fping" # Scriptable ping program for checking if multiple hosts are up
@@ -58,7 +57,6 @@ brew "fzf" # Command-line fuzzy finder written in Go
 brew "fzy" # Fast, simple fuzzy text selector with an advanced scoring algorithm
 brew "gawk" # GNU awk utility
 brew "gettext" # GNU internationalization (i18n) and localization (l10n) library
-brew "gh" # GitHub command-line tool
 brew "git" # Distributed revision control system
 brew "git-bug" # Distributed, offline-first bug tracker embedded in git, with bridges
 brew "git-delta" # Syntax-highlighting pager for git and diff output
@@ -247,7 +245,6 @@ mas "Esse", id: 1438921989
 mas "Exporter", id: 1099120373
 mas "GarageBand", id: 682658836
 mas "Grim Fandango", id: 1022841309
-mas "GRIS+", id: 1617349089
 mas "Grocery", id: 1195676848
 mas "History Book", id: 1619241039
 mas "Icon Slate", id: 439697913
