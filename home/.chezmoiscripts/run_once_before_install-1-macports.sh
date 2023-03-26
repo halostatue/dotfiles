@@ -12,7 +12,7 @@ trap on-ERR ERR
 
 declare verbose
 verbose=false
-[[ "${CHEZMOI_VERBOSE:-:-}" == 1 ]] && verbose=true
+[[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && verbose=true
 
 if "${verbose}"; then
   echo 1: Install MacPorts

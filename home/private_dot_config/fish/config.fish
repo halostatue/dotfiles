@@ -229,13 +229,6 @@ if status is-interactive
         zoxide init fish | source
     end
 
-    if not functions --query tide
-        if command --query starship
-            starship init fish | source
-            starship completions fish | source
-        end
-    end
-
     if command --query pipx && command --query register-python-argcomplete
         register-python-argcomplete --shell fish pipx | source
     end
@@ -252,6 +245,18 @@ if status is-interactive
 
     if command --query op
         op completion fish | source
+    end
+
+    if functions --query tide
+        # IlanCosman/tide@v5 configuration
+    else if functions --query _hydro_prompt
+        # jorgebucaran/hydo configuration
+        if ! set --query --universal hydro_multiline
+            set --universal hydro_multiline true
+        end
+    else if command --query starship
+        starship init fish | source
+        starship completions fish | source
     end
 end
 
@@ -332,16 +337,25 @@ end
 # fish_add_path --append .git/safe/../../node_modules/.bin
 # fish_add_path .git/safe/../../bin .git/safe/../../exe
 
+function expand_dotdots
+    echo (string repeat -n (math (string length -- $argv[1]) - 1) ../)
+end
+abbr --add expand_dotdots --regex '\.\.\.+' --function expand_dotdots --position anywhere
+
 function multicd
     echo cd (string repeat -n (math (string length -- $argv[1]) - 1) ../)
 end
-
-abbr --add dotdot --regex '^\.\.+$' --function multicd#
+abbr --add dotdot --regex '^\.\.+$' --function multicd
 
 function last_history_item
     echo $history[1]
 end
-abbr -a !! --position anywhere --function last_history_item
+abbr --add !! --position anywhere --function last_history_item
+
+function last_history_argument
+    echo (echo $history[1] | string split ' ')[-1]
+end
+abbr --add '!$' --position anywhere --function last_history_argument
 
 ulimit -n 10480
 
