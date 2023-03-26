@@ -52,20 +52,20 @@
 
   t = !tig "$@"
 
-  review-base = !git merge-base HEAD \"${REVIEW_BASE:-origin/master}\"
+  review-base = !git merge-base HEAD \"${REVIEW_BASE:-origin/$(git main-branch)}\"
 
   # list files which have changed since REVIEW_BASE
-  files = !git diff --name-only $(git merge-base HEAD \"${1:-${REVIEW_BASE:-master}}\")
+  files = !"git diff --name-only $(git merge-base HEAD \"${1:-${REVIEW_BASE:-$(git main-branch)}}\")"
 
   # Same as above, but with a diff stat instead of just names (better for interactive use)
-  stat = !git diff --stat $(git merge-base HEAD \"${1:-${REVIEW_BASE:-master}}\")
+  stat = !"git diff --stat $(git merge-base HEAD \"${1:-${REVIEW_BASE:-$(git main-branch)}}\")"
 
   depgraph = !git madge image --webpack-config webpack.config.js --basedir . --style solarized-dark src
 
-  review = !$EDITOR -p $(git files) +\"tabdo Gdiff ${REVIEW_BASE:-origin/master}\" +\"let g:gitgutter_diff_base = '${REVIEW_BASE:-origin/master}'\"
+  review = !"nvim -p $(git files) +\"tabdo Gdiff ${REVIEW_BASE:-origin/$(git main-branch)}\" +\"let g:gitgutter_diff_base = '${REVIEW_BASE:-origin/$(git main-branch)}'\""
 
-  reviewone = !$EDITOR -p +\"tabdo Gdiff ${REVIEW_BASE:-origin/master}\" +\"let g:gitgutter_diff_base = '${REVIEW_BASE:-origin/master}'\"
-  reviewf = !$EDITOR -p $(git files | fzf -m --reverse --height 40%) +\"tabdo Gdiff ${REVIEW_BASE:-origin/master}\" +\"let g:gitgutter_diff_base = '${REVIEW_BASE:-origin/master}'\"
+  reviewone = !"nvim -p +\"tabdo Gdiff ${REVIEW_BASE:-origin/$(git main-branch)}\" +\"let g:gitgutter_diff_base = '${REVIEW_BASE:-origin/$(git main-branch)}'\""
+  reviewf = !"nvim -p $(git files | fzf -m --reverse --height 40%) +\"tabdo Gdiff ${REVIEW_BASE:-origin/$(git main-branch)}\" +\"let g:gitgutter_diff_base = '${REVIEW_BASE:-origin/$(git main-branch)}'\""
   # For when the diff is too big to review with :Gdiff
   diff-review = !git diff $(git review-base)
   # Review by commit
@@ -76,8 +76,8 @@
   diff-img = difftool --tool imgdiff
   # Show just the subject and body of a particular commit (default: HEAD)
   message = log -n1 --format=\"%s%n%n%b\"
-  # Show a markdown-formatted summary of commits from {REVIEW_BASE:-origin/master} until HEAD
-  pr-summary = !git log --reverse --format=\"- **%s** (%h)%n%n%w(74,2,2)%b\" \"${REVIEW_BASE:-origin/master}\"..HEAD
+  # Show a markdown-formatted summary of commits from {REVIEW_BASE:-origin/$(git main-branch)} until HEAD
+  pr-summary = !"git log --reverse --format=\"- **%s** (%h)%n%n%w(74,2,2)%b\" \"${REVIEW_BASE:-origin/$(git main-branch)}\"..HEAD"
   head = rev-parse HEAD
 
   todo = grep -Ee '\\bTODO:?\\b'
@@ -93,13 +93,13 @@
 
   cherry-pick-previous = cherry-pick HEAD@{1}
 
-	# cleanup = "!git branch --format=\"%(if:notequals=*)%(HEAD)%(then)%(if:notequals=${1:-master})%(refname:lstrip=2)%(then)%(refname:lstrip=2)%(end)%(end)\" --merged master | xargs -rpxL1 git branch -d"
+	# cleanup = "!git branch --format=\"%(if:notequals=*)%(HEAD)%(then)%(if:notequals=${1:-$(git main-branch)})%(refname:lstrip=2)%(then)%(refname:lstrip=2)%(end)%(end)\" --merged $(git main-branch) | xargs -rpxL1 git branch -d"
 
   save ="!f() { if [ \"$#\" -lt 1 ]; then echo \"No revision given! You must specify a valid ref.\"; exit 1; fi; if [ \"$#\" -lt 2 ]; then echo \"No file(s) given! Files must be specified.\"; exit 1; fi; dir=\"`git rev-parse--show-toplevel`\"; ref=\"$1\"; shift; cd \"${dir}\"; dest=\"`echo \"${ref}\" | sed 's-/-_-g'`\"; for f in \"$@\"; do git show \"${ref}:${f}\" \"${f}.${dest}\"; done; }"
 
 {{ if lookPath "fzf" }}
   # Show the log in fzf
   fzflog = "!git log --color=always --format=\"%C(auto)%h%d %s %C(black)%C(bold)%cr\" \"${@}\" | fzf --ansi| awk '{print $1}' | pbcopy"
-{{ end -}}
+{{ end }}
 
   conflicted = "!vim +Conflicted"
