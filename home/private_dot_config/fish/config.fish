@@ -61,6 +61,23 @@ if command --query pngcrush
     complete -c crush -d PNG -a "*.png"
 end
 
+if command --query xplr
+    if not set --query __xplr_no_xcd
+        function xcd -d "cd to xplr target"
+            cd (xlpr --print-pwd-as-result)
+        end
+    end
+end
+
+if command --query tere
+    function tere
+        set --local result (command tere $argv)
+        if test -n "$result"
+            cd -- $result
+        end
+    end
+end
+
 if command --query pandoc
     function docx2md --description "Convert docx to markdown: docx2md [source] [target]"
         pandoc -o "$2" --extract-media=(dirname "$argv[2]") "$argv[1]"

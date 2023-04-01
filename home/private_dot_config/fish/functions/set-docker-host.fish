@@ -3,7 +3,10 @@ function set-docker-host
     and command -sq jq
     or return 1
 
-    set -l host (docker context inspect --format '{{ .Endpoints.docker.Host }}')
+    set -l host (
+      docker context ls --format '{{ . | json }}' |
+        jq -sr '.[] | select(.Current == true) | .DockerEndpoint'
+    )
     or return 1
 
     set -gx DOCKER_HOST $host
