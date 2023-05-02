@@ -5,3 +5,4 @@ editor:
 # Aliases allow you to create nicknames for gh commands
 aliases:
   co: pr checkout
+  combine-dependabot-prs: combine-prs --query author:app/dependabot

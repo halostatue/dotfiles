@@ -1,4 +1,5 @@
 {{- /* Initialize variables for use in this file */ -}}
+{{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
 {{- $commitTemplate := "" -}}
 {{- $coreAttributesFile := "" -}}
 {{- $coreExcludesFile := "" -}}
@@ -18,10 +19,10 @@
 {{- if stat (joinPath .chezmoi.homeDir ".config/git/ignore") }}
 {{-   $coreExcludesFile = joinPath .chezmoi.homeDir ".config/git/ignore" -}}
 {{- end -}}
-{{- if lookPath "delta" -}}
-{{-   $corePager = "delta" -}}
-{{- else if lookPath "diff-so-fancy" -}}
-{{-   $corePager = "diff-so-fancy | less --tabs=4 -RFX" -}}
+{{- if $programs.delta -}}
+{{-   $corePager = $programs.delta | quote -}}
+{{- else if $programs.diff_so_fancy -}}
+{{-   $corePager = printf "%q | less --tabs=4 -RFX" $programs.diff_so_fancy -}}
 {{- end -}}
 {{- if ne (dig "github" "user" "<missing>" .) "<missing>" -}}
 {{-   $githubUser = .github.user -}}
@@ -30,13 +31,13 @@
 {{-     $githubToken = (onepasswordDetailsFields $e.name $e.vault $e.account).credential.value -}}
 {{-   end -}}
 {{- end -}}
-{{- if lookPath "interactive-rebase-tool" -}}
-{{-   $sequenceEditor = "interactive-rebase-tool" }}
+{{- if $programs.interactive_rebase_tool -}}
+{{-   $sequenceEditor = $programs.interactive_rebase_tool | quote }}
 {{- end -}}
-{{- if lookPath "xdg-open" -}}
-{{-   $webBrowser = "xdg-open" -}}
-{{- else if lookPath "open" -}}
-{{-   $webBrowser = "open" -}}
+{{- if $programs.xdg_open -}}
+{{-   $webBrowser = $programs.xdg_open | quote -}}
+{{- else if $programs.macos_open -}}
+{{-   $webBrowser = $programs.macos_open | quote -}}
 {{- end -}}
 
 [advice]
@@ -93,7 +94,7 @@
   excludesFile = {{ $coreExcludesFile | quote }}
 {{- end }}
 {{- if $corePager }}
-  pager = {{ $corePager | quote }}
+  pager = {{ $corePager }}
 {{- end }}
 
 [feature]
@@ -198,7 +199,7 @@
 
 {{ if $webBrowser -}}
 [web]
-  browser = {{ $webBrowser | quote }}
+  browser = {{ $webBrowser }}
 {{- end }}
 
 [init]
@@ -217,7 +218,7 @@
 
 {{ if $sequenceEditor -}}
 [sequence]
-  editor = {{ $sequenceEditor | quote }}
+  editor = {{ $sequenceEditor }}
 {{- end }}
 
 # TODO: Template support for lfs and other filters
@@ -235,5 +236,3 @@
 
 [include]
   path = ~/.config/git/signatures
-
-{{- /* vim: ft=gitconfig */ -}}

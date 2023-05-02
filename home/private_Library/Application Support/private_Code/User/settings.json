@@ -44,19 +44,16 @@
   "[vue]": {
     "editor.defaultFormatter": "octref.vetur"
   },
+  "[xml]": {
+    "editor.defaultFormatter": "DotJoshJohnson.xml"
+  },
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
-  "[xml]": {
-    "editor.defaultFormatter": "DotJoshJohnson.xml"
-  },
   "atlascode.bitbucket.issues.createJiraEnabled": true,
   "atlascode.bitbucket.pipelines.explorerEnabled": false,
-  "atlascode.bitbucket.preferredRemotes": [
-    "origin",
-    "upstream"
-  ],
+  "atlascode.bitbucket.preferredRemotes": ["origin", "upstream"],
   "atlascode.bitbucket.statusbar.enabled": false,
   "atlascode.bitbucket.statusbar.showLogin": true,
   "atlascode.bitbucket.statusbar.showUser": true,
@@ -84,9 +81,7 @@
   "aws.telemetry": false,
   "breadcrumbs.enabled": true,
   "breadcrumbs.filePath": "off",
-  "cSpell.enableFiletypes": [
-    "liquid"
-  ],
+  "cSpell.enableFiletypes": ["liquid"],
   "cSpell.enabledLanguageIds": [
     "asciidoc",
     "c",
@@ -150,10 +145,7 @@
   "editor.linkedEditing": true,
   "editor.minimap.enabled": false,
   "editor.minimap.maxColumn": 50,
-  "editor.rulers": [
-    80,
-    100
-  ],
+  "editor.rulers": [80, 100],
   "editor.suggestSelection": "first",
   "editor.tabSize": 2,
   "editor.tokenColorCustomizations": {
@@ -186,19 +178,13 @@
   },
   "elixir.credo.credoConfiguration": "vscode",
   "elixirLS.enableTestLenses": true,
-  "emmet.excludeLanguages": [
-    "markdown",
-    "typescriptreact",
-    "typescript"
-  ],
+  "emmet.excludeLanguages": ["markdown", "typescriptreact", "typescript"],
   "emmet.includeLanguages": {
     "vue-html": "html"
   },
   "emmet.showAbbreviationSuggestions": true,
   "eslint.alwaysShowStatus": true,
-  "eslint.codeActionsOnSave.rules": [
-    "unused-imports/no-unused-imports"
-  ],
+  "eslint.codeActionsOnSave.rules": ["unused-imports/no-unused-imports"],
   "eslint.format.enable": true,
   "eslint.run": "onSave",
   "explorer.confirmDelete": false,
@@ -226,17 +212,14 @@
   "git.pruneOnFetch": true,
   "git.rebaseWhenSync": true,
   "git.supportCancellation": true,
+  "github-actions.org-features": true,
   "github.customPullRequestDescription": "gitEditor",
   "github.gitCommand": "/opt/local/bin/git",
   "github.preferedMergeMethod": "rebase",
   "githubPullRequests.defaultMergeMethod": "rebase",
   "githubPullRequests.telemetry.enabled": false,
-  "github-actions.org-features": true,
   "gitlens.advanced.telemetry.enabled": false,
-  "gitlens.blame.highlight.locations": [
-    "gutter",
-    "overview"
-  ],
+  "gitlens.blame.highlight.locations": ["gutter", "overview"],
   "gitlens.views.compare.location": "gitlens",
   "gitlens.views.fileHistory.location": "explorer",
   "gitlens.views.lineHistory.location": "explorer",
@@ -253,9 +236,9 @@
   "markdown.extension.toc.levels": "2..2",
   "markdown.extension.toc.updateOnSave": false,
   "openInGitHub.defaultBranch": "main",
-  "prettier.requireConfig": true,
   "pgFormatter.formatType": true,
   "pgFormatter.wrapLimit": 90,
+  "prettier.requireConfig": true,
   "redhat.telemetry.enabled": false,
   "ruby.format": "standardrb",
   "ruby.lint": {
@@ -291,18 +274,13 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "vim.camelCaseMotion.enable": true,
   "vim.easymotion": true,
+  "vim.hlsearch": true,
   "vim.incsearch": true,
   "vim.leader": "<space>",
-  "vim.hlsearch": true,
   "vim.normalModeKeyBindingsNonRecursive": [
     {
-      "before": [
-        "g",
-        "r"
-      ],
-      "commands": [
-        "editor.action.goToReferences"
-      ]
+      "before": ["g", "r"],
+      "commands": ["editor.action.goToReferences"]
     }
   ],
   "vim.sneak": true,

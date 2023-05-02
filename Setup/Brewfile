@@ -16,10 +16,8 @@ brew "aerc" # Email client that runs in your terminal
 brew "ansifilter" # Strip or convert ANSI codes into HTML, (La)Tex, RTF, or BBCode
 brew "antiword" # Utility to read Word (.doc) files
 brew "aria2" # Download with resuming and segmented downloading
-brew "ansifilter" # Strip or convert ANSI codes into HTML, (La)Tex, RTF, or BBCode
 brew "aspell" # Spell checker with better logic than ispell
 brew "bash" # Bourne-Again SHell, a UNIX command interpreter
-brew "bats-core" # Bash Automated Testing System
 brew "ca-certificates" # Mozilla CA certificate store
 brew "cabextract" # Extract files from Microsoft cabinet files
 brew "catimg" # Insanely fast image printing in your terminal
@@ -27,11 +25,8 @@ brew "cfssl" # CloudFlare's PKI toolkit
 brew "chafa" # Versatile and fast Unicode/ASCII/ANSI graphics renderer
 brew "chrome-cli" # Control Google Chrome from the command-line
 brew "cloc" # Statistics utility to count lines of code
-brew "colima" # Container runtimes on MacOS (and Linux) with minimal setup
 brew "comby" # Tool for changing code across many languages
 brew "commitdev/zero/zero" # Allow startup developers to ship to production on day 1.
-brew "coreutils" # GNU File, Shell, and Text utilities
-brew "cosign" # Container Signing
 brew "csvtk" # Cross-platform, efficient and practical CSV/TSV toolkit in Golang
 # brew "datasette" # Open source multi-tool for exploring and publishing data
 brew "dhex" # Ncurses based advanced hex editor featuring diff mode and more
@@ -68,7 +63,6 @@ brew "lazydocker" # Lazier way to manage everything docker
 brew "lazygit" # Simple terminal UI for git commands
 brew "lnav" # International domain name library (IDNA2008, Punycode and TR46)
 brew "localstack" # Fully functional local AWS cloud stack
-brew "luarocks" # Package manager for the Lua programming language
 brew "make" # Utility for directing compilation
 brew "mas" # Mac App Store command-line interface
 brew "moreutils" # Collection of tools that nobody wrote when UNIX was young
@@ -76,7 +70,6 @@ brew "neovim" # Ambitious Vim-fork focused on extensibility and agility
 brew "p7zip" # 7-Zip (high compression file archiver) implementation
 brew "pam-reattach" # PAM module for reattaching to the user's GUI (Aqua) session
 brew "pandoc" # Swiss-army knife of markup format conversion
-brew "pipx" # Execute binaries from Python packages in isolated environments
 brew "podman" # Tool for managing OCI containers and pods
 brew "puma/puma/puma-dev" # A tool to manage rack apps in development with puma
 brew "pv" # Monitor data's progress through a pipe
@@ -88,6 +81,7 @@ brew "scummvm" # Graphic adventure game interpreter
 brew "shellcheck" # Static analysis and lint tool, for (ba)sh scripts
 brew "shfmt" # Autoformat shell script source code
 brew "superfly/tap/flyctl" # Command-line tools for fly.io services
+brew "syft" # CLI for generating a Software Bill of Materials from container images
 brew "tag" # Manipulate and query tags on macOS files
 brew "tectonic" # Modernized, complete, self-contained TeX/LaTeX engine
 brew "terminal-notifier" # Send macOS User Notifications from the command-line
@@ -108,12 +102,11 @@ brew "universal-ctags" # Maintained ctags implementation
 brew "watch" # Executes a program periodically, showing output fullscreen
 brew "watchexec" # Execute commands when watched files change
 brew "wget" # Internet file retriever
+brew "xmlstarlet" # XML command-line utilities
 brew "xq" # Command-line XML and HTML beautifier and content extractor
 brew "xz" # General-purpose data compression with high compression ratio
-brew "xmlstarlet" # XML command-line utilities
 brew "yamllint" # Linter for YAML files
 brew "yq" # Process YAML documents from the CLI
-brew "zstd" # Zstandard is a real-time compression algorithm
 
 cask "alacritty" # GPU-accelerated terminal emulator
 cask "alfred" # Application launcher and productivity software
@@ -127,7 +120,6 @@ cask "deeper" # Deep OS Personalization
 cask "devcleaner" # Xcode dev cleaner
 cask "dosbox" # DOS Emulator
 cask "eaglefiler" # Organize files, archive e-mails, save Web pages and notes, search everything
-cask "fig" # Reimagine your terminal
 cask "finicky" # Utility for customizing which browser to start
 cask "firefox" # Web browser
 cask "firefox-developer-edition" # Web browser
@@ -146,8 +138,8 @@ cask "keycastr" # Open-source keystroke visualizer
 cask "kindle-previewer" # Preview and audit Kindle eBooks
 cask "koa11y" # Easily check for website accessibility issues
 cask "lapce" # Lightning-fast and Powerful Code Editor
+cask "linphone" # Software for communication systems developers
 cask "macvim" # Text editor
-cask "mic-drop" # Quickly mute your microphone with a global shortcut or menu bar control
 cask "microsoft-edge" # Web browser
 cask "modern-csv" # CSV editor
 cask "monitorcontrol" # Control external display brightness and volume
@@ -156,6 +148,7 @@ cask "moom" # Utility to move and zoom windows—on one display
 cask "notion" # App to write, plan, collaborate, and get organized
 cask "obsidian" # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "opera-developer" # Web browser
+cask "orbstack" # Replacement for Docker Desktop
 cask "podman-desktop" # Podman Desktop
 cask "publii" # Static site CMS
 cask "qlcolorcode" # QuickLook plug-in that renders source code with syntax highlighting
@@ -171,6 +164,7 @@ cask "responsively" # Modified browser that helps in responsive web development
 cask "safari-technology-preview" # Web browser
 cask "scrivener" # Word processing software with a typewriter style
 cask "setapp" # Collection of apps available by subscription
+cask "shortcat" # App that enables mouse-free UI interaction
 cask "shottr" # Screenshot tool
 cask "slack" # Team communication and collaboration software
 cask "spatterlight" # Interactive Fiction Player
@@ -182,6 +176,7 @@ cask "viscosity" # OpenVPN client with AppleScript support
 cask "visual-studio-code" # Open-source code editor
 cask "vivaldi" # Web browser focusing on customization and control
 cask "webpquicklook" # QuickLook for WebP
+cask "wezterm" # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "xcodes" # Install and switch between multiple versions of Xcode
 
 ## Fonts
@@ -270,8 +265,6 @@ mas "PopClip", id: 445189367
 mas "Shareful", id: 1522267256
 mas "Svgsus", id: 1106867065
 mas "System Strings", id: 570467776
-mas "Tasks", id: 1502903102
-mas "TestFlight", id: 899247664
 mas "Typeface", id: 1062679359
 mas "Vinegar", id: 1591303229
 mas "WorldWideWeb", id: 1621370168

@@ -3,7 +3,7 @@
 default:
   @just --list
 
-update-packages: update-homebrew update-gems update-python update-ports
+update-packages: update-homebrew update-gems update-pipx update-ports
 
 update-homebrew:
   @brew bundle dump --force --file=Setup/Brewfile
@@ -11,7 +11,7 @@ update-homebrew:
 update-gems:
   @printf "gem \"%s\"\n" `(gem list --no-versions)` > Setup/Gemfile
 
-update-python:
+update-pipx:
   #!/usr/bin/env ruby
 
   require "json"
@@ -54,6 +54,7 @@ update-python:
 
   File.write("Setup/Pipx.fish", result)
 
+  # pipx list --include-injected --json | jq -f Setup/pipx-reinstall.jq > Setup/pipx.fish.new -r
+
 update-ports:
-  @port -qv installed > Setup/Ports.installed
   @port echo requested | cut -d' ' -f1 | uniq > Setup/Ports.requested

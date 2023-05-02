@@ -1,5 +1,6 @@
+{{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
 # Configure gpg-agent
 
 default-cache-ttl 86400
 use-standard-socket
-{{ if lookPath "pinentry-mac" }}pinentry-program {{ lookPath "pinentry-mac" }}{{ end }}
+{{ if $programs.pinentry_mac }}pinentry-program {{ $programs.pinentry_mac | quote }}{{ end }}

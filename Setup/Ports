@@ -1,11 +1,21 @@
+colima
 cosign
 fswatch
 gh
-go
+git                            +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
 git-extras
+gitleaks
+go
+goreleaser
+grype
+lua54-luarocks
 minisign
-pam-reattach
+neovim
+pipx
+port_cutleaves
 postgis3                       +postgresql13+proj8+raster+topology
-postgresql13-server
+py311-pip
 ruby-build
 ruby-install
+shellcheck
+trivy

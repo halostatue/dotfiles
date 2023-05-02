@@ -2,9 +2,9 @@
 
 # See https://docs.brew.sh/Manpage#environment
 
-{{- if lookPath "bat" }}
-set --global --export HOMEBREW_BAT 1
-{{- end }}
+if command --query bat
+    set --global --export HOMEBREW_BAT 1
+end
 
 set --global --export HOMEBREW_DISPLAY_INSTALL_TIMES 1
 

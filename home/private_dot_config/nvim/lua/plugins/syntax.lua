@@ -61,6 +61,10 @@ return {
     'hofstadter-io/cue.vim', -- Cue language: https://github.com/hofstadter-io/cue.vim
     ft = 'cue',
   },
+  {
+    'yasuhiroki/github-actions-yaml.vim', -- Github Actions (YAML): https://github.com/yasuhiroki/github-actions-yaml.vim
+    ft = 'yaml',
+  },
   { -- https://github.com/norcalli/nvim-colorizer.lua replaces https://github.com/gko/vim-coloresque
     'norcalli/nvim-colorizer.lua',
     event = { 'VeryLazy' },

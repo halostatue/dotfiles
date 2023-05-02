@@ -46,10 +46,13 @@ Darwin)
     fi
 
     if "${verbose}"; then
-      sudo port install "${port[@]}"
+      sudo port -N install "${port[@]}"
     else
-      sudo port install "${port[@]}" >/dev/null 2>/dev/null
+      sudo port -qN install "${port[@]}" >/dev/null 2>/dev/null
     fi
   done <"${CHEZMOI_WORKING_TREE}/Setup/Ports"
+
+  # Port Selection Hash: {{ include (joinPath .chezmoi.workingTree "Setup/PortsSelect") | sha256sum }}
+  sudo port -F "${CHEZMOI_WORKING_TREE}/Setup/PortsSelect"
   ;;
 esac

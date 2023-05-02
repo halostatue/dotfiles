@@ -2,9 +2,9 @@
 
 # See https://docs.brew.sh/Manpage#environment for possible values.
 
-{{- if lookPath "bat" }}
-export HOMEBREW_BAT=1
-{{- end }}
+if command -v bat >/dev/null 2>/dev/null; then
+  export HOMEBREW_BAT=1
+fi
 
 export HOMEBREW_DISPLAY_INSTALL_TIMES=1
 

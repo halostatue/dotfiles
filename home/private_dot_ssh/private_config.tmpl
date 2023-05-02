@@ -1,3 +1,4 @@
+{{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
 {{- $ssh := joinPath $.chezmoi.homeDir ".ssh" -}}
 {{- $agent := joinPath $.chezmoi.homeDir "/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" -}}
 {{- if not (stat $agent) -}}
@@ -32,8 +33,8 @@ Host *
 Host github.com bitbucket.org
   UpdateHostKeys yes
 
-{{- if (lookPath "ssh-chain") }}Host *^*
-  ProxyCommand ssh-chain %h %p{{ end }}
+{{- if $programs.ssh_chain }}Host *^*
+  ProxyCommand {{ $programs.ssh_chain | quote }} %h %p{{ end }}
 
 {{- if gt ((dig "ssh" "hosts" (list) .) | len) 0 -}}
 {{-   range .ssh.hosts }}
@@ -45,4 +46,9 @@ Host {{ .host }}{{ range .config }}
 {{- $colima := joinPath $.chezmoi.homeDir ".colima/ssh_config" -}}
 {{- if stat $colima }}
 Include {{ $colima }}
+{{- end }}
+
+{{- $orbstack := joinPath $.chezmoi.homeDir ".orbstack/ssh/config" -}}
+{{- if stat $orbstack }}
+Include {{ $orbstack }}
 {{- end }}

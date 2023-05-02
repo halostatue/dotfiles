@@ -27,7 +27,7 @@ if ! command -v go >/dev/null 2>/dev/null; then
   exit 1
 fi
 
-# go-install TARGET URI [VERSION] [-- COMMENT INFORMATION]
+# go-install TARGET URI [VERSION] [:: COMMENT INFORMATION]
 #
 # TARGET is mandatory, but ignored. (It's used to help sort the binary list.)
 #
@@ -36,14 +36,14 @@ fi
 #
 # If VERSION is omitted, latest will be specified.
 #
-# Comment information, if provided, must follow the literal --.
+# Comment information, if provided, must follow the literal ::.
 #
 # Examples
 #
-# go-install age filippo.io/age/cmd/... v1 -- https://github.com/filosottile/age
+# go-install age filippo.io/age/cmd/... v1 :: https://github.com/filosottile/age
 # # go install filippo.io/age/cmd...@v1
 #
-# go-install gldv aarzilli/gdlv -- https://github.com/aarzilli/gdlv
+# go-install gldv aarzilli/gdlv :: https://github.com/aarzilli/gdlv
 # # go install github.com/aarzilli/gdlv@latest
 go-install() {
   local -a args
@@ -72,12 +72,13 @@ go-install() {
 
   if (($#)); then
     package_version="$1"
+    shift
   fi
 
   if "${verbose}"; then
-    go install "${package_uri}@${package_version}"
+    go install "$@" "${package_uri}@${package_version}"
   else
-    go install "${package_uri}@${package_version}" >/dev/null 2>/dev/null
+    go install "$@" "${package_uri}@${package_version}" >/dev/null 2>/dev/null
   fi
 }
 

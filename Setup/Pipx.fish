@@ -3,7 +3,6 @@ pipx install airiam
 pipx install ansible --include-deps
 pipx inject ansible boto3
 pipx inject ansible botocore
-pipx install azure-cli
 pipx install checkov
 pipx install codespell
 pipx install cookiecutter
@@ -15,6 +14,8 @@ pipx install doc2dash
 pipx install doc8
 pipx install dokter
 pipx install epy-reader
+pipx install gh2md
+pipx install git-big-picture
 pipx install git-branchstack
 pipx inject git-branchstack git-revise --include-apps
 pipx install git-filter-repo
@@ -39,14 +40,17 @@ pipx inject mkdocs mkdocs-mermaid2-plugin
 pipx inject mkdocs mkdocs-redirects
 pipx inject mkdocs mkdocs-simple-hooks
 pipx install ninja
+pipx install pdd
 pipx install pgcli
 pipx install pglast
 pipx install pgxnclient
+pipx install pipenv
 pipx install poetrify
 pipx install poetry
 pipx install pygments
 pipx install pylint
 pipx install remarshal
+pipx install reuse
 pipx install rsa
 pipx install runlike
 pipx install saws

@@ -1,31 +1,5 @@
 {{- /* Initialize variables for use in this file */ -}}
-{{- $antiword := lookPath "antiword" -}}
-{{- $catdoc := lookPath "catdoc" -}}
-{{- $catppt := lookPath "catppt" -}}
-{{- $delta := lookPath "delta" -}}
-{{- $difftastic := lookPath "difft" -}}
-{{- $djvutxt := lookPath "djvutxt" -}}
-{{- $docx2txt := lookPath "docx2txt.pl" -}}
-{{- $exiftool := lookPath "exiftool" -}}
-{{- $gvim := lookPath "gvim" -}}
-{{- $icdiff := lookPath "icdiff" -}}
-{{- $in2csv := lookPath "in2csv" -}}
-{{- $ksdiff := lookPath "ksdiff" -}}
-{{- $mvim := lookPath "mvim" -}}
-{{- $odt2txt := lookPath "odt2txt" -}}
-{{- $pandoc := lookPath "pandoc" -}}
-{{- $pdfinfo := lookPath "pdfinfo" -}}
-{{- $pdftotext := lookPath "pdftotext" -}}
-{{- $pptx2md := lookPath "pptx2md" -}}
-{{- $soffice := lookPath "soffice" -}}
-{{- $tika := lookPath "tika" -}}
-{{- $unrtf := lookPath "unrtf" -}}
-{{- $vim := lookPath "vim" -}}
-{{- $wvText := lookPath "wvText" -}}
-{{- $xlscat := lookPath "xlscat" -}}
-{{- $xlsx2csv := lookPath "xlsx2csv" -}}
-{{- $xlsx2csvPy := lookPath "xlsx2csv.py" -}}
-
+{{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
 # See https://tekin.co.uk/2020/10/better-git-diff-output-for-ruby-python-elixir-and-more for more details
 
 *.ada diff=ada
@@ -71,46 +45,46 @@ sqitch.conf text whitespace=blank-at-eol,space-before-tab,trailing-space
 {Rakefile,*.rake} diff=ruby
 
 # Various Binary Document Types
-{{ if or $pdfinfo $pdftotext -}}
+{{ if or $programs.pdfinfo $programs.pdftotext -}}
 *.pdf diff=pdf
 {{ end }}
-{{ if $exiftool -}}
+{{ if $programs.exiftool -}}
 *.png diff=exif
 *.jpg diff=exif
 *.jpeg diff=exif
 *.gif diff=exif
 {{- end }}
-{{ if or $djvutxt $pdfinfo -}}
+{{ if or $programs.djvutxt $programs.pdfinfo -}}
 *.djvu diff=djvu
 {{- end }}
-{{ if or $odt2txt $pandoc -}}
+{{ if or $programs.odt2txt $programs.pandoc -}}
 *.odt diff=odt
 {{- end }}
 *.odp diff=libreoffice
 *.ods diff=libreoffice
-{{ if or $antiword $catdoc $wvText -}}
+{{ if or $programs.antiword $programs.catdoc $programs.wvText -}}
 *.doc diff=doc
 {{- end }}
-{{ if or $in2csv $soffice $xlscat -}}
+{{ if or $programs.in2csv $programs.soffice $programs.xlscat -}}
 *.xls diff=xls
 {{- end }}
 *.ppt diff=ppt
-{{ if or $docx2txt $pandoc -}}
+{{ if or $programs.docx2txt $programs.pandoc -}}
 *.docx diff=docx
 {{- end }}
-{{ if or $in2csv $soffice $xlsx2csv $xlsx2csvPy -}}
+{{ if or $programs.in2csv $programs.soffice $programs.xlsx2csv $programs.xlsx2csvPy -}}
 *.xlsx diff=xlsx
 {{- end }}
-{{ if $pptx2md -}}
+{{ if $programs.pptx2md -}}
 *.pptx diff=pptx
 {{- end }}
-{{ if $unrtf -}}
+{{ if $programs.unrtf -}}
 *.rtf diff=rtf
 {{- end }}
-{{ if $pandoc -}}
+{{ if $programs.pandoc -}}
 *.epub diff=pandoc
 {{- end }}
-{{ if $tika -}}
+{{ if $programs.tika -}}
 *.chm diff=tika
 *.mhtml? diff=tika
 *.{class,jar} diff=tika

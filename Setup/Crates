@@ -45,8 +45,8 @@ fselect :: Find files with SQL-like queries
 git-absorb :: git commit --fixup, but automatic
 git-branchless :: Git Branchless workflow
 git-brws :: Command line tool to open a repository on a hub
-git-interactive-rebase-tool :: Full feature terminal based git interactive rebase sequence editor
 git-historian :: Git Historian allows you to collect arbitrary data about a file
+git-interactive-rebase-tool :: Full feature terminal based git interactive rebase sequence editor
 git-journal :: The Git Commit Message and Changelog Generation Framework
 git-stack :: Stacked branch management
 gitui :: blazing fast terminal-ui
@@ -69,8 +69,9 @@ meli :: terminal mail client
 mrml-cli :: MJML renderer CLI
 navi :: An interactive cheatsheet tool
 oha :: Ohayou HTTP load generator
+ouch :: A command-line utility for easily compressing and decompressing files and directories.
+oxipng :: A lossless PNG compression optimizer
 procs :: A modern ps replacement
-? +nightly racer :: Rust Code completion
 rage :: A simple, secure, and modern encryption tool
 ripgrep :: ripgrep is a line-oriented search tool
 rm-improved :: rip: a safe and ergonomic alternative to rm
@@ -89,6 +90,7 @@ stylua :: A Lua code formatter
 svgbob_cli :: Transform your ascii diagrams into happy little SVG
 taplo-cli :: A Taplo TOML toolkit CLI
 tealdeer :: Fetch and show tldr help CLI command pages
+tere :: Terminal file explorer
 tidy-viewer :: CSV file head utility
 titlecase :: A tool and library that capitalizes text according to a style
 toast :: Containerize your development and CI environments
@@ -100,6 +102,7 @@ typos-cli :: Source Code Spelling Correction
 watchexec-cli :: Executes commands on file modification
 xcp :: partial improved clone of cp
 xh :: Friendly and fast HTTP request tool
+xplr :: A hackable, minimal, fast TUI file explorer
 xsv :: A high performance CSV command line toolkit
 ytop :: A TUI system monitor written
 zellij :: A terminal workspace with batteries included

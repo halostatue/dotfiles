@@ -194,6 +194,8 @@ function! s:packager_init() abort
   call packager#add('jlcrochet/vim-rbs')
   " Cue language: https://github.com/hofstadter-io/cue.vim
   call packager#add('hofstadter-io/cue.vim')
+  " Github Actions (YAML): https://github.com/yasuhiroki/github-actions-yaml.vim
+  call packager#add('yasuhiroki/github-actions-yaml.vim')
 
   " Colour highlighter: https://github.com/ap/vim-css-color
   call packager#add('ap/vim-css-color')
@@ -219,8 +221,6 @@ function! s:packager_init() abort
   call packager#add('cocopon/iceberg.vim')
   " https://github.com/habamax/vim-alchemist
   call packager#add('habamax/vim-alchemist')
-  " https://github.com/ajh17/spacegray.vim
-  call packager#add('ajh17/spacegray.vim')
 
   " Display completion function signatures in the command-line:
   " https://github.com/Shougo/echodoc.vim

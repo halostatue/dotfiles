@@ -1,6 +1,7 @@
 {{- $email := promptStringOnce . "email" "Email" -}}
 {{- $name := promptStringOnce . "name" "Name" -}}
 {{- $github_username := promptStringOnce . "github.user" "Github Username" -}}
+{{- $aws_credentials_source := promptStringOnce . "aws.credentials_source" "AWS Credentials Source" -}}
 
 [scriptEnv]
 DEBUG_SCRIPTS = {{ if .debug_scripts }}"true"{{ else }}"false"{{ end }}
@@ -11,22 +12,17 @@ name = {{ $name | toToml }}
 
 debug_scripts = {{ if .debug_scripts }}true{{ else }}false {{ end }}
 
-{{ if (. | dig "aws" "credentials" false) -}}
-{{- range .aws.credentials -}}
-[[data.aws.credentials]]
-{{ . | toToml}}
-{{ end -}}
+{{ if (dig "aws" "credentials_source" false .) -}}
+[data.aws]
+credentials_source = {{ .aws.credentials_source | quote }}
 {{- else -}}
-## AWS credentials array, pulled from 1Password documents. This will be used to
-## concatenate multiple fragment documents into ~/.aws/credentials.
+## We can populate ~/.aws/credentials from file fragments in 1Password.
+## PRs would be considered for populating ~/.aws/credentials from other sources.
 ##
-## Each credential will look something like this one:
-# [[data.aws.credentials]]
-# account = 'ACCOUNT-NAME'
-# name = 'DOCUMENT-NAME-FRAGMENT' # Appended to `aws-credentials: `
-# type = '1p' # Always 1p for 1Password, for now
-# vault = 'VAULT-NAME'
-{{ end -}}
+## If this is unset, Chezmoi is set to ignore ~/.aws/credentials.
+# [data.aws]
+# credentials_source = "1password"
+{{- end }}
 
 {{ if (. | dig "git" "signing" false) -}}
 [data.git.signing]

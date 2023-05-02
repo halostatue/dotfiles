@@ -1,7 +1,7 @@
 #! /bin/bash
 
-declare version image var cmd user uname_s
-version="${VERSION:-2.4.27}"
+declare version image var cmd
+version="${VERSION:-2.11.13}"
 image="${IMAGE:-amazon/aws-cli:${version}}"
 
 if ((!$#)); then
@@ -60,6 +60,9 @@ done
 if [[ "${cmd}" == completer ]]; then
   shift
   passopt+=(--entrypoint=aws_completer)
+elif [[ "${cmd}" == sh ]]; then
+  shift
+  passopt+=(--entrypoint=/bin/bash -t)
 fi
 
 docker run --rm -i --network host \

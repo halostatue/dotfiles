@@ -545,6 +545,10 @@ module.exports = {
       browser: 'Google Chrome',
     },
     {
+      match: ({ url }) => url.host === 'script.google.com',
+      browser: 'Google Chrome',
+    },
+    {
       match: ({ url }) => url.host === 'app.jazz.co',
       browser: 'Google Chrome',
     },
