@@ -33,15 +33,18 @@ Host *
 Host github.com bitbucket.org
   UpdateHostKeys yes
 
-{{- if $programs.ssh_chain }}Host *^*
-  ProxyCommand {{ $programs.ssh_chain | quote }} %h %p{{ end }}
+{{ if $programs.ssh_chain -}}
+Host *^*
+  ProxyCommand {{ $programs.ssh_chain | quote }} %h %p
+{{- end }}
 
 {{- if gt ((dig "ssh" "hosts" (list) .) | len) 0 -}}
-{{-   range .ssh.hosts }}
-Host {{ .host }}{{ range .config }}
-  {{ . }}{{ end }}
-{{    end }}
-{{- end -}}
+{{   range .ssh.hosts -}}
+Host {{ .host }}
+{{     range .config }}  {{ . }}
+{{     end }}
+{{   end }}
+{{- end }}
 
 {{- $colima := joinPath $.chezmoi.homeDir ".colima/ssh_config" -}}
 {{- if stat $colima }}

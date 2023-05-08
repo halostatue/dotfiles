@@ -57,6 +57,9 @@ pnpm install --global --silent \
     vscode-langservers-extracted \
     yaml-language-server
 
+pnpm install --global --silent \
+    json-diff
+
 switch $node_version
     case 'v12*'
         # noop
