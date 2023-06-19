@@ -112,6 +112,18 @@ test -s "$HOME/.local/share/kx/scripts/kx.fish"
 and source "$HOME/.local/share/kx/scripts/kx.fish"
 
 if status is-interactive
+    if command --query wezterm
+        wezterm shell-completion --shell fish | source
+    end
+
+    if command --query chezmoi
+        chezmoi completion fish | source
+    end
+
+    if command --query orbctl
+        orbctl completion fish | source
+    end
+
     if command --query fzf
         function fp --description 'Search your $PATH'
             set -l loc (echo $PATH | tr ' ' '\n' | eval "fzf $FZF_DEFAULT_OPTS --header='[find:path]'")
@@ -277,12 +289,19 @@ if status is-interactive
     end
 end
 
-if test -x ~/.bun/bin/bun
-    set --global --query BUN_INSTALL
-    or set --global --export BUN_INSTALL $HOME/.bun
+if test -x $HOME/.bun/bin/bun
+    if ! set --global --query BUN_INSTALL
+        set --global --export BUN_INSTALL $HOME/.bun
+    end
 
-    contains $HOME/.bun/bin $fish_user_paths
-    or fish_add_path $HOME/.bun/bin
+    if ! contains $HOME/.bun/bin $PATH && ! contains $HOME/.bun/bin $fish_user_paths
+        fish_add_path --path $HOME/.bun/bin
+    end
+
+    # This is currently broken. See oven-sh/bun#2977.
+    # if ! test -s completions/bun.fish
+    #     bun completions
+    # end
 end
 
 if set --query PNPM_HOME

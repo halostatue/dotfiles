@@ -79,6 +79,8 @@ function! s:packager_init() abort
   call packager#add('tpope/vim-endwise')
   " Better HTML/template tag mapping: https://github.com/tpope/vim-ragtag
   call packager#add('tpope/vim-ragtag')
+  " Evaluate expression: https://github.com/fvictorio/vim-eval-expression
+  call packager#add('fvictorio/vim-eval-expression')
 
   " Session Management
   " Handle Vim sessions like a pro: https://github.com/dhruvasagar/vim-prosession
@@ -153,6 +155,8 @@ function! s:packager_init() abort
   call packager#add('srstevenson/vim-picker')
   " TRY THIS: https://github.com/liuchengxu/vim-clap
   call packager#add('liuchengxu/vim-clap', { 'do': ':Clap install-binary!' })
+  " RE-TRY THIS: https://github.com/vim-ctrlspace/vim-ctrlspace
+  " call packager#add('vim-ctrlspace/vim-ctrlspace')
 
   " Git so awesome, it should be illegal: https://github.com/tpope/vim-fugitive
   call packager#add('tpope/vim-fugitive')
@@ -196,6 +200,12 @@ function! s:packager_init() abort
   call packager#add('hofstadter-io/cue.vim')
   " Github Actions (YAML): https://github.com/yasuhiroki/github-actions-yaml.vim
   call packager#add('yasuhiroki/github-actions-yaml.vim')
+
+  " Generalized Org Mode: https://github.com/chimay/organ
+  call packager#add('chimay/organ')
+
+  " File group manager and more: https://github.com/chimay/wheel
+  call packager#add('chimay/wheel')
 
   " Colour highlighter: https://github.com/ap/vim-css-color
   call packager#add('ap/vim-css-color')
@@ -342,6 +352,8 @@ function! s:packager_init() abort
   call packager#add('junegunn/vader.vim', { 'type': 'opt' })
   " Vimscript Test: https://github.com/thinca/vim-themis
   call packager#add('thinca/vim-themis', { 'type': 'opt' })
+  " Vimscript Tricks: https://github.com/chimay/vimscript-tricks
+  call packager#add('chimay/vimscript-tricks')
 
   " https://github.com/alker0/chezmoi.vim
   call packager#add('alker0/chezmoi.vim', { 'type': 'opt' })

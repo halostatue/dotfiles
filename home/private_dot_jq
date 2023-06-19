@@ -3,11 +3,14 @@
 # $e | $b[type][tostring]
 def bag(stream):
   reduce stream as $x (
-      {};
+      {} ;
       .[$x | type][$x | tostring] += 1
-  ) ;
+  )
+  ;
 
-def bag: bag(.[]) ;
+def bag:
+  bag(.[])
+  ;
 
 def bag_to_entries:
   [
@@ -16,7 +19,8 @@ def bag_to_entries:
     | .value
     | to_entries[]
     | { key: (if $type == "string" then .key else .key | fromjson end), value }
-  ] ;
+  ]
+  ;
 
 # Produce a stream of the distinct elements in the given stream
 def uniques(stream):
@@ -25,28 +29,31 @@ def uniques(stream):
   | .key as $type
   | .value
   | to_entries[]
-  | if $type == "string" then .key else .key | fromjson end ;
+  | if $type == "string" then .key else .key | fromjson end
+  ;
 
 # Emit an array of [value, frequency] pairs, sorted by value
 def histogram(stream):
   bag(stream)
   | bag_to_entries
   | sort_by( .key )
-  | map( [.key, .value] ) ;
+  | map( [.key, .value] )
+  ;
 
 # Apply `f` to composite entities recursively, and to atoms
 def walk(f):
   . as $in
   | if type == "object" then
       reduce keys_unsorted[] as $key (
-        {};
+        {} ;
         . + { ($key): ($in[$key] | walk(f)) }
       ) | f
     elif type == "array" then
       map( walk( f ) ) | f
     else
       f
-    end;
+    end
+  ;
 
 # Given an array of values as input, generate a stream of values of the
 # maximal elements as determined by f.
@@ -55,74 +62,139 @@ def walk(f):
 # 2. If f evaluates to null for all the input elements,
 #    then the output stream will be the stream of all the input items.
 def maximal_by(f):
-  (map(f) | max) as $mx
-  | .[] | select(f == $mx);
+  (map(f) | max) as $mx |
+  .[] | select(f == $mx)
+  ;
 
 # Emit a stream of the f-maximal elements of the given stream on the assumption
 # that `[stream]==[stream]`
-def maximals_by_(stream; f):
-   (reduce stream as $x (
-      null;
-      ($x | f) as $y | if . == null or . < $y then $y else . end
-   )) as $mx
-   | stream
-   | select(f == $mx);
+def maximals_by_(stream ; f):
+  (
+   reduce stream as $x (
+     null ;
+     ($x | f) as $y | if . == null or . < $y then $y else . end
+    )
+  ) as $mx
+  | stream
+  | select(f == $mx)
+  ;
 
 # Emit a stream of the f-maximal elements of the stream, s:
-def maximals_by(s; f):
+def maximals_by(s ; f):
   reduce s as $x (
-    [];
+    [] ;
     ($x | f) as $y
     | if length == 0 then [$x]
-      else (.[0] | f) as $v
-      | if $y == $v then . + [$x] elif $y > $v then [$x] else . end
+      else (.[0] | f) as $v |
+        if $y == $v then . + [$x] elif $y > $v then [$x] else . end
       end
   )
-  | .[] ;
+  | .[]
+  ;
 
 def aldo_store_sql:
   . as $in
   | "UPDATE stores SET " + (
-    reduce ($in.good | keys)[] as $key ([]; . + [$key + " = '" + $in.good[$key] + "'"])
-    | join(", ")
+    reduce ($in.good | keys)[] as $key (
+      [] ;
+      . + [$key + " = '" + $in.good[$key] + "'"]
+    ) | join(", ")
   ) + " WHERE id = " + ($in.store | tostring) + ";"
   ;
 
 def aldo_store_values:
-  . as $in | reduce keys[] as $key ([]; . + [$in[$key]]);
+  . as $in |
+  reduce keys[] as $key (
+    [] ;
+    . + [$in[$key]]
+  )
+  ;
 
 def aldo_stores_stores_sql:
-  aldo_store_values | map(. | aldo_store_sql) | join("\n");
+  aldo_store_values | map(. | aldo_store_sql) | join("\n")
+  ;
 
 def etcs_clean_key_name:
-  .name | gsub("[- ]"; "_") | ascii_downcase;
+  .name | gsub("[- ]"; "_") | ascii_downcase
+  ;
 
 def etcs_clean_value:
   if (.name | type) == "Contact ID" then (.value | tostring)
   elif .value == "blank" then null
-  else .value end;
+  else .value end
+  ;
 
 def etcs_clean_kv:
-  {key: etcs_clean_key_name, value: etcs_clean_value};
+  {key: etcs_clean_key_name, value: etcs_clean_value}
+  ;
 
 def etcs_filter_null:
-  reduce .[] as $item ([]; if ($item.value | length) == 0 then . else . +  [$item] end);
+  reduce .[] as $item (
+    [] ;
+    if ($item.value | length) == 0 then . else . +  [$item] end
+  )
+  ;
 
 def etcs_hoist:
-  map(.values | map(etcs_clean_kv) | etcs_filter_null | from_entries);
+  map(.values | map(etcs_clean_kv) | etcs_filter_null | from_entries)
+  ;
 
 def etcs_document:
-  map({type: "add", id: .contact_id, fields: .});
+  map({type: "add", id: .contact_id, fields: .})
+  ;
 
 def insomnia_clean_key_names:
   . as $in
   | if type == "object" then
-      reduce keys_unsorted[] as $key ({}; . + { ($key | gsub("[^a-z0-9A-Z_]"; "_")): ($in[$key] | insomnia_clean_key_names) })
+      reduce keys_unsorted[] as $key (
+        {} ;
+        . + { ($key | gsub("[^a-z0-9A-Z_]" ; "_")): ($in[$key] | insomnia_clean_key_names) }
+      )
     elif type == "array" then
-      map( insomnia_clean_key_names )
+      map(insomnia_clean_key_names)
     else
       .
-    end;
+    end
+  ;
 
 def failed_rubocop_files:
-  .files | map(select(.offenses != []) | .path) | .[];
+  .files | map(select(.offenses != []) | .path) | .[]
+  ;
+
+def maybe_add_as(current ; new):
+  if current then . + {(new): current} else . end
+  ;
+
+def empty_leafs: select(tostring | . == "{}" or . == "[]")
+  ;
+
+def flatten_json(join_char):
+  . as $data |
+  [ path(.. | select(scalars | tostring), select(empty_leafs)) ] |
+  map({ (map(tostring) | join(join_char)) : (. as $path | . = $data | getpath($path)) }) |
+  reduce .[] as $item (
+    {} ;
+    . + $item
+  )
+  ;
+
+def flatten_json:
+  flatten_json(".")
+  ;
+
+def unflatten_json(join_char):
+  reduce to_entries[] as $element
+    (
+      null ;
+      setpath($element.key / join_char | map(tonumber? // .) ; $element.value)
+    )
+  ;
+
+def unflatten_json:
+  unflatten_json(".")
+  ;
+
+def delete_matching(key; list):
+  .[key] as $value |
+  if list | any($value == .) then del(.[key]) else . end
+  ;

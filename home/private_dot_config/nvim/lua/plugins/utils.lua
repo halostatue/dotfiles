@@ -199,6 +199,12 @@ return {
       vim.g.floaterm_borderchars = '─│─│╭╮╯╰'
     end,
   },
+  { -- https://github.com/chimay/wheel
+    'chimay/wheel',
+  },
+  { -- https://github.com/fvictorio/vim-eval-expression
+    'fvictorio/vim-eval-expression',
+  },
 }
 
 -- https://github.com/echasnovski/mini.nvim

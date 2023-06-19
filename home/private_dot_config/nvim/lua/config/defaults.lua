@@ -114,7 +114,7 @@ vim.opt.iskeyword:append('-')
 -- current buffer.
 vim.opt.browsedir = current
 vim.opt.colorcolumn = { '+1', '+10', '+20' }
-vim.opt.cscopeverbose = true
+-- vim.opt.cscopeverbose = true
 vim.opt.cursorline = true
 vim.opt.display = 'lastline'
 vim.opt.formatoptions = 'tcqr1nj'

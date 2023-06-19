@@ -18,7 +18,6 @@ halostatue/fish-utils-net@v1.x
 lilyball/nix-env.fish
 IlanCosman/clownfish
 IlanCosman/tide@v5
-reitzig/sdkman-for-fish
 jorgebucaran/fisher
 halostatue/fish-machine-config@v1.x
 halostatue/fish-utils-core

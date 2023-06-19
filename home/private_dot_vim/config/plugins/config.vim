@@ -257,3 +257,62 @@ let g:neoformat_try_node_exe = 1 " Try a formatter in `node_modules/.bin`
 " endfunction
 
 nmap <C-W><S-C> <Plug>(choosewin)
+
+" if ! exists("g:organ_loaded")
+"   " ---- DONT FORGET TO INITIALIZE DICTS BEFORE USING THEM
+"   let g:organ_config = {}
+"   let g:organ_config.prefixless_plugs = {}
+"   let g:organ_config.list = {}
+"   let g:organ_config.links = {}
+"   let g:organ_config.templates = {}
+"   " ---- enable for every file if > 0
+"   let g:organ_config.everywhere = 0
+"   " ---- enable speed keys on first char of headlines and list items
+"   let g:organ_config.speedkeys = 1
+"   " ---- key to trigger <plug>(organ-previous)
+"   " ---- and go where speedkeys are available
+"   " ---- examples : <m-p> (default), [z
+"   let g:organ_config.previous = '<m-p>'
+"   " ---- choose your mappings prefix
+"   let g:organ_config.prefix = '<m-o>'
+"   " ---- enable prefixless maps
+"   let g:organ_config.prefixless = 1
+"   " ---- prefixless maps in these modes (default)
+"   " ---- possible values : normal, visual, insert
+"   " ---- visual maps are defined only when significant
+"   let g:organ_config.prefixless_modes = ['normal', 'visual', 'insert']
+"   " ---- enable only the prefixless maps you want
+"   " ---- leave a list empty to enable all plugs in the mode
+"   " ---- see the output of :map <plug>(organ- to see available plugs
+"   " let g:organ_config.prefixless_plugs.normal = ['organ-backward', 'organ-forward']
+"   " let g:organ_config.prefixless_plugs.visual = []
+"   " let g:organ_config.prefixless_plugs.insert = []
+"   " ---- number of spaces to indent lists (default)
+"   let g:organ_config.list.indent_length = 2
+"   " ---- items chars in unordered list (default)
+"   let g:organ_config.list.unordered = #{ org : ['-', '+', '*'], markdown : ['-', '+']}
+"   " ---- items chars in ordered list (default)
+"   let g:organ_config.list.ordered = #{ org : ['.', ')'], markdown : ['.']}
+"   " ---- first item counter in an ordered list
+"   " ---- must be >= 0, default 1
+"   let g:organ_config.list.counter_start = 1
+"   " ---- number of stored links to keep (default)
+"   let g:organ_config.links.keep = 5
+"   " ---- shortcuts to expand templates
+"   " ---- examples from default settings
+"   " ---- run :echo g:organ_config.templates to see all
+"   " -- #+begin_center bloc
+"   let g:organ_config.templates['<c'] = 'center'
+"   " -- #+include: line
+"   let g:organ_config.templates['+i'] = 'include'
+"   " ---- todo keywoard cycle
+"   " ---- default : todo : TODO - DONE - none
+"   " ---- no need to add none to the list
+"   let g:organ_config.todo_cycle = ['TODO', 'IN PROGRESS', 'ALMOST DONE', 'DONE']
+"   " ---- timestamp format
+"   let g:organ_config.timestamp_format = '<%Y-%m-%d %a %H:%M>'
+"   " ---- custom maps
+"   nmap <c-cr> <plug>(organ-meta-return)
+"   imap <c-cr> <plug>(organ-meta-return)
+"   nnoremap <backspace> :Organ<space>
+" endif

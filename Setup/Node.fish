@@ -5,6 +5,11 @@ if ! command --query npm
     return 1
 end
 
+if command --query corepack
+    corepack prepare pnpm@latest --activate
+    corepack prepare yarn@1 --activate
+end
+
 # Upgrade to latest NPM. Also globally install both yarn and pnpm
 set --local node_version (node --version)
 set --local pnpm_version latest

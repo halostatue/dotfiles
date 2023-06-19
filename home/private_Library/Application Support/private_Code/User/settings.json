@@ -134,7 +134,7 @@
   "editor.accessibilitySupport": "off",
   "editor.bracketPairColorization.enabled": true,
   "editor.cursorBlinking": "phase",
-  "editor.cursorSmoothCaretAnimation": true,
+  "editor.cursorSmoothCaretAnimation": "on",
   "editor.cursorSurroundingLines": 5,
   "editor.fontFamily": "JetBrains Mono NL, JetBrains Mono, IBM PlexMono, JetBrains Mono, Rec Mono Duotone, Fira Code, Iosevka,  Menlo, Monaco, monospace",
   "editor.fontLigatures": "'dlig'",
@@ -291,7 +291,6 @@
   "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
   "webhint.enableTelemetry": "enabled",
   "window.closeWhenEmpty": true,
-  "window.zoomLevel": -1,
   "workbench.editor.enablePreview": false,
   "workbench.editor.enablePreviewFromQuickOpen": false,
   "workbench.editor.splitSizing": "split",
@@ -337,5 +336,9 @@
   "yaml.schemas": {
     "file:///Users/austin/.vscode/extensions/atlassian.atlascode-2.10.12/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
   },
-  "zeplin.enableTelemetry": false
+  "zeplin.enableTelemetry": false,
+  "[xslt]": {
+    "editor.semanticHighlighting.enabled": true
+  },
+  "XSLT.tasks.saxonJar": "~/.local/share/SaxonHE10-8J/saxon-he-10.8.jar"
 }

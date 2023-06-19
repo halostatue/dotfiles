@@ -61,6 +61,7 @@ hwatch :: A modern alternative to the watch command
 hyperfine :: A command-line benchmarking tool
 jless :: A command-line JSON viewer
 just :: Just a command runner
+killport :: Kill porcess on a specific port
 lemmeknow :: Identify any mysterious text or analyze strings from a file
 licensure :: A software license management tool
 loc :: Count lines of code fast

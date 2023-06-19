@@ -55,4 +55,7 @@ return {
     ft = 'norg',
     config = true,
   },
+  { -- https://github.com/chimay/organ
+    'chimay/organ',
+  },
 }
