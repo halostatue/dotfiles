@@ -1,8 +1,7 @@
 pipx install adr-viewer
 pipx install airiam
-pipx install ansible --include-deps
-pipx inject ansible boto3
-pipx inject ansible botocore
+pipx install ansible --include-deps &&
+  pipx inject ansible boto3 botocore
 pipx install checkov
 pipx install codespell
 pipx install cookiecutter
@@ -16,17 +15,16 @@ pipx install dokter
 pipx install epy-reader
 pipx install gh2md
 pipx install git-big-picture
-pipx install git-branchstack
-pipx inject git-branchstack git-revise --include-apps
+pipx install git-branchstack &&
+  pipx inject git-branchstack --include-apps git-revise
 pipx install git-filter-repo
 pipx install git-machete
 pipx install git-when-merged
 pipx install gita
 pipx install graphtage
 pipx install heatwave
-pipx install httpie
-pipx inject httpie httpie-http2
-pipx inject httpie httpie-oauth
+pipx install httpie &&
+  pipx inject httpie httpie-http2 httpie-oauth
 pipx install isort
 pipx install j2cli
 pipx install jc
@@ -34,11 +32,8 @@ pipx install json-schema-for-humans
 pipx install kamidana
 pipx install litecli
 pipx install meson
-pipx install mkdocs
-pipx inject mkdocs mkdocs-material
-pipx inject mkdocs mkdocs-mermaid2-plugin
-pipx inject mkdocs mkdocs-redirects
-pipx inject mkdocs mkdocs-simple-hooks
+pipx install mkdocs &&
+  pipx inject mkdocs mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
 pipx install ninja
 pipx install pdd
 pipx install pgcli

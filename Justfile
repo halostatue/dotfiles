@@ -6,10 +6,24 @@ default:
 update-packages: update-homebrew update-gems update-pipx update-ports
 
 update-homebrew:
-  @brew bundle dump --force --file=Setup/Brewfile
+  #!/usr/bin/env bash
+
+  set -euo pipefail
+
+  declare tmp
+  tmp="$(mktemp -d)"
+  brew bundle dump --force --file="${tmp}/Brewfile"
+  vimdiff "${tmp}/Brewfile" "Setup/Brewfile"
 
 update-gems:
-  @printf "gem \"%s\"\n" `(gem list --no-versions)` > Setup/Gemfile
+  #!/usr/bin/env bash
+
+  set -euo pipefail
+
+  declare tmp
+  tmp="$(mktemp -d)"
+  printf "gem \"%s\"\n" `(gem list --no-versions)` > "${tmp}/Gemfile"
+  vimdiff "${tmp}/Gemfile" "Setup/Gemfile"
 
 update-pipx:
   #!/usr/bin/env ruby
@@ -49,12 +63,19 @@ update-pipx:
 
     inject = nil if inject.empty?
 
-    [install, inject].compact.join(" && ")
+    [install, inject].compact.join(" &&\n  ")
   }.join("\n")
 
-  File.write("Setup/Pipx.fish", result)
+  File.write("Setup/Pipx.fish", result + "\n")
 
   # pipx list --include-injected --json | jq -f Setup/pipx-reinstall.jq > Setup/pipx.fish.new -r
 
 update-ports:
-  @port echo requested | cut -d' ' -f1 | uniq > Setup/Ports.requested
+  #!/usr/bin/env bash
+
+  set -euo pipefail
+
+  declare tmp
+  tmp="$(mktemp -d)"
+  @port echo requested | cut -d' ' -f1 | uniq > "${tmp}/Ports"
+  vimdiff "${tmp}/Ports" "Setup/Ports"

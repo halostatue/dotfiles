@@ -28,7 +28,7 @@ brew "cloc" # Statistics utility to count lines of code
 brew "comby" # Tool for changing code across many languages
 brew "commitdev/zero/zero" # Allow startup developers to ship to production on day 1.
 brew "csvtk" # Cross-platform, efficient and practical CSV/TSV toolkit in Golang
-# brew "datasette" # Open source multi-tool for exploring and publishing data
+brew "datasette" # Open source multi-tool for exploring and publishing data
 brew "dhex" # Ncurses based advanced hex editor featuring diff mode and more
 brew "diff-so-fancy" # Good-lookin' diffs with diff-highlight and more
 brew "diffoscope" # In-depth comparison of files, archives, and directories
@@ -43,6 +43,7 @@ brew "docker-slim" # Minify and secure Docker images
 brew "dog" # Command-line DNS client
 brew "dos2unix" # Convert text between DOS, UNIX, and Mac formats
 brew "duf" # Disk Usage/Free Utility - a better 'df' alternative
+brew "earthly" # Container-based build system to explore
 brew "epubcheck" # Validate EPUB files, version 2.0 and later
 brew "fclones" # Efficient Duplicate File Finder
 brew "fish" # User-friendly command-line shell for UNIX-like operating systems
@@ -57,6 +58,7 @@ brew "git-bug" # Distributed, offline-first bug tracker embedded in git, with br
 brew "git-delta" # Syntax-highlighting pager for git and diff output
 brew "gitbatch" # Manage your git repositories in one place
 brew "gnu-sed" # GNU implementation of the famous stream editor
+brew "graphviz" # Image generation from ASCII documents
 brew "jq" # Lightweight and flexible command-line JSON processor
 brew "kerl" # Easy building and installing of Erlang/OTP instances
 brew "lazydocker" # Lazier way to manage everything docker
@@ -96,6 +98,7 @@ brew "tilt-dev/tap/ctlptl" # Making local Kubernetes clusters easy to set up and
 brew "tilt-dev/tap/tilt" # A dev environment as code for microservice apps
 brew "tmate" # Instant terminal sharing
 brew "tnef" # Microsoft MS-TNEF attachment unpacker
+brew "trivy" # Vulnerability scanner for container images, file systems, and Git repos
 brew "turbot/tap/steampipe" # Steampipe exposes APIs and services as a high-performance relational database, giving you the ability to write SQL-based queries to explore, assess and report on dynamic data.
 brew "tz" # CLI time zone visualizer
 brew "universal-ctags" # Maintained ctags implementation
@@ -115,8 +118,10 @@ cask "anydesk" # Allows connection to a computer remotely
 cask "bbedit" # Text, code, and markup editor
 cask "calibre" # E-books management software
 cask "charles" # Web debugging Proxy application
+cask "dadroit-json-viewer"
 cask "darktable" # Lightroom alternative
 cask "deeper" # Deep OS Personalization
+cask "deepgit"
 cask "devcleaner" # Xcode dev cleaner
 cask "dosbox" # DOS Emulator
 cask "eaglefiler" # Organize files, archive e-mails, save Web pages and notes, search everything
@@ -124,7 +129,6 @@ cask "finicky" # Utility for customizing which browser to start
 cask "firefox" # Web browser
 cask "firefox-developer-edition" # Web browser
 cask "fluid" # Tool to turn a website into a desktop app
-cask "fvim" # F# Vim
 cask "gargoyle" # A cross-platform IO layer for an interactive fiction player
 cask "google-chrome" # Web browser
 cask "gpg-suite-no-mail" # Tools to protect your files
@@ -140,6 +144,7 @@ cask "koa11y" # Easily check for website accessibility issues
 cask "lapce" # Lightning-fast and Powerful Code Editor
 cask "linphone" # Software for communication systems developers
 cask "macvim" # Text editor
+cask "macwhisper"
 cask "microsoft-edge" # Web browser
 cask "modern-csv" # CSV editor
 cask "monitorcontrol" # Control external display brightness and volume
@@ -178,9 +183,12 @@ cask "vivaldi" # Web browser focusing on customization and control
 cask "webpquicklook" # QuickLook for WebP
 cask "wezterm" # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "xcodes" # Install and switch between multiple versions of Xcode
+cask "xit"
+cask "zed"
 
 ## Fonts
 cask "font-anka-coder"
+cask "font-b612-mono"
 cask "font-cascadia-code"
 cask "font-cascadia-code-pl"
 cask "font-cascadia-mono"
@@ -207,11 +215,17 @@ cask "font-ia-writer-duospace"
 cask "font-ia-writer-mono"
 cask "font-ia-writer-quattro"
 cask "font-ibm-plex"
+cask "font-ibm-plex-mono"
 cask "font-inconsolata"
 cask "font-input"
 cask "font-iosevka"
+cask "font-iosevka-aile"
+cask "font-iosevka-etoile"
+cask "font-iosevka-slab"
+cask "font-iosevka-ss15"
 cask "font-jetbrains-mono"
 cask "font-juliamono"
+cask "font-liberation"
 cask "font-monofur-for-powerline"
 cask "font-monoid"
 cask "font-mononoki"
@@ -241,7 +255,9 @@ mas "Exporter", id: 1099120373
 mas "GarageBand", id: 682658836
 mas "Grim Fandango", id: 1022841309
 mas "Grocery", id: 1195676848
+mas "Hand Mirror", id: 1502839586
 mas "History Book", id: 1619241039
+mas "Hush", id: 1544743900
 mas "Icon Slate", id: 439697913
 mas "Image2icon", id: 992115977
 mas "iMovie", id: 408981434
@@ -252,6 +268,7 @@ mas "MarkDownload - Markdown Web Clipper", id: 1554029832
 mas "MenubarX", id: 1575588022
 mas "Mimeo Photos", id: 1282504627
 mas "Muse", id: 1501563902
+mas "MusicBox", id: 1614730313
 mas "Numbers", id: 409203825
 mas "One Thing", id: 1604176982
 mas "Pages", id: 409201541
@@ -261,12 +278,24 @@ mas "PCalc", id: 403504866
 mas "Pinboard Tools", id: 1552590875
 mas "PiPifier", id: 1160374471
 mas "Pixelmator Pro", id: 1289583905
+mas "Play", id: 1596506190
 mas "PopClip", id: 445189367
 mas "Shareful", id: 1522267256
+mas "StopTheMadness", id: 1376402589
 mas "Svgsus", id: 1106867065
 mas "System Strings", id: 570467776
+mas "TestFlight", id: 899247664
 mas "Typeface", id: 1062679359
 mas "Vinegar", id: 1591303229
 mas "WorldWideWeb", id: 1621370168
 mas "xScope", id: 889428659
 mas "Zen Pinball Party", id: 1536783591
+
+# vscode "bpruitt-goddard.mermaid-markdown-syntax-highlighting"
+# vscode "deltaxml.xslt-xpath"
+# vscode "golang.go"
+# vscode "Jacano.vscode-pnpm"
+# vscode "svelte.svelte-vscode"
+# vscode "vscodevim.vim"
+# vscode "vstirbu.vscode-mermaid-preview"
+# vscode "ZixuanChen.vitest-explorer"
