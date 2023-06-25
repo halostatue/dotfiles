@@ -10,11 +10,7 @@ on-ERR() {
 
 trap on-ERR ERR
 
-declare verbose
-verbose=false
-[[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && verbose=true
-
-if "${verbose}"; then
+if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo 2: Install Homebrew
 
   if "${DEBUG_SCRIPTS:-false}"; then
@@ -36,15 +32,19 @@ Darwin)
   esac
 
   if ! [[ -x "${HOMEBREW_PREFIX}"/bin/brew ]]; then
-    if [[ "${verbose}" ]]; then
-      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    declare installer
+    installer="$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
+      /bin/bash -c "${installer}"
     else
-      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" \
-        >/dev/null 2>/dev/null
+      /bin/bash -c "${installer}" >/dev/null 2>/dev/null
     fi
   fi
 
   # https://docs.brew.sh/Shell-Completion#configuring-completions-in-zsh
-  chmod -R go-w "$(brew --prefix)/share"
+  chmod -R go-w "$(brew --prefix)/share" || true
   ;;
+
+*) : ;;
 esac

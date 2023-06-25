@@ -10,11 +10,7 @@ on-ERR() {
 
 trap on-ERR ERR
 
-declare verbose
-verbose=false
-[[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && verbose=true
-
-if "${verbose}"; then
+if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo Update fisher packages
 
   if "${DEBUG_SCRIPTS:-false}"; then
@@ -24,7 +20,7 @@ fi
 
 # Make sure that we have fish and fisher
 if ! command -v fish >/dev/null 2>&1; then
-  if "${verbose}"; then
+  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     echo >&2 "fish is not installed"
     exit 1
   fi
@@ -33,7 +29,7 @@ if ! command -v fish >/dev/null 2>&1; then
 fi
 
 if ! fish -c "functions --query fisher"; then
-  if "${verbose}"; then
+  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     echo >&2 "fisher is not installed"
     exit 1
   fi
@@ -51,7 +47,7 @@ digest_file="${digest_path}/fish_plugins.digest"
 stored_digest=
 
 if ! [[ -f "${fish_plugins}" ]]; then
-  if "${verbose}"; then
+  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     echo >&2 "No fish_plugins found."
     exit 1
   fi
@@ -67,13 +63,13 @@ fi
 current_digest="$(openssl dgst -sha256 "${fish_plugins}")"
 
 if [[ "${stored_digest}" != "${current_digest}" ]]; then
-  if "${verbose}"; then
+  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     fish -c "fisher update"
   else
     fish -c "fisher update" >/dev/null 2>/dev/null
   fi
 
   echo "${current_digest}" >"${digest_file}"
-elif "${verbose}"; then
+elif [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo fisher packages are up to date
 fi

@@ -10,11 +10,7 @@ on-ERR() {
 
 trap on-ERR ERR
 
-declare verbose
-verbose=false
-[[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && verbose=true
-
-if "${verbose}"; then
+if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo 0: prepare system
 
   if "${DEBUG_SCRIPTS:-false}"; then
@@ -24,10 +20,11 @@ fi
 
 case "$(uname -s)" in
 Darwin)
-  declare license
+  declare license arch xcode_path
+  arch="$(uname -m)"
 
   # Install Rosetta on an Apple Silicon mac
-  if [[ "$(uname -m)" == arm64 ]] && ! [[ -f /Library/Apple/usr/share/rosetta/rosetta ]]; then
+  if [[ "${arch}" == arm64 ]] && ! [[ -f /Library/Apple/usr/share/rosetta/rosetta ]]; then
     softwareupdate --install-rosetta --agree-to-license
   fi
 
@@ -36,8 +33,12 @@ Darwin)
     sudo xcodebuild -license
   fi
 
-  if [[ -z "$(xcode-select --print-path)" ]]; then
+  xcode_path="$(xcode-select --print-path)"
+
+  if [[ -z "${xcode_path}" ]]; then
     xcode-select --install
   fi
   ;;
+
+*) : ;;
 esac

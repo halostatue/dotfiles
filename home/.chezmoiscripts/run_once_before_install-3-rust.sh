@@ -10,11 +10,7 @@ on-ERR() {
 
 trap on-ERR ERR
 
-declare verbose
-verbose=false
-[[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && verbose=true
-
-if "${verbose}"; then
+if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo 3: Install Rust
 
   if "${DEBUG_SCRIPTS:-false}"; then
@@ -23,7 +19,7 @@ if "${verbose}"; then
 fi
 
 if ! command -v rustup >/dev/null 2>/dev/null || ! [[ -x "${HOME}/.cargo/bin/rustup" ]]; then
-  if [[ "${verbose}" ]]; then
+  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
   else
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh >/dev/null 2>/dev/null
@@ -36,7 +32,7 @@ fi
 declare flags
 flags=(--force)
 
-if ! "${verbose}"; then
+if ! [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   flags=(--quiet)
 fi
 

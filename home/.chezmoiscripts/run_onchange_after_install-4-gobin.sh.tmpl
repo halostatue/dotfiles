@@ -10,11 +10,7 @@ on-ERR() {
 
 trap on-ERR ERR
 
-declare verbose
-verbose=false
-[[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && verbose=true
-
-if "${verbose}"; then
+if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo 4: Install Go Binaries
 
   if "${DEBUG_SCRIPTS:-false}"; then
@@ -75,7 +71,7 @@ go-install() {
     shift
   fi
 
-  if "${verbose}"; then
+  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     go install "$@" "${package_uri}@${package_version}"
   else
     go install "$@" "${package_uri}@${package_version}" >/dev/null 2>/dev/null
@@ -88,25 +84,29 @@ while read -r -a gobin; do
     continue
   fi
 
+  # shellcheck disable=SC2310
   if ! go-install "${gobin[@]}"; then
     echo >&2 "Error installing ${gobin[*]}"
     exit 1
   fi
-done <"${CHEZMOI_WORKING_TREE}/Setup/Gobin"
+done <"{{ .chezmoi.workingTree }}/Setup/Gobin"
 
 # Installations that require manual installation
 (
   set -e
-  cd "$(mktemp -d)"
+  declare tmp
+  tmp="$(mktemp -d)"
 
-  if "${verbose}"; then
+  cd "${tmp}"
+
+  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     git clone https://github.com/minamijoyo/tfschema
   else
     git clone https://github.com/minamijoyo/tfschema >/dev/null 2>/dev/null
   fi
   cd tfschema
 
-  if "${verbose}"; then
+  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     go install .
   else
     go install . >/dev/null 2>/dev/null

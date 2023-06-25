@@ -123,6 +123,7 @@
 {{ if eq .chezmoi.os "linux" }}
 Library
 {{ else if eq .chezmoi.os "darwin" }}
+# LazyGit is configured in Library/Application Support/lazygit on macOS
 .config/lazygit
 {{ end }}
 

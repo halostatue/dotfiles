@@ -10,11 +10,7 @@ on-ERR() {
 
 trap on-ERR ERR
 
-declare verbose
-verbose=false
-[[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && verbose=true
-
-if "${verbose}"; then
+if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo 2: Install Homebrew Packages
 
   if "${DEBUG_SCRIPTS:-false}"; then
@@ -31,7 +27,7 @@ Darwin)
     esac
 
     if ! [[ -x "${HOMEBREW_PREFIX}/bin/brew" ]]; then
-      if "${verbose}"; then
+      if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
         echo >&2 Homebrew is not installed
         exit 1
       fi
@@ -39,17 +35,19 @@ Darwin)
       exit 0
     fi
 
-    eval "$(${HOMEBREW_PREFIX}/bin/brew shellenv)"
+    eval "$(${HOMEBREW_PREFIX}/bin/brew shellenv)" || true
   fi
 
   declare -a flags
   flags=()
 
-  if ! "${verbose}"; then
+  if ! [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     flags+=(--quiet)
   fi
 
   # Brewfile: {{ include (joinPath .chezmoi.workingTree "Setup/Brewfile") | sha256sum }}
-  HOMEBREW_CASK_OPTS=--no-quarantine brew bundle "${flags[@]}" --file "${CHEZMOI_WORKING_TREE}/Setup/Brewfile"
+  HOMEBREW_CASK_OPTS=--no-quarantine brew bundle "${flags[@]}" --file "{{ .chezmoi.workingTree }}/Setup/Brewfile"
   ;;
+
+*) : ;;
 esac

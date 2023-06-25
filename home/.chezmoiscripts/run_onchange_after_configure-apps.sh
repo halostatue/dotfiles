@@ -10,11 +10,7 @@ on-ERR() {
 
 trap on-ERR ERR
 
-declare verbose
-verbose=false
-[[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && verbose=true
-
-if "${verbose}"; then
+if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo Configure Apps
 
   if "${DEBUG_SCRIPTS:-false}"; then
@@ -98,19 +94,21 @@ Darwin)
 
   # Kill affected applications
   for app in Finder Dock TextEdit SystemUIServer; do
-    killall "$app" >/dev/null 2>&1 || true
+    killall "${app}" >/dev/null 2>&1 || true
   done
 
   for app in Safari Mail; do
-    killall "$app" >/dev/null 2>&1 || true
+    killall "${app}" >/dev/null 2>&1 || true
   done
   ;;
+
+*) : ;;
 esac
 
 # Make chezmoi use Git with SSH
 (
   set -e
-  cd "${CHEZMOI_WORKING_TREE}"
+  cd "${CHEZMOI_WORKING_TREE:?}"
   declare CHEZMOI_SSH_URL
   CHEZMOI_SSH_URL="$(git remote get-url origin | sed -Ene's#https://([^/]*)/([^/]*/.*.git)#git@\1:\2#p')"
   [[ -z ${CHEZMOI_SSH_URL} ]] || git remote set-url origin "${CHEZMOI_SSH_URL}"

@@ -10,11 +10,7 @@ on-ERR() {
 
 trap on-ERR ERR
 
-declare verbose
-verbose=false
-[[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && verbose=true
-
-if "${verbose}"; then
+if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo 1: Install MacPorts
 
   if "${DEBUG_SCRIPTS:-false}"; then
@@ -48,7 +44,7 @@ Darwin)
     10.16 | 10.16.* | 11 | 11.*) os_version="11-BigSur" ;;
     12 | 12.*) os_version="12-Monterey" ;;
     13 | 13.*) os_version="13-Ventura" ;;
-    14 | 14.*)
+    *)
       echo >&2 "OS Version ${os_version} is not yet supported."
       exit 1
       ;;
@@ -69,7 +65,7 @@ Darwin)
 
   if ! grep -q "file://${HOME}/ports" /opt/local/etc/macports/sources.conf; then
     if ! [[ -d "${HOME}/ports/.git" ]]; then
-      if [[ "${verbose}" ]]; then
+      if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
         git clone https://github.com/halostatue/ports.git "${HOME}/ports"
       else
         git clone https://github.com/halostatue/ports.git "${HOME}/ports" >/dev/null 2>/dev/null
@@ -80,4 +76,6 @@ Darwin)
 file://${HOME}/ports" /opt/local/etc/macports/sources.conf
   fi
   ;;
+
+*) : ;;
 esac

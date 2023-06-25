@@ -10,11 +10,7 @@ on-ERR() {
 
 trap on-ERR ERR
 
-declare verbose
-verbose=false
-[[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && verbose=true
-
-if "${verbose}"; then
+if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo 5: Install VS Code Extensions
 
   if "${DEBUG_SCRIPTS:-false}"; then
@@ -23,7 +19,7 @@ if "${verbose}"; then
 fi
 
 if ! command -v code >/dev/null 2>&1; then
-  if "${verbose}"; then
+  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     echo >&2 "code is not installed"
     exit 1
   fi
@@ -37,9 +33,9 @@ while read -r -a extension; do
     continue
   fi
 
-  if "${verbose}"; then
+  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     code --install-extension "${extension[@]}"
   else
     code --install-extension "${extension[@]}" >/dev/null 2>/dev/null
   fi
-done <"${CHEZMOI_WORKING_TREE}/Setup/CodeExtensions"
+done <"{{ .chezmoi.workingTree }}/Setup/CodeExtensions"

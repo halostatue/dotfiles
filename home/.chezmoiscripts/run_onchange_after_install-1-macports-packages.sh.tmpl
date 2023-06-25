@@ -10,11 +10,7 @@ on-ERR() {
 
 trap on-ERR ERR
 
-declare verbose
-verbose=false
-[[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && verbose=true
-
-if "${verbose}"; then
+if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo 1: Install MacPorts Ports
 
   if "${DEBUG_SCRIPTS:-false}"; then
@@ -31,7 +27,7 @@ Darwin)
   fi
 
   if ! command -v port >/dev/null 2>/dev/null; then
-    if "${verbose}"; then
+    if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
       echo >&2 MacPorts is not installed
       exit 1
     fi
@@ -45,14 +41,16 @@ Darwin)
       continue
     fi
 
-    if "${verbose}"; then
+    if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
       sudo port -N install "${port[@]}"
     else
       sudo port -qN install "${port[@]}" >/dev/null 2>/dev/null
     fi
-  done <"${CHEZMOI_WORKING_TREE}/Setup/Ports"
+  done <"{{ .chezmoi.workingTree }}/Setup/Ports"
 
   # Port Selection Hash: {{ include (joinPath .chezmoi.workingTree "Setup/PortsSelect") | sha256sum }}
-  sudo port -F "${CHEZMOI_WORKING_TREE}/Setup/PortsSelect"
+  sudo port -F "{{ .chezmoi.workingTree }}/Setup/PortsSelect"
   ;;
+
+*) : ;;
 esac

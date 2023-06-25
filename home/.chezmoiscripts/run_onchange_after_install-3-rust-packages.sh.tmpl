@@ -10,11 +10,7 @@ on-ERR() {
 
 trap on-ERR ERR
 
-declare verbose
-verbose=false
-[[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && verbose=true
-
-if "${verbose}"; then
+if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo 3: Install Rust Packages
 
   if "${DEBUG_SCRIPTS:-false}"; then
@@ -23,7 +19,7 @@ if "${verbose}"; then
 fi
 
 if ! command -v cargo >/dev/null 2>/dev/null || ! [[ -s "${HOME}"/.cargo/env ]]; then
-  if "${verbose}"; then
+  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     echo >&2 "cargo (rust) is not installed"
     exit 1
   fi
@@ -32,7 +28,7 @@ if ! command -v cargo >/dev/null 2>/dev/null || ! [[ -s "${HOME}"/.cargo/env ]];
 fi
 
 if ! cargo --list 2>&1 | grep -Eq '\b(?:binstall|install-update)$'; then
-  if "${verbose}"; then
+  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     echo >&2 "cargo-binstall and/or cargo-install-update are not installed"
     exit 1
   fi
@@ -55,6 +51,8 @@ Darwin)
     trap reenable-libiconv EXIT
   fi
   ;;
+
+*) : ;;
 esac
 
 cargo-pkg() {
@@ -80,7 +78,7 @@ cargo-pkg() {
     shift
   done
 
-  if ! "${verbose}"; then
+  if ! [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
     flags+=(--quiet)
   fi
 
@@ -119,20 +117,20 @@ while read -r -a crate; do
     echo >&2 "Error installing ${crate[*]}"
     exit 1
   fi
-done <"${CHEZMOI_WORKING_TREE}/Setup/Crates"
+done <"{{ .chezmoi.workingTree }}/Setup/Crates"
 
 # Installations that require manual installation
 # (
 #   set -e
 #   cd "$(mktemp -d)"
-#   if "${verbose}"; then
+#   if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
 #     git clone https://github.com/cquintana92/git-switch-user.git
 #   else
 #     git clone https://github.com/cquintana92/git-switch-user.git >/dev/null 2>/dev/null
 #   fi
 #
 #   cd git-switch-user
-#   if "${verbose}"; then
+#   if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
 #     cargo install --force --locked --path .
 #   else
 #     cargo install --quiet --force --locked --path .
