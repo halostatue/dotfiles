@@ -693,9 +693,8 @@ dump."
 This function is called at the very end of Spacemacs startup, after layer
 configuration. Put your configuration code here, except for variables that
 should be set before packages are loaded."
-{{ if kindIs "map" (dig "github" "tokens" "emacs_paradox" "" .) -}}
-{{-   $e := .github.tokens.emacs_paradox -}}
-{{-   $v := (onepasswordDetailsFields $e.name $e.vault $e.account) }}
+{{ $v := dig "github" "cli_tools" nil (includeTemplate "1password_api_credentials.tmpl" . | fromJson) -}}
+{{ if $v -}}
   (setq paradox-github-token {{ $v.credential.value | quote }})
 {{- end }}
   (fset 'evil-visual-update-x-selection 'ignore)

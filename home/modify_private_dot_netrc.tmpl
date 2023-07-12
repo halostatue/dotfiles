@@ -8,9 +8,8 @@ end
 
 input = STDIN.readlines
 
-{{ if kindIs "map" (dig "github" "tokens" "vim_rhubarb" "" .) -}}
-{{-   $e := .github.tokens.vim_rhubarb }}
-{{-   $v := (onepasswordDetailsFields $e.name $e.vault $e.account) -}}
+{{ $v := dig "github" "vim_rhubarb" nil (includeTemplate "1password_api_credentials.tmpl" . | fromJson) -}}
+{{- if $v -}}
 add_if_missing(
   input,
   /machine api.github.com login {{ $v.username.value }}/,

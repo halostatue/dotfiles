@@ -1,0 +1,6 @@
+{{- $v := dig "github" "cli_tools" nil (includeTemplate "1password_api_credentials.tmpl" . | fromJson) -}}
+{{- if $v -}}
+[prr]
+token = {{ $v.credential.value | quote }}
+workdir = {{ joinPath .chezmoi.homeDir "dev/review" | quote }}
+{{ end -}}

@@ -1,6 +1,5 @@
-{{- if kindIs "map" (dig "ruby" "rubygems" "geminabox" "" .) -}}
-{{-   $e := .ruby.rubygems.geminabox }}
-{{-   $v := (onepasswordDetailsFields $e.name $e.vault $e.account) -}}
+{{- $v := dig "rubygems" "geminabox" nil (includeTemplate "1password_api_credentials.tmpl" . | fromJson) -}}
+{{- if $v -}}
 ---
 :host: "https://{{ $v.username.value }}:{{ $v.credential.value }}@{{ $v.hostname.value }}/"
 {{- end }}

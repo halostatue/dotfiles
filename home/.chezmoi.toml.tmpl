@@ -39,9 +39,9 @@ credentials_source = {{ .aws.credentials_source | quote }}
 [data.github]
 user = {{ $github_username | toToml }}
 
-{{ if (. | dig "github" "tokens" false) }}
-{{- range $key, $value := .github.tokens -}}{{- if (typeIsLike "map[string]interface {}" $value) -}}
-[data.github.tokens.{{ $key }}]
+{{ if (. | dig  "tokens" "github" false) }}
+{{- range $key, $value := .tokens.github -}}{{- if (typeIsLike "map[string]interface {}" $value) -}}
+[data.tokens.github.{{ $key }}]
 {{ $value | toToml }}
 {{ end -}}{{- end -}}
 {{- else -}}
@@ -58,30 +58,30 @@ user = {{ $github_username | toToml }}
 ## - github_hub (~/.config/hub)
 ## - github_gh (~/.config/gh/hosts.yml)
 ##
-# [data.github.tokens.homebrew_api]
+# [data.tokens.github.homebrew_api]
 # type = '1p'
 # name = '***'
 # vault = '***'
 # account = '***'
 {{- end -}}
 
-{{ if (. | dig "ruby" "rubygems" false) }}
-{{- range $key, $value := .ruby.rubygems -}}
+{{ if (. | dig "tokens" "rubygems" false) }}
+{{- range $key, $value := .tokens.rubygems -}}
 {{-   if (typeIsLike "map[string]interface {}" $value) -}}
-[data.ruby.rubygems.{{ $key }}]
+[data.tokens.rubygems.{{ $key }}]
 {{ $value | toToml }}
 {{ end -}}{{- end -}}
 {{- else -}}
 ## Rubygems Configuration
 ##
 ## This uses the same format as GitHub token options.
-# [data.ruby.rubygems.geminabox]
+# [data.tokens.rubygems.geminabox]
 # type = '1p'
 # name = '***'
 # vault = '***'
 # account = '***'
 #
-# [data.ruby.rubygems.apikey]
+# [data.tokens.rubygems.apikey]
 # type = '1p'
 # name = '***'
 # vault = '***'

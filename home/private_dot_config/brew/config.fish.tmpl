@@ -1,4 +1,5 @@
 #! /usr/bin/env fish
+# chezmoi:template:left-delimiter="# [[" right-delimiter="]]"
 
 # See https://docs.brew.sh/Manpage#environment
 
@@ -8,20 +9,17 @@ end
 
 set --global --export HOMEBREW_DISPLAY_INSTALL_TIMES 1
 
-{{ if kindIs "map" (dig "github" "tokens" "" .) -}}
-{{-   if kindIs "map" (get .github.tokens "homebrew_api") -}}
-{{-     $e := .github.tokens.homebrew_api -}}
-{{-     $v := (onepasswordDetailsFields $e.name $e.vault $e.account) -}}
-set --global --export HOMEBREW_GITHUB_API_TOKEN {{ $v.credential.value | quote }}
-{{-   end }}
+# [[  $credentials := includeTemplate "1password_api_credentials.tmpl" . | fromJson -]]
+# [[- $v := dig "github" "homebrew_api" nil $credentials -]]
+# [[- if $v -]]
+set --global --export HOMEBREW_GITHUB_API_TOKEN # [[ $v.credential.value | quote ]]
+# [[-   end ]]
 
-{{-   if kindIs "map" (get .github.tokens "homebrew_packages") -}}
-{{-     $e := .github.tokens.homebrew_packages -}}
-{{-     $v := (onepasswordDetailsFields $e.name $e.vault $e.account) -}}
-set --global --export HOMEBREW_GITHUB_PACKAGES_TOKEN {{ $v.credential.value | quote }}
-set --global --export HOMEBREW_GITHUB_PACKAGES_USER {{ $v.username.value | quote }}
-{{-   end -}}
-{{- end }}
+# [[- $v := dig "github" "homebrew_packages" nil $credentials -]]
+# [[- if $v -]]
+set --global --export HOMEBREW_GITHUB_PACKAGES_TOKEN # [[ $v.credential.value | quote ]]
+set --global --export HOMEBREW_GITHUB_PACKAGES_USER # [[ $v.username.value | quote ]]
+# [[-   end ]]
 
 # set --global --export HOMEBREW_NO_ANALYTICS 1
 # set --global --export HOMEBREW_NO_AUTO_UPDATE 1

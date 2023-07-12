@@ -26,9 +26,9 @@
 {{- end -}}
 {{- if ne (dig "github" "user" "<missing>" .) "<missing>" -}}
 {{-   $githubUser = .github.user -}}
-{{-   if kindIs "map" (dig "github" "tokens" "emacs_paradox" "" .) -}}
-{{-     $e := .github.tokens.emacs_paradox -}}
-{{-     $githubToken = (onepasswordDetailsFields $e.name $e.vault $e.account).credential.value -}}
+{{-   $v := dig "github" "cli_tools" nil (includeTemplate "1password_api_credentials.tmpl" . | fromJson) -}}
+{{-   if $v -}}
+{{-     $githubToken = $v.credential.value -}}
 {{-   end -}}
 {{- end -}}
 {{- if $programs.interactive_rebase_tool -}}

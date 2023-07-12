@@ -4,3 +4,4 @@ Gemfile.lock
 Secrets/*
 !Secrets/.keep
 Brewfile.lock.json
+.vlt.json

@@ -1,11 +1,12 @@
 #! /bin/bash
 
-declare version image var cmd
-version="${VERSION:-2.11.13}"
+declare engine version image var cmd
+engine="${ENGINE:-docker}"
+version="${VERSION:-2.13.0}"
 image="${IMAGE:-amazon/aws-cli:${version}}"
 
 if ((!$#)); then
-  docker run --rm -it "${image}"
+  "${engine}" run --rm -it "${image}"
   exit $?
 fi
 
@@ -65,7 +66,7 @@ elif [[ "${cmd}" == sh ]]; then
   passopt+=(--entrypoint=/bin/bash -t)
 fi
 
-docker run --rm -i --network host \
+"${engine}" run --rm -i --network host \
   "${mounts[@]}" \
   "${passopt[@]}" \
   "${image}" \
