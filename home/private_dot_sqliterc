@@ -1,4 +1,4 @@
 .headers ON
 .mode column
-.nullvaule [NULL]
+.nullvalue [NULL]
 .timer On

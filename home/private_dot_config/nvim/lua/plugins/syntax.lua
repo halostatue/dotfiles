@@ -78,6 +78,9 @@ return {
     'lambdalisue/vim-backslash',
     ft = 'vim',
   },
+  { -- https://github.com/prisma/vim-prisma
+    'prisma/vim-prisma',
+  },
   -- Language Utilities
   -- {
   --   'sbdchd/neoformat', -- https://github.com/sbdchd/neoformat

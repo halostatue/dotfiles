@@ -21,7 +21,7 @@ use_kx() {
 
   local activate
   # direnv _always_ works with bash
-  activate="$(USERSHELL=bash kx source ${matching_version})" || {
+  activate="$(USERSHELL=bash kx source "${matching_version}")" || {
     echo >&2 "Error: Missing elixir version: $version. Install using kx."
     return 1
   }

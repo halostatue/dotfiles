@@ -25,22 +25,7 @@ use_chruby() {
 
   version="$1"
 
-  if [[ "${version}" == --auto ]]; then
-    dir="${PWD}"
-
-    until [[ -z "${dir}" ]]; do
-      if [[ -f "${dir}/.ruby-version" ]]; then
-
-        if { read -r want <"${dir}/.ruby-version"; } 2>/dev/null || [[ -n "${want}" ]]; then
-          version="${want}"
-          break
-        fi
-      fi
-
-      dir="${dir%/*}"
-    done
-  fi
-
+  [[ "${version}" == --auto ]] && version="$(read_version_file .ruby-version)"
   [[ -z "${version}" ]] && return
 
   if [[ -n "${RUBY_ROOT}" ]]; then

@@ -15,8 +15,8 @@ use_kiex() {
       ruby -e "puts ARGF.read.scan(/elixir-${version}.*/).last"
   )
 
-  if [[ -z $version_path ]]; then
-    echo "Error: Missing elixir version: $version. Install using kiex." 1>&2
+  if [[ -z "${version_path}" ]]; then
+    echo "Error: Missing elixir version: ${version}. Install using kiex." 1>&2
     return 1
   fi
 

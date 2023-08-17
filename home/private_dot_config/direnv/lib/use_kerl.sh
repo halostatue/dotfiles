@@ -14,8 +14,8 @@ use_kerl() {
     kerl list installations |
       ruby -e "puts ARGF.read.scan(/${version}.*/).last&.split&.last"
   )
-  if [[ -z $version_path ]]; then
-    echo "Error: Missing erlang version: $version. Install using kerl." 1>&2
+  if [[ -z "${version_path}" ]]; then
+    echo "Error: Missing erlang version: ${version}. Install using kerl." 1>&2
     return 1
   fi
 

@@ -200,6 +200,8 @@ function! s:packager_init() abort
   call packager#add('hofstadter-io/cue.vim')
   " Github Actions (YAML): https://github.com/yasuhiroki/github-actions-yaml.vim
   call packager#add('yasuhiroki/github-actions-yaml.vim')
+  " Prisma syntax highlighting: https://github.com/prisma/vim-prisma
+  call packager#add('prisma/vim-prisma')
 
   " Generalized Org Mode: https://github.com/chimay/organ
   call packager#add('chimay/organ')
