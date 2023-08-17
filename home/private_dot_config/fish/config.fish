@@ -112,6 +112,10 @@ test -s "$HOME/.local/share/kx/scripts/kx.fish"
 and source "$HOME/.local/share/kx/scripts/kx.fish"
 
 if status is-interactive
+    if command --query just
+        just --completions fish | source
+    end
+
     if command --query wezterm
         wezterm shell-completion --shell fish | source
     end
