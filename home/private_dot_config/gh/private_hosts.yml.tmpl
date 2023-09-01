@@ -3,7 +3,7 @@
 #[[- if $v -]]
 ---
 github.com:
-  user: #[[ $v.username.value | quote ]]
-  oauth_token: #[[ $v.credential.value | quote ]]
+  user:#[[ $v.username.value | quote ]]
+    # oauth_token: #[[ $v.credential.value | quote ]]
   git_protocol: ssh
 #[[- end ]]

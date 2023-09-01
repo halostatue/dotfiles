@@ -504,19 +504,9 @@ module.exports = {
       browser: 'Microsoft Edge',
     },
     {
-      match: () => finicky.getKeys().option,
-      browser: '/Applications/Setapp/OpenIn.app',
-    },
-    {
-      match: (match) => {
-        return finicky.matchHostnames(['ascendis.atlassian.net'])(match)
-      },
-      browser: 'Microsoft Edge',
-    },
-    {
       match: (match) => {
         return (
-          finicky.getKeys().command &&
+          (finicky.getKeys().command || finicky.getKeys().option) &&
           finicky.matchHostnames([
             'halogenmobile.atlassian.net',
             'jira.com',
@@ -527,6 +517,16 @@ module.exports = {
         )
       },
       browser: 'Firefox',
+    },
+    {
+      match: () => finicky.getKeys().option || (finicky.getKeys().command && finicky.getKeys().option),
+      browser: '/Applications/Setapp/OpenIn.app',
+    },
+    {
+      match: (match) => {
+        return finicky.matchHostnames(['ascendis.atlassian.net'])(match)
+      },
+      browser: 'Microsoft Edge',
     },
     /*
     {

@@ -6,7 +6,7 @@ scriptencoding utf-8
 " let &guifont="JetBrainsMono-Regular:h14"
 " let &guifont="FantasqueSansMono-Regular:h12"
 " let &guifont="IBMPlexMono:h10"
-let &guifont="Monoid-Regular:h14"
+let &guifont="RecMonoCasual-Regular:h16"
 
 if has('gui_win32')
   noremap <A-Space> :simalt ~<CR>

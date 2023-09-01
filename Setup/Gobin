@@ -1,75 +1,248 @@
-actionlint rhysd/actionlint/cmd/actionlint :: https://github.com/rhysd/actionlint
-age filippo.io/age/cmd/... v1 :: https://github.com/filosottile/age
-certstrap square/certstrap :: https://github.com/square/certstrap
-checkmake mrtazz/checkmake/cmd/checkmake :: https://github.com/mrtazz/checkmake
-# chezmoi twpayne/chezmoi :: https://github.com/twpayne/chezmoi
-css-checker ruilisi/css-checker :: https://github.com/ruilisi/css-checker
-dasel tomwright/dasel/cmd/dasel :: https://github.com/tomwright/dasel
-dlv go-delve/delve/cmd/dlv :: https://github.com/go-delve/delve
-docker-lock safe-waters/docker-lock/cmd/docker-lock :: https://github.com/safe-waters/docker-lock
-dsq multiprocessio/dsq :: https://github.com/multiprocessio/dsq
-echo-server jmalloc/echo-server/... :: https://github.com/jmalloc/echo-server
-editorconfig-checker editorconfig-checker/editorconfig-checker/cmd/editorconfig-checker :: https://github.com/editorconfig-checker/editorconfig-checker/cmd/editorconfig-checker
-efm-langserver mattn/efm-langserver :: https://github.com/mattn/efm-langserver
-errcheck kisielk/errcheck :: https://github.com/kisielk/errcheck
-fac mkchoi212/fac :: https://github.com/mkchoi212/fac
-fillstruct davidrjenni/reftools/cmd/fillstruct :: https://github.com/davidrjenni/reftools
-fillswitch davidrjenni/reftools/cmd/fillswitch :: https://github.com/davidrjenni/reftools
-fixplurals davidrjenni/reftools/cmd/fixplurals :: https://github.com/davidrjenni/reftools
-fm knipferrc/fm :: https://github.com/knipferrc/fm
-fq wader/fq :: https://github.com/wader/fq
-fzz mrnugget/fzz :: https://github.com/mrnugget/fzz
-gdlv aarzilli/gdlv :: https://github.com/aarzilli/gdlv
-git-branches shurcooL/git-branches :: https://github.com/shurcooL/git-branches
-# git-profile dotzero/git-profile :: https://github.com/dotzero/git-profile@latest
-git-sizer github/git-sizer :: https://github.com/github/git-sizer
-glow charmbracelet/glow :: github.com/charmbracelet/glow
-go-outline ramya-rao-a/go-outline :: https://github.com/ramya-rao-a/go-outline
-go-symbols acroca/go-symbols :: https://github.com/acroca/go-symbols
-goawk benhoyt/goawk :: https://github.com/benhoyt/goawk
-gogetdoc zmb3/gogetdoc :: https://github.com/zmb3/gogetdoc
-golangci-lint golangci/golangci-lint/cmd/golangci-lint :: https://github.com/golangci/golangci-lint
-gomodifytags fatih/gomodifytags :: https://github.com/fatih/gomodifytags
-gopls golang.org/x/tools/gopls :: https://golang.org/x/tools/gopls
-gorename golang.org/x/tools/cmd/gorename :: https://golang.org/x/tools/cmd/gorename
-gotags jstemmer/gotags :: https://github.com/jstemmer/gotags
-graphjin dosco/graphjin :: https://github.com/dosco/graphjin
-gum charmbracelet/gum :: https://github.com/charmbracelet/gum
-hcledit minamijoyo/hcledit :: https://github.com/minamijoyo/hcledit
-iferr koron/iferr :: https://github.com/koron/iferr
-impl josharian/impl :: https://github.com/josharian/impl
-inframap cycloidio/inframap :: https://github.com/cycloidio/inframap
-keyify honnef.co/go/tools/cmd/keyify :: https://honnef.co/go/tools/cmd/keyify
-ksuid segmentio/ksuid/cmd/ksuid :: https://github.com/segmentio/ksuid
-lazygit jesseduffield/lazygit :: https://github.com/jesseduffield/lazygit
-lefthook evilmartians/lefthook :: https://github.com/evilmartians/lefthook
-license nishanths/license :: https://github.com/nishanths/license
-mage magefile/mage :: https://github.com/magefile/mage
-mark kovetskiy/mark :: https://github.com/kovetskiy/mark
-motion fatih/motion :: https://github.com/fatih/motion
-myaws minamijoyo/myaws :: https://github.com/minamijoyo/myaws
-newreleases newreleases.io/cmd/newreleases :: https://newreleases.io
-node-prune tj/node-prune :: https://github.com/tj/node-prune
-oauth2c cloudentity/oauth2c :: https://github.com/cloudentity/oauth2c
-osv-scanner google/osv-scanner/cmd/osv-scanner :: https://github.com/google/osv-scanner
-psqldef k0kubun/sqldef/cmd/psqldef :: https://github.com/k0kubun/sqldef
-pvw allyring/pvw :: https://github.com/allyring/pvw
-pxl ichinaski/pxl :: https://github.com/ichinaski/pxl
-revive mgechev/revive :: https://github.com/mgechev/revive
-scc boyter/scc :: https://github.com/boyter/scc
-sqlite3def k0kubun/sqldef/cmd/sqlite3def :: https://github.com/k0kubun/sqldef
-sqls lighttiger2505/sqls :: https://github.com/lighttiger2505/sqls
-staticcheck honnef.co/go/tools/cmd/staticcheck :: https://honnef.co/go/tools/cmd/staticcheck
-structlayout honnef.co/go/tools/cmd/structlayout :: https://honnef.co/go/tools/cmd/structlayout
-structlayout-optimize honnef.co/go/tools/cmd/structlayout-optimize :: https://honnef.co/go/tools/cmd/structlayout-optimize
-structlayout-pretty honnef.co/go/tools/cmd/structlayout-pretty :: https://honnef.co/go/tools/cmd/structlayout-pretty
-sttr abhimanyu003/sttr :: https://github.com/abhimanyu003/sttr
-tf-summarize dineshba/tf-summarize :: https://github.com/dineshba/tf-summarize
-tfautomv busser/tfautomv :: https://github.com/busser/tfautomv
-tfedit minamijoyo/tfedit :: https://github.com/minamijoyo/tfedit
-tfmigrate minamijoyo/tfmigrate :: https://github.com/minamijoyo/tfmigrate
-# tfschema minamijoyo/tfschema :: https://github.com/minamijoyo/tfschema
-tfupdate minamijoyo/tfupdate :: https://github.com/minamijoyo/tfupdate
-vhs charmbracelet/vhs :: https://github.com/charmbracelet/vhs
-wishlist github.com/charmbracelet/wishlist/cmd/wishlist :: https://github.com/charmbracelet/wishlist
-# resto abdfnx/resto latest -ldflags "-X main.version=v0.1.6" :: https://github.com/abdfnx/resto
+# actionlint
+# https://github.com/rhysd/actionlint
+rhysd/actionlint/cmd/actionlint
+# age, age-keygen
+# https://github.com/filosottile/age
+filippo.io/age/cmd/... v1
+# asmfmt
+# https://github.com/klauspost/asmfmt
+github.com/klauspost/asmfmt/cmd/asmfmt
+# certstrap
+# https://github.com/square/certstrap
+square/certstrap
+# checkmake
+# https://github.com/mrtazz/checkmake
+mrtazz/checkmake/cmd/checkmake
+# codeowners-validator
+# https://github.com/mszostok/codeowners-validator
+github.com/mszostok/codeowners-validator
+# chezmoi
+# https://github.com/twpayne/chezmoi
+# twpayne/chezmoi
+# css-checker
+# https://github.com/ruilisi/css-checker
+ruilisi/css-checker
+# dasel
+# https://github.com/tomwright/dasel
+tomwright/dasel/cmd/dasel
+# dlv
+# https://github.com/go-delve/delve
+go-delve/delve/cmd/dlv
+# docker-lock
+# https://github.com/safe-waters/docker-lock
+safe-waters/docker-lock/cmd/docker-lock
+# dsq
+# https://github.com/multiprocessio/dsq
+multiprocessio/dsq
+# echo-server
+# https://github.com/jmalloc/echo-server
+jmalloc/echo-server/...
+# editorconfig-checker
+# https://github.com/editorconfig-checker/editorconfig-checker/cmd/editorconfig-checker
+editorconfig-checker/editorconfig-checker/cmd/editorconfig-checker
+# efm-langserver
+# https://github.com/mattn/efm-langserver
+mattn/efm-langserver
+# errcheck
+# https://github.com/kisielk/errcheck
+kisielk/errcheck
+# fac
+# https://github.com/mkchoi212/fac
+mkchoi212/fac
+# fillstruct
+# https://github.com/davidrjenni/reftools
+davidrjenni/reftools/cmd/fillstruct
+# fillswitch
+# https://github.com/davidrjenni/reftools
+davidrjenni/reftools/cmd/fillswitch
+# fixplurals
+# https://github.com/davidrjenni/reftools
+davidrjenni/reftools/cmd/fixplurals
+# fm
+# https://github.com/mistakenelf/fm
+mistakenelf/fm
+# fq
+# https://github.com/wader/fq
+wader/fq
+# fzz
+# https://github.com/mrnugget/fzz
+mrnugget/fzz
+# gdlv
+# https://github.com/aarzilli/gdlv
+aarzilli/gdlv
+# git-branches
+# https://github.com/shurcooL/git-branches
+shurcooL/git-branches
+# git-profile
+# https://github.com/dotzero/git-profile@latest
+# dotzero/git-profile
+# git-sizer
+# https://github.com/github/git-sizer
+github/git-sizer
+# glow
+# github.com/charmbracelet/glow
+charmbracelet/glow
+# go-outline
+# https://github.com/ramya-rao-a/go-outline
+ramya-rao-a/go-outline
+# go-symbols
+# https://github.com/acroca/go-symbols
+acroca/go-symbols
+# goawk
+# https://github.com/benhoyt/goawk
+benhoyt/goawk
+# gocode
+# https://github.com/mdempsky/gocode
+mdempsky/gocode
+# godef
+# https://github.com/rogpeppe/godef
+rogpeppe/godef
+# gogetdoc
+# https://github.com/zmb3/gogetdoc
+zmb3/gogetdoc
+# gojq
+# github.com/itchyny/gojq/cmd/gojq
+itchyny/gojq/cmd/gojq
+# golangci-lint
+# https://github.com/golangci/golangci-lint
+golangci/golangci-lint/cmd/golangci-lint
+# gomodifytags
+# https://github.com/fatih/gomodifytags
+fatih/gomodifytags
+# gopls
+# https://golang.org/x/tools/gopls
+golang.org/x/tools/gopls
+# gorename
+# https://golang.org/x/tools/cmd/gorename
+golang.org/x/tools/cmd/gorename
+# gotags
+# https://github.com/jstemmer/gotags
+jstemmer/gotags
+# graphjin
+# https://github.com/dosco/graphjin
+dosco/graphjin
+# gum
+# https://github.com/charmbracelet/gum
+charmbracelet/gum
+# hcledit
+# https://github.com/minamijoyo/hcledit
+minamijoyo/hcledit
+# iferr
+# https://github.com/koron/iferr
+koron/iferr
+# impl
+# https://github.com/josharian/impl
+josharian/impl
+# inframap
+# https://github.com/cycloidio/inframap
+cycloidio/inframap
+# keyify
+# https://honnef.co/go/tools/cmd/keyify
+honnef.co/go/tools/cmd/keyify
+# ksuid
+# https://github.com/segmentio/ksuid
+segmentio/ksuid/cmd/ksuid
+# lazygit
+# https://github.com/jesseduffield/lazygit
+jesseduffield/lazygit
+# lefthook
+# https://github.com/evilmartians/lefthook
+evilmartians/lefthook
+# license
+# https://github.com/nishanths/license
+nishanths/license
+# mage
+# https://github.com/magefile/mage
+magefile/mage
+# mark
+# https://github.com/kovetskiy/mark
+kovetskiy/mark
+# motion
+# https://github.com/fatih/motion
+fatih/motion
+# murex
+# https://github.com/lmorg/murex
+lmorg/murex
+# myaws
+# https://github.com/minamijoyo/myaws
+minamijoyo/myaws
+# newreleases
+# https://newreleases.io
+newreleases.io/cmd/newreleases
+# node-prune
+# https://github.com/tj/node-prune
+tj/node-prune
+# oauth2c
+# https://github.com/cloudentity/oauth2c
+cloudentity/oauth2c
+# osv-scanner
+# https://github.com/google/osv-scanner
+google/osv-scanner/cmd/osv-scanner
+# psqldef
+# https://github.com/k0kubun/sqldef
+k0kubun/sqldef/cmd/psqldef
+# pvw
+# https://github.com/allyring/pvw
+allyring/pvw
+# pxl
+# https://github.com/ichinaski/pxl
+ichinaski/pxl
+# resto
+# resto abdfnx/resto latest -ldflags "-X main.version=v0.1.6" # https://github.com/abdfnx/resto
+# https://github.com/abdfnx/resto
+abdfnx/resto
+# revive
+# https://github.com/mgechev/revive
+mgechev/revive
+# scc
+# https://github.com/boyter/scc
+boyter/scc
+# sqlite3def
+# https://github.com/k0kubun/sqldef
+k0kubun/sqldef/cmd/sqlite3def
+# sqls
+# https://github.com/lighttiger2505/sqls
+lighttiger2505/sqls
+# staticcheck
+# https://honnef.co/go/tools/cmd/staticcheck
+honnef.co/go/tools/cmd/staticcheck
+# structlayout
+# https://honnef.co/go/tools/cmd/structlayout
+honnef.co/go/tools/cmd/structlayout
+# structlayout-optimize
+# https://honnef.co/go/tools/cmd/structlayout-optimize
+honnef.co/go/tools/cmd/structlayout-optimize
+# structlayout-pretty
+# https://honnef.co/go/tools/cmd/structlayout-pretty
+honnef.co/go/tools/cmd/structlayout-pretty
+# sttr
+# https://github.com/abhimanyu003/sttr
+abhimanyu003/sttr
+# terraform-ls
+# https://github.com/hashicorp/terraform-ls
+hashicorp/terraform-ls
+# tf-summarize
+# https://github.com/dineshba/tf-summarize
+dineshba/tf-summarize
+# tfautomv
+# https://github.com/busser/tfautomv
+busser/tfautomv
+# tfedit
+# https://github.com/minamijoyo/tfedit
+minamijoyo/tfedit
+# tfmigrate
+# https://github.com/minamijoyo/tfmigrate
+minamijoyo/tfmigrate
+# tfschema
+# https://github.com/minamijoyo/tfschema
+# minamijoyo/tfschema
+# tfupdate
+# https://github.com/minamijoyo/tfupdate
+minamijoyo/tfupdate
+# vhs
+# https://github.com/charmbracelet/vhs
+charmbracelet/vhs
+# wishlist
+# https://github.com/charmbracelet/wishlist
+charmbracelet/wishlist/cmd/wishlist
+# resto abdfnx/resto latest -ldflags "-X main.version=v0.1.6" # https://github.com/abdfnx/resto

@@ -202,6 +202,8 @@ function! s:packager_init() abort
   call packager#add('yasuhiroki/github-actions-yaml.vim')
   " Prisma syntax highlighting: https://github.com/prisma/vim-prisma
   call packager#add('prisma/vim-prisma')
+  " Dafny, a verified programming language: https://github.com/mlr-msft/vim-loves-dafny
+  call packager#add('mlr-msft/vim-loves-dafny')
 
   " Generalized Org Mode: https://github.com/chimay/organ
   call packager#add('chimay/organ')

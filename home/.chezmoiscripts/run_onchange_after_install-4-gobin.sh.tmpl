@@ -23,23 +23,21 @@ if ! command -v go >/dev/null 2>/dev/null; then
   exit 1
 fi
 
-# go-install TARGET URI [VERSION] [:: COMMENT INFORMATION]
-#
-# TARGET is mandatory, but ignored. (It's used to help sort the binary list.)
+# go-install URI [VERSION] [# COMMENT INFORMATION]
 #
 # If URI is missing what looks like a hostname (^(\w+.)+\w+/), github.com
 # will be prepended.
 #
 # If VERSION is omitted, latest will be specified.
 #
-# Comment information, if provided, must follow the literal ::.
+# Comment information, if provided, must follow the literal #.
 #
 # Examples
 #
-# go-install age filippo.io/age/cmd/... v1 :: https://github.com/filosottile/age
+# go-install age filippo.io/age/cmd/... v1 # https://github.com/filosottile/age
 # # go install filippo.io/age/cmd...@v1
 #
-# go-install gldv aarzilli/gdlv :: https://github.com/aarzilli/gdlv
+# go-install gldv aarzilli/gdlv # https://github.com/aarzilli/gdlv
 # # go install github.com/aarzilli/gdlv@latest
 go-install() {
   local -a args
@@ -49,7 +47,7 @@ go-install() {
 
   while (($#)); do
     case "$1" in
-    ::) break ;;
+    \#) break ;;
     *) args+=("$1") ;;
     esac
 
@@ -58,7 +56,6 @@ go-install() {
 
   set -- "${args[@]}"
 
-  shift # ignore $1
   package_uri="$1"
   shift
 
