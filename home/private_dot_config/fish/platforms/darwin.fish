@@ -85,11 +85,6 @@ if status is-interactive
             end
         end
 
-        function o
-            open -a $argv
-        end
-        complete -c o -a (basename -s .app /Applications{,/Setapp}/*.app|awk '{printf "\"%s\" ", $0 }')
-
         if has_app Dash
             function dash -d "Open argument in Dash"
                 open "dash://"(urlenc $argv)

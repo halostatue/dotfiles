@@ -1,6 +1,0 @@
-[".vim/pack/plugins/opt/chezmoi.vim"]
-type = "git-repo"
-url = "https://github.com/alker0/chezmoi.vim"
-refreshPeriod = "168h"
-[".vim/pack/plugins/opt/chezmoi.vim".pull]
-args = ["--ff-only"]

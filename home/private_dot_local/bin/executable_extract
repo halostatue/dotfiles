@@ -1,0 +1,104 @@
+#! /usr/bin/env bash
+
+set -euo pipefail
+
+usage() {
+  cat <<USAGE
+Usage: $(basename "$0") [--show] ARCHIVE
+
+Extracts the contents from one of several different types of archive files.
+
+If --show is provided, shows the command that would be run.
+USAGE
+}
+
+show-or-run() {
+  local cmd
+  cmd="$1"
+  shift
+
+  if ! command -v "${cmd}" >/dev/null 2>&1; then
+    if command -v xdg-open >/dev/null 2>&1; then
+      cmd=xdg-open
+    elif command -v open >/dev/null 2>&1; then
+      cmd=open
+    else
+      echo >&2 "Error: Unsupported command ${cmd} with no 'open' fallback."
+      exit 1
+    fi
+  fi
+
+  "${show}" "${cmd}" "$@"
+}
+
+declare -a args
+declare show i
+show=
+
+for i in "$@"; do
+  case "$i" in
+  --show)
+    show=echo
+    ;;
+  *)
+    args+=("$i")
+    ;;
+  esac
+done
+
+set -- "${args[@]}"
+
+if (($# == 0)); then
+  echo >&2 "Error: $(basename "$0") missing argument"
+  echo >&2
+  usage >&2
+  exit 1
+fi
+
+if ! [[ -f "$1" ]]; then
+  echo >&2 "Error: archive file $1 does not exist."
+  exit 1
+fi
+
+case "$1" in
+*.tar.bz2 | *.tbz2)
+  show-or-run tar xvjf "$1"
+  ;;
+*.tar.gz | *.tgz)
+  show-or-run tar xvzf "$1"
+  ;;
+*.tar.xz | *.txz)
+  show-or-run tar xfJf "$1"
+  ;;
+*.bz2)
+  show-or-run bunzip2 "$1"
+  ;;
+*.rar)
+  show-or-run unrar "$1"
+  ;;
+*.gz)
+  show-or-run gunzip "$1"
+  ;;
+*.tar)
+  show-or-run tar xvf "$1"
+  ;;
+*.zip)
+  show-or-run unzip "$1"
+  ;;
+*.Z)
+  show-or-run uncompress "$1"
+  ;;
+*.7z)
+  show-or-run p7zip "$1"
+  ;;
+*.xz)
+  show-or-run unxz "$1"
+  ;;
+*.exe | *.cab)
+  show-or-run cabextract "$1"
+  ;;
+*)
+  echo >&2 "Error: unknown archive type $1"
+  exit 1
+  ;;
+esac

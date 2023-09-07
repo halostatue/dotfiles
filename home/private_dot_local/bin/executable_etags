@@ -1,0 +1,15 @@
+#! /usr/bin/env bash
+
+declare -a args
+
+while (($#)); do
+  case "$1" in
+  -) args+=(--filter=yes) ;;
+  --no-members) ;;
+  *) args+=("$1") ;;
+  esac
+
+  shift
+done
+
+ctags --output-format=etags "${args[@]}"

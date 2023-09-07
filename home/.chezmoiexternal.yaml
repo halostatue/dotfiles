@@ -1,0 +1,12 @@
+.vim/pack/plugins/opt/chezmoi.vim:
+  pull:
+    args:
+      - --ff-only
+  refreshPeriod: 168h
+  type: git-repo
+  url: https://github.com/alker0/chezmoi.vim
+# test:
+#   type: archive
+#   url: http://localhost:8080/test.tar.gz
+#   exclude:
+#     - '**/._*'
