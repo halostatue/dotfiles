@@ -1,8 +1,13 @@
-# What protocol to use when performing git operations. Supported values: ssh, https
+# What protocol to use when performing git operations. Supported values: ssh,
+# https
 git_protocol: ssh
-# What editor gh should run when creating issues, pull requests, etc. If blank, will refer to environment.
+# What editor gh should run when creating issues, pull requests, etc. If blank,
+# will refer to environment.
 editor:
+pager:
 # Aliases allow you to create nicknames for gh commands
 aliases:
   co: pr checkout
   combine-dependabot-prs: combine-prs --query author:app/dependabot
+  transfer: >
+    !gh api repos/$1/transfer -f new_owner=$2 | jq -r ".full_name == \"$1\""

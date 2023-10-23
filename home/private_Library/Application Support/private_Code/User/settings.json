@@ -340,5 +340,6 @@
   "[xslt]": {
     "editor.semanticHighlighting.enabled": true
   },
-  "XSLT.tasks.saxonJar": "~/.local/share/SaxonHE10-8J/saxon-he-10.8.jar"
+  "XSLT.tasks.saxonJar": "~/.local/share/SaxonHE10-8J/saxon-he-10.8.jar",
+  "workbench.editor.empty.hint": "hidden"
 }

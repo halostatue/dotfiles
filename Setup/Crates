@@ -44,7 +44,6 @@ fnm :: Fast and simple Node.js version manager
 fselect :: Find files with SQL-like queries
 git-absorb :: git commit --fixup, but automatic
 git-branchless :: Git Branchless workflow
-git-brws :: Command line tool to open a repository on a hub
 git-historian :: Git Historian allows you to collect arbitrary data about a file
 git-interactive-rebase-tool :: Full feature terminal based git interactive rebase sequence editor
 git-journal :: The Git Commit Message and Changelog Generation Framework

@@ -3,7 +3,7 @@
 # Linkoln by Anima Omnium
 # Dedicated to the Public Domain
 
-# Just standard library for portability 
+# Just standard library for portability
 import sys
 import urllib.request
 import time
@@ -14,23 +14,26 @@ import time
 
 # Read input file name
 if len(sys.argv) != 2:
-  print("Usage: linkoln FILE")
-  exit(1)
+    print("Usage: linkoln FILE")
+    exit(1)
 
 # Read file
 FILE = sys.argv[1]
-with open(FILE, "r") as fin:
-  INPUT = fin.read()
+if FILE == "-":
+    INPUT = sys.stdin.read()
+else:
+    with open(FILE, "r") as fin:
+        INPUT = fin.read()
 
 # Link numbering start
 OFFSET = 1
 
 # Ignore wikilinks in code, headings, frontmatter
 IGNORE = [
-  ("```", "```"),
-  ("#", "\n"),
-  ("`", "`"),
-  ("+++", "+++"),
+    ("```", "```"),
+    ("#", "\n"),
+    ("`", "`"),
+    ("+++", "+++"),
 ]
 
 # Syntax for links
@@ -51,108 +54,118 @@ closing = ""
 inside = ""
 colophon = []
 
+
 # Skip amt chars
 def skip(r, amt):
-  return r[amt:]
+    return r[amt:]
+
 
 # Skip amt, echo what was skipped
 def eat(r, amt):
-  print(r[:amt], end="")
-  return skip(r, amt)
+    print(r[:amt], end="")
+    return skip(r, amt)
+
 
 # Check r prefix matches against
 def check(r, against):
-  return r[:len(against)] == against
+    return r[: len(against)] == against
+
 
 # Parse inside wikilink
 def extract(inside):
-  (link, text) = (inside, inside)
-  if LINK_QUERY in inside:
-    (link, text) = inside.split(LINK_QUERY)
-  elif LINK_CONTEXT in inside:
-    (link, text) = inside.split(LINK_CONTEXT)
-    link = f"{link} {text}"
-  return (link, text)
+    (link, text) = (inside, inside)
+    if LINK_QUERY in inside:
+        (link, text) = inside.split(LINK_QUERY)
+    elif LINK_CONTEXT in inside:
+        (link, text) = inside.split(LINK_CONTEXT)
+        link = f"{link} {text}"
+    return (link, text)
+
 
 # Echo formatted link
 def emit_link(entry):
-  (num, inside) = entry
-  (_, inside) = extract(inside)
-  print(f"[{inside}][{num}]", end="")
+    (num, inside) = entry
+    (_, inside) = extract(inside)
+    print(f"[{inside}][{num}]", end="")
+
 
 # Echo formatted link reference
 def emit_entry(entry):
-  (num, inside) = entry
-  (inside, _) = extract(inside)
-  inside = google_it(inside)
-  print(f"[{num}]: {inside}")
+    (num, inside) = entry
+    (inside, _) = extract(inside)
+    inside = google_it(inside)
+    print(f"[{num}]: {inside}")
+
 
 # Locate link matching given query
 def google_it(query):
-  # Dumbest most fragile hack ever
-  quoted = urllib.parse.quote(query, safe='')
-  # Don't hammer friends at DuckDuckGo
-  time.sleep(0.5)
-  try:
-    contents = urllib.request.urlopen(f"https://lite.duckduckgo.com/lite/search&q={quoted}").read()
-    # Parsing html is easy
-    top_result = contents.split(b"link-text")[1]
-    top_link = top_result.split(b">")[1].split(b"<")[0]
-  except:
-    # Leave for human to fix 
-    return f"ERROR: {query}"
-  return "https://" + top_link.decode("utf-8")
+    # Dumbest most fragile hack ever
+    quoted = urllib.parse.quote(query, safe="")
+    # Don't hammer friends at DuckDuckGo
+    time.sleep(0.5)
+    try:
+        contents = urllib.request.urlopen(
+            f"https://lite.duckduckgo.com/lite/search&q={quoted}"
+        ).read()
+        # Parsing html is easy
+        top_result = contents.split(b"link-text")[1]
+        top_link = top_result.split(b">")[1].split(b"<")[0]
+    except:
+        # Leave for human to fix
+        return f"ERROR: {query}"
+    return "https://" + top_link.decode("utf-8")
+
 
 # State machine driving loop
 while rem != "":
-  # Scanning for next link or comment 
-  if state == S_SCANIN:
-    for (open, close) in IGNORE:
-      try:
-        if check(rem, open):
-          rem = eat(rem, len(open))
-          closing = close
-          state = S_IGNORE
-          break
-      except:
-        pass
-    if state == S_IGNORE:
-      continue
-    try:
-      if check(rem, LINK_OPEN):
-        rem = skip(rem, len(LINK_OPEN))
-        inside = ""
-        state = S_EATING
-        continue
-    except:
-      pass
-    rem = eat(rem, 1)
+    # Scanning for next link or comment
+    if state == S_SCANIN:
+        for open, close in IGNORE:
+            try:
+                if check(rem, open):
+                    rem = eat(rem, len(open))
+                    closing = close
+                    state = S_IGNORE
+                    break
+            except:
+                pass
+        if state == S_IGNORE:
+            continue
+        try:
+            if check(rem, LINK_OPEN):
+                rem = skip(rem, len(LINK_OPEN))
+                inside = ""
+                state = S_EATING
+                continue
+        except:
+            pass
+        rem = eat(rem, 1)
 
-  # Eating contents of wikilink
-  elif state == S_EATING:
-    if check(rem, LINK_CLOSE):
-      rem = skip(rem, len(LINK_CLOSE))
-      entry = (len(colophon) + OFFSET, inside)
-      emit_link(entry)
-      colophon.append(entry)
-      state = S_SCANIN
+    # Eating contents of wikilink
+    elif state == S_EATING:
+        if check(rem, LINK_CLOSE):
+            rem = skip(rem, len(LINK_CLOSE))
+            entry = (len(colophon) + OFFSET, inside)
+            emit_link(entry)
+            colophon.append(entry)
+            state = S_SCANIN
+        else:
+            inside = inside + rem[:1]
+            rem = skip(rem, 1)
+
+    # Ignoring contents of comments
+    elif state == S_IGNORE:
+        if check(rem, closing):
+            rem = eat(rem, len(closing))
+            state = S_SCANIN
+        else:
+            rem = eat(rem, 1)
+
+    # Frick your computer is on fire
     else:
-      inside = inside + rem[:1]
-      rem = skip(rem, 1)
-
-  # Ignoring contents of comments
-  elif state == S_IGNORE:
-    if check(rem, closing):
-      rem = eat(rem, len(closing))
-      state = S_SCANIN
-    else:
-      rem = eat(rem, 1)
-
-  # Frick your computer is on fire
-  else:
-    assert false, "Invalid state"
+        assert false, "Invalid state"
 
 # Google all the queries
 print()
 for entry in colophon:
-  emit_entry(entry)
+    emit_entry(entry)

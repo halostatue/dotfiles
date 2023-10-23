@@ -1,9 +1,0 @@
-# chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
-# {{- $v := dig "github" "github_gh" nil (includeTemplate "1password_api_credentials.tmpl" . | fromJson) -}}
-# {{- if $v -}}
----
-github.com:
-  user: # {{ $v.username.value | quote }}
-  # oauth_token: # {{ $v.credential.value | quote }}
-  git_protocol: ssh
-# {{- end }}

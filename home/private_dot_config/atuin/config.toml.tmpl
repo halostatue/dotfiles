@@ -1,0 +1,27 @@
+search_mode = "fuzzy"
+filter_mode = "global"
+
+search_mode_shell_up_key_binding = "skim"
+filter_mode_shell_up_key_binding = "directory"
+
+workspaces = true
+
+style = "compact"
+show_preview = true
+
+# On macOS, use Ctrl-0..Ctrl-9 instead of Alt–0..Alt-9 shortcuts.
+ctrl_n_shortcuts = {{ eq .chezmoi.os "darwin" }}
+
+history_filter = [
+  '^  ', # Ignore anything with two leading spaces (intentional hiding)
+  # Ignore anything with `sudo` *except* if it is `sudo port`. This should be
+  # /^sudo\b\s+(?!\bport\b)/, but Rust regex does not support lookarounds.
+  '^sudo\b\s+\b[^p][^o][^r][^t]\b',
+
+  # Frequent commands that need not be saved.
+  '^git\b\s+\baddp\b', # `git addp`
+  '^cd\s+-$', # `cd -`
+  '^cd\s+\.\.', # `cd ..`
+  '^(?:mix|pnpm|yarn)\b\s+\bformat\b', # * format
+  '^(?:e[xz]a|ls)\b\s+', # exa | eza | or ls
+]

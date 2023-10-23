@@ -108,12 +108,15 @@ if functions --query has:keg
     end
 end
 
-test -s "$HOME/.local/share/kx/scripts/kx.fish"
-and source "$HOME/.local/share/kx/scripts/kx.fish"
-
 if status is-interactive
     if command --query just
         just --completions fish | source
+    end
+
+    if command --query rtx
+        rtx completion fish | source
+        # rtx activate --status fish | source
+        rtx activate fish | source
     end
 
     if command --query wezterm
@@ -209,28 +212,42 @@ if status is-interactive
         mysql -u root <$argv[1]
     end
 
+    if set --query MAGIC_ENTER_GIT_COMMAND && test $MAGIC_ENTER_GIT_COMMAND = 'git status -u .'
+        set --erase MAGIC_ENTER_GIT_COMMAND
+    end
+
+    if not set --query MAGIC_ENTER_GIT_COMMAND
+        set --universal MAGIC_ENTER_GIT_COMMAND 'git status .'
+    end
+
+    if not set --query MAGIC_ENTER_LIST_COMMAND
+        if command --query eza exa
+            set --universal MAGIC_ENTER_LIST_COMMAND (basename (command --search eza exa)[1])' -l .'
+        else
+            set --universal MAGIC_ENTER_LIST_COMMAND ls -lh .
+        end
+    end
+
     function magic_enter
         if test -z (string join0 -- (commandline))
             if __fish_is_git_repository
-                set -q MAGIC_ENTER_GIT_COMMAND
-                or set MAGIC_ENTER_GIT_COMMAND 'git status -u .'
                 eval $MAGIC_ENTER_GIT_COMMAND
             else
-                set -q MAGIC_ENTER_OTHER_COMMAND
-                or set MAGIC_ENTER_OTHER_COMMAND 'ls -lh .'
-                eval $MAGIC_ENTER_OTHER_COMMAND
+                printf "\n"
+                eval $MAGIC_ENTER_LIST_COMMAND
             end
 
             printf "\n\n"
 
-            commandline -f repaint
+            commandline --function repaint
         else
-            commandline -f execute
+            commandline --function execute
         end
     end
 
-    contains enter (bind -K)
-    and bind -k enter magic_enter
+    if contains enter (bind --key-names)
+        bind --key enter magic_enter
+    end
 
     bind \cq magic_enter
     bind \r magic_enter
@@ -243,7 +260,7 @@ if status is-interactive
         --processes=\cgp \
         --history
 
-    if not command --query atuin mcfly
+    if command --query atuin mcfly
         set --erase __setup_fzf_bindings[-1]
     end
 
@@ -335,17 +352,19 @@ else if command --query batcat
     or set --global --export MANPAGER "sh -c 'col -bx | batcat --language man --plain'"
 end
 
-if command --query exa
-    abbr --add ls exa
-    abbr --add lg 'exa --git'
-    abbr --add l 'exa -lah'
-    abbr --add la 'exa -a'
-    abbr --add ll 'exa -l'
-    abbr --add lt 'exa -lT'
+if command --query eza exa
+    set --local cmd (basename (command --search eza exa)[1])
+
+    abbr --add ls $cmd
+    abbr --add lg $cmd --git
+    abbr --add l $cmd -lah
+    abbr --add la $cmd -a
+    abbr --add ll $cmd -l
+    abbr --add lt $cmd -lT
 else
-    abbr --add l 'ls -lAh'
-    abbr --add la 'ls -A'
-    abbr --add ll 'ls -l'
+    abbr --add l ls -lAh
+    abbr --add la ls -A
+    abbr --add ll ls -l
 end
 
 if command --query fly flyctl

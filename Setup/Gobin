@@ -156,7 +156,7 @@ nishanths/license
 magefile/mage
 # mark
 # https://github.com/kovetskiy/mark
-kovetskiy/mark
+# kovetskiy/mark
 # motion
 # https://github.com/fatih/motion
 fatih/motion
@@ -246,3 +246,6 @@ charmbracelet/vhs
 # https://github.com/charmbracelet/wishlist
 charmbracelet/wishlist/cmd/wishlist
 # resto abdfnx/resto latest -ldflags "-X main.version=v0.1.6" # https://github.com/abdfnx/resto
+# fx
+# https://github.com/antonmedv/fx
+antonmedv/fx

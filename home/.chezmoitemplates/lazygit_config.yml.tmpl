@@ -1,103 +1,274 @@
-# chezmoi:template:left-delimiter=[[ rightdelimiter=]]
+# chezmoi:template:left-delimiter="#[[" right-delimiter="]]"
+#[[- $programs := includeTemplate "programs.tmpl" . | fromJson -]]
+#[[- $diffPager := "" -]]
+#[[- if $programs.delta -]]
+#[[-   $diffPager = printf "%s --dark --paging=never" (base $programs.delta) -]]
+#[[- else if $programs.diff_so_fancy -]]
+#[[-   $diffPager = $programs.diff_so_fancy -]]
+#[[- else if $programs.ydfif -]]
+#[[-   $diffPager = printf "%s -p cat -s --wrap --width {{ columnWidth }}" -]]
+#[[- end -]]
+# yaml-language-server: $schema=https://json.schemastore.org/lazygit.json
+
 gui:
-  windowsize: normal
+  windowSize: normal
   scrollHeight: 2
   scrollPastBottom: true
+  scrollOffMargin: 2
+  scrollOffBehavior: margin
   sidePanelWidth: 0.3333 # Use 0.2 with ydiff
   expandFocusedSidePanel: true
   mainPanelSplitMode: flexible
-  language: auto
+  language: en
   timeFormat: 02 Jan 06 15:04 MST
   theme:
     activeBorderColor:
       - green
       - bold
+    inactiveBorderColor:
+      - white
+    searchingActiveBorderColor:
+      - cyan
+      - bold
+    optionsTextColor:
+      - blue
+    selectedLineBgColor:
+      - blue # set to `default` to have no background colour
+    selectedRangeBgColor:
+      - blue
     cherryPickedCommitBgColor:
       - cyan
     cherryPickedCommitFgColor:
       - blue
-    defaultFgColor:
-      - default
-    inactiveBorderColor:
-      - white
-    lightTheme: false
-    optionsTextColor:
-      - blue
-    selectedLineBgColor:
-      - reverse
-    selectedRangeBgColor:
-      - reverse
     unstagedChangesColor:
       - red
+    defaultFgColor:
+      - default
   commitLength:
     show: true
   mouseEvents: true
-  skipUnstageLineWarning: false
+  skipDiscardChangeWarning: false
   skipStashWarning: false
   showFileTree: true
   showListFooter: true
   showRandomTip: true
+  showBranchCommitHash: false
   showBottomLine: true
+  showPanelJumps: true
   showCommandLog: true
-  showIcons: false
+  nerdFontsVersion: '' # nerd fonts version to use ("2" or "3"); empty means don't show nerd font icons
   commandLogSize: 8
   splitDiff: auto
   skipRewordInEditorWarning: false
-  skipNoStagedFilesWarning: false
-  border: 'rounded'
+  border: rounded
+  animateExplosion: true
+  portraitMode: auto
 
 git:
-  allBranchesLogCmd: git log --graph --all --color=always --abbrev-commit --decorate
-    --date=relative  --pretty=medium
-  autoFetch: true
-  autoRefresh: true
-  branchLogCmd: git log --graph --color=always --abbrev-commit --decorate --date=relative
-    --pretty=medium {{ branchName }} --
+  paging:
+    colorArg: always
+    useConfig: false
+    pager: delta --dark --paging=never
+    # pager: diff-so-fancy
+    # pager: ydiff -p cat -s --wrap --width={{ columnWidth }}
   commit:
-    signOff: false
-    verbose: default
-  commitPrefixes: {}
-  diffContextSize: 3
-  disableForcePushing: false
+    signOff: true
+  merging:
+    manualCommit: false
+    args: ''
   log:
     order: topo-order
     showGraph: when-maximised
     showWholeGraph: false
-  merging:
-    args: ''
-    manualCommit: false
-  overrideGpg: true
-  paging:
-    colorArg: always
-    pager: delta --dark --paging=never
-    # pager: diff-so-fancy
-    # pager: ydiff -p cat -s --wrap --width={{ columnWidth }}
-    useConfig: false
-  parseEmoji: false
-  pull:
-    mode: rebase
   skipHookPrefix: WIP
+  mainBranches: [main, master]
+  autoFetch: true
+  autoRefresh: true
+  fetchAll: true
+  branchLogCmd: >
+    git log --graph --color=always --abbrev-commit --decorate --date=relative
+    --pretty=medium {{ branchName }} --
+  allBranchesLogCmd: >
+    git log --graph --all --color=always --abbrev-commit --decorate --date=relative
+    --pretty=medium
+  disableForcePushing: false
+  overrideGpg: true
+  parseEmoji: false
+
+os:
+  editPreset: vim
+
+refresher:
+  fetchInterval: 60
+  refreshInterval: 10
+
+update:
+  method: prompt
+  days: 14
 
 confirmOnQuit: false
+quitOnTopLevelReturn: false
 disableStartupPopups: false
+promptToReturnFromSubprocess: true
+notARepository: skip
+
+keybinding:
+  universal:
+    confirm: '<enter>'
+    copyToClipboard: '<c-o>'
+    createPatchOptionsMenu: '<c-p>'
+    createRebaseOptionsMenu: 'm'
+    decreaseContextInDiffView: '{'
+    diffingMenu: 'W'
+    edit: 'e'
+    executeCustomCommand: ':'
+    extrasMenu: '@'
+    filteringMenu: '<c-s>'
+    goInto: '<enter>'
+    gotoBottom: '>'
+    gotoTop: '<'
+    increaseContextInDiffView: '}'
+    jumpToBlock: [1, 2, 3, 4, 5]
+    new: 'n'
+    nextBlock-alt: 'l'
+    nextBlock: '<right>'
+    nextItem-alt: 'j'
+    nextItem: '<down>'
+    nextMatch: n
+    nextPage: '.'
+    nextScreenMode: '+'
+    nextTab: ']'
+    openFile: 'o'
+    openRecentRepos: '<c-r>'
+    optionMenu-alt1: '?'
+    prevBlock-alt: 'h'
+    prevBlock: '<left>'
+    prevItem-alt: 'k'
+    prevItem: '<up>'
+    prevMatch: 'N'
+    prevPage: ','
+    prevScreenMode: '_'
+    prevTab: '['
+    pullFiles: 'p'
+    pushFiles: 'P'
+    quit-alt1: '<c-c>'
+    quit: 'q'
+    quitWithoutChangingDirectory: 'Q'
+    redo: '<c-z>'
+    refresh: 'R'
+    remove: 'd'
+    return: '<esc>'
+    scrollDownMain-alt1: 'J'
+    scrollDownMain-alt2: '<c-d>'
+    scrollDownMain: '<pgdown>'
+    scrollLeft: 'H'
+    scrollRight: 'L'
+    scrollUpMain-alt1: 'K'
+    scrollUpMain-alt2: '<c-u>'
+    scrollUpMain: '<pgup>'
+    select: '<space>'
+    submitEditorText: '<enter>'
+    togglePanel: '<tab>'
+    toggleWhitespaceInDiffView: '<c-w>'
+    undo: 'z'
+
+  status:
+    checkForUpdate: 'u'
+    recentRepos: '<enter>'
+
+  files:
+    amendLastCommit: 'A'
+    commitChanges: 'c'
+    commitChangesWithEditor: 'C'
+    commitChangesWithoutHook: 'w'
+    fetch: 'f'
+    ignoreFile: 'i'
+    openMergeTool: 'M'
+    openStatusFilter: '<c-b>'
+    refreshFiles: 'r'
+    stashAllChanges: 's'
+    toggleStagedAll: 'a'
+    toggleTreeView: '`'
+    viewResetOptions: 'D'
+    viewStashOptions: 'S'
+
+  branches:
+    checkoutBranchByName: 'c'
+    createPullRequest: 'o'
+    createTag: 'T'
+    fastForward: 'f'
+    fetchRemote: 'f'
+    forceCheckoutBranch: 'F'
+    mergeIntoCurrentBranch: 'M'
+    pushTag: 'P'
+    rebaseBranch: 'r'
+    renameBranch: 'R'
+    setUpstream: 'u'
+    viewGitFlowOptions: 'i'
+    viewPullRequestOptions: 'O'
+
+  commits:
+    amendToCommit: 'A'
+    checkoutCommit: '<space>'
+    cherryPickCopy: 'c'
+    cherryPickCopyRange: 'C'
+    copyCommitMessageToClipboard: '<c-y>'
+    createFixupCommit: 'F'
+    markCommitAsFixup: 'f'
+    moveDownCommit: '<c-j>'
+    moveUpCommit: '<c-k>'
+    openLogMenu: '<c-l>'
+    pasteCommits: 'v'
+    pickCommit: 'p'
+    renameCommit: 'r'
+    renameCommitWithEditor: 'R'
+    resetCherryPick: '<c-R>'
+    revertCommit: 't'
+    squashAboveCommits: 'S'
+    squashDown: 's'
+    tagCommit: 'T'
+    viewBisectOptions: 'b'
+    viewResetOptions: 'g'
+
+  stash:
+    popStash: 'g'
+    renameStash: 'r'
+
+  commitFiles:
+    checkoutCommitFile: 'c'
+
+  main:
+    pickBothHunks: 'b'
+    toggleDragSelect-alt: 'V'
+    toggleDragSelect: 'v'
+    toggleSelectHunk: 'a'
+
+  submodules:
+    bulkMenu: 'b'
+    init: 'i'
+    update: 'u'
 
 customCommands:
-  - key: b
+  - key: 'b'
     command: gh browse
-    context: files
+    context: 'files'
     description: Browse the current repo
+
   - key: b
     command: gh browse "{{ .SelectedLocalCommit.Sha }}"
     context: commits
     description: Browse the current repo at the selected ref
+
   - key: f
     command: git difftool -y "{{ .SelectedLocalCommit.Sha }} -- {{ .SelectedCommitFile.Name }}"
     context: commitFiles
     description: Compare (difftool) with local copy
+
   - key: F
     command: git difftool -yg "{{ .SelectedLocalCommit.Sha }} -- {{ .SelectedCommitFile.Name }}"
     context: commitFiles
     description: Compare (gui difftool) with local copy
+
   - key: <c-P>
     command: gh pr checkout "{{ index .PromptResponses 0 }}"
     context: localBranches
@@ -105,215 +276,45 @@ customCommands:
     prompts:
       - title: PR#
         type: input
+        key: PrNumber
     description: Check out PR branch
   - key: <c-b>
     command: tig blame -- "{{ .SelectedFile.Name }}"
     context: files
-    subprocess: yes
+    subprocess: true
     description: Blame file at tree
   - key: <c-b>
     command: tig blame "{{ .SelectedSubCommit.Sha }}" -- "{{ .SelectedCommitFile.Name }}"
     context: commitFiles
-    subprocess: yes
+    subprocess: true
     description: Blame file at revision
   - key: <c-B>
     command: tig blame -- "{{ .SelectedCommitFile.Name }}"
     context: commitFiles
-    subprocess: yes
+    subprocess: true
     description: Blame file at tree
   - key: t
     command: tig show {{ .SelectedSubCommit.Sha }}
     context: subCommits
-    subprocess: yes
+    subprocess: true
     description: tig commit (`t` again to browse files at revision)
   - key: t
     command: tig show "{{ .SelectedLocalBranch.Name }}"
     context: localBranches
-    subprocess: yes
+    subprocess: true
     description: tig branch (`t` again to browse files at revision)
   - key: t
     command: tig show "{{ .SelectedRemoteBranch.RemoteName }}/{{ .SelectedRemoteBranch.Name }}"
     context: remoteBranches
-    subprocess: yes
+    subprocess: true
     description: tig branch (`t` again to browse files at revision)
   - key: t
     command: tig {{ .SelectedSubCommit.Sha }} -- "{{ .SelectedCommitFile.Name }}"
     context: commitFiles
-    subprocess: yes
+    subprocess: true
     description: tig file (history of commits affecting file)
   - key: t
     command: tig -- "{{ .SelectedFile.Name }}"
     context: files
-    subprocess: yes
+    subprocess: true
     description: tig file (history of commits affecting file)
-
-keybinding:
-  branches:
-    checkoutBranchByName: c
-    copyPullRequestURL: <c-y>
-    createPullRequest: o
-    createTag: T
-    fastForward: f
-    fetchRemote: f
-    forceCheckoutBranch: F
-    mergeIntoCurrentBranch: M
-    pushTag: P
-    rebaseBranch: r
-    renameBranch: R
-    setUpstream: u
-    viewGitFlowOptions: i
-    viewPullRequestOptions: O
-  commitFiles:
-    checkoutCommitFile: c
-  commits:
-    amendToCommit: A
-    checkoutCommit: <space>
-    cherryPickCopy: c
-    cherryPickCopyRange: C
-    copyCommitMessageToClipboard: y
-    createFixupCommit: F
-    markCommitAsFixup: f
-    moveDownCommit: <c-j>
-    moveUpCommit: <c-k>
-    openInBrowser: o
-    openLogMenu: <c-l>
-    pasteCommits: v
-    pickCommit: p
-    renameCommit: r
-    renameCommitWithEditor: R
-    resetCherryPick: <c-R>
-    resetCommitAuthor: a
-    revertCommit: t
-    squashAboveCommits: S
-    squashDown: s
-    tagCommit: T
-    viewBisectOptions: b
-    viewResetOptions: g
-  files:
-    IgnoreOrExcludeFile: i
-    amendLastCommit: A
-    commitChanges: c
-    commitChangesWithEditor: C
-    commitChangesWithoutHook: w
-    fetch: f
-    ignoreFile: i
-    openMergeTool: M
-    openStatusFilter: <c-b>
-    refreshFiles: r
-    stashAllChanges: s
-    toggleStagedAll: a
-    toggleTreeView: '`'
-    viewResetOptions: D
-    viewStashOptions: S
-  main:
-    editSelectHunk: E
-    pickBothHunks: b
-    toggleDragSelect: v
-    toggleDragSelect-alt: V
-    toggleSelectHunk: a
-  stash:
-    popStash: g
-    renameStash: r
-  status:
-    allBranchesLogGraph: a
-    checkForUpdate: u
-    recentRepos: <enter>
-  submodules:
-    bulkMenu: b
-    init: i
-    update: u
-  universal:
-    appendNewline: <a-enter>
-    confirm: <enter>
-    confirm-alt1: y
-    copyToClipboard: <c-o>
-    createPatchOptionsMenu: <c-p>
-    createRebaseOptionsMenu: m
-    decreaseContextInDiffView: '{'
-    diffingMenu: W
-    diffingMenu-alt: <c-e>
-    edit: e
-    executeCustomCommand: ':'
-    extrasMenu: '@'
-    filteringMenu: <c-s>
-    goInto: <enter>
-    gotoBottom: '>'
-    gotoTop: <
-    increaseContextInDiffView: '}'
-    jumpToBlock:
-      - '1'
-      - '2'
-      - '3'
-      - '4'
-      - '5'
-    new: n
-    nextBlock: <right>
-    nextBlock-alt: l
-    nextBlock-alt2: <tab>
-    nextItem: <down>
-    nextItem-alt: j
-    nextMatch: n
-    nextPage: .
-    nextScreenMode: +
-    nextTab: ']'
-    openFile: o
-    openRecentRepos: <c-r>
-    optionMenu: x
-    optionMenu-alt1: '?'
-    prevBlock: <left>
-    prevBlock-alt: h
-    prevBlock-alt2: <backtab>
-    prevItem: <up>
-    prevItem-alt: k
-    prevMatch: N
-    prevPage: ','
-    prevScreenMode: _
-    prevTab: '['
-    pullFiles: p
-    pushFiles: P
-    quit: q
-    quit-alt1: <c-c>
-    quitWithoutChangingDirectory: Q
-    redo: <c-z>
-    refresh: R
-    remove: d
-    return: <esc>
-    scrollDownMain: <pgdown>
-    scrollDownMain-alt1: J
-    scrollDownMain-alt2: <c-d>
-    scrollLeft: H
-    scrollRight: L
-    scrollUpMain: <pgup>
-    scrollUpMain-alt1: K
-    scrollUpMain-alt2: <c-u>
-    select: <space>
-    startSearch: /
-    submitEditorText: <enter>
-    togglePanel: <tab>
-    toggleWhitespaceInDiffView: <c-w>
-    undo: z
-
-notARepository: skip
-
-os:
-  editPreset: vim
-  open: open {{ filename }}
-  openLink: open {{ link }}
-
-promptToReturnFromSubprocess: true
-
-quitOnTopLevelReturn: true
-
-refresher:
-  fetchInterval: 60
-  refreshInterval: 10
-
-reporting: undetermined
-
-services: {}
-
-splashUpdatesIndex: 0
-
-update:
-  days: 14
-  method: prompt

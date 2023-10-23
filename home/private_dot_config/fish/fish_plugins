@@ -1,5 +1,4 @@
 franciscolourenco/done
-halostatue/fish-brew@v2.x
 halostatue/fish-docker@v1.x
 halostatue/fish-elixir@v1.x
 halostatue/fish-go@v2.x
@@ -7,7 +6,6 @@ halostatue/fish-haskell@v2.x
 halostatue/fish-kerl@v1.x
 halostatue/fish-rake@v1.x
 halostatue/fish-rust@v1.x
-halostatue/fish-utils@v2.x
 PatrickF1/fzf.fish
 jorgebucaran/fishtape
 jorgebucaran/nvm.fish
@@ -24,3 +22,5 @@ halostatue/fish-utils-core
 halostatue/fish-utils-core@v2.x
 halostatue/fish-direnv@v1.x
 halostatue/fish-macos@v5.x
+halostatue/fish-utils@v3.x
+halostatue/fish-brew@v3.x

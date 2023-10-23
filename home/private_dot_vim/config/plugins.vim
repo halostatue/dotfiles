@@ -204,6 +204,8 @@ function! s:packager_init() abort
   call packager#add('prisma/vim-prisma')
   " Dafny, a verified programming language: https://github.com/mlr-msft/vim-loves-dafny
   call packager#add('mlr-msft/vim-loves-dafny')
+  " Nushell: https://github.com/ErichDonGubler/vim-nushell
+  call packager#add('ErichDonGubler/vim-nushell')
 
   " Generalized Org Mode: https://github.com/chimay/organ
   call packager#add('chimay/organ')
