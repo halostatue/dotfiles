@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+
+if (($#)); then
+  remote_branch="$1"
+
+else
+  remote_branch="$(git main-branch)"
+fi
+
+if ! [[ "${remote_branch}" =~ / ]]; then
+  remote_branch="$(git rev-parse --abbrev-ref "${remote_branch}"@\{u\})"
+fi
+
+git merge-base HEAD "${remote_branch}"

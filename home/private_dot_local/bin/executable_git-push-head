@@ -1,0 +1,16 @@
+#!/usr/bin/bash
+
+set -eo pipefail
+
+case "$(basename "$0")" in
+git-push-upstream) remote=upstream ;;
+*) remote=origin ;;
+esac
+
+if (($#)); then
+  remote="$1"
+fi
+
+ref="$(git symbolic-ref HEAD)"
+
+git push "${remote}" "${ref}" --set-upstream

@@ -1,8 +1,8 @@
 {{- /* Initialize variables for use in this file */ -}}
 {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
-{{- $commitTemplate := "" -}}
-{{- $coreAttributesFile := "" -}}
-{{- $coreExcludesFile := "" -}}
+{{- $commitTemplate := joinPath .chezmoi.homeDir ".config/git/commit-message" -}}
+{{- $coreAttributesFile := joinPath .chezmoi.homeDir ".config/git/attributes" -}}
+{{- $coreExcludesFile := joinPath .chezmoi.homeDir ".config/git/ignore" -}}
 {{- $corePager := "" -}}
 {{- $githubUser := "" -}}
 {{- $githubToken := "" -}}
@@ -10,15 +10,10 @@
 {{- $webBrowser := "" -}}
 
 {{- /* Set the values  */ -}}
-{{- if stat (joinPath .chezmoi.homeDir ".config/git/commit-message") -}}
-{{-   $commitTemplate = joinPath .chezmoi.homeDir ".config/git/commit-message" -}}
-{{- end -}}
-{{- if stat (joinPath .chezmoi.homeDir ".config/git/attributes") -}}
-{{-   $coreAttributesFile = joinPath .chezmoi.homeDir ".config/git/attributes" -}}
-{{- end -}}
-{{- if stat (joinPath .chezmoi.homeDir ".config/git/ignore") }}
-{{-   $coreExcludesFile = joinPath .chezmoi.homeDir ".config/git/ignore" -}}
-{{- end -}}
+{{- if not (stat $commitTemplate) }}{{ $commitTemplate = "" }}{{ end -}}
+{{- if not (stat $coreAttributesFile) }}{{ $coreAttributesFile = "" }}{{ end -}}
+{{- if not (stat $coreExcludesFile) }}{{ $coreExcludesFile = "" }}{{ end -}}
+
 {{- if $programs.delta -}}
 {{-   $corePager = $programs.delta | quote -}}
 {{- else if $programs.diff_so_fancy -}}

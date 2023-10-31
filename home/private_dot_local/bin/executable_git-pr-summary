@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+set -o pipefail
+
+declare -a args
+
+format="%B"
+copy=false
+
+while (($#)); do
+  case "$1" in
+  --long | -L) format="- **%s** (%h)%n%n%w(74,2,2)%b" ;;
+  *) args+=("$1") ;;
+  esac
+
+  shift
+done
+
+set -- "${args[@]}"
+
+if (($#)); then
+  review_base="$1"
+elif ! review_base="$(git review-base)"; then
+  exit 1
+fi
+
+has() {
+  command -v "$1" >/dev/null 2>/dev/null
+}
+
+copy() {
+  tee /dev/tty | if has pbcopy; then
+    pbcopy
+  elif has cb; then
+    run cb --copy
+  elif [[ -n "${WAYLAND_DISPLAY}" ]] && has wl-copy; then
+    wl-copy
+  elif has xclip; then
+    xclip -sel clip
+  elif has xsel; then
+    xsel --clipboard --input
+  elif has clipboard; then
+    clipboard --stdin
+  elif has clip; then
+    clip
+  else
+    true
+  fi
+}
+
+args=(log --reverse --format="${format}" "${review_base}"..HEAD)
+
+if "${copy}"; then
+  {
+    git "${args[@]}" | tee /dev/tty | copy
+  } || exit 1
+  printf >&2 "\n--\nCopied!\n"
+else
+  git "{args[@]}"
+fi

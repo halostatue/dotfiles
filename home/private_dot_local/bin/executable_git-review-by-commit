@@ -1,0 +1,5 @@
+#!/usr/bin/env/bash
+
+if review_base="$(git review-base "$@")"; then
+  git log --patch --reverse "${review_base}"..HEAD
+fi

@@ -2,24 +2,9 @@
 {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
 
 {{- /* Set the values */ -}}
-{{- $diffGuitool := "" -}}
-{{- $diffTool := "" -}}
-{{- $gvimCommand := "" -}}
-{{- if $programs.ksdiff -}}
-{{-   $diffGuitool = "Kaleidoscope" -}}
-{{- end -}}
-{{- if $programs.difftastic -}}
-{{-   $diffTool = "difftastic" -}}
-{{- else if $programs.delta -}}
-{{-   $diffTool = "delta" -}}
-{{- else if $programs.icdiff -}}
-{{-   $diffTool = "icdiff" -}}
-{{- end -}}
-{{- if $programs.gvim -}}
-{{-   $gvimCommand = $programs.gvim -}}
-{{- else if $programs.mvim -}}
-{{-   $gvimCommand = $programs.mvim -}}
-{{- end -}}
+{{- $diffGuitool := or $programs.ksdiff "" -}}
+{{- $diffTool := or $programs.difftastic $programs.delta $programs.icdiff -}}
+{{- $gvimCommand := or $programs.gvim $programs.mvim -}}
 
 [diff]
   algorithm = histogram
@@ -27,7 +12,7 @@
   compactionHeuristic = true
   indentHeuristic = true
   mnemonicprefix = true
-  noprefix = true # makes the paths resolvable...
+  # noprefix = true # makes the paths resolvable...and breaks lazygit
   renames = copies
   submodule = log
 {{- if $diffGuitool }}
@@ -196,24 +181,21 @@
 [interactive]
   diffFilter = {{ $programs.delta | quote }} --color-only
 
-{{- end }}
+[difftool "delta"]
+  cmd = {{ $programs.delta | quote }} "${LOCAL}" "${REMOTE}" "${MERGED}"
+{{ end }}
+
 [difftool]
   prompt = false
 
 {{ if $programs.difftastic -}}
 [difftool "difftastic"]
-  cmd = {{ $programs.difftastic | quote }} "$programs.LOCAL" "$programs.REMOTE"
+  cmd = {{ $programs.difftastic | quote }} "${LOCAL}" "${REMOTE}"
 {{- end }}
 {{ if $programs.icdiff -}}
 
 [difftool "icdiff"]
   cmd = {{ $programs.icdiff | quote }} --line-numbers "${LOCAL}" "${REMOTE}"
-{{- end }}
-{{ if $programs.delta -}}
-
-[difftool "delta"]
-  cmd = {{ $programs.delta | quote }} "${LOCAL}" "${REMOTE}" "${MERGED}"
-
 {{- end }}
 
 [merge]
@@ -224,7 +206,7 @@
 [mergetool]
   keepBackup = false
   prompt = false
-{{ if or $programs.gvim $programs.mvim -}}
+{{ if $gvimCommand -}}
 
 [mergetool "gvim"]
   cmd = {{ $gvimCommand | quote }} -d --remote-wait-silent "${LOCAL}" "${MERGED}" "${REMOTE}"
@@ -238,10 +220,10 @@
 {{- end }}
 {{ if $programs.ksdiff -}}
 
-[difftool "Kaleidoscope"]
+[difftool "ksdiff"]
   cmd = {{ $programs.ksdiff | quote }} --partial-changeset --relative-path "${MERGED}" -- "${LOCAL}" "${REMOTE}"
 
-[mergetool "Kaleidoscope"]
+[mergetool "ksdiff"]
   cmd = {{ $programs.ksdiff | quote }} --merge --output "${MERGED}" --base "${BASE}" -- "${LOCAL}" --snapshot "${REMOTE}" --snapshot
   trustExitCode = true
 {{- end }}

@@ -1,18 +1,71 @@
 #!/bin/bash
 
-# Fuzzy-find a git commit.
-# You can use `git shalector master` to select commits from master,
-# otherwise it uses the current branch.
+# Fuzzy-find a git commit. You can use `git shalector main` to select commits
+# from main, otherwise it uses the current branch.
 
-set -e
+set -o pipefail
 
-branch=${1:-$(git rev-parse HEAD)}
+declare -a args
+args=()
 
-target_commit=$(
-  git log -75 --color=always "$branch" | \
-  fzf --ansi --no-sort --reverse --tiebreak=index | \
-  awk '{print $1}'
-)
+copy=false
+show=false
 
-echo "$target_commit" | pbcopy
-echo "$target_commit"
+while (($#)); do
+  case "$1" in
+  -C | --copy) copy=true ;;
+  -S | --show) show=true ;;
+  *) args+=("$1") ;;
+  esac
+  shift
+done
+
+set -- "${args[@]}"
+
+has() {
+  command -v "$1" >/dev/null 2>/dev/null
+}
+
+copy() {
+  tee /dev/tty | if has pbcopy; then
+    pbcopy
+  elif has cb; then
+    run cb --copy
+  elif [[ -n "${WAYLAND_DISPLAY}" ]] && has wl-copy; then
+    wl-copy
+  elif has xclip; then
+    xclip -sel clip
+  elif has xsel; then
+    xsel --clipboard --input
+  elif has clipboard; then
+    clipboard --stdin
+  elif has clip; then
+    clip
+  else
+    true
+  fi
+}
+
+if ! branch="${1:-$(git rev-parse HEAD)}"; then
+  exit 1
+fi
+
+if ! target_commit=$(
+  git log -75 --color=always "${branch}" |
+    fzf --ansi --no-sort --reverse --tiebreak=index |
+    awk '{print $1}'
+); then
+  exit 1
+fi
+
+if "${show}" && "${copy}"; then
+  {
+    git show "${target_commit}" | copy
+  } || exit 1
+elif "${copy}"; then
+  {
+    echo "${target_commit}" | tee /dev/tty | copy
+  } || exit 1
+else
+  echo "${target_commit}"
+fi

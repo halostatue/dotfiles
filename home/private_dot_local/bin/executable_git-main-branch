@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if git show-ref --quiet origin/main || git show-ref --quiet upstream/main; then
+  echo main
+else
+  echo master
+fi

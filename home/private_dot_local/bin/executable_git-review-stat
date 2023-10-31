@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+if review_base="$(git review-base "$@")"; then
+  git diff "${review_base}"
+fi

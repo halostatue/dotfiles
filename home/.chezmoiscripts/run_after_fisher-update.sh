@@ -10,14 +10,6 @@ on-ERR() {
 
 trap on-ERR ERR
 
-if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
-  echo Update fisher packages
-
-  if "${DEBUG_SCRIPTS:-false}"; then
-    set -x
-  fi
-fi
-
 # Make sure that we have fish and fisher
 if ! command -v fish >/dev/null 2>&1; then
   if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
@@ -63,12 +55,7 @@ fi
 current_digest="$(openssl dgst -sha256 "${fish_plugins}")"
 
 if [[ "${stored_digest}" != "${current_digest}" ]]; then
-  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
-    fish -c "fisher update"
-  else
-    fish -c "fisher update" >/dev/null 2>/dev/null
-  fi
-
+  echo remember to run fisher update
   echo "${current_digest}" >"${digest_file}"
 elif [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   echo fisher packages are up to date

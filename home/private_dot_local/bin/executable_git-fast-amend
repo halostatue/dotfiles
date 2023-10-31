@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+# Quickly amend a commit
+git commit --amend --no-edit "$@"

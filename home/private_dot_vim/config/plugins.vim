@@ -2,6 +2,20 @@ scriptencoding utf-8
 
 runtime config/plugins/before.vim
 
+let s:fzf_bin = exepath('fzf')
+let s:fzf_added = v:false
+
+if s:fzf_bin == '/opt/local/bin/fzf' && isdirectory('/opt/local/share/fzf/vim')
+  let s:fzf_added = v:true
+  set rtp+=/opt/local/share/fzf/vim
+elseif s:fzf_bin == '/opt/homebrew/bin/fzf' && isdirectory('/opt/homebrew/opt/fzf')
+  let s:fzf_added = v:true
+  set rtp+=/opt/homebrew/opt/fzf
+elseif s:fzf_bin == '/usr/local/bin/fzf' && isdirectory('/usr/local/opt/fzf')
+  let s:fzf_added = v:true
+  set rtp+=/usr/local/opt/fzf
+endif
+
 function! s:packager_init() abort
   packadd vim-packager
 
@@ -108,8 +122,10 @@ function! s:packager_init() abort
   " Add `emoji#for` function: https://github.com/junegunn/vim-emoji
   call packager#add('junegunn/vim-emoji')
 
-  " Add fzf support: https://github.com/junegunn/fzf
-  call packager#add('junegunn/fzf')
+  if ! s:fzf_added
+    " Add fzf support: https://github.com/junegunn/fzf
+    call packager#add('junegunn/fzf')
+  endif
   " https://github.com/junegunn/fzf.vim
   call packager#add('junegunn/fzf.vim')
 

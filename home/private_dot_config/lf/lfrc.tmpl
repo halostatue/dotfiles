@@ -121,7 +121,7 @@ cmd zi ${{
 }}
 # [[- end ]]
 
-# [[ $eza := or $programs.eza $programs.exa | base -]]
+# [[ $eza := or $programs.eza $programs.exa -]]
 # [[- if $eza -]]
 cmd on-select &{{
   lf -remote "send ${id} set statfmt \"$(#[[ $eza ]] -ld --color=always \"$f\")\""
