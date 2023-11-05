@@ -10,6 +10,7 @@ copy=false
 while (($#)); do
   case "$1" in
   --long | -L) format="- **%s** (%h)%n%n%w(74,2,2)%b" ;;
+  --copy) copy=true ;;
   *) args+=("$1") ;;
   esac
 
@@ -52,9 +53,9 @@ args=(log --reverse --format="${format}" "${review_base}"..HEAD)
 
 if "${copy}"; then
   {
-    git "${args[@]}" | tee /dev/tty | copy
+    git "${args[@]}" | copy
   } || exit 1
   printf >&2 "\n--\nCopied!\n"
 else
-  git "{args[@]}"
+  git "${args[@]}"
 fi

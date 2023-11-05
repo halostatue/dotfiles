@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+case $# in
+0 | 1)
+  echo >&2 "Usage: git-save REF FILE..."
+  exit 1
+  ;;
+*) : ;;
+esac
+
+if ! root="$(git rev-parse --show-toplevel)"; then
+  exit 1
+fi
+
+cd "${root}" || exit 1
+
+dest="$(echo "$1" | tr / _)"
+
+for f in "${@:2}"; do
+  git show "${1}:${f}" "${f}.${dest}"
+done

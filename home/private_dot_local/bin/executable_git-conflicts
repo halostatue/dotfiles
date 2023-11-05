@@ -1,5 +1,138 @@
-#!/bin/sh
-# Usage: git-conflicts
-# Show list of files in a conflict state.
+#!/usr/bin/env bash
 
-git ls-files -u | awk '{print $4}' | sort -u
+set -o pipefail
+
+declare config_type=global mode wanted_editor
+
+usage() {
+  cat <<USAGE
+usage: $(basename "$0")
+       $(basename "$0") -e | --edit
+       $(basename "$0") --set-editor EDITOR [--local]
+       $(basename "$0") --clear-editor [--local]
+       $(basename "$0") --show-editor
+
+Shows or edits files in a conflicted (unmerged) state. When no options are
+provided, the files are shown.
+
+If -e or --edit are provided, starts an editor for the conflicted files.
+Uses the editor specified in \$GIT_CONFLICTS_EDITOR, \$GIT_EDITOR,
+conflicts.editor, core.editor, or \$EDITOR. If none of the above are set,
+falls back to vim, pico, or nano.
+
+The conflicts.editor can be set using normal git-config operations, or with
+the --set-editor option. It can be shown with --show-editor and cleared with
+--clear-editor.
+USAGE
+}
+
+fail-if-mode-set() {
+  if [[ -n "$1" ]]; then
+    echo >&2 "error: already in mode $1, cannot use $2"
+    exit 1
+  fi
+}
+
+show-conflicts() {
+  git ls-files -u | awk '{print $4}' | sort -u
+}
+
+show-editor() {
+  if [[ -n "${GIT_CONFLICTS_EDITOR}" ]]; then
+    echo "${GIT_CONFLICTS_EDITOR}"
+  elif [[ -n "${GIT_EDITOR}" ]]; then
+    echo "${GIT_EDITOR}"
+  elif [[ -n "$(git config --get conflicts.editor)" ]]; then
+    git config --get conflicts.editor
+  elif [[ -n "$(git config --get core.editor)" ]]; then
+    git config --get core.editor
+  elif [[ -n "${EDITOR}" ]]; then
+    echo "${EDITOR}"
+  elif command -v vim >/dev/null 2>/dev/null; then
+    echo vim
+  elif command -v pico >/dev/null 2>/dev/null; then
+    echo pico
+  else
+    echo nano
+  fi
+}
+
+edit-conflicts() {
+  local -a conflicts
+
+  if readarray -t conflicts < <(show-conflicts); then
+    if ((${#conflicts[@]})); then
+      "$(show-editor)" "${conflicts[@]}"
+    else
+      echo No conflicts to edit.
+    fi
+  fi
+}
+
+while (($#)); do
+  case "$1" in
+  -e | --edit)
+    fail-if-mode-set "${mode}" "$1"
+    mode=edit
+    ;;
+
+  --show-editor)
+    fail-if-mode-set "${mode}" "$1"
+    mode=show-editor
+    ;;
+
+  --clear-editor)
+    fail-if-mode-set "${mode}" "$1"
+    mode=clear-editor
+    ;;
+
+  --set-editor)
+    fail-if-mode-set "${mode}" "$1"
+
+    if [[ -z "$2" ]]; then
+      echo >&2 "error: No editor specified."
+      exit 1
+    fi
+
+    mode=set-editor
+    wanted_editor="$2"
+    shift
+    ;;
+  --local) config_type=local ;;
+  *) echo >&2 "error: Unknown option '$1'" ;;
+  esac
+
+  shift
+done
+
+[[ -z "${mode}" ]] && mode=show
+
+case "${mode}" in
+show) show-conflicts ;;
+
+show-editor) show-editor ;;
+
+edit) edit-conflicts ;;
+
+clear-editor)
+  if [[ "${config_type}" == local ]]; then
+    git config --local --unset conflicts.editor
+  else
+    git config --global --unset conflicts.editor
+  fi
+  ;;
+
+set-editor)
+  if ! command -v "${wanted_editor}" >/dev/null 2>/dev/null; then
+    echo >&1 "error: set-editor wanted editor ${wanted_editor} does not exist"
+    exit 1
+  fi
+
+  if [[ "${config_type}" == local ]]; then
+    git config --local --add conflicts.editor "${wanted_editor}"
+  else
+    git config --global --add conflicts.editor "${wanted_editor}"
+  fi
+  ;;
+
+esac
