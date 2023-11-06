@@ -1,0 +1,159 @@
+#!/usr/bin/env bash
+
+{
+  \unalias builtin
+  \unset -f builtin
+} >/dev/null 2>&1
+
+builtin readonly image="ghcr.io/hadolint/hadolint"
+
+builtin declare file_path_in_report config_provided
+builtin declare -a args mount configs
+
+file_path_in_report=false
+config_provided=false
+
+extname() {
+  builtin printf "%s" "${1##*.}"
+}
+
+# Based on https://stackoverflow.com/a/33266819 with a bash flavour.
+resolve-root() {
+  local dir base ext full
+  full="$(resolve "$1")"
+  dir="$(builtin command dirname "${full}")"
+  base="$(builtin command basename "${full}" "${ext}")"
+  ext="$(extname "${base}")"
+  base="$(builtin command basename "${full}" "${ext}")"
+  full="$(builtin printf "%s/%s.%s.%s" "${dir}" "${base}" "${RANDOM}" "${ext}" | tr / -)"
+  builtin printf "/%s" "${full}"
+}
+
+resolve() (
+  local target fname targetDir CDPATH
+  target="$1"
+  fname=
+  targetDir=
+  CDPATH=
+
+  while :; do
+    if ! [[ -L "${target}" ]] && ! [[ -e "${target}" ]]; then
+      builtin printf '%s\n' "ERROR: '${target}' does not exist." >&2
+      builtin return 1
+    fi
+
+    builtin cd "$(builtin command dirname -- "${target}")" || builtin exit 1
+    fname="$(builtin command basename -- "${target}")"
+
+    [[ "${fname}" = / ]] && fname=''
+
+    if [[ -L "${fname}" ]]; then
+      target="$(builtin command ls -l "${fname}")"
+      target="${target#* -> }"
+      continue
+    fi
+    break
+  done
+
+  targetDir="$(builtin pwd -P)"
+
+  case "${fname}" in
+  .) builtin printf '%s' "${targetDir%/}" ;;
+  ..) builtin printf '%s' "$(builtin command dirname -- "${targetDir}")" ;;
+  *) builtin printf '%s' "${targetDir%/}/${fname}" ;;
+  esac
+)
+
+while (($#)); do
+  case "$1" in
+  -v | --version | -V | --verbose) args+=("$1") ;;
+  --no-fail | --no-color | --strict-labels | --disable-ignore-pragma) args+=("$1") ;;
+  -c | --config)
+    config_provided=true
+
+    if [[ -n "$2" ]]; then
+      full="$(resolve "$2")"
+
+      if [[ -f "$2" ]]; then
+        mount+=(--mount "type=bind,src=${full},dst=/$2,readonly")
+      fi
+
+      args+=("$1" "/$2")
+      shift
+    else
+      args+=("$1")
+    fi
+    ;;
+  --file-path-in-report)
+    file_path_in_report=true
+
+    if [[ -n "$2" ]]; then
+      args+=("$1" "$2")
+      shift
+    else
+      args+=("$1")
+    fi
+    ;;
+  -f | --format | --error | --warning | --style | --ignore)
+    if [[ -n "$2" ]]; then
+      args+=("$1" "$2")
+      shift
+    else
+      args+=("$1")
+    fi
+    ;;
+  --trusted-registry | --require-label | -t | --failure-threshold)
+    if [[ -n "$2" ]]; then
+      args+=("$1" "$2")
+      shift
+    else
+      args+=("$1")
+    fi
+    ;;
+  -)
+    args+=(-)
+    ;;
+  *)
+    if [[ -f "$1" ]]; then
+      resolved="$(resolve "$1")"
+      mount+=(--mount "type=bind,src=${resolved},dst=/$1,readonly")
+      args+=("/$1")
+      shift
+    else
+      args+=("$1")
+    fi
+    ;;
+  esac
+
+  shift
+done
+
+if ! "${file_path_in_report}"; then
+  args+=(--file-path-in-report "$(builtin pwd -P)")
+fi
+
+if ! "${config_provided}"; then
+  configs=("${PWD}"/.hadolint.{yaml,yml})
+
+  [[ -n "${XDG_CONFIG_HOME}" ]] && configs+=("{$XDG_CONFIG_HOME}"/hadolint.{yaml,yml})
+
+  configs+=("${HOME}"/.config/hadolint.{yaml,yml})
+  configs+=("${HOME}"/.hadolint/hadolint.{yaml,yml})
+  configs+=("${HOME}"/hadolint/config.{yaml,yml})
+  configs+=("${HOME}"/.hadolint{yaml,yml})
+
+  for config in "${configs[@]}"; do
+    if [[ -f "${config}" ]]; then
+      config="$(resolve-to-randomized-root "${config}")"
+      mount+=(--mount "type=bind,src=$2,dst=${config},readonly")
+      args+=(--config "${config}")
+      break
+    fi
+  done
+fi
+
+docker run --rm -i \
+  "${mount[@]}" \
+  "${image}" \
+  hadolint \
+  "${args[@]}"
