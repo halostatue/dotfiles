@@ -5,8 +5,18 @@
   # A typo that turned useful
   addp = add -p
 
+  # Show current aliases
+  alias = "!git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /"
+
   # This should be default. Whatever.
   co = checkout
+{{- if $programs.fzf }}
+
+  add-fzf = "!f(){ git add $(git ls-files --modified --others --exclude-standard | {{ $programs.fzf }} -m --preview 'git diff --color=always {} | delta');}; f"
+  diff-fzf = "!f(){ git diff $(git ls-files --modified --others --exclude-standard | fzf -m --preview 'git diff --color=always {} | delta');}; f"
+  fixup = "!git log -n 16 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o git commit --fixup"
+  show-fzf = "!f(){ git show $(git log --pretty=oneline | cut -c1-7 | fzf -m --preview 'git diff --color=always {} | delta');}; f"
+{{- end }}
 
   # If we type `git git log`, just run `git log`.
   git = !git
@@ -39,5 +49,3 @@
   fixme = grep -Ee '\\bFIX(ME)?:?\\b'
 
   safe = !mkdir .git/safe
-
-  conflicted = "!vim +Conflicted"

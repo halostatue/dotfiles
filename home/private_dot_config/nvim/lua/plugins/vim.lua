@@ -181,6 +181,29 @@ return {
   --   'monaqa/dial.nvim',
   --   keys = { '<C-a>', { '<C-x>', mode = 'n' } },
   -- },
+  -- { -- https://github.com/echasnovski/mini.surround
+  --   'echasnovski/mini.surround', enabled = false
+  -- },
+  -- { -- https://github.com/kylechui/nvim-surround
+  --   "kylechui/nvim-surround",
+  --   version = "*",
+  --   event = "VeryLazy",
+  --   config = true,
+  --   opts = {
+  --     keymaps = {
+  --       insert = "<C-g>s",
+  --       insert_line = "<C-g>S",
+  --       normal = "ys",
+  --       normal_cur = "yss",
+  --       normal_line = "yS",
+  --       normal_cur_line = "ySS",
+  --       visual = "W", -- non-default (was S) conflicts with leap
+  --       visual_line = "gS",
+  --       delete = "ds",
+  --       change = "cs",
+  --     },
+  --   },
+  -- },
   { -- https://github.com/tpope/vim-surround
     'tpope/vim-surround',
     event = { 'VeryLazy' },

@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 declare image user
-image=${IMAGE:-ghcr.io/kineticcafe/ansible:4.1}
+image=${IMAGE:-ghcr.io/kineticcafe/ansible:5.0}
 user="${USER-$(whoami)}"
 
 declare -A ask want galaxy
@@ -508,6 +508,11 @@ if "${ask[vault_password]}"; then
 
   extra+=(--ask-vault-password)
 fi
+
+case "$(basename "${EDITOR}")" in
+vim | nano) EDITOR="$(basename "${EDITOR}")" ;;
+*) EDITOR=nano ;;
+esac
 
 # shellcheck disable=SC2086
 docker run "${interactive[@]}" --rm --network host \

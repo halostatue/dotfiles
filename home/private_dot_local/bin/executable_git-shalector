@@ -26,27 +26,30 @@ has() {
   command -v "$1" >/dev/null 2>/dev/null
 }
 
-copy() {
-  tee /dev/tty | if has pbcopy; then
-    pbcopy
-  elif has cb; then
-    run cb --copy
-  elif [[ -n "${WAYLAND_DISPLAY}" ]] && has wl-copy; then
-    wl-copy
-  elif has xclip; then
-    xclip -sel clip
-  elif has xsel; then
-    xsel --clipboard --input
-  elif has clipboard; then
-    clipboard --stdin
-  elif has clip; then
-    clip
-  else
-    true
-  fi
+copy_to_clipboard() {
+  tee /dev/tty |
+    if has copy; then
+      command copy
+    elif has pbcopy; then
+      pbcopy
+    elif has cb; then
+      cb --copy
+    elif [[ -n "${wayland_display}" ]] && has wl-copy; then
+      wl-copy
+    elif has xclip; then
+      xclip -sel clip
+    elif has xsel; then
+      xsel --clipboard --input
+    elif has clipboard; then
+      clipboard --stdin
+    elif has clip; then
+      clip
+    else
+      true
+    fi
 }
 
-if ! branch="${1:-$(git rev-parse HEAD)}"; then
+if ! branch="${1:-$(git rev-parse head)}"; then
   exit 1
 fi
 
@@ -58,13 +61,17 @@ if ! target_commit=$(
   exit 1
 fi
 
-if "${show}" && "${copy}"; then
+if [[ "${show}" == true ]]; then
+  if [[ "${copy}" == true ]]; then
+    {
+      git show "${target_commit}" | copy_to_clipboard
+    } || exit 1
+  else
+    git show "${target_commit}"
+  fi
+elif [[ "${copy}" == true ]]; then
   {
-    git show "${target_commit}" | copy
-  } || exit 1
-elif "${copy}"; then
-  {
-    echo "${target_commit}" | tee /dev/tty | copy
+    echo "${target_commit}" | tee /dev/tty | copy_to_clipboard
   } || exit 1
 else
   echo "${target_commit}"

@@ -1,7 +1,7 @@
--- bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 
 if not vim.loop.fs_stat(lazypath) then
+  -- bootstrap lazy.nvim
   vim.fn.system {
     'git',
     'clone',
@@ -15,12 +15,30 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require('lazy').setup {
-  spec = { { import = 'plugins' } },
-  -- spec = {{"folke/LazyVim", dev = true}, {import = "lazyvim.plugins"}, {import = "plugins"}},
-  defaults = { lazy = true, version = nil },
-  dev = { patterns = jit.os:find('Windows') and {} or {} },
-  install = { colorscheme = { 'tokyonight', 'habamax' } },
-  checker = { enabled = true, frequency = 3600 * 24 * 5 },
+  spec = {
+    -- -- add LazyVim and import its plugins
+    -- { 'LazyVim/LazyVim', import = 'lazyvim.plugins' },
+    -- { import = 'lazyvim.plugins.extras.ui.mini-animate' },
+    -- import/override with your plugins
+    { import = 'plugins' },
+  },
+  defaults = {
+    -- By default, only LazyVim plugins will be lazy-loaded. Your custom
+    -- plugins will load during startup. If you know what you're doing, you can
+    -- set this to `true` to have all your custom plugins lazy-loaded by
+    -- default.
+    lazy = false,
+    -- It's recommended to leave version=false for now, since a lot the plugin
+    -- that support versioning, have outdated releases, which may break your
+    -- Neovim install.
+    version = false, -- always use the latest git commit
+    -- version = '*', -- try installing the latest stable version for plugins that support semver
+  },
+  install = { colorscheme = { 'tokyonight', 'habamax', 'cattpucin' } },
+  checker = { enabled = true }, -- automatically check for plugin updates
+  dev = {
+    patterns = jit.os:find('Windows') and {} or {},
+  },
   diff = { cmd = 'terminal_git' }, -- git, diffview.nvim
   performance = {
     cache = { enabled = true },

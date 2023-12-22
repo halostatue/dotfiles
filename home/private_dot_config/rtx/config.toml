@@ -1,0 +1,11 @@
+[settings]
+legacy_version_file = false
+
+[env]
+ERL_AFLAGS = "-kernel shell_history enabled shell_history_file_bytes 5242880"
+
+[tools]
+ruby = "3.2.2"
+erlang = "26.1.2"
+elixir = "1.15.7-otp-26"
+node = "20"

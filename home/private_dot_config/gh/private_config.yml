@@ -11,3 +11,4 @@ aliases:
   combine-dependabot-prs: combine-prs --query author:app/dependabot
   transfer: >
     !gh api repos/$1/transfer -f new_owner=$2 | jq -r ".full_name == \"$1\""
+version: '1'

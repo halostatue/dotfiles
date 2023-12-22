@@ -57,7 +57,7 @@
   "atlascode.bitbucket.statusbar.enabled": false,
   "atlascode.bitbucket.statusbar.showLogin": true,
   "atlascode.bitbucket.statusbar.showUser": true,
-  "atlascode.jira.enabled": true,
+  "atlascode.jira.enabled": false,
   "atlascode.jira.jqlList": [
     {
       "enabled": true,
@@ -334,7 +334,7 @@
     "!Split sequence"
   ],
   "yaml.schemas": {
-    "file:///Users/austin/.vscode/extensions/atlassian.atlascode-2.10.12/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
+    "file:///Users/austin/.vscode/extensions/atlassian.atlascode-3.0.9/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
   },
   "zeplin.enableTelemetry": false,
   "[xslt]": {

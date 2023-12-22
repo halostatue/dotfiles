@@ -4,13 +4,14 @@
 #   - ~/.config/alacritty/dracula.yml
 
 window:
+  opacity: 0.90
   startup_mode: Windowed
   dimensions:
     columns: 124
     lines: 74
   padding:
     x: 5
-    y: 5
+    y: 2
   dynamic_padding: true
   position:
     x: 0
@@ -41,7 +42,7 @@ font:
 draw_bold_text_with_bright_colors: true
 
 mouse:
-  hide_while_typing: true
+  hide_when_typing: true
 
 selection:
   save_to_clipboard: false
@@ -50,3 +51,12 @@ cursor:
   unfocused_hollow: true
 
 live_config_reload: true
+
+bell:
+  animation: EaseOutExpo
+  duration: 0
+
+shell:
+  program: /usr/bin/fish
+  args:
+    - --interactive

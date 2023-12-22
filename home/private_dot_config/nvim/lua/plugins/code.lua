@@ -90,6 +90,7 @@ return {
   },
   { --  https://github.com/hrsh7th/nvim-cmp
     'hrsh7th/nvim-cmp',
+    version = 'false',
     event = { 'InsertEnter' },
     dependencies = {
       { -- https://github.com/hrsh7th/cmp-buffer
@@ -110,8 +111,25 @@ return {
       { -- https://github.com/kristijanhusak/vim-dadbod-completion
         'kristijanhusak/vim-dadbod-completion',
       },
+      { -- https://github.com/saadparwaiz1/cmp_luasnip
+        -- 'saadparwaiz1/cmp_luasnip',
+      },
       snippets_provider:spec(),
     },
+    opts = function(_, opts)
+      local cmp = require('cmp')
+      opts.mapping = cmp.mapping.preset.insert {
+        ['<C-k>'] = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Insert },
+        ['<C-j>'] = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Insert },
+        ['<C-n>'] = cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Insert },
+        ['<C-p>'] = cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Insert },
+        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+        ['<C-f>'] = cmp.mapping.scroll_docs(4),
+        ['<C-Space>'] = cmp.mapping.complete(),
+        ['<C-e>'] = cmp.mapping.abort(),
+        ['<CR>'] = cmp.mapping.confirm { select = true }, -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+      }
+    end,
     config = function()
       local cmp = require('cmp')
       local termcode = require('config.utils').termcode

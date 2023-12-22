@@ -1,20 +1,48 @@
 #! /usr/bin/env just --justfile
 
-default:
+_default:
   @just --list
 
+# Update all package files
 update-packages: update-homebrew update-gems update-pipx update-ports
 
+# Update Homebrew Brewfile
 update-homebrew:
-  #!/usr/bin/env bash
+  #!/usr/bin/env ruby
 
-  set -euo pipefail
+  require 'tmpdir'
 
-  declare tmp
-  tmp="$(mktemp -d)"
-  brew bundle dump --force --file="${tmp}/Brewfile"
-  vimdiff "${tmp}/Brewfile" "Setup/Brewfile"
+  dump = %x(brew bundle dump --force --file=- --describe).split($/)
+  lines = Hash.new { |h, k| h[k] = [] }
+  comment = nil
 
+  dump.each do |line|
+    line.chomp!
+    if line.start_with?("#")
+      comment = line
+    else
+      key = line.split(" ").first
+      key = "#{key}-font" if line.include?('"font-')
+
+      if comment
+        lines[key] << "#{line} #{comment}"
+        comment = nil
+      else
+        lines[key] << line
+      end
+    end
+  end
+
+  tmpdir = Dir.mktmpdir
+
+  File.write(
+    File.join(tmpdir, "Brewfile"),
+    lines.keys.map { lines[_1].sort.join("\n") }.join("\n")
+  )
+
+  exec("vimdiff '#{tmpdir}/Brewfile' 'Setup/Brewfile'")
+
+# Update the default Gemfile
 update-gems:
   #!/usr/bin/env bash
 
@@ -25,6 +53,7 @@ update-gems:
   printf "gem \"%s\"\n" `(gem list --no-versions)` > "${tmp}/Gemfile"
   vimdiff "${tmp}/Gemfile" "Setup/Gemfile"
 
+# Update the default pipx list of files
 update-pipx:
   #!/usr/bin/env ruby
 
@@ -70,6 +99,7 @@ update-pipx:
 
   # pipx list --include-injected --json | jq -f Setup/pipx-reinstall.jq > Setup/pipx.fish.new -r
 
+# Update the requested ports
 update-ports:
   #!/usr/bin/env bash
 
@@ -77,5 +107,7 @@ update-ports:
 
   declare tmp
   tmp="$(mktemp -d)"
-  @port echo requested | cut -d' ' -f1 | uniq > "${tmp}/Ports"
+  port echo requested |
+    sed -e 's/  */ /' -e 's/\@[^+][^+]*//' -e 's/ $//' |
+    uniq > "${tmp}/Ports"
   vimdiff "${tmp}/Ports" "Setup/Ports"

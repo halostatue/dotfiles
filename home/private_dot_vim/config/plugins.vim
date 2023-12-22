@@ -170,14 +170,14 @@ function! s:packager_init() abort
   " USING THIS: https://github.com/srstevenson/vim-picker
   call packager#add('srstevenson/vim-picker')
   " TRY THIS: https://github.com/liuchengxu/vim-clap
-  call packager#add('liuchengxu/vim-clap', { 'do': ':Clap install-binary!' })
+  " call packager#add('liuchengxu/vim-clap', { 'do': ':Clap install-binary!' })
   " RE-TRY THIS: https://github.com/vim-ctrlspace/vim-ctrlspace
   " call packager#add('vim-ctrlspace/vim-ctrlspace')
 
   " Git so awesome, it should be illegal: https://github.com/tpope/vim-fugitive
   call packager#add('tpope/vim-fugitive')
   " Hub to the Git: https://github.com/tpope/vim-rhubarb
-  call packager#add('tpope/vim-rhubarb')
+  " call packager#add('tpope/vim-rhubarb')
   " Git commit browser: https://github.com/junegunn/gv.vim
   call packager#add('junegunn/gv.vim')
   " Shows git commit messages for the current line: https://github.com/rhysd/git-messenger.vim

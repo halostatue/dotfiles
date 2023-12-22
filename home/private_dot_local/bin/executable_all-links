@@ -1,0 +1,99 @@
+#! /usr/bin/env bash
+
+# Based on https://github.com/gabebw/dotfiles/blob/main/bin/all-links.
+
+if [[ "$(uname -s)" != Darwin ]]; then
+  echo >&2 "This script only runs on macOS."
+  exit 1
+fi
+
+is_app_running() {
+  local target
+  target="$(
+    printf "%s.app/Contents/MacOS/%s" "$1" "$1"
+  )"
+
+  pgrep -qif "${target}"
+}
+
+not_installed() {
+  ! command -v "$1" >/dev/null 2>/dev/null
+}
+
+safari_links() {
+  local target
+
+  for target in "Safari" "Safari Technical Preview" "WebKit"; do
+
+    if is_app_running "${target}"; then
+      osascript -l JavaScript <<OSA | grep -v '^favorites://$'
+app = Application('${target}')
+tabs = []
+
+for (let i = 0; i < app.windows.length; ++i) {
+  window = app.windows[i]
+
+  for (let j = 0; j < window.tabs.length; ++j) {
+    tab = window.tabs[j]
+    tabs.push(tab.url())
+  }
+}
+
+// a returned string goes to stdout
+tabs.join("\n")
+OSA
+    fi
+  done
+}
+
+bundle_identifier() {
+  local target
+  target="$(
+    printf "/Applications/%s.app" "$1"
+  )"
+  mdls -name kMDItemCFBundleIdentifier -raw "${target}"
+}
+
+chrome_links() {
+  local target
+
+  for target in "Arc" "Brave Browser" "Google Chrome" "Chrome Canary" "Chromium" \
+    "Microsoft Edge" "Opera Developer" "Vivaldi"; do
+
+    if is_app_running "${target}"; then
+      if not_installed chrome-cli; then
+        echo >&2 "chrome-cli is not installed, skipping ${target}"
+        echo >&2 "Install with brew or MacPorts"
+        return
+      fi
+
+      CHROME_BUNDLE_IDENTIFIER="$(bundle_identifier "${target}")" \
+        chrome-cli list links |
+        cut -f2 -d' ' |
+        grep -v '^view-source:' |
+        grep -v '^chrome:'
+    fi
+  done
+}
+
+firefox_links() {
+  if is_app_running Firefox.app; then
+    if not_installed firefox-all-open-urls; then
+      cat >&2 <<MESSAGE
+firefox-all-open-urls not installed, skipping Firefox
+
+Install with
+  cargo install --git \\
+  https://github.com/gabebw/rust-firefox-all-open-urls
+MESSAGE
+    fi
+
+    firefox-all-open-urls
+  fi
+}
+
+(
+  safari_links
+  chrome_links
+  firefox_links
+) | sort -iu

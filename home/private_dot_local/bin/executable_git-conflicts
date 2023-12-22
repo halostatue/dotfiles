@@ -71,22 +71,22 @@ edit-conflicts() {
 
 while (($#)); do
   case "$1" in
-  -e | --edit)
+  -e | --edit | edit)
     fail-if-mode-set "${mode}" "$1"
     mode=edit
     ;;
 
-  --show-editor)
+  --show-editor | show-editor | show)
     fail-if-mode-set "${mode}" "$1"
     mode=show-editor
     ;;
 
-  --clear-editor)
+  --clear-editor | clear-editor | clear)
     fail-if-mode-set "${mode}" "$1"
     mode=clear-editor
     ;;
 
-  --set-editor)
+  --set-editor | set-editor | set)
     fail-if-mode-set "${mode}" "$1"
 
     if [[ -z "$2" ]]; then
@@ -99,6 +99,10 @@ while (($#)); do
     shift
     ;;
   --local) config_type=local ;;
+  -h | help)
+    usage
+    exit 0
+    ;;
   *) echo >&2 "error: Unknown option '$1'" ;;
   esac
 

@@ -21,7 +21,7 @@
 
 {{ if eq .git.signing.format "ssh" }}
 [gpg "ssh"]
-  allowedSignersFile = {{ joinPath joinPath .chezmoi.homeDir ".ssh/allowed_signers" }}
+  allowedSignersFile = {{ joinPath "~" ".ssh/allowed_signers" }}
 {{ end -}}
 {{-     end -}}
 {{-   end -}}

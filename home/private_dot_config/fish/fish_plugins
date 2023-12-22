@@ -20,6 +20,6 @@ halostatue/fish-utils@v3.x
 halostatue/fish-vendor-completions@v1.x
 jorgebucaran/autopair.fish
 jorgebucaran/fishtape
-jorgebucaran/nvm.fish
 lilyball/nix-env.fish
 oh-my-fish/plugin-tab
+jorgebucaran/fisher

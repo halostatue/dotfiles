@@ -2,15 +2,51 @@
 
 set -eo pipefail
 
-case "$(basename "$0")" in
-git-push-upstream) remote=upstream ;;
-*) remote=origin ;;
-esac
+declare -a args
 
-if (($#)); then
-  remote="$1"
+while (($#)); do
+  case "$1" in
+  -v | --verbose | --no-verbose | -q | --quiet | --no-quiet) args+=("$1") ;;
+  -n | --dry-run | --no-dry-run | --porcelain | --no-porcelain) args+=("$1") ;;
+  -4 | --ipv4 | -6 | --ipv6 | --verify | --no-verify) args+=("$1") ;;
+  --progress | --no-progress | --prune | --no-prune) args+=("$1") ;;
+  -f | --no-force | --force-with-lease | --no-force-with-lease) args+=("$1") ;;
+  --thin | --no-thin | --signed | --no-signed | --atomic | --no-atomic) args+=("$1") ;;
+
+  --recurse-submodules | --no-recurse-submodules)
+    args+=("$1" "$2")
+    shift
+    ;;
+
+  --repo | --no-repo)
+    args+=("$1" "$2")
+    shift
+    ;;
+
+  # Ignore other options
+  --all | --no-all | --branches | --no-branches | --mirror | --no-mirror) : ;;
+  -d | --delete | --no-dellete | --tags | --no-tags) : ;;
+  --force-if-includes | --no-force-includes) : ;;
+  --receive-pack | --no-receive-pack) shift ;;
+  --exec | --no-exec) shift ;;
+  -u | --set-upstream | --no-set-upstream) : ;;
+  --follow-tags | --no-follow-tags) : ;;
+  -o | --push-option | --no-push-option) shift ;;
+  *) remote="$1" ;;
+  esac
+
+  shift
+done
+
+set -- "${args[@]}"
+
+if [[ -z "${remote}" ]]; then
+  case "$(basename "$0")" in
+  git-push-upstream) remote=upstream ;;
+  *) remote=origin ;;
+  esac
 fi
 
 ref="$(git symbolic-ref HEAD)"
 
-git push "${remote}" "${ref}" --set-upstream
+git push "${remote}" "${ref}" --set-upstream "$@"

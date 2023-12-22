@@ -11,15 +11,6 @@ ServerAliveCountMax 6
 ServerAliveInterval 30
 VerifyHostKeyDNS yes
 
-{{ $colima := joinPath $.chezmoi.homeDir ".colima/ssh_config" -}}
-{{- if stat $colima -}}
-Include {{ $colima }}
-{{- end }}
-{{- $orbstack := joinPath $.chezmoi.homeDir ".orbstack/ssh/config" -}}
-{{- if stat $orbstack }}
-Include {{ $orbstack }}
-{{- end }}
-
 # There appears to be a bug where the _last_ identity file is used when using 1Password, but
 # it just works if the identity files are not specified.
 {{- if and (not (contains "1password" $agent)) ((gt .ssh.keys | len) 0) -}}
@@ -54,3 +45,13 @@ Host {{ .host }}
 {{     end }}
 {{   end }}
 {{- end -}}
+
+{{ $colima := joinPath $.chezmoi.homeDir ".colima/ssh_config" -}}
+{{- if stat $colima -}}
+Include {{ $colima }}
+{{- end }}
+{{- $orbstack := joinPath $.chezmoi.homeDir ".orbstack/ssh/config" -}}
+{{- if stat $orbstack }}
+Include {{ $orbstack }}
+{{- end }}
+

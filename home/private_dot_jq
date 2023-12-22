@@ -1,3 +1,9 @@
+def lpad($len; $fill): tostring | ($len - length) as $l | ($fill * $l)[:$l] + .;
+
+def lpad($len): lpad($len; " ");
+
+def lpad: lpad(4);
+
 # bag(stream) uses a two-level dictionary: .[type][tostring]
 # So given a bag, $b, to recover a count for an entity, $e, use
 # $e | $b[type][tostring]
@@ -92,6 +98,8 @@ def maximals_by(s ; f):
   | .[]
   ;
 
+# These aldo-specific functions exist only to show how it is possible to use jq to produce SQL statements from JQ
+# data.
 def aldo_store_sql:
   . as $in
   | "UPDATE stores SET " + (
@@ -114,6 +122,7 @@ def aldo_stores_stores_sql:
   aldo_store_values | map(. | aldo_store_sql) | join("\n")
   ;
 
+# The etcs_ functions are used to clean Exact Target (SFCC) contact data.
 def etcs_clean_key_name:
   .name | gsub("[- ]"; "_") | ascii_downcase
   ;
@@ -143,6 +152,7 @@ def etcs_document:
   map({type: "add", id: .contact_id, fields: .})
   ;
 
+# Clean insomnia data
 def insomnia_clean_key_names:
   . as $in
   | if type == "object" then

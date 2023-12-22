@@ -100,3 +100,12 @@ timestamp
 toc
 whitespace
 exfiltrate
+refactorings
+UUID
+ULID
+UUIDs
+CAS
+GraphQL
+dialyzer
+KCS
+Twilio

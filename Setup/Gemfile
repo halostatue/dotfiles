@@ -15,16 +15,9 @@ gem "hoe-rubygems"
 gem "license_finder"
 gem "nanoc"
 gem "pry"
-gem "pry-coolline"
 gem "pry-doc"
 gem "puma"
 gem "rack"
 gem "rake"
 gem "reek"
 gem "standard"
-
-if RUBY_VERSION >= "3.0"
-  gem "debug"
-else
-  gem "byebug"
-end

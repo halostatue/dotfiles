@@ -2,11 +2,11 @@
 #[[- $programs := includeTemplate "programs.tmpl" . | fromJson -]]
 #[[- $diffPager := "" -]]
 #[[- if $programs.delta -]]
-#[[-   $diffPager = printf "%s --dark --paging=never" (base $programs.delta) -]]
+#[[-   $diffPager = printf "%s --dark --paging=never" $programs.delta -]]
 #[[- else if $programs.diff_so_fancy -]]
 #[[-   $diffPager = $programs.diff_so_fancy -]]
 #[[- else if $programs.ydfif -]]
-#[[-   $diffPager = printf "%s -p cat -s --wrap --width {{ columnWidth }}" -]]
+#[[-   $diffPager = printf "%s -p cat -s --wrap --width {{ columnWidth }}" $programs.ydiff -]]
 #[[- end -]]
 # yaml-language-server: $schema=https://json.schemastore.org/lazygit.json
 
@@ -68,7 +68,7 @@ git:
   paging:
     colorArg: always
     useConfig: false
-    pager: delta --dark --paging=never
+    pager: #[[ $diffPager ]]
     # pager: diff-so-fancy
     # pager: ydiff -p cat -s --wrap --width={{ columnWidth }}
   commit:

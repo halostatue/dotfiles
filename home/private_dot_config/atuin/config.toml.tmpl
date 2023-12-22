@@ -1,3 +1,7 @@
+dialect = "uk"
+
+update_check = true
+
 search_mode = "fuzzy"
 filter_mode = "global"
 
@@ -19,9 +23,9 @@ history_filter = [
   '^sudo\b\s+\b[^p][^o][^r][^t]\b',
 
   # Frequent commands that need not be saved.
-  '^git\b\s+\baddp\b', # `git addp`
-  '^cd\s+-$', # `cd -`
-  '^cd\s+\.\.', # `cd ..`
+  '^git\b\s+\baddp\b',                 # `git addp`
+  '^cd\s+-$',                          # `cd -`
+  '^cd\s+\.\.',                        # `cd ..`
   '^(?:mix|pnpm|yarn)\b\s+\bformat\b', # * format
-  '^(?:e[xz]a|ls)\b\s+', # exa | eza | or ls
+  '^(?:e[xz]a|ls)\b\s+',               # exa | eza | or ls
 ]

@@ -12,10 +12,16 @@ if ! root="$(git rev-parse --show-toplevel)"; then
   exit 1
 fi
 
+if [[ "${PWD}" != "${root}" ]]; then
+  prefix="$(git rev-parse --show-prefix)"
+else
+  prefix
+fi
+
 cd "${root}" || exit 1
 
 dest="$(echo "$1" | tr / _)"
 
 for f in "${@:2}"; do
-  git show "${1}:${f}" "${f}.${dest}"
+  git show "${1}:${prefix}${f}" >"${prefix}${f}.${dest}"
 done

@@ -82,9 +82,9 @@ return {
       }
     end,
   },
-  { -- https://github.com/tpope/vim-rhubarb
-    'tpope/vim-rhubarb',
-    event = { 'VeryLazy' },
-  },
+  -- { -- https://github.com/tpope/vim-rhubarb
+  --   'tpope/vim-rhubarb',
+  --   event = { 'VeryLazy' },
+  -- },
   signs('gitsigns'),
 }

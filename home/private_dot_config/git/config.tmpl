@@ -1,8 +1,8 @@
 {{- /* Initialize variables for use in this file */ -}}
 {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
-{{- $commitTemplate := joinPath .chezmoi.homeDir ".config/git/commit-message" -}}
-{{- $coreAttributesFile := joinPath .chezmoi.homeDir ".config/git/attributes" -}}
-{{- $coreExcludesFile := joinPath .chezmoi.homeDir ".config/git/ignore" -}}
+{{- $commitTemplate := ".config/git/commit-message" -}}
+{{- $coreAttributesFile := ".config/git/attributes" -}}
+{{- $excludesFile := ".config/git/ignore" -}}
 {{- $corePager := "" -}}
 {{- $githubUser := "" -}}
 {{- $githubToken := "" -}}
@@ -10,9 +10,21 @@
 {{- $webBrowser := "" -}}
 
 {{- /* Set the values  */ -}}
-{{- if not (stat $commitTemplate) }}{{ $commitTemplate = "" }}{{ end -}}
-{{- if not (stat $coreAttributesFile) }}{{ $coreAttributesFile = "" }}{{ end -}}
-{{- if not (stat $coreExcludesFile) }}{{ $coreExcludesFile = "" }}{{ end -}}
+{{- if stat (join .chezmoi.homeDir $commitTemplate) -}}
+{{-   $commitTemplate = joinPath "~" $commitTemplate -}}
+{{- else -}}
+{{-   $commitTemplate = "" -}}
+{{- end -}}
+{{- if stat (join .chezmoi.homeDir $coreAttributesFile) -}}
+{{-   $coreAttributesFile = joinPath "~" $coreAttributesFile -}}
+{{- else -}}
+{{-   $coreAttributesFile = "" -}}
+{{- end -}}
+{{- if stat (join .chezmoi.homeDir $excludesFile) -}}
+{{-   $excludesFile = joinPath "~" $excludesFile -}}
+{{- else -}}
+{{-   $excludesFile = "" -}}
+{{- end -}}
 
 {{- if $programs.delta -}}
 {{-   $corePager = $programs.delta | quote -}}
@@ -36,11 +48,9 @@
 {{- end -}}
 
 [advice]
+  skippedCherryPicks = false
+  addEmptyPathspec = false
   statusHints = false
-	skippedCherryPicks = false
-
-[help]
-  autocorrect = 5
 
 [apply]
   whitespace = nowarn
@@ -50,10 +60,6 @@
   # sort = -committerdate
 
 [color]
-  branch = auto
-  diff = auto
-  pager = true
-  status = auto
   ui = auto
 
 [color "branch"]
@@ -70,26 +76,38 @@
 [commit]
   cleanup = scissors
   verbose = true
-{{- if $commitTemplate }}
-  template = {{ $commitTemplate }}
-{{- end }}
+{{- if $commitTemplate }}  template = {{ $commitTemplate | quote }}{{- end }}
+
+[conflicts]
+  editor = gvim
 
 [core]
   abbrev = 12
-  autocrlf = input
-  compression = -1
-  editor = vim
-  precomposeUnicode = true
-  safecrlf = true
-  whitespace = trailing-space,tab-in-indent,cr-at-eol,space-before-tab
 {{- if $coreAttributesFile }}
   attributesFile = {{ $coreAttributesFile  | quote }}
 {{- end }}
-{{- if $coreExcludesFile }}
-  excludesFile = {{ $coreExcludesFile | quote }}
+  autocrlf = input
+  compression = -1
+  editor = vim
+{{- if $excludesFile }}
+  excludesFile = {{ $excludesFile | quote }}
 {{- end }}
+  # hooksPath = ""
 {{- if $corePager }}
   pager = {{ $corePager }}
+{{- end }}
+  precomposeUnicode = true
+  safecrlf = true
+  whitespace = trailing-space,tab-in-indent,cr-at-eol,space-before-tab
+
+[credential]
+  helper = cache --timeout=3600
+{{- if $programs.gh }}
+[credential "https://github.com"]
+  helper = !{{ $programs.gh }} auth git-credential
+
+[credential "https://gist.github.com"]
+  helper = !{{ $programs.gh }} auth git-credential
 {{- end }}
 
 [feature]
@@ -102,9 +120,6 @@
 [format]
   pretty = %C(yellow)%h%C(reset) %C(red)%ad%C(reset) | %s%d %C(green)[%aN]%C(reset)
   signOff = true
-
-[pretty]
-	simple-oneline = "%C(yellow)%h%C(auto)%d %s <%C(green)%aN%C(reset)> (%C(blue)%ar%C(reset))"
 
 [gc]
   reflogexpire = 300
@@ -122,6 +137,12 @@
   extendRegexp = true
   lineNumber = true
 
+[help]
+  autocorrect = 7
+
+[init]
+  defaultBranch = main
+
 [log]
   date = short
   decorate = auto
@@ -133,28 +154,28 @@
   useSparse = true
 
 [pager]
-  difftool = true
-  # diff = delta
-  # log = delta
-  # reflog = delta
-  # show = delta
+  branch = false
+  grep = false
+
+[pretty]
+  simple-oneline = "%C(yellow)%h%C(auto)%d %s <%C(green)%aN%C(reset)> (%C(blue)%ar%C(reset))"
 
 [pull]
   ff = only
   rebase = true
 
 [push]
+  autoSetupRemote = true
   default = simple
   followTags = true
-  autoSetupRemote = true
 
 [rebase]
   autosquash = true
   autostash = true
   missingCommitCheck = true
 
-[credential]
-  helper = cache --timeout=3600
+[receive]
+  fsckobjects = true
 
 [stash]
   showPatch = true
@@ -167,6 +188,13 @@
 
 [tag]
   sort = version:refname
+
+[transfer]
+  fsckobjects = true
+
+# https://github.com/foriequal0/git-trim
+[trim]
+  bases = master,main,gh-pages
 
 [versionsort]
   suffix = ""
@@ -181,12 +209,19 @@
 [url "git@bitbucket.org:"]
   insteadOf = bb:
 # TODO: These should be chezmoi-configurable
-[url "git@github.com:kineticcommerce/"]
+[url "git@github.com:KineticCommerce/"]
   insteadOf = kinetic:
+[url "git@github.com:KineticCommerce/"]
+  insteadOf = https://github.com/KineticCommerce/
 [url "git@github.com:halostatue/"]
   insteadOf = halostatue:
+[url "git@github.com:halostatue/"]
+  insteadOf = https://github.com/halostatue/
+[url "git@github.com:mime-types/"]
+  insteadOf = https://github.com/mime-types/
 
-# TODO: Remove configuration from this file and always require per-repo configuration
+# TODO: Remove configuration from this file and always require per-repo
+# configuration, or use include user
 [user]
   useConfigOnly = true
   name = {{ .name }}
@@ -197,19 +232,14 @@
   browser = {{ $webBrowser }}
 {{- end }}
 
-[init]
-  # TODO: Possibly have a git template in chezmoi or an external
-  # templatedir = ~/.config/git/template
-  defaultBranch = main
-
 [rerere]
   enabled = true
 
 [sendemail]
-	annotate = true
-	confirm = always
-	thread = true
-	supersscc = self
+  annotate = true
+  confirm = always
+  thread = true
+  supersscc = self
 
 {{ if $sequenceEditor -}}
 [sequence]
@@ -232,3 +262,5 @@
 
 [include]
   path = ~/.config/git/signatures
+
+{{/* vim: set filetype=gitconfig: */}}

@@ -120,6 +120,8 @@
 # Justfile
 # justfile
 
+.config/configstore
+
 {{ if eq .chezmoi.os "linux" }}
 Library
 {{ else if eq .chezmoi.os "darwin" }}

@@ -1,23 +1,56 @@
+1password-cli
+act
+ansifilter
+bat
+bat-extras
 colima
 cosign
+crystal
+duf
+dust
+eza +doc+git
+fd
+fish
+flyctl
 fswatch
 gh
 git +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
+git-chglog
+git-cliff
 git-extras
+git-tools
 gitleaks
 go
 goreleaser
 grype
+hwatch
+hyperfine
+jq
+lazygit
+lima
 lua54-luarocks
+mdcat
+micro
 minisign
+moreutils +doc
+mpstats
 neovim
-pipx
+nim
+ouch
+pipx +python312
 port_cutleaves
-postgis3  +postgresql13+proj8+raster+topology
+postgis3 +postgresql13+proj8+raster+topology
 postgresql13
 postgresql13-server
 py311-pip
+ripgrep
 ruby-build
 ruby-install
+sd
+seaport
 shellcheck
+stgit
+tealdeer
+tilt
 trivy
+zoxide

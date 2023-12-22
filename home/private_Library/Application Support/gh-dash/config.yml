@@ -1,0 +1,57 @@
+prSections:
+  - title: Created
+    filters: 'is:open author:@me archived:false'
+    layout:
+      author: { hidden: true }
+      repo: { width: 30 }
+  - title: Review requests
+    filters: 'is:open review-requested:@me archived:false'
+    layout:
+      repo: { width: 30 }
+  - title: Assigned
+    filters: 'is:open assignee:@me archived:me'
+    layout:
+      repo: { width: 30 }
+  - title: Mentioned
+    filter: 'is:open mentions:@me -author:@me archived:false'
+    layout:
+      repo: { width: 30 }
+  - title: Kinetic
+    filters: 'is:open archived:false user:KineticCommerce'
+    layout:
+      repo: { width: 30 }
+  - title: Chezmoi
+    filters: 'is:open -author:@me repo:twpayne/chezmoi'
+    layout:
+      repo: { width: 30 }
+
+issuesSections:
+  - title: Created
+    filters: 'is:open author:@me archived:false'
+    layout:
+      author: { hidden: true }
+      repo: { width: 30 }
+  - title: Assigned
+    filters: 'is:open assignee:@me archived:me'
+    layout:
+      repo: { width: 30 }
+  - title: Mentioned
+    filter: 'is:open mentions:@me -author:@me archived:false'
+    layout:
+      repo: { width: 30 }
+  - title: Kinetic
+    filters: 'is:open archived:false user:KineticCommerce'
+    layout:
+      repo: { width: 30 }
+  - title: Chezmoi
+    filters: 'is:open -author:@me repo:twpayne/chezmoi'
+    layout:
+      repo: { width: 30 }
+
+defaults:
+  preview:
+    open: true
+    width: 50
+  prsLimit: 20
+  issuesLimit: 20
+  view: prs

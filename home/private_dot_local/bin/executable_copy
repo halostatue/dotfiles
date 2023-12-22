@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+set -o pipefail
+
+declare -a cmdline candidates
+declare cmd
+
+candidates=(pbcopy cb xclip xsel clipboard clip)
+
+[[ "${wayland_display}" ]] && candidates=(wl-copy "${candidates[@]}")
+
+if ! cmd="$(command -v "${candidates[@]}" | head -1)"; then
+  cat >&2 <<MISSING
+Cannot find a clipboard program. Expecting one of:
+    pbcopy     cb           wl-copy    xclip
+    xsel       clipboard    clip
+MISSING
+  exit 1
+fi
+
+case "${cmd}" in
+cb) cmdline=(cb --copy) ;;
+xclip) cmdline=(xclip -sel clip) ;;
+xsel) cmdline=(xsel --clipboard --input) ;;
+clipboard) cmdline=(clipboard --stdin) ;;
+*) cmdline=("${cmd}") ;;
+esac
+
+if [[ ! -t 0 ]]; then
+  "${cmdline[@]}"
+else
+  if [[ -f "$*" ]]; then
+    "${cmdline[@]}" <"$*"
+  else
+    echo "$*" | "${cmdline[@]}"
+  fi
+fi

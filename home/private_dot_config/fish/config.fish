@@ -1,13 +1,3 @@
-# Install fisher if not already installed.
-if not functions --query fisher
-    if not set --query XDG_CONFIG_HOME
-        set XDG_CONFIG_HOME ~/.config
-    end
-
-    curl -sSL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish \
-        -o $XDG_CONFIG_HOME/fish/functions/fisher.fish
-end
-
 # Set up local machine configuration files
 if functions --query __machine_config
     __machine_config platform host user
@@ -29,28 +19,28 @@ if not set --query --global DOCKER_BUILDKIT
     set --global --export DOCKER_BUILDKIT 1
 end
 
-# This should be an external, maybe (`halostatue/fish-tealdeer`?)
-if command --query tldr && test (command --search tldr) = (path resolve $HOME/.cargo/bin/tldr)
-    set --local completion
-    set --local need true
-    set --local home (path resolve $HOME)
-    set --local completions (string match --groups-only --regex '('$home'[^ ]+)' $fish_complete_path)
+# # This should be an external, maybe (`halostatue/fish-tealdeer`?)
+# if command --query tldr && test (command --search tldr) = (path resolve $HOME/.cargo/bin/tldr)
+#     set --local completion
+#     set --local need true
+#     set --local home (path resolve $HOME)
+#     set --local completions (string match --groups-only --regex '('$home'[^ ]+)' $fish_complete_path)
 
-    for completion in $completions
-        test -s $completion/tldr.fish || continue
-        set need false
-        break
-    end
+#     for completion in $completions
+#         test -s $completion/tldr.fish || continue
+#         set need false
+#         break
+#     end
 
-    if $need
-        set --local vendor (string match --groups-only --regex '('$home'[^ ]+/vendor_completions.d)' $completions)
+#     if $need
+#         set --local vendor (string match --groups-only --regex '('$home'[^ ]+/vendor_completions.d)' $completions)
 
-        mkdir -p $completion
-        curl -sSL \
-            https://raw.githubusercontent.com/dbrgn/tealdeer/main/completion/fish_tealdeer \
-            -o $completion/tldr.fish
-    end
-end
+#         mkdir -p $completion
+#         curl -sSL \
+#             https://raw.githubusercontent.com/dbrgn/tealdeer/main/completion/fish_tealdeer \
+#             -o $completion/tldr.fish
+#     end
+# end
 
 set CDPATH . ~/.links/ ~/dev ~/dev/kinetic ~/oss ~/oss/github ~
 
@@ -306,6 +296,16 @@ if status is-interactive
     else if command --query starship
         starship init fish | source
     end
+
+    if functions --query transient_execute
+        function __transient_prompt_func
+            set --local color 6d6f83
+            if test $transient_pipestatus[-1] -ne 0
+                set color red
+            end
+            printf (set_color $color)"❯ "(set_color normal)
+        end
+    end
 end
 
 if test -x $HOME/.bun/bin/bun
@@ -397,5 +397,22 @@ end
 abbr --add '!$' --position anywhere --function last_history_argument
 
 ulimit -n 10480
+
+# https://github.com/meaningful-ooo/sponge
+if functions --query _sponge_remove_from_history
+    set --global --export sponge_purge_only_on_exit true
+end
+
+# Prepare aqua
+
+set --global --export AQUA_CONFIG_DIR "$HOME/.config/aquaproj-aqua"
+set --global --export AQUA_GLOBAL_CONFIG "$AQUA_CONFIG_DIR/aqua.yaml"
+
+if test -f "$AQUA_CONFIG_DIR/policy.yaml"
+    set --global --export AQUA_POLICY_CONFIG "$AQUA_CONFIG_DIR/policy.yaml"
+end
+
+set --global --export AQUA_PROGRESS_BAR true
+set --global --export AQUA_ROOT_DIR "$HOME/.local/share/aquaproj-aqua/bin"
 
 emit fish_postexec
