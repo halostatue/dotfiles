@@ -22,6 +22,9 @@
   tool = {{ $diffTool | quote }}
 {{- end }}
 
+[diff "rspec"]
+  xfuncname = "^[ \t]*((RSpec|describe|context|it|before|after|around|feature|scenario)[ \t].*)$"
+
 [diff "lisp"]
   xfuncname = "^(\\(.*)$"
   # xfuncname = "^(\\((cl-)?def(un|macro|method).*)$"

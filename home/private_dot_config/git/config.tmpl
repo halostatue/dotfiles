@@ -31,13 +31,8 @@
 {{- else if $programs.diff_so_fancy -}}
 {{-   $corePager = printf "%q | less --tabs=4 -RFX" $programs.diff_so_fancy -}}
 {{- end -}}
-{{- if ne (dig "github" "user" "<missing>" .) "<missing>" -}}
-{{-   $githubUser = .github.user -}}
-{{-   $v := dig "github" "cli_tools" nil (includeTemplate "1password_api_credentials.tmpl" . | fromJson) -}}
-{{-   if $v -}}
-{{-     $githubToken = $v.credential.value -}}
-{{-   end -}}
-{{- end -}}
+{{- $githubUser = .github.user -}}
+{{- $githubToken = onepasswordRead "op://Personal/github-cli-tools/credential" .onepassword.personal -}}
 {{- if $programs.interactive_rebase_tool -}}
 {{-   $sequenceEditor = $programs.interactive_rebase_tool | quote }}
 {{- end -}}

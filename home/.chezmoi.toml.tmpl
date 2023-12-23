@@ -1,7 +1,8 @@
 {{- $email := promptStringOnce . "email" "Email" -}}
 {{- $name := promptStringOnce . "name" "Name" -}}
 {{- $github_username := promptStringOnce . "github.user" "Github Username" -}}
-{{- $aws_credentials_source := promptStringOnce . "aws.credentials_source" "AWS Credentials Source" -}}
+{{- $personal_1password_account := promptStringOnce . "onepassword.personal" "1Password Personal Account" -}}
+{{- $work_1password_account := promptStringOnce . "onepassword.work" "1Password Work Account" -}}
 
 [scriptEnv]
 DEBUG_SCRIPTS = {{ if .debug_scripts }}"true"{{ else }}"false"{{ end }}
@@ -10,19 +11,11 @@ DEBUG_SCRIPTS = {{ if .debug_scripts }}"true"{{ else }}"false"{{ end }}
 email = {{ $email | toToml }}
 name = {{ $name | toToml }}
 
-debug_scripts = {{ if .debug_scripts }}true{{ else }}false {{ end }}
+debug_scripts = {{ if .debug_scripts }}true{{ else }}false{{ end }}
 
-{{ if (dig "aws" "credentials_source" false .) -}}
-[data.aws]
-credentials_source = {{ .aws.credentials_source | quote }}
-{{- else -}}
-## We can populate ~/.aws/credentials from file fragments in 1Password.
-## PRs would be considered for populating ~/.aws/credentials from other sources.
-##
-## If this is unset, Chezmoi is set to ignore ~/.aws/credentials.
-# [data.aws]
-# credentials_source = "1password"
-{{- end }}
+[data.onepassword]
+personal = {{ $personal_1password_account | toToml }}
+work = {{ $work_1password_account | toToml }}
 
 {{ if (. | dig "git" "signing" false) -}}
 [data.git.signing]
@@ -38,55 +31,6 @@ credentials_source = {{ .aws.credentials_source | quote }}
 
 [data.github]
 user = {{ $github_username | toToml }}
-
-{{ if (. | dig  "tokens" "github" false) }}
-{{- range $key, $value := .tokens.github -}}{{- if (typeIsLike "map[string]interface {}" $value) -}}
-[data.tokens.github.{{ $key }}]
-{{ $value | toToml }}
-{{ end -}}{{- end -}}
-{{- else -}}
-## Add GitHub token options here. Only 1Password retrieval is supported, and the type is
-## expected to be an API Credential type with at least 'user' and 'credential' values
-## set.
-##
-## We look for the following tokens:
-##
-## - homebrew_api (~/.config/brew/config.fish.tmpl, ~/.config/brew/config.sh.tmpl)
-## - homebrew_packages (~/.config/brew/config.fish.tmpl, ~/.config/brew/config.sh.tmpl)
-## - github_keystore (~/.github_keystore)
-## - vim_rhubarb (~/.netrc)
-## - github_hub (~/.config/hub)
-## - github_gh (~/.config/gh/hosts.yml)
-##
-# [data.tokens.github.homebrew_api]
-# type = '1p'
-# name = '***'
-# vault = '***'
-# account = '***'
-{{- end -}}
-
-{{ if (. | dig "tokens" "rubygems" false) }}
-{{- range $key, $value := .tokens.rubygems -}}
-{{-   if (typeIsLike "map[string]interface {}" $value) -}}
-[data.tokens.rubygems.{{ $key }}]
-{{ $value | toToml }}
-{{ end -}}{{- end -}}
-{{- else -}}
-## Rubygems Configuration
-##
-## This uses the same format as GitHub token options.
-# [data.tokens.rubygems.geminabox]
-# type = '1p'
-# name = '***'
-# vault = '***'
-# account = '***'
-#
-# [data.tokens.rubygems.apikey]
-# type = '1p'
-# name = '***'
-# vault = '***'
-# account = '***'
-{{- end }}
 
 [data.ruby.hoe]
 email = {{ $email | toToml }}

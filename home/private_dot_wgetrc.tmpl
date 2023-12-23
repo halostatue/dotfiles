@@ -1,10 +1,13 @@
+# chezmoi:template:left-delimiter="# [[" right-delimiter="]]"
+# [[- $programs := includeTemplate "programs.tmpl" . | fromJson -]]
 # Use the server-provided last modification date, if available
 timestamping = on
 
 # Do not go up in the directory structure when downloading recursively
 no_parent = on
 
-# Wait 60 seconds before timing out. This applies to all timeouts: DNS, connect and read. (The default read timeout is 15 minutes!)
+# Wait 60 seconds before timing out. This applies to all timeouts: DNS, connect
+# and read. (The default read timeout is 15 minutes!)
 timeout = 60
 
 # Retry a few times when a download fails, but don’t overdo it. (The default is 20!)
@@ -19,14 +22,14 @@ trust_server_names = on
 # Follow FTP links from HTML documents by default
 follow_ftp = on
 
-# Add a `.html` extension to `text/html` or `application/xhtml+xml` files that lack one, or a `.css` extension to `text/css` files that lack one
+# Add a `.html` extension to `text/html` or `application/xhtml+xml` files that
+# lack one, or a `.css` extension to `text/css` files that lack one
 adjust_extension = on
 
+# [[ if and $programs.wget (output "wget" "--version" | contains "+iri") -]]
 # Use UTF-8 as the default system encoding
-# Disabled as it makes `wget` builds that don’t support this feature unusable.
-# Does anyone know how to conditionally configure a wget setting?
-# http://unix.stackexchange.com/q/34730/6040
-#local_encoding = UTF-8
+local_encoding = UTF-8
+# [[- end ]]
 
 # Ignore `robots.txt` and `<meta name=robots content=nofollow>`
 robots = off
@@ -36,3 +39,5 @@ server_response = on
 
 # Disguise as IE 9 on Windows 7
 user_agent = Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
+
+dot_style = giga

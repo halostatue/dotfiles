@@ -1,5 +1,9 @@
-{{- $v := dig "rubygems" "geminabox" nil (includeTemplate "1password_api_credentials.tmpl" . | fromJson) -}}
-{{- if $v -}}
+{{- $geminabox := onepasswordDetailsFields "rubygems-geminabox-kinetic" "" .onepassword.work }}
+{{-
+  $url := printf "https://%s:%s@%s"
+    $geminabox.username.value
+    $geminabox.credential.value
+    $geminabox.hostname.value
+-}}
 ---
-:host: "https://{{ $v.username.value }}:{{ $v.credential.value }}@{{ $v.hostname.value }}/"
-{{- end }}
+:host: {{ $url | quote }}
