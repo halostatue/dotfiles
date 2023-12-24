@@ -44,48 +44,65 @@ sqitch.conf text whitespace=blank-at-eol,space-before-tab,trailing-space
 {Rakefile,*.rake} diff=ruby
 
 # Various Binary Document Types
-{{ if or $programs.pdfinfo $programs.pdftotext -}}
-*.pdf diff=pdf
-{{ end }}
 {{ if $programs.exiftool -}}
 *.png diff=exif
 *.jpg diff=exif
 *.jpeg diff=exif
 *.gif diff=exif
-{{- end }}
+{{ end -}}
+
+{{ if or $programs.pdfinfo $programs.pdftotext -}}
+*.pdf diff=pdf
+{{ end -}}
+
 {{ if or $programs.djvutxt $programs.pdfinfo -}}
 *.djvu diff=djvu
-{{- end }}
+{{ end -}}
+
 {{ if or $programs.odt2txt $programs.pandoc -}}
 *.odt diff=odt
-{{- end }}
+{{ end -}}
+
+{{ if $programs.soffice -}}
 *.odp diff=libreoffice
 *.ods diff=libreoffice
+{{ end -}}
+
 {{ if or $programs.antiword $programs.catdoc $programs.wvText -}}
 *.doc diff=doc
-{{- end }}
+{{ end -}}
+
 {{ if or $programs.in2csv $programs.soffice $programs.xlscat -}}
 *.xls diff=xls
-{{- end }}
+{{ end -}}
+
+{{ if $programs.catppt -}}
 *.ppt diff=ppt
+{{ end -}}
+
 {{ if or $programs.docx2txt $programs.pandoc -}}
 *.docx diff=docx
-{{- end }}
+{{ end -}}
+
 {{ if or $programs.in2csv $programs.soffice $programs.xlsx2csv $programs.xlsx2csvPy -}}
 *.xlsx diff=xlsx
-{{- end }}
+{{ end -}}
+
 {{ if $programs.pptx2md -}}
 *.pptx diff=pptx
-{{- end }}
+{{ end -}}
+
 {{ if $programs.unrtf -}}
 *.rtf diff=rtf
-{{- end }}
+{{ end -}}
+
 {{ if $programs.pandoc -}}
 *.epub diff=pandoc
-{{- end }}
+{{ end -}}
+
 {{ if $programs.tika -}}
 *.chm diff=tika
 *.mhtml? diff=tika
 *.{class,jar} diff=tika
 *.{rar,7z,zip} diff=tika
-{{- end }}
+{{ end -}}

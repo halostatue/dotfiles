@@ -1,11 +1,6 @@
 {{- /* Initialize variables for use in this file */ -}}
 {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
 
-{{- /* Set the values */ -}}
-{{- $diffGuitool := or $programs.ksdiff "" -}}
-{{- $diffTool := or $programs.difftastic $programs.delta $programs.icdiff -}}
-{{- $gvimCommand := or $programs.gvim $programs.mvim -}}
-
 [diff]
   algorithm = histogram
   colorMoved = dimmed-zebra # zebra
@@ -15,12 +10,18 @@
   renameLimit = 8192
   renames = copies
   submodule = log
-{{- if $diffGuitool }}
-  guitool = {{ $diffGuitool | quote }}
-{{- end }}
-{{- if $diffTool }}
-  tool = {{ $diffTool | quote }}
-{{- end }}
+
+[merge]
+  log = true
+  conflictstyle = zdiff3
+  ff = only
+
+[difftool]
+  prompt = false
+
+[mergetool]
+  keepBackup = false
+  prompt = false
 
 [diff "rspec"]
   xfuncname = "^[ \t]*((RSpec|describe|context|it|before|after|around|feature|scenario)[ \t].*)$"
@@ -41,141 +42,176 @@
 [diff "texinfo"]
   # from http://git.savannah.gnu.org/gitweb/?p=coreutils.git;a=blob;f=.gitattributes;h=c3b2926c78c939d94358cc63d051a70d38cfea5d;hb=HEAD
   xfuncname = "^@node[ \t][ \t]*\\([^,][^,]*\\)"
-{{ if $programs.exiftool -}}
 
+{{ if $programs.ksdiff -}}
+[diff]
+  guitool = {{ $programs.ksdiff | quote }}
+
+[difftool "ksdiff"]
+  cmd = {{ $programs.ksdiff | quote }} --partial-changeset --relative-path "${MERGED}" -- "${LOCAL}" "${REMOTE}"
+
+[mergetool "ksdiff"]
+  cmd = {{ $programs.ksdiff | quote }} --merge --output "${MERGED}" --base "${BASE}" -- "${LOCAL}" --snapshot "${REMOTE}" --snapshot
+  trustExitCode = true
+
+{{ end -}}
+
+{{- if $tool := or $programs.difftastic $programs.delta $programs.icdiff -}}
+[diff]
+  tool = {{ quote $tool }}
+
+{{ end -}}
+
+{{ if $programs.exiftool -}}
 [diff "exif"]
   binary = true
   textconv = {{ $programs.exiftool }}
-{{- end }}
-{{ if or $programs.pdfinfo $programs.pdftotext -}}
 
+{{ end -}}
+
+{{- if $tool := or $programs.pdftotext $programs.pdfinfo -}}
+{{-  if eq $tool $programs.pdftotext -}}
+{{-    $tool = printf "sh -c '%q -layout %q -enc UTF-8 -nopgbrk -q -'" $tool "$programs.0" -}}
+{{-  else -}}
+{{-    $tool = quote $tool -}}
+{{-  end -}}
 [diff "pdf"]
   binary = true
   cachetextconv = true
-  textconv = {{ if $programs.pdftotext -}}
-                sh -c '{{ $programs.pdftotext | quote }} -layout "$programs.0" -enc UTF-8 -nopgbrk -q -'
-             {{- else -}}
-                {{ $programs.pdfinfo | quote }}
-            {{- end -}}
-{{- end }}
-{{ if or $programs.djvutxt $programs.pdfinfo -}}
+  textconv = {{ $tool }}
 
+{{ end -}}
+
+{{ if $tool := or $programs.djvutxt $programs.pdfinfo -}}
 [diff "djvu"]
   binary = true
   cachetextconv = true
-  textconv = {{ if $programs.djvutxt -}}
-                {{ $programs.djvutxt | quote }}
-             {{- else -}}
-                {{ $programs.pdfinfo | quote }}
-             {{- end -}}
-{{ end }}
-{{ if or $programs.odt2txt $programs.pandoc -}}
+  textconv = {{ $tool | quote }}
 
+{{ end -}}
+
+{{ if $tool := or $programs.odt2txt $programs.pandoc -}}
+{{-  if eq $tool $programs.pandoc -}}
+{{-    $tool = printf "%q --standalone --from=odt --to=plain" $tool -}}
+{{-  else -}}
+{{-    $tool = quote $tool -}}
+{{-  end -}}
 [diff "odt"]
   binary = true
   cachetextconv = true
-  textconv = {{ if $programs.odt2txt -}}
-                {{ $programs.odt2txt | quote }}
-             {{- else -}}
-                {{ $programs.pandoc | quote }} --standalone --from=odt --to=plain
-             {{- end -}}
-{{- end }}
-{{ if or $programs.antiword $programs.catdoc $programs.wvText -}}
+  textconv = {{ $tool }}
 
+{{ end -}}
+
+{{ if $tool := or $programs.wvText $programs.antiword $programs.catdoc -}}
+{{-  if eq $tool $programs.antiword -}}
+{{-    $tool = printf "%q -" $tool -}}
+{{-  else -}}
+{{-    $tool = quote $tool -}}
+{{-  end -}}
 [diff "doc"]
   binary = true
   cachetextconv = true
-  textconv = {{ if $programs.wvText -}}
-                {{ $programs.wvText | quote }}
-             {{- else if $programs.antiword -}}
-                {{ $programs.antiword | quote }} -
-             {{- else -}}
-                {{ $programs.catdoc | quote }}
-             {{- end -}}
-{{- end }}
-{{ if or $programs.in2csv $programs.soffice $programs.xlscat -}}
+  textconv = {{ $tool }}
 
+{{ end -}}
+
+{{ if $tool := or $programs.in2csv $programs.xlscat $programs.soffice -}}
+{{-  if eq $tool $programs.xlscat -}}
+{{-    $tool = printf "%q a UTF-8" $tool -}}
+{{-  else if eq $tool $programs.soffice -}}
+{{-    $tool = printf "%q --headless --convert-to csv" $tool -}}
+{{-  else -}}
+{{-    $tool = quote $tool -}}
+{{-  end -}}
 [diff "xls"]
   binary = true
   cachetextconv = true
-  textconv = {{ if $programs.in2csv -}}
-                {{ $programs.in2csv | quote }}
-             {{- else if $programs.xlscat -}}
-                {{ $programs.xlscat | quote }} a UTF-8
-             {{- else -}}
-                {{ $programs.soffice | quote }} --headless --convert-to csv
-             {{- end -}}
-{{- end }}
-{{ if or $programs.docx2txt $programs.pandoc -}}
+  textconv = {{ $tool }}
 
+{{ end -}}
+
+{{ if $tool := or $programs.docx2txt $programs.pandoc -}}
+{{-  if eq $tool $programs.pandoc -}}
+{{-    $tool = printf "%q --standalone --from=docx --to=plain" $tool }}
+{{-  else -}}{{/* doc2txt */}}
+{{-    $tool = printf "sh -c '%q %q -" $tool "$0" -}}
+{{-  end -}}
 [diff "docx"]
   binary = true
   cachetextconv = true
-  textconv = {{ if $programs.pandoc -}}
-                {{ $programs.pandoc | quote }} --standalone --from=docx --to=plain
-             {{- else -}}
-                sh -c '{{ $programs.docx2txt | quote }} "$0" -'
-             {{- end -}}
-{{- end }}
-{{ if or $programs.in2csv $programs.soffice $programs.xlsx2csv $programs.xlsx2csvPy -}}
+  textconv = {{ $tool }}
 
+{{ end -}}
+
+{{ if $tool := or $programs.in2csv $programs.soffice $programs.xlsx2csv $programs.xlsx2csvPy -}}
+{{-  if eq $tool $programs.soffice }}
+{{-    $tool = printf "%q --headless --convert-to csv" $tool -}}
+{{-  else -}}
+{{-    $tool = quote $tool -}}
+{{- end -}}
 [diff "xlsx"]
   binary = true
   cachetextconv = true
-  textconv = {{ if $programs.xlsx2csv -}}
-                {{ $programs.xlsx2csv | quote }}
-             {{- else if $programs.xlsx2csvPy -}}
-                {{ $programs.xlsx2csvPy | quote }}
-             {{- else if $programs.in2csv -}}
-                {{ $programs.in2csv | quote }}
-             {{- else -}}
-                {{ $programs.soffice | quote }} --headless --converto-to csv
-             {{- end -}}
-{{- end }}
-{{ if $programs.pptx2md -}}
+  textconv = {{ $tool }}
 
+{{ end -}}
+
+{{ if $programs.pptx2md -}}
+{{- $cache := "~/.cache/git/presentation.md" }}
+{{- $tool :=
+  printf "sh -c '%s --disable_image --disable_wmf -i %s -o %s >/dev/null && cat %s"
+    $programs.pptx2md "$0" $cache $cache
+-}}
 [diff "pptx"]
   binary = true
   cachetextconv = true
-  textconv = sh -c '{{ $programs.pptx2md | quote }} --disable_image --disable_wmf -i "$0" -o ~/.cache/git/presentation.md >/dev/null && cat ~/.cache/git/presentation.md'
-{{- end }}
-{{ if $programs.unrtf -}}
+  textconv = {{ $tool }}
 
+{{ end -}}
+
+{{ if $programs.unrtf -}}
 [diff "rtf"]
   binary = true
   cachetextconv = true
   textconv = {{ $programs.unrtf | quote }} --text
-{{- end }}
-{{ if $programs.pandoc -}}
 
+{{ end -}}
+
+{{ if $programs.pandoc -}}
 [diff "epub"]
   binary = true
   cachetextconv = true
   textconv = {{ $programs.pandoc | quote }} --standalone --from=epub --to=plain
-{{- end }}
-{{ if $programs.tika -}}
 
+{{ end -}}
+
+{{ if $programs.tika -}}
+# [Tika](https://tika.apache.org/download.html)
 [diff "tika"]
   binary = true
   cachetextconv = true
-  textconv = {{ $programs.tika | quote }} --text # [Tika](https://tika.apache.org/download.html)
-{{- end }}
-{{ if $programs.soffice -}}
+  textconv = {{ $programs.tika | quote }} --text
 
+{{ end -}}
+
+{{ if $programs.soffice -}}
 [diff "libreoffice"]
   binary = true
   cachetextconv = true
   textconv = {{ $programs.soffice | quote }} --cat
-{{- end }}
-{{ if $programs.catppt -}}
 
+{{ end -}}
+
+{{ if $programs.catppt -}}
 [diff "ppt"]
   binary = true
   cachetextconv = true
   textconv = {{ $programs.catppt | quote }}
-{{- end }}
-{{ if $programs.delta -}}
 
+{{ end -}}
+
+{{ if $programs.delta -}}
 [delta]
   navigate = true
   side-by-side = true
@@ -186,49 +222,32 @@
 
 [difftool "delta"]
   cmd = {{ $programs.delta | quote }} "${LOCAL}" "${REMOTE}" "${MERGED}"
-{{ end }}
 
-[difftool]
-  prompt = false
+{{ end -}}
 
 {{ if $programs.difftastic -}}
 [difftool "difftastic"]
   cmd = {{ $programs.difftastic | quote }} "${LOCAL}" "${REMOTE}"
-{{- end }}
-{{ if $programs.icdiff -}}
 
+{{ end -}}
+
+{{ if $programs.icdiff -}}
 [difftool "icdiff"]
   cmd = {{ $programs.icdiff | quote }} --line-numbers "${LOCAL}" "${REMOTE}"
-{{- end }}
 
-[merge]
-  log = true
-  conflictstyle = zdiff3
-  ff = only
+{{ end -}}
 
-[mergetool]
-  keepBackup = false
-  prompt = false
-{{ if $gvimCommand -}}
-
+{{ if $tool := or $programs.gvim $programs.mvim -}}
 [mergetool "gvim"]
-  cmd = {{ $gvimCommand | quote }} -d --remote-wait-silent "${LOCAL}" "${MERGED}" "${REMOTE}"
+  cmd = {{ quote $tool }} -d --remote-wait-silent "${LOCAL}" "${MERGED}" "${REMOTE}"
   trustExitCode = true
-{{- end }}
-{{ if $programs.vim -}}
+{{ end -}}
 
+{{ if $programs.vim -}}
 [mergetool "vimdiff"]
   cmd = {{ $programs.vim | quote }} -d "${LOCAL}" "${MERGED}" "${REMOTE}"
   trustExitCode = true
-{{- end }}
-{{ if $programs.ksdiff -}}
 
-[difftool "ksdiff"]
-  cmd = {{ $programs.ksdiff | quote }} --partial-changeset --relative-path "${MERGED}" -- "${LOCAL}" "${REMOTE}"
-
-[mergetool "ksdiff"]
-  cmd = {{ $programs.ksdiff | quote }} --merge --output "${MERGED}" --base "${BASE}" -- "${LOCAL}" --snapshot "${REMOTE}" --snapshot
-  trustExitCode = true
-{{- end }}
+{{ end -}}
 
 # vim: ft=gitconfig
