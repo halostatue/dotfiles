@@ -129,6 +129,10 @@ Library
 .config/lazygit
 {{ end }}
 
+{{ if not (stat "/Applications/Chime.app/Contents/MacOS/chimecli") }}
+.local/bin/chime
+{{ end }}
+
 {{ if not (lookPath "alacritty") }}
 .config/fish/alacritty.fish
 .config/alacritty/alacritty.yml
