@@ -99,35 +99,6 @@ if functions --query has:keg
 end
 
 if status is-interactive
-    if set --local bat (command --search bat batcat)[1]
-        set bat (basename $bat)
-        abbr --add cat $bat
-
-        if ! set --query PAGER
-            set --global --export PAGER $bat --style plain
-        end
-
-        if ! set --query MANPAGER
-            set --global --export MANPAGER "sh -c 'col -bx | $bat --language man --plain'"
-        end
-
-        if command --query batpipe
-            batpipe | source
-        end
-
-        if command --query batman
-            abbr --add man batman
-        else if abbr --query man && abbr --show | string match -q -r 'man\s+batman'
-            abbr --erase man
-        end
-
-        if command --query batdiff && command --query delta
-            set --export BATDIFF_USE_DELTA true
-        end
-    else if abbr --query cat && abbr --show | string match -q -r 'cat\s+bat'
-        abbr --erase cat
-    end
-
     if command --query rtx
         # rtx activate --status fish | source
         rtx activate fish | source
@@ -330,21 +301,6 @@ end
 
 if command --query fortune && status is-interactve
     fortune -s
-end
-
-
-if set --local eza (command --search eza exa)[1]
-    set eza (basename $eza)
-    abbr --add ls $eza
-    abbr --add lg $eza --git
-    abbr --add l $eza -lah
-    abbr --add la $eza -a
-    abbr --add ll $eza -l
-    abbr --add lt $eza -lT
-else
-    abbr --add l ls -lAh
-    abbr --add la ls -A
-    abbr --add ll ls -l
 end
 
 if command --query fly && command --query flyctl

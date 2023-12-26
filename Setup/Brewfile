@@ -3,31 +3,16 @@ tap "homebrew/bundle"
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions"
 tap "homebrew/services"
-tap "twilio/brew"
 
-brew "adr-tools" # CLI tool for working with Architecture Decision Records
-brew "aerc" # Email client that runs in your terminal
-brew "ansifilter" # Strip or convert ANSI codes into HTML, (La)Tex, RTF, or BBCode
 brew "antiword" # Utility to read Word (.doc) files
-brew "aria2" # Download with resuming and segmented downloading
-brew "aspell" # Spell checker with better logic than ispell
-brew "bash" # Bourne-Again SHell, a UNIX command interpreter
 brew "bomber" # Scans Software Bill of Materials for security vulnerabilities
 brew "ca-certificates" # Mozilla CA certificate store
-brew "cabextract" # Extract files from Microsoft cabinet files
-brew "catimg" # Insanely fast image printing in your terminal
-brew "cfssl" # CloudFlare's PKI toolkit
-brew "chafa" # Versatile and fast Unicode/ASCII/ANSI graphics renderer
-brew "chrome-cli" # Control Google Chrome from the command-line
 brew "cliam" # Cloud agnostic IAM permissions enumerator
 brew "cloc" # Statistics utility to count lines of code
 brew "comby" # Tool for changing code across many languages
 brew "csvtk" # Cross-platform, efficient and practical CSV/TSV toolkit in Golang
 brew "datasette" # Open source multi-tool for exploring and publishing data
-brew "dhex" # Ncurses based advanced hex editor featuring diff mode and more
 brew "diff-so-fancy" # Good-lookin' diffs with diff-highlight and more
-brew "diffoscope" # In-depth comparison of files, archives, and directories
-brew "direnv" # Load/unload environment variables based on $PWD
 brew "dive" # Tool for exploring each layer in a docker image
 brew "docker" # Pack, ship and run any application as a lightweight container
 brew "docker-buildx" # Docker CLI plugin for extended build capabilities with BuildKit
@@ -36,42 +21,29 @@ brew "docker-credential-helper" # Platform keystore credential helper for Docker
 brew "docker-credential-helper-ecr" # Docker Credential Helper for Amazon ECR
 brew "docker-slim" # Minify and secure Docker images
 brew "dockle" # Simple security auditing, helping build the Best Docker Images
-brew "dos2unix" # Convert text between DOS, UNIX, and Mac formats
 brew "epubcheck" # Validate EPUB files, version 2.0 and later
 brew "fclones" # Efficient Duplicate File Finder
 brew "flarectl" # CLI application for interacting with a Cloudflare account
 brew "fping" # Scriptable ping program for checking if multiple hosts are up
 brew "fzf" # Command-line fuzzy finder written in Go
 brew "fzy" # Fast, simple fuzzy text selector with an advanced scoring algorithm
-brew "gawk" # GNU awk utility
-brew "gettext" # GNU internationalization (i18n) and localization (l10n) library
 brew "git" # Distributed revision control system
 brew "git-bug" # Distributed, offline-first bug tracker embedded in git, with bridges
-brew "git-delta" # Syntax-highlighting pager for git and diff output
 brew "gitbatch" # Manage your git repositories in one place
-brew "gnu-sed" # GNU implementation of the famous stream editor
-brew "graphviz" # Graph visualization software from AT&T and Bell Labs
-brew "jq" # Lightweight and flexible command-line JSON processor
+brew "gitleaks" # Audit git repos for secrets
 brew "lazydocker" # Lazier way to manage everything docker
 brew "lazygit" # Simple terminal UI for git commands
 brew "lnav" # Curses-based tool for viewing and analyzing log files
-brew "localstack" # Fully functional local AWS cloud stack
-brew "make" # Utility for directing compilation
 brew "mas" # Mac App Store command-line interface
 brew "moreutils" # Collection of tools that nobody wrote when UNIX was young
-brew "neovim" # Ambitious Vim-fork focused on extensibility and agility
-brew "p7zip" # 7-Zip (high compression file archiver) implementation
 brew "pam-reattach" # PAM module for reattaching to the user's GUI (Aqua) session
 brew "pandoc" # Swiss-army knife of markup format conversion
 brew "pv" # Monitor data's progress through a pipe
-brew "qprint" # Encoder and decoder for quoted-printable encoding
 brew "rename" # Perl-powered file rename script with many helpful built-ins
 brew "scc" # Fast and accurate code counter with complexity and COCOMO estimates
-brew "scummvm" # Graphic adventure game interpreter
 brew "shellcheck" # Static analysis and lint tool, for (ba)sh scripts
 brew "shfmt" # Autoformat shell script source code
 brew "syft" # CLI for generating a Software Bill of Materials from container images
-brew "tag" # Manipulate and query tags on macOS files
 brew "tectonic" # Modernized, complete, self-contained TeX/LaTeX engine
 brew "terminal-notifier" # Send macOS User Notifications from the command-line
 brew "terracognita" # Reads from existing Cloud Providers and generates Terraform code
@@ -80,16 +52,13 @@ brew "terraformer" # CLI tool to generate terraform files from existing infrastr
 brew "tflint" # Linter for Terraform files
 brew "tfsec" # Static analysis security scanner for your terraform code
 brew "the_silver_searcher" # Code-search similar to ack
-brew "tig" # Text interface for Git repositories
-brew "tmate" # Instant terminal sharing
-brew "tnef" # Microsoft MS-TNEF attachment unpacker
 brew "trivy" # Vulnerability scanner for container images, file systems, and Git repos
-brew "twilio/brew/twilio" # unleash the power of Twilio from your command prompt
 brew "tz" # CLI time zone visualizer
 brew "universal-ctags" # Maintained ctags implementation
 brew "watch" # Executes a program periodically, showing output fullscreen
 brew "watchexec" # Execute commands when watched files change
 brew "wget" # Internet file retriever
+brew "wxwidgets" # Cross-platform C++ GUI toolkit
 brew "xdg-ninja" # Check your $HOME for unwanted files and directories
 brew "xmlstarlet" # XML command-line utilities
 brew "xq" # Command-line XML and HTML beautifier and content extractor
@@ -104,7 +73,6 @@ cask "anki" # Memory training application
 cask "anydesk" # Allows connection to a computer remotely
 cask "bbedit" # Text, code, and markup editor
 cask "bruno" # Opensource IDE for exploring and testing api's
-cask "calibre" # E-books management software
 cask "charles" # Web debugging Proxy application
 cask "chromium" # Free and open-source web browser
 cask "contour" # Terminal emulator
@@ -214,7 +182,6 @@ cask "font-symbols-only-nerd-font" # Developer targeted fonts with a high number
 
 mas "1Blocker", id: 1365531024
 mas "1Password for Safari", id: 1569813296
-mas "Abyss", id: 1507396839
 mas "Acorn", id: 1547371478
 mas "Actions", id: 1586435171
 mas "Baking Soda", id: 1601151613
@@ -241,6 +208,7 @@ mas "Image2icon", id: 992115977
 mas "Keynote", id: 409183694
 mas "Kindle", id: 302584613
 mas "Kingdoms: Merge & Build", id: 1636872154
+mas "Later", id: 1507396839
 mas "Mactracker", id: 430255202
 mas "MarkDownload - Markdown Web Clipper", id: 1554029832
 mas "MenubarX", id: 1575588022
