@@ -1,9 +1,11 @@
 #! /usr/bin/env bash
 
-declare engine image mountopt version
+declare engine image mountopt aws_cli_version force_tty read_write
 engine="${ENGINE:-docker}" # for planned compatibility with podman
-version="${VERSION:-2.13.17}"
-image="${IMAGE:-kineticcafe/aws-cli-session-manager:${version}}"
+aws_cli_version="${AWS_CLI_VERSION:-2.15.6}"
+image="${IMAGE:-ghcr.io/kineticcafe/aws-cli-session-manager:${aws_cli_version}}"
+force_tty=false
+read_write=false
 mountopt=",readonly" # default to readonly config/credential mounting
 
 declare -a args interactive mounts passopt
@@ -21,6 +23,8 @@ mounts=(
 while (($#)); do
   case "$1" in
   --non-interactive) interactive=() ;;
+  --force-tty) force_tty=true ;;
+  --read-write) read_write=true ;;
   *) args+=("$1") ;;
   esac
   shift
@@ -29,7 +33,14 @@ done
 set -- "${args[@]}"
 
 if ! [[ -t 0 ]]; then
+  if [[ "${force_tty}" == "true" ]]; then
+    echo >&2 "Cannot --force-tty without a TTY."
+    exit 1
+  fi
+
   interactive=()
+elif [[ "${force_tty}" == "true" ]]; then
+  interactive=(--interactive --tty)
 fi
 
 if [[ "$(basename "$0")" == aws_completer ]]; then
@@ -39,7 +50,7 @@ if [[ "$(basename "$0")" == aws_completer ]]; then
   passopt+=(--entrypoint aws_completer)
 elif [[ "$1" == sh ]] || [[ "$1" == shell ]]; then
   if ! [[ -t 0 ]]; then
-    echo >&2 "Cannot run the shell with out a TTY."
+    echo >&2 "Cannot run the shell without a TTY."
     exit 1
   fi
 
@@ -47,7 +58,7 @@ elif [[ "$1" == sh ]] || [[ "$1" == shell ]]; then
 
   passopt+=(--entrypoint=/bin/bash)
   interactive=(--interactive --tty)
-elif [[ "$1" == "configure" ]]; then
+elif [[ "$1" == "configure" ]] || [[ "${read_write}" = "true" ]]; then
   # Allow read/write of configuration when using `configure`
   mountopt=
 fi
