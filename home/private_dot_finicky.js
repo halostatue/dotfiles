@@ -396,10 +396,6 @@ const TRACKING_EXCLUSIONS = {
   matches: [/redirect_.*?mongo_id/, /referer/],
 }
 
-const NITTER_HOSTS = ['twiiit.com', 'twitit.gq']
-
-const nitterHost = () => NITTER_HOSTS[Math.floor(Math.random() * NITTER_HOSTS.length)]
-
 const rejectKeyStartingWith = (key, { startsWith }) => startsWith.some((pattern) => key.startsWith(pattern))
 const rejectKeyEquals = (key, { equals }) => equals.some((pattern) => key === pattern)
 const rejectKeyMatches = (key, { matches }) => matches.some((pattern) => key.match(pattern))
@@ -452,10 +448,6 @@ module.exports = {
     {
       match: ({ url }) => url.host.endsWith('medium.com'),
       url: ({ url }) => ({ ...url, host: 'scribe.rip' }),
-    },
-    {
-      match: ({ url }) => url.host === 'twitter.com',
-      url: ({ url }) => ({ ...url, host: nitterHost() }),
     },
     {
       match: /vk\.com\/away.php/,

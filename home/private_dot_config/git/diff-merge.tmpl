@@ -1,9 +1,13 @@
 {{- /* Initialize variables for use in this file */ -}}
 {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
+{{- $colorMoved := "zebra" -}}
+{{- if $programs.delta -}}{{- $colorMoved = "default" -}}{{- end -}}
 
 [diff]
   algorithm = histogram
-  colorMoved = dimmed-zebra # zebra
+  colorMoved = {{ $colorMoved }}
+  colorMovedWS = allow-indentation-changed
+  context = 5
   compactionHeuristic = true
   indentHeuristic = true
   mnemonicprefix = true
@@ -45,13 +49,13 @@
 
 {{ if $programs.ksdiff -}}
 [diff]
-  guitool = {{ $programs.ksdiff | quote }}
+  guitool = {{ $programs.ksdiff }}
 
 [difftool "ksdiff"]
-  cmd = {{ $programs.ksdiff | quote }} --partial-changeset --relative-path "${MERGED}" -- "${LOCAL}" "${REMOTE}"
+  cmd = {{ $programs.ksdiff }} --partial-changeset --relative-path "${MERGED}" -- "${LOCAL}" "${REMOTE}"
 
 [mergetool "ksdiff"]
-  cmd = {{ $programs.ksdiff | quote }} --merge --output "${MERGED}" --base "${BASE}" -- "${LOCAL}" --snapshot "${REMOTE}" --snapshot
+  cmd = {{ $programs.ksdiff }} --merge --output "${MERGED}" --base "${BASE}" -- "${LOCAL}" --snapshot "${REMOTE}" --snapshot
   trustExitCode = true
 
 {{ end -}}
@@ -86,7 +90,7 @@
 [diff "djvu"]
   binary = true
   cachetextconv = true
-  textconv = {{ $tool | quote }}
+  textconv = {{ $tool }}
 
 {{ end -}}
 
@@ -174,7 +178,7 @@
 [diff "rtf"]
   binary = true
   cachetextconv = true
-  textconv = {{ $programs.unrtf | quote }} --text
+  textconv = {{ $programs.unrtf }} --text
 
 {{ end -}}
 
@@ -182,7 +186,7 @@
 [diff "epub"]
   binary = true
   cachetextconv = true
-  textconv = {{ $programs.pandoc | quote }} --standalone --from=epub --to=plain
+  textconv = {{ $programs.pandoc }} --standalone --from=epub --to=plain
 
 {{ end -}}
 
@@ -191,7 +195,7 @@
 [diff "tika"]
   binary = true
   cachetextconv = true
-  textconv = {{ $programs.tika | quote }} --text
+  textconv = {{ $programs.tika }} --text
 
 {{ end -}}
 
@@ -199,7 +203,7 @@
 [diff "libreoffice"]
   binary = true
   cachetextconv = true
-  textconv = {{ $programs.soffice | quote }} --cat
+  textconv = {{ $programs.soffice }} --cat
 
 {{ end -}}
 
@@ -207,33 +211,56 @@
 [diff "ppt"]
   binary = true
   cachetextconv = true
-  textconv = {{ $programs.catppt | quote }}
+  textconv = {{ $programs.catppt }}
 
 {{ end -}}
 
 {{ if $programs.delta -}}
 [delta]
+  dark = true
+  syntax-theme = OneHalfDark
+  features = unobtrusive-line-numbers decorations
   navigate = true
   side-by-side = true
   line-numbers = true
+  zero-style = dim syntax
+
+[delta "interactive"]
+  keep-plus-minus-markers = false
+
+[delta "unobtrusive-line-numbers"]
+  line-numbers = true
+  line-numbers-minus-style = "#444444"
+  line-numbers-zero-style = "#444444"
+  line-numbers-plus-style = "#444444"
+  line-numbers-left-format = "{nm:>4}┊"
+  line-numbers-right-format = "{np:>4}│"
+  line-numbers-left-style = blue
+  line-numbers-right-style = blue
+
+[delta "decorations"]
+  commit-decoration-style = bold yellow box ul
+  file-style = bold yellow ul
+  file-decoration-style = none
+  hunk-header-decoration-style = yellow box
 
 [interactive]
-  diffFilter = {{ $programs.delta | quote }} --color-only
+  diffFilter = {{ $programs.delta }} --color-only --features=interactive
 
 [difftool "delta"]
-  cmd = {{ $programs.delta | quote }} "${LOCAL}" "${REMOTE}" "${MERGED}"
+  cmd = {{ $programs.delta }} "${LOCAL}" "${REMOTE}" "${MERGED}"
 
 {{ end -}}
 
 {{ if $programs.difftastic -}}
 [difftool "difftastic"]
-  cmd = {{ $programs.difftastic | quote }} "${LOCAL}" "${REMOTE}"
+  cmd = {{ $programs.difftastic }} "${LOCAL}" "${REMOTE}"
 
 {{ end -}}
 
 {{ if $programs.icdiff -}}
 [difftool "icdiff"]
-  cmd = {{ $programs.icdiff | quote }} --line-numbers "${LOCAL}" "${REMOTE}"
+  cmd = {{ $programs.icdiff }} --line-numbers "${LOCAL}" "${REMOTE}"
 
 {{ end -}}
 
@@ -245,7 +272,7 @@
 
 {{ if $programs.vim -}}
 [mergetool "vimdiff"]
-  cmd = {{ $programs.vim | quote }} -d "${LOCAL}" "${MERGED}" "${REMOTE}"
+  cmd = {{ $programs.vim }} -d "${LOCAL}" "${MERGED}" "${REMOTE}"
   trustExitCode = true
 
 {{ end -}}

@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+set -o pipefail
+
+# git-signify [GIT COMMAND] - use git with signify(1)
+#
+# First, you need to set the signing key for the repo, e.g.
+#
+#   git config --local user.signingKey ~/.signify/cwm
+#
+# This will use cwm.sec and cwm.pub.
+#
+# Then you can use
+#
+#   gpg signify commit -S
+#   gpg signify verify-commit
+#
+#   gpg signify tag -s
+#   gpg signify verify-tag
+#
+# You also can set this script as "gpg.program" to use signify automatically.
+#
+# To the extent possible under law, Leah Neukirchen has waived
+# all copyright and related or neighboring rights to this work.
+# http://creativecommons.org/publicdomain/zero/1.0/
+
+getkey() {
+  key=$(git config user.signingKey)
+  if [[ -z "${key}" ]]; then
+    echo "git-signify: no user.signingKey defined!" 1>&2
+    exit 7
+  fi
+}
+
+while :; do
+  case "$1" in
+  -bsau)
+    getkey
+    echo "-----BEGIN PGP SIGNATURE----- (really git-signify)"
+    {
+      if signify -S -s "${key}.sec" -m - -x - && [[ -n "${statusfd}" ]]; then
+        printf '\n[GNUPG:] SIG_CREATED ' >/dev/fd/"${statusfd}"
+      fi
+    } | sed "s/: .*/: verify with git-signify and ${key##*/}.pub/"
+    echo "-----END PGP SIGNATURE-----"
+    exit 0
+    ;;
+  --verify)
+    getkey
+    sed -i '/-----.* PGP SIGNATURE-----/d' "$2"
+    if signify -V -p "${key}.pub" -m - -x "$2" 1>&2; then
+      echo "[GNUPG:] GOODSIG "
+      exit 0
+    else
+      r=$?
+      echo "[GNUPG:] BADSIG "
+      exit ${r}
+    fi
+    ;;
+  --status-fd=*)
+    statusfd="${1#--status-fd=}"
+    shift
+    ;;
+  --*)
+    # ignore all other arguments
+    shift
+    ;;
+  *)
+    exec git -c "gpg.program=$0" "$@"
+    ;;
+  esac
+done

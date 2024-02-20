@@ -1,48 +1,24 @@
-# actionlint
-# https://github.com/rhysd/actionlint
-rhysd/actionlint/cmd/actionlint
-# age, age-keygen
-# https://github.com/filosottile/age
-filippo.io/age/cmd/... v1
-# asmfmt
-# https://github.com/klauspost/asmfmt
-github.com/klauspost/asmfmt/cmd/asmfmt
-# certstrap
-# https://github.com/square/certstrap
-square/certstrap
-# checkmake
-# https://github.com/mrtazz/checkmake
-mrtazz/checkmake/cmd/checkmake
+# arc
+# https://github.com/mholt/archiver
+https://github.com/mholt/archiver/v3/cmd/arc
+# carapace
+# https://github.com/rsteube/carapace
+rsteube/carapace
+# cobra-cli
+# https://github.com/spf13/cobra-cli
+spf13/cobra-cli
 # codeowners-validator
 # https://github.com/mszostok/codeowners-validator
-github.com/mszostok/codeowners-validator
-# chezmoi
-# https://github.com/twpayne/chezmoi
-# twpayne/chezmoi
+mszostok/codeowners-validator
 # css-checker
 # https://github.com/ruilisi/css-checker
 ruilisi/css-checker
-# dasel
-# https://github.com/tomwright/dasel
-tomwright/dasel/cmd/dasel
 # dlv
 # https://github.com/go-delve/delve
 go-delve/delve/cmd/dlv
 # docker-lock
 # https://github.com/safe-waters/docker-lock
 safe-waters/docker-lock/cmd/docker-lock
-# dsq
-# https://github.com/multiprocessio/dsq
-multiprocessio/dsq
-# echo-server
-# https://github.com/jmalloc/echo-server
-jmalloc/echo-server/...
-# editorconfig-checker
-# https://github.com/editorconfig-checker/editorconfig-checker/cmd/editorconfig-checker
-editorconfig-checker/editorconfig-checker/cmd/editorconfig-checker
-# efm-langserver
-# https://github.com/mattn/efm-langserver
-mattn/efm-langserver
 # errcheck
 # https://github.com/kisielk/errcheck
 kisielk/errcheck
@@ -61,9 +37,6 @@ davidrjenni/reftools/cmd/fixplurals
 # fm
 # https://github.com/mistakenelf/fm
 mistakenelf/fm
-# fq
-# https://github.com/wader/fq
-wader/fq
 # fzz
 # https://github.com/mrnugget/fzz
 mrnugget/fzz
@@ -76,21 +49,12 @@ shurcooL/git-branches
 # git-profile
 # https://github.com/dotzero/git-profile@latest
 # dotzero/git-profile
-# git-sizer
-# https://github.com/github/git-sizer
-github/git-sizer
-# glow
-# github.com/charmbracelet/glow
-charmbracelet/glow
 # go-outline
 # https://github.com/ramya-rao-a/go-outline
 ramya-rao-a/go-outline
 # go-symbols
 # https://github.com/acroca/go-symbols
 acroca/go-symbols
-# goawk
-# https://github.com/benhoyt/goawk
-benhoyt/goawk
 # gocode
 # https://github.com/mdempsky/gocode
 mdempsky/gocode
@@ -100,18 +64,9 @@ rogpeppe/godef
 # gogetdoc
 # https://github.com/zmb3/gogetdoc
 zmb3/gogetdoc
-# gojq
-# github.com/itchyny/gojq/cmd/gojq
-itchyny/gojq/cmd/gojq
-# golangci-lint
-# https://github.com/golangci/golangci-lint
-golangci/golangci-lint/cmd/golangci-lint
 # gomodifytags
 # https://github.com/fatih/gomodifytags
 fatih/gomodifytags
-# gopls
-# https://golang.org/x/tools/gopls
-golang.org/x/tools/gopls
 # gorename
 # https://golang.org/x/tools/cmd/gorename
 golang.org/x/tools/cmd/gorename
@@ -121,9 +76,6 @@ jstemmer/gotags
 # graphjin
 # https://github.com/dosco/graphjin
 dosco/graphjin
-# gum
-# https://github.com/charmbracelet/gum
-charmbracelet/gum
 # hcledit
 # https://github.com/minamijoyo/hcledit
 minamijoyo/hcledit
@@ -151,30 +103,18 @@ evilmartians/lefthook
 # license
 # https://github.com/nishanths/license
 nishanths/license
-# mage
-# https://github.com/magefile/mage
-magefile/mage
 # mark
 # https://github.com/kovetskiy/mark
 # kovetskiy/mark
 # motion
 # https://github.com/fatih/motion
 fatih/motion
-# murex
-# https://github.com/lmorg/murex
-lmorg/murex
 # myaws
 # https://github.com/minamijoyo/myaws
 minamijoyo/myaws
-# newreleases
-# https://newreleases.io
-newreleases.io/cmd/newreleases
 # node-prune
 # https://github.com/tj/node-prune
 tj/node-prune
-# oauth2c
-# https://github.com/cloudentity/oauth2c
-cloudentity/oauth2c
 # osv-scanner
 # https://github.com/google/osv-scanner
 google/osv-scanner/cmd/osv-scanner
@@ -191,9 +131,6 @@ ichinaski/pxl
 # resto abdfnx/resto latest -ldflags "-X main.version=v0.1.6" # https://github.com/abdfnx/resto
 # https://github.com/abdfnx/resto
 abdfnx/resto
-# revive
-# https://github.com/mgechev/revive
-mgechev/revive
 # scc
 # https://github.com/boyter/scc
 boyter/scc
@@ -203,9 +140,6 @@ k0kubun/sqldef/cmd/sqlite3def
 # sqls
 # https://github.com/lighttiger2505/sqls
 lighttiger2505/sqls
-# staticcheck
-# https://honnef.co/go/tools/cmd/staticcheck
-honnef.co/go/tools/cmd/staticcheck
 # structlayout
 # https://honnef.co/go/tools/cmd/structlayout
 honnef.co/go/tools/cmd/structlayout
@@ -215,9 +149,6 @@ honnef.co/go/tools/cmd/structlayout-optimize
 # structlayout-pretty
 # https://honnef.co/go/tools/cmd/structlayout-pretty
 honnef.co/go/tools/cmd/structlayout-pretty
-# sttr
-# https://github.com/abhimanyu003/sttr
-abhimanyu003/sttr
 # terraform-ls
 # https://github.com/hashicorp/terraform-ls
 hashicorp/terraform-ls
@@ -230,22 +161,10 @@ busser/tfautomv
 # tfedit
 # https://github.com/minamijoyo/tfedit
 minamijoyo/tfedit
-# tfmigrate
-# https://github.com/minamijoyo/tfmigrate
-minamijoyo/tfmigrate
 # tfschema
 # https://github.com/minamijoyo/tfschema
 # minamijoyo/tfschema
-# tfupdate
-# https://github.com/minamijoyo/tfupdate
-minamijoyo/tfupdate
-# vhs
-# https://github.com/charmbracelet/vhs
-charmbracelet/vhs
 # wishlist
 # https://github.com/charmbracelet/wishlist
 charmbracelet/wishlist/cmd/wishlist
 # resto abdfnx/resto latest -ldflags "-X main.version=v0.1.6" # https://github.com/abdfnx/resto
-# fx
-# https://github.com/antonmedv/fx
-antonmedv/fx

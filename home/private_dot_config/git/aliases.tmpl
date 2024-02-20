@@ -10,12 +10,12 @@
 
   # This should be default. Whatever.
   co = checkout
-{{- if $programs.fzf }}
+{{- if and $programs.fzf $programs.delta }}
 
-  add-fzf = "!f(){ git add $(git ls-files --modified --others --exclude-standard | {{ $programs.fzf }} -m --preview 'git diff --color=always {} | delta');}; f"
-  diff-fzf = "!f(){ git diff $(git ls-files --modified --others --exclude-standard | fzf -m --preview 'git diff --color=always {} | delta');}; f"
-  fixup = "!git log -n 16 --pretty=format:'%h %s' --no-merges | fzf | cut -c -7 | xargs -o git commit --fixup"
-  show-fzf = "!f(){ git show $(git log --pretty=oneline | cut -c1-7 | fzf -m --preview 'git diff --color=always {} | delta');}; f"
+  add-fzf = "!f(){ git add $(git ls-files --modified --others --exclude-standard | {{ $programs.fzf }} -m --preview 'git diff --color=always {} | {{ $programs.delta }}');}; f"
+  diff-fzf = "!f(){ git diff $(git ls-files --modified --others --exclude-standard | ${{ programs.fzf }} -m --preview 'git diff --color=always {} | {{ $programs.delta }}');}; f"
+  show-fzf = "!f(){ git show $(git log --pretty=oneline | cut -c1-7 | ${{ programs.fzf }} -m --preview 'git diff --color=always {} | {{ $programs.delta }}');}; f"
+  fixup = "!git log -n 16 --pretty=format:'%h %s' --no-merges | ${{ programs.fzf }} | cut -c -7 | xargs -o git commit --fixup"
 {{- end }}
 
   # If we type `git git log`, just run `git log`.
@@ -32,12 +32,16 @@
 
   ls = log --color --graph --pretty=format:'%C(yellow)%d%Creset %Cgreen(%cr)%Creset %C(bold blue)[%an]%Creset %s %Cred(%h)%Creset' --abbrev-commit
 
+  lg = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all -n 15
+
+  hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+
   ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%an]" --decorate --numstat
 
   ; review = !"nvim -p $(git files) +\"tabdo Gdiff ${REVIEW_BASE:-origin/$(git main-branch)}\" +\"let g:gitgutter_diff_base = '${REVIEW_BASE:-origin/$(git main-branch)}'\""
 
   ; reviewone = !"nvim -p +\"tabdo Gdiff ${REVIEW_BASE:-origin/$(git main-branch)}\" +\"let g:gitgutter_diff_base = '${REVIEW_BASE:-origin/$(git main-branch)}'\""
-  ; reviewf = !"nvim -p $(git files | fzf -m --reverse --height 40%) +\"tabdo Gdiff ${REVIEW_BASE:-origin/$(git main-branch)}\" +\"let g:gitgutter_diff_base = '${REVIEW_BASE:-origin/$(git main-branch)}'\""
+  ; reviewf = !"nvim -p $(git files | ${{ programs.fzf }} -m --reverse --height 40%) +\"tabdo Gdiff ${REVIEW_BASE:-origin/$(git main-branch)}\" +\"let g:gitgutter_diff_base = '${REVIEW_BASE:-origin/$(git main-branch)}'\""
 
   # Show just the subject and body of a particular commit (default: HEAD)
   message = log -n1 --format=\"%s%n%n%b\"
@@ -49,3 +53,6 @@
   fixme = grep -Ee '\\bFIX(ME)?:?\\b'
 
   safe = !mkdir .git/safe
+
+  type = cat-file -t
+  dump = cat-file -p

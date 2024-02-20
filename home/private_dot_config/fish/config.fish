@@ -99,7 +99,10 @@ if functions --query has:keg
 end
 
 if status is-interactive
-    if command --query rtx
+    if command --query mise
+        # mise activate --status fish | source
+        mise activate fish | source
+    else if command --query rtx
         # rtx activate --status fish | source
         rtx activate fish | source
     end
@@ -265,7 +268,14 @@ if status is-interactive
             set --universal hydro_multiline true
         end
     else if command --query starship
+        function starship_transient_prompt_func
+            starship module character
+            # starship module character --status $status
+        end
         starship init fish | source
+        enable_transience
+
+        set --global --export STARSHIP_LOG error
     end
 
     if functions --query transient_execute
@@ -371,4 +381,11 @@ end
 set --global --export AQUA_PROGRESS_BAR true
 set --global --export AQUA_ROOT_DIR "$HOME/.local/share/aquaproj-aqua/bin"
 
-emit fish_postexec
+if ! functions --query fish_right_prompt
+    function fish_right_prompt
+    end
+end
+
+if status is-interactive
+    emit fish_postexec
+end

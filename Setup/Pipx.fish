@@ -2,6 +2,7 @@ pipx install adr-viewer
 pipx install airiam
 pipx install checkdmarc
 pipx install checkov
+pipx install cloudsplaining
 pipx install codespell
 pipx install csvs-to-sqlite
 pipx install data-diff[postgresql]
@@ -22,6 +23,7 @@ pipx install git-sim &&
 pipx install git-when-merged
 pipx install gita
 pipx install graphtage
+pipx install harlequin[postgres]
 pipx install heatwave
 pipx install httpie &&
   pipx inject httpie httpie-http2 httpie-oauth
@@ -29,6 +31,7 @@ pipx install isort
 pipx install j2cli
 pipx install jc
 pipx install json-schema-for-humans
+pipx install just-sh
 pipx install kamidana
 pipx install litecli
 pipx install meson

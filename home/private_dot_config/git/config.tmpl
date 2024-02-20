@@ -4,6 +4,7 @@
 {{- $coreAttributesFile := ".config/git/attributes" -}}
 {{- $excludesFile := ".config/git/ignore" -}}
 {{- $corePager := "" -}}
+{{- $credentialsHelper := "" -}}
 {{- $githubUser := "" -}}
 {{- $githubToken := "" -}}
 {{- $sequenceEditor := "" -}}
@@ -27,32 +28,34 @@
 {{- end -}}
 
 {{- if $programs.delta -}}
-{{-   $corePager = $programs.delta | quote -}}
+{{-   $corePager = $programs.delta -}}
 {{- else if $programs.diff_so_fancy -}}
 {{-   $corePager = printf "%q | less --tabs=4 -RFX" $programs.diff_so_fancy -}}
 {{- end -}}
 {{- $githubUser = .github.user -}}
 {{- $githubToken = onepasswordRead "op://Personal/github-cli-tools/credential" .onepassword.personal -}}
 {{- if $programs.interactive_rebase_tool -}}
-{{-   $sequenceEditor = $programs.interactive_rebase_tool | quote }}
+{{-   $sequenceEditor = $programs.interactive_rebase_tool }}
 {{- end -}}
-{{- if $programs.xdg_open -}}
-{{-   $webBrowser = $programs.xdg_open | quote -}}
-{{- else if $programs.macos_open -}}
-{{-   $webBrowser = $programs.macos_open | quote -}}
+{{- if or $programs.xdg_open $programs.macos_open -}}
+{{-   $webBrowser = or ($programs.xdg_open $programs.macos_open) -}}
 {{- end -}}
 
 [advice]
   skippedCherryPicks = false
   addEmptyPathspec = false
+  detachedHead = false
   statusHints = false
 
 [apply]
   whitespace = nowarn
 
+[blame]
+  ignoreRevsFile = .git-blame-ignore-revs
+
 [branch]
   autosetuprebase = always
-  # sort = -committerdate
+  sort = -committerdate
 
 [color]
   ui = auto
@@ -96,8 +99,13 @@
   whitespace = trailing-space,tab-in-indent,cr-at-eol,space-before-tab
 
 [credential]
+{{- if and (eq .chezmoi.os "darwin") $credentialsHelper }}
+  helper = {{ quote $credentialsHelper }}
+{{ else }}
   helper = cache --timeout=3600
+{{- end }}
 {{- if $programs.gh }}
+
 [credential "https://github.com"]
   helper = !{{ $programs.gh }} auth git-credential
 
@@ -109,8 +117,9 @@
   manyFiles = true
 
 [fetch]
-  recurseSubmodules = on-demand
+  fsckobjects = true
   prune = true
+  recurseSubmodules = on-demand
 
 [format]
   pretty = %C(yellow)%h%C(reset) %C(red)%ad%C(reset) | %s%d %C(green)[%aN]%C(reset)
@@ -157,7 +166,6 @@
 
 [pull]
   ff = only
-  rebase = true
 
 [push]
   autoSetupRemote = true
@@ -167,7 +175,8 @@
 [rebase]
   autosquash = true
   autostash = true
-  missingCommitCheck = true
+  missingCommitsCheck = error
+  updateRefs = true
 
 [receive]
   fsckobjects = true
@@ -184,12 +193,20 @@
 [tag]
   sort = version:refname
 
+[tar "tar.xz"]
+  command = xz -c
+
+[tar "tar.zst"]
+  command = zstd -T0 -c
+
 [transfer]
   fsckobjects = true
+{{ if $programs.git_trim }}
 
 # https://github.com/foriequal0/git-trim
 [trim]
   bases = master,main,gh-pages
+{{ end }}
 
 [versionsort]
   suffix = ""
@@ -215,12 +232,11 @@
 [url "git@github.com:mime-types/"]
   insteadOf = https://github.com/mime-types/
 
-# TODO: Remove configuration from this file and always require per-repo
-# configuration, or use include user
+# Repos should be configured individually for the user,
+# at least until I have time to figure out how to better handle
+# automatic configuration with `includeIf`.
 [user]
   useConfigOnly = true
-  name = {{ .name }}
-  email = {{ .email }}
 
 {{ if $webBrowser -}}
 [web]

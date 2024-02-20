@@ -1,110 +1,128 @@
-ag :: agrind: CLI App to slice and dice logfiles
-atuin :: magical shell history
-bat :: A cat clone with wings
-cargo-audit :: Audit Cargo.lock security vulnerabilities
-cargo-authors :: A cargo subcommand that lists all the authors of all dependencies
-cargo-benchcmp :: A cargo utility to compare Rust micro-benchmark output
-cargo-binstall :: Install a Rust binary... from binaries
-cargo-bump :: Increments the version number of the current project
-cargo-cli :: Create a command line interface binary with some common dependencies
-cargo-clone :: A cargo subcommand to fetch the source code of a Rust crate
-cargo-config :: cargo-config reads information from a Cargo.toml file on the command line
-cargo-crates :: A cargo command to quickly open the crates.io or docs.rs page
-cargo-ctags :: analyze dependencies and generate single TAGS
-cargo-deadlinks :: Cargo subcommand to check documentation broken links
-cargo-do :: A Cargo plugin that allows multiple chained commands
-cargo-edit :: Extends Cargo to allow adding and removing dependencies
-cargo-expand :: Wrapper around rustc -Zunpretty=expanded
-cargo-info :: Crate info lookup
-cargo-license :: Cargo subcommand to see license of dependencies
-cargo-lichking :: Display info about licensing of dependencies
-cargo-modules :: A cargo plugin to show a tree-like overview of a modules
-cargo-outdated :: Cargo subcommand to display when dependencies are out of date
-cargo-readme :: A cargo subcommand to generate README.md content from doc comments
-cargo-release :: Cargo subcommand that smooths the release process
-cargo-show :: Prints package metadata like pip show, apt-cache show, npm view, gem query, etc
-cargo-update :: A cargo subcommand to check and apply updates to installed executables
-cargo-watch :: Watches over your project source
-cbfmt :: Format codeblocks inside markdown, org, or reStructuredText documents
-committed :: Nitpicking commit history since beabf39
-cpc :: evaluates math expressions, with unit conversion support
-diffr :: An LCS based diff highlighting tool to ease code review from your terminal.
-difftastic :: A structural diff that understands syntax
-dotenv-linter :: Lightning-fast .env file linter
-drill :: Drill is a HTTP load testing application
-du-dust :: A more intuitive version of du
-dua-cli :: A tool to conveniently learn about the disk usage of directories, fast
-dum :: An npm scripts runner
-eva :: Calculator REPL similar to bc
-exa :: A modern ls replacement
-fastmod :: Fast, partial codemod replacement
-fd-find :: fd is a simple, fast and user-friendly alternative to find
-fend :: Arbitrary-precision unit-aware calculator
-fnm :: Fast and simple Node.js version manager
-fselect :: Find files with SQL-like queries
-git-absorb :: git commit --fixup, but automatic
-git-branchless :: Git Branchless workflow
-git-historian :: Git Historian allows you to collect arbitrary data about a file
-git-interactive-rebase-tool :: Full feature terminal based git interactive rebase sequence editor
-git-journal :: The Git Commit Message and Changelog Generation Framework
-git-stack :: Stacked branch management
-gitui :: blazing fast terminal-ui
-gobang :: A cross-platform TUI database management tool
-gping :: Ping, but with a graph
-grex :: grex generates regular expressions from user-provided test cases
-hexyl :: A command-line hex viewer
-ht :: Yet another HTTPie clone
-htmlq :: Like jq but HTML
-huniq :: Filter out duplicates on the command line
-hwatch :: A modern alternative to the watch command
-hyperfine :: A command-line benchmarking tool
-jless :: A command-line JSON viewer
-just :: Just a command runner
-killport :: Kill porcess on a specific port
-lemmeknow :: Identify any mysterious text or analyze strings from a file
-licensure :: A software license management tool
-loc :: Count lines of code fast
-mdcat :: Terminal Markdown formatter
-meli :: terminal mail client
-mrml-cli :: MJML renderer CLI
-navi :: An interactive cheatsheet tool
-oha :: Ohayou HTTP load generator
-ouch :: A command-line utility for easily compressing and decompressing files and directories.
-oxipng :: A lossless PNG compression optimizer
-procs :: A modern ps replacement
-rage :: A simple, secure, and modern encryption tool
-ripgrep :: ripgrep is a line-oriented search tool
-rm-improved :: rip: a safe and ergonomic alternative to rm
-rnr :: rename multiple files and directories
-scryer-prolog :: A modern Prolog implementation
-sd :: An intuitive find and replace CLI
-selene :: A blazing-fast modern Lua linter
-? sequoia-chameleon-gnupg :: Sequoia GnuPG interface
-? sequoia-keyring-linter :: A PGP keyring linter
-? sequoia-sq :: Sequoia PGP command-line frontends
-? sequoia-sqv :: A simple OpenPGP signature verification program
-shellharden :: A corrective bash syntax highlighter
-skim :: Fuzzy Finder
-stringsext :: find multi-byte-encoded strings
-stylua :: A Lua code formatter
-svgbob_cli :: Transform your ascii diagrams into happy little SVG
-taplo-cli :: A Taplo TOML toolkit CLI
-tealdeer :: Fetch and show tldr help CLI command pages
-tere :: Terminal file explorer
-tidy-viewer :: CSV file head utility
-titlecase :: A tool and library that capitalizes text according to a style
-toast :: Containerize your development and CI environments
-tokei :: Count your code quickly
-toml-fmt :: Format toml files
-tre-command :: Tree command, improved
-tuc :: When cut does not cut it
-typos-cli :: Source Code Spelling Correction
-watchexec-cli :: Executes commands on file modification
-xcp :: partial improved clone of cp
-xh :: Friendly and fast HTTP request tool
-xplr :: A hackable, minimal, fast TUI file explorer
-xsv :: A high performance CSV command line toolkit
-ytop :: A TUI system monitor written
-zellij :: A terminal workspace with batteries included
-zoxide :: A smarter interactive cd command
-https://github.com/unused-code/unused.git :: A command line tool to identify potentially unused code
+cargo-audit
+:: Audit Cargo.lock security vulnerabilities
+cargo-authors
+:: A cargo subcommand that lists all the authors of all dependencies
+cargo-benchcmp
+:: A cargo utility to compare Rust micro-benchmark output
+cargo-binstall
+:: Install a Rust binary... from binaries
+cargo-bump
+:: Increments the version number of the current project
+cargo-clone
+:: A cargo subcommand to fetch the source code of a Rust crate
+cargo-config
+:: cargo-config reads information from a Cargo.toml file on the command line
+cargo-crates
+:: A cargo command to quickly open the crates.io or docs.rs page
+cargo-deadlinks
+:: Cargo subcommand to check documentation broken links
+cargo-dist
+:: Shippable application packaging for Rust
+cargo-do
+:: A Cargo plugin that allows multiple chained commands
+cargo-edit
+:: Extends Cargo to allow adding and removing dependencies
+cargo-expand
+:: Wrapper around rustc -Zunpretty=expanded
+cargo-info
+:: Crate info lookup
+cargo-license
+:: Cargo subcommand to see license of dependencies
+cargo-lichking
+:: Display info about licensing of dependencies
+cargo-modules
+:: A cargo plugin to show a tree-like overview of a modules
+cargo-outdated
+:: Cargo subcommand to display when dependencies are out of date
+cargo-readme
+:: A cargo subcommand to generate README.md content from doc comments
+cargo-release
+:: Cargo subcommand that smooths the release process
+cargo-show
+:: Prints package metadata like pip show, apt-cache show, npm view, gem query, etc
+cargo-update
+:: A cargo subcommand to check and apply updates to installed executables
+cargo-watch
+:: Watches over your project source
+cbfmt
+:: Format codeblocks inside markdown, org, or reStructuredText documents
+cherrybomb
+:: Cherrybomb is a CLI tool that helps you avoid undefined user behavior by validating your API specifications.
+cpc
+:: evaluates math expressions, with unit conversion support
+diffr
+:: An LCS based diff highlighting tool to ease code review from your terminal.
+dotenv-linter
+:: Lightning-fast .env file linter
+dum
+:: An npm scripts runner
+git-historian
+:: Git Historian allows you to collect arbitrary data about a file
+git-journal
+:: The Git Commit Message and Changelog Generation Framework
+git-stack
+:: Stacked branch management
+gitoxide
+:: A command-line application for interacting with git repositories
+gitql
+:: A SQL like query language to perform queries on .git files
+huniq
+:: Filter out duplicates on the command line
+kondo
+:: kondo is a filesystem cleaning tool
+licensure
+:: A software license management tool
+loc
+:: Count lines of code fast
+mrml-cli
+:: MJML renderer CLI
+oxker
+:: A simple tui to view & control docker containers
+prql-query
+:: pq: query and transform data with PRQL
+prqlc
+:: CLI for the PRQL compiler
+prr
+:: Mailing list style code reviews for github
+rage
+:: A simple, secure, and modern encryption tool
+rbase64
+:: A fast multi-threaded base64 encoding library and CLI tool
+rm-improved
+:: rip: a safe and ergonomic alternative to rm
+rnr
+:: rename multiple files and directories
+scryer-prolog
+:: A modern Prolog implementation
+selene
+:: A blazing-fast modern Lua linter
+? sequoia-chameleon-gnupg
+:: Sequoia GnuPG interface
+? sequoia-keyring-linter
+:: A PGP keyring linter
+? sequoia-sq
+:: Sequoia PGP command-line frontends
+? sequoia-sqv
+:: A simple OpenPGP signature verification program
+spacer
+:: A CLI utility for adding spacers when command output stops
+stringsext
+:: find multi-byte-encoded strings
+svgbob_cli
+:: Transform your ascii diagrams into happy little SVG
+taplo-cli
+:: A Taplo TOML toolkit CLI
+tere
+:: Terminal file explorer
+tidy-viewer
+:: CSV file head utility
+titlecase
+:: A tool and library that capitalizes text according to a style
+toml-fmt
+:: Format toml files
+typos-cli
+:: Source Code Spelling Correction
+watchexec-cli
+:: Executes commands on file modification
+ytop
+:: A TUI system monitor written

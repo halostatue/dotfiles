@@ -3,9 +3,13 @@
 {{- $github_username := promptStringOnce . "github.user" "Github Username" -}}
 {{- $personal_1password_account := promptStringOnce . "onepassword.personal" "1Password Personal Account" -}}
 {{- $work_1password_account := promptStringOnce . "onepassword.work" "1Password Work Account" -}}
+{{- $ssh_agent := promptChoiceOnce . "ssh.agent" "What SSH agent to use?" (list "1Password" "secretive" "ssh-agent") -}}
 
 [scriptEnv]
-DEBUG_SCRIPTS = {{ if .debug_scripts }}"true"{{ else }}"false"{{ end }}
+DEBUG_SCRIPTS = {{ if .debug_scripts }}'true'{{ else }}'false'{{ end }}
+
+[add]
+secrets = 'error'
 
 [data]
 email = {{ $email | toToml }}
@@ -48,35 +52,12 @@ default_key = {{ .gnupg.default_key | toToml }}
 # default_key = ''
 {{- end }}
 
-{{ if (. | dig "ssh" "keys" false) -}}
-{{- range .ssh.keys -}}
-[[data.ssh.keys]]
-{{ . | toToml }}
-{{ end -}}
-{{- else -}}
-## Set the key names to be used here. These are the private key file names,
-## without reference to ~/.ssh
-##
 [data.ssh]
-keys = []
-{{- end }}
-
-{{ if (. | dig "ssh" "hosts" false) }}
-{{- range .ssh.hosts -}}
-[[data.ssh.hosts]]
-{{ . | toToml }}
-{{ end -}}
+agent = {{ $ssh_agent | toToml }}
+{{ if (. | dig "ssh" "updatable_hosts" false) -}}
+updatable_hosts = {{ .ssh.updatable_hosts | toToml }}
 {{- else -}}
-## Build the SSH configuration file with hosts specified here. In each array entry,
-## the 'host' key is the pattern for the `Host …` line. The config array is the list
-## of host-specific configuration entries to follow.
-##
-# [[data.ssh.hosts]]
-# config = [
-#   'HostName bastion-host-name',
-#   'LocalForward localhost:15432 database-host-name:5432',
-# ]
-# host = 'database-tunnel'
+updatable_hosts = []
 {{- end }}
 
 [diff]

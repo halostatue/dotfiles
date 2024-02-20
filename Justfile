@@ -10,7 +10,7 @@ update-packages: update-homebrew update-gems update-pipx update-ports
 update-homebrew:
   #!/usr/bin/env ruby
 
-  require 'tmpdir'
+  require "tmpdir"
 
   dump = %x(brew bundle dump --force --file=- --describe).split($/)
   lines = Hash.new { |h, k| h[k] = [] }
@@ -44,14 +44,30 @@ update-homebrew:
 
 # Update the default Gemfile
 update-gems:
-  #!/usr/bin/env bash
+  #!/usr/bin/env ruby
 
-  set -euo pipefail
+  require "json"
+  require "net/http"
+  require "tmpdir"
 
-  declare tmp
-  tmp="$(mktemp -d)"
-  printf "gem \"%s\"\n" `(gem list --no-versions)` > "${tmp}/Gemfile"
-  vimdiff "${tmp}/Gemfile" "Setup/Gemfile"
+  def fetch(url)
+    JSON.parse(Net::HTTP.get(URI(url)))["gems"].map { _1["gem"] }
+  end
+
+  def local_gems
+    %x(gem list --no-versions).split($/)
+  end
+
+  rubys_gems = fetch("https://stdgems.org/default_gems.json") +
+   fetch("https://stdgems.org/bundled_gems.json")
+
+  gems = (local_gems - rubys_gems).map { %Q(gem "#{_1}") }.join("\n")
+
+  tmpdir = Dir.mktmpdir
+
+  File.write(File.join(tmpdir, "Gemfile"), gems)
+
+  exec("vimdiff '#{tmpdir}/Gemfile' 'Setup/Gemfile'")
 
 # Update the default pipx list of files
 update-pipx:

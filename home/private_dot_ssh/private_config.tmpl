@@ -1,57 +1,71 @@
 {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
 {{- $ssh := joinPath $.chezmoi.homeDir ".ssh" -}}
-{{- $agent := joinPath $.chezmoi.homeDir "/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" -}}
-{{- if not (stat $agent) -}}
-{{-   $agent = joinPath $.chezmoi.homeDir "/Library/Containers/com.maxgoedjen.agent.SecretAgent/Data/socket.ssh" -}}
-{{- end -}}
+{{- $updatable_hosts :=
+      concat (list "github.com" "bitbucket.org" "gitlab.com")
+             (. | dig "ssh" "updatable_hosts" (list))
+      | uniq
+      | toStrings
+      | join " "
+-}}
+
 # General SSH configuration
+IgnoreUnknown UseKeychain
 ForwardAgent yes
 HashKnownHosts no
 ServerAliveCountMax 6
-ServerAliveInterval 30
+ServerAliveInterval 15
 VerifyHostKeyDNS yes
 
-# There appears to be a bug where the _last_ identity file is used when using 1Password, but
-# it just works if the identity files are not specified.
-{{- if and (not (contains "1password" $agent)) ((gt .ssh.keys | len) 0) -}}
-{{-   range .ssh.keys -}}
-{{-     if stat (joinPath $ssh .) }}
-IdentityFile {{ joinPath $ssh . }}
-{{-     end -}}
-{{-   end }}
-{{- end }}
-
-{{ if stat $agent -}}
+{{ $agent := "" -}}
+{{- if eq .ssh.agent "1password" -}}
+{{-   $agent = joinPath $.chezmoi.homeDir "/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" -}}
+{{- else if eq .ssh.agent "secretive" -}}
+{{-   $agent = joinPath $.chezmoi.homeDir "/Library/Containers/com.maxgoedjen.agent.SecretAgent/Data/socket.ssh" -}}
+{{- end -}}
+{{ if and ($agent) (stat $agent) -}}
 Host *
-  IdentityAgent "{{ $agent }}"
+  IdentityAgent {{ $agent | quote }}
 {{- end }}
 
 Host *
   UseKeychain yes
   AddKeysToAgent yes
 
-Host github.com bitbucket.org
+Host {{ $updatable_hosts }}
   UpdateHostKeys yes
-
 {{ if $programs.ssh_chain -}}
+
 Host *^*
   ProxyCommand {{ $programs.ssh_chain | quote }} %h %p
 {{- end }}
-
-{{- if gt ((dig "ssh" "hosts" (list) .) | len) 0 -}}
-{{   range .ssh.hosts -}}
-Host {{ .host }}
-{{     range .config }}  {{ . }}
-{{     end }}
-{{   end }}
+{{- $account_vaults := includeTemplate "1password_vaults.tmpl" . | fromJson -}}
+{{- range $account_name, $account := $account_vaults -}}
+{{-   $vaults := $account.vaults -}}
+{{-
+      $documents := 
+        output "op" "document" "list" "--account" $account.url "--format" "json"
+        | fromJson
+        | jq "map(select(.title | startswith(\"ssh-host: \"))) | sort_by(.title)"
+        | first
+-}}
+{{-   range $document := $documents -}}
+{{-     $vault_name := (get $vaults $document.vault.id).name }}
+{{      printf "# '%v/%v' (from %v)" $vault_name $document.title $account.url }}
+{{      onepasswordDocument $document.id $document.vault.id $account.url }}
+{{-  end -}}
 {{- end -}}
+
+{{  $pierre := joinPath $ssh "pierre_rsa" -}}
+{{- if stat $pierre -}}
+Host git.pierre.co
+  IdentityFile {{ $pierre }}
+{{- end }}
 
 {{ $colima := joinPath $.chezmoi.homeDir ".colima/ssh_config" -}}
 {{- if stat $colima -}}
 Include {{ $colima }}
 {{- end }}
-{{- $orbstack := joinPath $.chezmoi.homeDir ".orbstack/ssh/config" -}}
+{{ $orbstack := joinPath $.chezmoi.homeDir ".orbstack/ssh/config" -}}
 {{- if stat $orbstack }}
 Include {{ $orbstack }}
 {{- end }}
-

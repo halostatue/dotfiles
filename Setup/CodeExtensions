@@ -3,7 +3,7 @@
 # anweber.reveal-button
 # anweber.statusbar-commands
 # anweber.vscode-httpyac
-# atlassian.atlascode
+atlassian.atlascode
 # BriteSnow.vscode-toggle-quotes
 # casualjim.gotemplate
 # chrislajoie.vscode-modelines
@@ -66,7 +66,7 @@
 # redhat.java
 # redhat.vscode-commons
 # redhat.vscode-xml
-# redhat.vscode-yaml
+redhat.vscode-yaml
 # RedVanWorkshop.sfcc-cartridge-overrides
 # Rubymaniac.vscode-direnv
 # rust-lang.rust

@@ -1,5 +1,4 @@
 IlanCosman/clownfish
-IlanCosman/tide@v5
 PatrickF1/colored_man_pages.fish
 PatrickF1/fzf.fish
 franciscolourenco/done
@@ -23,3 +22,8 @@ jorgebucaran/fishtape
 lilyball/nix-env.fish
 oh-my-fish/plugin-tab
 jorgebucaran/fisher
+halostatue/sponge@fix-init-failures
+gazorby/fish-abbreviation-tips@v0.7.0
+nickeb96/puffer-fish
+halostatue/gitlater@v1.0.0
+ilancosman/tide@v6

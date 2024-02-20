@@ -103,18 +103,13 @@ if status is-interactive
         end
     end
 
-    # If using 1Password for SSH agent.
-    for sock in ~/Library/Group\ Containers/*.com.1password/t/agent.sock
+    # If using 1Password or Secretive for SSH agent.
+    for sock in ~/Library/Group\ Containers/*.com.1password/t/agent.sock ~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
         test -S $sock
         or continue
 
         set -x SSH_AUTH_SOCK $sock
         break
-    end
-
-    # If using Secretive for SSH agent.
-    if test -S ~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
-        set -x SSH_AUTH_SOCK ~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
     end
 
     # test (ssh-add -l | wc -l) -gt 0

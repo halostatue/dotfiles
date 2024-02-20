@@ -1,0 +1,18 @@
+# Check for an interactive session
+[[ -z "${PS1}" ]] && return
+
+shopt -s globstar
+shopt -s histappend
+shopt -s cmdhist
+
+PROMPT_COMMAND='history -a'
+HISTSIZE=9000
+HISTFILESIZE=9000
+HISTCONTROL="erasedups:ignoreboth"
+HISTIGNORE="[ ]*"
+HISTTIMEFORMAT='%F %T '
+
+PS1='[\u@\h \W]\$ '
+
+#PROMPT_COMMAND='[[ $? == 0 ]] && es= || es=" error=$? "'
+#PS1="\[$(tput bold)\]\w\[$(tput setaf 1)\]\$es\[$(tput sgr0; tput bold)\]\$ \[$(tput sgr0)\]"

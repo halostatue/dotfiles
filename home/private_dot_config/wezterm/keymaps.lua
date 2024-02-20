@@ -88,5 +88,6 @@ return {
     { key = "=", mods = "CTRL|SHIFT", action = action.IncreaseFontSize },
     { key = "y", mods = "LEADER", action = action.CopyTo("Clipboard") },
     { key = "p", mods = "LEADER", action = action.PasteFrom("PrimarySelection") },
+    { key = "f", mode = "COMMAND", action = wezterm.action.ToggleFullScreen },
   },
 }
