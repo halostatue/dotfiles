@@ -1,9 +1,6 @@
 # arc
 # https://github.com/mholt/archiver
-https://github.com/mholt/archiver/v3/cmd/arc
-# carapace
-# https://github.com/rsteube/carapace
-rsteube/carapace
+github.com/mholt/archiver/v3/cmd/arc
 # cobra-cli
 # https://github.com/spf13/cobra-cli
 spf13/cobra-cli
@@ -119,8 +116,8 @@ tj/node-prune
 # https://github.com/google/osv-scanner
 google/osv-scanner/cmd/osv-scanner
 # psqldef
-# https://github.com/k0kubun/sqldef
-k0kubun/sqldef/cmd/psqldef
+# https://github.com/sqldef/sqldef
+sqldef/sqldef/cmd/psqldef
 # pvw
 # https://github.com/allyring/pvw
 allyring/pvw
@@ -135,11 +132,11 @@ abdfnx/resto
 # https://github.com/boyter/scc
 boyter/scc
 # sqlite3def
-# https://github.com/k0kubun/sqldef
-k0kubun/sqldef/cmd/sqlite3def
+# https://github.com/sqldef/sqldef
+sqldef/sqldef/cmd/sqlite3def
 # sqls
-# https://github.com/lighttiger2505/sqls
-lighttiger2505/sqls
+# https://github.com/sqls-server/sqls
+sqls-server/sqls
 # structlayout
 # https://honnef.co/go/tools/cmd/structlayout
 honnef.co/go/tools/cmd/structlayout

@@ -19,6 +19,7 @@ chainloop
 changie
 checkmake
 colima
+comet-git
 committed
 container-diff
 cosign
@@ -27,12 +28,20 @@ csvlens
 dasel
 dateutils
 delve
+diff-so-fancy
 diffoci
 diffoscope
 difftastic
 direnv
 dive
+docker
+docker-base-plugin
+docker-buildx-plugin
+docker-compose-plugin
 docker-credential-helper-ecr
+docker-credential-helper-osxkeychain
+docker-index-plugin
+dockerize
 dos2unix
 dsq
 dua-cli
@@ -58,13 +67,13 @@ ghc
 git +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
 git-absorb
 git-branchless
+git-cc
 git-chglog
-git-cliff
 git-delta
-git-extras
 git-interactive-rebase-tool
 git-mediate
 git-sizer
+git-some-extras
 git-tools
 gitleaks
 gitui
@@ -89,7 +98,6 @@ hexyl
 htmlq
 hwatch
 hyperfine
-jj
 jless
 joshuto
 jq
@@ -99,7 +107,6 @@ lazydocker
 lazygit
 lemmeknow
 lf
-libiconv
 lima
 lua54-luarocks
 mdcat
@@ -107,6 +114,7 @@ micro
 miller
 minisign
 mise
+monolith
 moreutils +doc
 mpstats
 murex
@@ -116,6 +124,7 @@ newreleases
 nim
 oauth2c
 oha
+osv-scanner
 ouch
 oxipng
 pipx +python312
@@ -140,6 +149,7 @@ seaport
 shellcheck
 shellharden
 shfmt
+srgn
 starship
 staticcheck
 step-cli
@@ -155,7 +165,6 @@ tig +doc
 tnef
 toast
 tokei
-trivy
 trurl
 vhs
 viddy

@@ -14,19 +14,17 @@ pipx install dokter
 pipx install epy-reader
 pipx install flit
 pipx install gh2md
-pipx install git-branchstack &&
-  pipx inject git-branchstack --include-apps git-revise
+# pipx install git-branchstack && pipx inject git-branchstack --include-apps git-revise
 pipx install git-filter-repo
 pipx install git-machete
-pipx install git-sim &&
-  pipx inject git-sim --include-apps manim pipx inject git-sim scipy
+# pipx install git-sim && pipx inject git-sim --include-apps manim pipx inject git-sim scipy
 pipx install git-when-merged
 pipx install gita
 pipx install graphtage
 pipx install harlequin[postgres]
 pipx install heatwave
 pipx install httpie &&
-  pipx inject httpie httpie-http2 httpie-oauth
+    pipx inject httpie httpie-http2 httpie-oauth
 pipx install isort
 pipx install j2cli
 pipx install jc

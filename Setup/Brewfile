@@ -3,20 +3,14 @@ tap "homebrew/bundle"
 tap "homebrew/cask-fonts"
 tap "homebrew/cask-versions"
 tap "homebrew/services"
+tap "reviewdog/tap"
 
 brew "bomber" # Scans Software Bill of Materials for security vulnerabilities
-brew "ca-certificates" # Mozilla CA certificate store
 brew "cliam" # Cloud agnostic IAM permissions enumerator
 brew "cloc" # Statistics utility to count lines of code
 brew "comby" # Tool for changing code across many languages
 brew "csvtk" # Cross-platform, efficient and practical CSV/TSV toolkit in Golang
 brew "datasette" # Open source multi-tool for exploring and publishing data
-brew "diff-so-fancy" # Good-lookin' diffs with diff-highlight and more
-brew "docker" # Pack, ship and run any application as a lightweight container
-brew "docker-buildx" # Docker CLI plugin for extended build capabilities with BuildKit
-brew "docker-compose" # Isolated development environments using Docker
-brew "docker-credential-helper" # Platform keystore credential helper for Docker
-brew "docker-credential-helper-ecr" # Docker Credential Helper for Amazon ECR
 brew "docker-slim" # Minify and secure Docker images
 brew "dockle" # Simple security auditing, helping build the Best Docker Images
 brew "epubcheck" # Validate EPUB files, version 2.0 and later
@@ -29,7 +23,6 @@ brew "git" # Distributed revision control system
 brew "git-bug" # Distributed, offline-first bug tracker embedded in git, with bridges
 brew "gitbatch" # Manage your git repositories in one place
 brew "gitleaks" # Audit git repos for secrets
-brew "lazygit" # Simple terminal UI for git commands
 brew "lnav" # Curses-based tool for viewing and analyzing log files
 brew "mas" # Mac App Store command-line interface
 brew "moreutils" # Collection of tools that nobody wrote when UNIX was young
@@ -38,6 +31,7 @@ brew "pam-reattach" # PAM module for reattaching to the user's GUI (Aqua) sessio
 brew "pandoc" # Swiss-army knife of markup format conversion
 brew "pv" # Monitor data's progress through a pipe
 brew "rename" # Perl-powered file rename script with many helpful built-ins
+brew "reviewdog/tap/reviewdog" # Automated code review tool integrated with any code analysis tools regardless of programming language.
 brew "scc" # Fast and accurate code counter with complexity and COCOMO estimates
 brew "shellcheck" # Static analysis and lint tool, for (ba)sh scripts
 brew "shfmt" # Autoformat shell script source code
@@ -60,7 +54,6 @@ brew "wxwidgets" # Cross-platform C++ GUI toolkit
 brew "xdg-ninja" # Check your $HOME for unwanted files and directories
 brew "xmlstarlet" # XML command-line utilities
 brew "xq" # Command-line XML and HTML beautifier and content extractor
-brew "xz" # General-purpose data compression with high compression ratio
 brew "yamllint" # Linter for YAML files
 brew "yq" # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "zsxd" # Zelda Mystery of Solarus XD
@@ -74,17 +67,10 @@ cask "bruno" # Opensource IDE for exploring and testing api's
 cask "charles" # Web debugging Proxy application
 cask "chromium" # Free and open-source web browser
 cask "cleanupbuddy" # Clean keyboard and trackpad
-cask "contour" # Terminal emulator
-cask "dadroit-json-viewer" # JSON Viewer
-cask "deeper" # Tool to enable and disable hidden functions of Finder and other apps
-cask "deepgit" # Tool to investigate the history of source code
-cask "devcleaner" # Reclaim tens of gigabytes of your storage used for various Xcode caches
 cask "dosbox" # Emulator for x86 with DOS
 cask "eaglefiler" # Organise files, archive e-mails, save Web pages and notes, search everything
 cask "finicky" # Utility for customizing which browser to start
 cask "firefox" # Web browser
-cask "firefox-developer-edition" # Web browser
-cask "floorp" # Privacy-focused Firefox-based browser
 cask "fluid" # Tool to turn a website into a desktop app
 cask "gargoyle" # IO layer for interactive fiction players
 cask "google-chrome" # Web browser
@@ -95,24 +81,17 @@ cask "httpie" # Testing client for REST, GraphQL, and HTTP APIs
 cask "insomnia" # HTTP and GraphQL Client
 cask "iterm2" # Terminal emulator as alternative to Apple's Terminal app
 cask "itsycal" # Menu bar calendar
-cask "keyboardcleantool" # Blocks all Keyboard and TouchBar input
-cask "keycastr" # Open-source keystroke visualiser
 cask "kindle-previewer" # Preview and audit Kindle eBooks
-cask "koa11y" # Easily check for website accessibility issues
-cask "lapce" # Open source code editor written in Rust
-cask "linphone" # Software for communication systems developers
 cask "macvim" # Text editor
 cask "macwhisper" # Speech recognition tool
 cask "meetingbar" # Shows the next meeting in the menu bar
 cask "microsoft-edge" # Web browser
-cask "milkman" # Extensible request and response workbench
-cask "modern-csv" # CSV editor
 cask "monitorcontrol" # Tool to control external monitor brightness & volume
 cask "monodraw" # Tool to create text-based art
 cask "moom" # Utility to move and zoom windows—on one display
-cask "notion" # App to write, plan, collaborate, and get organised
 cask "obsidian" # Knowledge base that works on top of a local folder of plain text Markdown files
-cask "opera-developer" # Web browser
+cask "ollamac" # Interact with Ollama models
+cask "orion" # WebKit based web browser
 cask "publii" # Static website generator
 cask "qlcolorcode" # Quick Look plug-in that renders source code with syntax highlighting
 cask "qlimagesize" # Display image info and preview unsupported formats in QuickLook
@@ -120,23 +99,16 @@ cask "qlmarkdown" # Quick Look generator for Markdown files
 cask "qlstephen" # Quick Look plugin for plaintext files without an extension
 cask "qlvideo" # Thumbnails, static previews, cover art and metadata for video files
 cask "quicklook-json" # Quick Look plugin for JSON files
-cask "rancher" # Kubernetes and container management on the desktop
 cask "resolutionator" # Use any of your display's available resolutions
-cask "responsively" # Modified browser that helps in responsive web development
 cask "safari-technology-preview" # Web browser
 cask "scrivener" # Word processing software with a typewriter style
 cask "setapp" # Collection of apps available by subscription
-cask "shortcat" # App that enables mouse-free UI interaction
 cask "slack" # Team communication and collaboration software
 cask "spatterlight" # Play most kinds of interactive fiction game files
 cask "tableflip" # App to edit markdown files in place
-cask "tad" # Desktop application for viewing and analyzing tabular data
-cask "utm" # Virtual machines UI using QEMU
 cask "viscosity" # OpenVPN client with AppleScript support
 cask "visual-studio-code" # Open-source code editor
-cask "vivaldi" # Web browser with built-in email client focusing on customization and control
 cask "webpquicklook" # Quick Look plugin for webp files
-cask "wezterm" # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "xcodes" # Install and switch between multiple versions of Xcode
 cask "zed" # Multiplayer code editor
 
@@ -224,16 +196,14 @@ mas "Pages", id: 409201541
 mas "Paprika Recipe Manager 3", id: 1303222628
 mas "Parcel", id: 639968404
 mas "PiPifier", id: 1160374471
-mas "Pinboard Tools", id: 1552590875
 mas "Pixelmator Pro", id: 1289583905
 mas "Play", id: 1596506190
-mas "PopClip", id: 445189367
 mas "Ridiculous Fishing", id: 1610164691
 mas "Shareful", id: 1522267256
 mas "StopTheMadness Pro", id: 6471380298
 mas "Svgsus", id: 1106867065
-mas "System Strings", id: 570467776
 mas "TestFlight", id: 899247664
+mas "Userscripts-Mac-App", id: 1463298887
 mas "Vinegar", id: 1591303229
 mas "Waterlogue Pro", id: 1425568219
 mas "WorldWideWeb", id: 1621370168
