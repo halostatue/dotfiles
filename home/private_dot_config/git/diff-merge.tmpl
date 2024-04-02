@@ -6,7 +6,7 @@
 [diff]
   algorithm = histogram
   colorMoved = {{ $colorMoved }}
-  colorMovedWS = allow-indentation-changed
+  colorMovedWS = allow-indentation-change
   context = 5
   compactionHeuristic = true
   indentHeuristic = true
@@ -219,11 +219,13 @@
 [delta]
   dark = true
   syntax-theme = OneHalfDark
-  features = unobtrusive-line-numbers decorations
+  features = side-by-side unobtrusive-line-numbers decorations
   navigate = true
-  side-by-side = true
   line-numbers = true
   zero-style = dim syntax
+
+[delta "side-by-side"]
+  side-by-side = true
 
 [delta "interactive"]
   keep-plus-minus-markers = false

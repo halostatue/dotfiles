@@ -222,6 +222,8 @@ function! s:packager_init() abort
   call packager#add('mlr-msft/vim-loves-dafny')
   " Nushell: https://github.com/ErichDonGubler/vim-nushell
   call packager#add('ErichDonGubler/vim-nushell')
+  " casey/just formatting: https://github.com/NoahTheDuke/vim-just
+  call packager#add('NoahTheDuke/vim-just')
 
   " Generalized Org Mode: https://github.com/chimay/organ
   call packager#add('chimay/organ')

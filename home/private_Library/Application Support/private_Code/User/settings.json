@@ -295,7 +295,6 @@
   "workbench.editor.enablePreviewFromQuickOpen": false,
   "workbench.editor.splitSizing": "split",
   "workbench.editor.tabCloseButton": "left",
-  "workbench.editor.untitled.hint": "hidden",
   "workbench.editorAssociations": {
     "*.ipynb": "jupyter.notebook.ipynb"
   },
@@ -334,12 +333,13 @@
     "!Split sequence"
   ],
   "yaml.schemas": {
-    "file:///Users/austin/.vscode/extensions/atlassian.atlascode-3.0.9/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
+    "file:///Users/austin/.vscode/extensions/atlassian.atlascode-3.0.10/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
   },
   "zeplin.enableTelemetry": false,
   "[xslt]": {
     "editor.semanticHighlighting.enabled": true
   },
   "XSLT.tasks.saxonJar": "~/.local/share/SaxonHE10-8J/saxon-he-10.8.jar",
-  "workbench.editor.empty.hint": "hidden"
+  "workbench.editor.empty.hint": "hidden",
+  "workbench.editor.tabActionLocation": "left"
 }

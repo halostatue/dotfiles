@@ -1,105 +1,148 @@
 {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
-# See https://tekin.co.uk/2020/10/better-git-diff-output-for-ruby-python-elixir-and-more for more details
+# Auto detect text files and perform LF normalization. This prevents issues when
+# working with multiple platforms as developers. For more useful information see
+# this great article:
+#
+# https://www.aleksandrhovhannisyan.com/blog/crlf-vs-lf-normalizing-line-endings-in-git/
+# https://www.davidlaing.com/2012/09/19/customise-your-gitattributes-to-become-a-git-ninja/
+#
+# CHECK FOR ISSUES: git ls-files --eol
+# RESOLVE ISSUES:   git add --renormalize .
+#
+* text=auto eol=lf
 
-*.ada diff=ada
-*.bib diff=bibtex
-*.cs diff=csharp
-*.css diff=css
-*.dts diff=dts
-*.f diff=fortran
-*.fountain diff=fountain
-*.go diff=golang
-*.java diff=java
-*.java diff=java
-*.kt diff=kotlin
-*.oct diff=octave
-*.org diff=orgmode
-*.pbxproj text -crlf -diff -merge
-*.php diff=php
-*.pl diff=perl
-*.py diff=python
-*.r diff=rstats
-*.swift diff=swift
-*.tex diff=tex
-*.texi* diff=texinfo
-*.{bash,sh} diff=bash
-*.{c,cc,cpp,c++,h,hh,hpp,h++} diff=cpp
-*.{erl,hrl} diff=erlang
-*.{ex,exs} diff=elixir
-*.{html,xhtml} diff=html
-*.{html.erb,eex,heex} diff=html
-*.{lisp,el,clj} diff=lisp
-*.{m,mm} diff=objc
-*.{md,markdown,mkdown,mdown} diff=markdown
-*.rs diff=rust
-*_spec.rb diff=rspec
-mix.lock merge=binary
-rebar.lock merge=binary
-sqitch.conf text whitespace=blank-at-eol,space-before-tab,trailing-space
-{*.rb,Gemfile,Rakefile} diff=ruby
-{Gemfile,*.gemspec} diff=ruby
-{Rakefile,*.rake} diff=ruby
+# Common settings that generally should always be used with your language
+# specific settings:
+#
+# https://tekin.co.uk/2020/10/better-git-diff-output-for-ruby-python-elixir-and-more for more details
 
-# Various Binary Document Types
-{{ if $programs.exiftool -}}
-*.png diff=exif
-*.jpg diff=exif
-*.jpeg diff=exif
-*.gif diff=exif
+# Documents
+*.{bib,bibtex}        text    diff=bibtex
+*.{md,markdown}       text    diff=markdown
+*.tex                 text    diff=tex
+*.{adoc,textile}      text
+*.{mustache,txt}      text
+*.{csv,tab,tsv}       text
+*.sql                 text
+{{ if or $programs.antiword $programs.catdoc $programs.wvText -}}
+*.doc                         diff=doc
 {{ end -}}
-
+{{ if or $programs.docx2txt $programs.pandoc -}}
+*.docx                        diff=docx
+{{ end -}}
 {{ if or $programs.pdfinfo $programs.pdftotext -}}
-*.pdf diff=pdf
+*.pdf                         diff=pdf
+{{ end -}}
+{{ if $programs.unrtf -}}
+*.rtf                         diff=rtf
+{{ end -}}
+{{ if or $programs.odt2txt $programs.pandoc -}}
+*.odt                         diff=odt
+{{ end -}}
+{{ if $programs.soffice -}}
+*.{odp,ods}                   diff=libreoffice
+{{ end -}}
+{{ if or $programs.in2csv $programs.soffice $programs.xlscat -}}
+*.xls                         diff=xls
+{{ end -}}
+{{ if $programs.catppt -}}
+*.ppt                         diff=ppt
+{{ end -}}
+{{ if or $programs.in2csv $programs.soffice $programs.xlsx2csv $programs.xlsx2csvPy -}}
+*.xlsx                        diff=xlsx
+{{ end -}}
+{{ if $programs.pptx2md -}}
+*.pptx                        diff=pptx
+{{ end -}}
+{{ if $programs.pandoc -}}
+*.epub                        diff=pandoc
 {{ end -}}
 
+# Graphics
+*.{tif,tiff}          binary
+*.ico                 binary
+*.svg                 text
+*.eps                 binary
+{{ if $programs.exiftool -}}
+*.{png,jpg,jpeg,gif}          diff=exif
+{{ else }}
+*.{png,jpg,jpeg,gif}  binary
+{{ end -}}
 {{ if or $programs.djvutxt $programs.pdfinfo -}}
 *.djvu diff=djvu
 {{ end -}}
 
-{{ if or $programs.odt2txt $programs.pandoc -}}
-*.odt diff=odt
-{{ end -}}
+# Scripts
+*.{bash,sh,zsh}       text    diff=bash eol=lf
+*.fish                text    eol=lf
+# These are explicitly windows files and should use crlf
+*.{bat,cmd,ps1}       text    eol=crlf
 
-{{ if $programs.soffice -}}
-*.odp diff=libreoffice
-*.ods diff=libreoffice
-{{ end -}}
+# Serialization formats
+*.json                text
+*.toml                text
+*.xml                 text
+*.{yaml,yml}          text
 
-{{ if or $programs.antiword $programs.catdoc $programs.wvText -}}
-*.doc diff=doc
-{{ end -}}
-
-{{ if or $programs.in2csv $programs.soffice $programs.xlscat -}}
-*.xls diff=xls
-{{ end -}}
-
-{{ if $programs.catppt -}}
-*.ppt diff=ppt
-{{ end -}}
-
-{{ if or $programs.docx2txt $programs.pandoc -}}
-*.docx diff=docx
-{{ end -}}
-
-{{ if or $programs.in2csv $programs.soffice $programs.xlsx2csv $programs.xlsx2csvPy -}}
-*.xlsx diff=xlsx
-{{ end -}}
-
-{{ if $programs.pptx2md -}}
-*.pptx diff=pptx
-{{ end -}}
-
-{{ if $programs.unrtf -}}
-*.rtf diff=rtf
-{{ end -}}
-
-{{ if $programs.pandoc -}}
-*.epub diff=pandoc
-{{ end -}}
-
+# Archives
 {{ if $programs.tika -}}
-*.chm diff=tika
-*.mhtml? diff=tika
-*.{class,jar} diff=tika
-*.{rar,7z,zip} diff=tika
+*.chm                         diff=tika
+*.mhtml?                      diff=tika
+*.{class,jar}                 diff=tika
+*.{rar,7z,zip}                diff=tika
+{{- else -}}
+*.chm                 binary
+*.mhtml?              binary
+*.{class,jar}         binary
+*.gz                  binary
+*.{tar,tgz}           binary
+*.{rar,7z,zip}        binary
 {{ end -}}
+
+# Text files where line endings should be preserved
+*.patch               -text
+
+# Exclude files from exporting
+.gitattributes                export-ignore
+.gitignore                    export-ignore
+.gitkeep                      export-ignore
+
+# Programming languages
+*.ada                         diff=ada
+*.cs                          diff=csharp
+*.css                         diff=css
+*.dts                         diff=dts
+*.f                           diff=fortran
+*.fountain                    diff=fountain
+*.go                          diff=golang
+*.java                        diff=java
+*.kt                          diff=kotlin
+*.oct                         diff=octave
+*.org                         diff=orgmode
+*.php                         diff=php
+*.pl                          diff=perl
+*.py                          diff=python
+*.r                           diff=rstats
+*.swift                       diff=swift
+*.texi*                       diff=texinfo
+*.{c,h}                       diff=cpp
+*.{cc,hh}                     diff=cpp
+*.{cpp,hpp}                   diff=cpp
+*.{c++,h++}                   diff=cpp
+*.{erl,hrl}                   diff=erlang
+*.{ex,exs}                    diff=elixir
+*.{html,xhtml}                diff=html
+*.{html.erb,eex,heex}         diff=html
+*.{lisp,el,clj}               diff=lisp
+*.{m,mm}                      diff=objc
+*.rs                          diff=rust
+*_spec.rb                     diff=rspec
+*.rb                          diff=ruby
+{gemfile*,*.gemspec}          diff=ruby
+{rakefile,*.rake}             diff=ruby
+
+# Project Files
+mix.lock                      merge=binary
+rebar.lock                    merge=binary
+sqitch.conf           text    whitespace=blank-at-eol,space-before-tab,trailing-space
+*.pbxproj             text    -crlf -diff -merge

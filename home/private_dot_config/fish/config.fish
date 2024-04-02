@@ -174,10 +174,6 @@ if status is-interactive
         end
     end
 
-    function l
-        ll $argv
-    end
-
     function restoredb
         # pg_restore --verbose --clean -Fc -x --if-exists -d $database $filename
         # pg_restore --verbose --clean --create -Fc -x --if-exists $filename

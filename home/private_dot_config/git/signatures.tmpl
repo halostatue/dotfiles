@@ -22,6 +22,7 @@
 {{ if eq .git.signing.format "ssh" }}
 [gpg "ssh"]
   allowedSignersFile = {{ joinPath "~" ".ssh/allowed_signers" }}
+  # program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
 {{ end -}}
 {{-     end -}}
 {{-   end -}}

@@ -10,9 +10,9 @@ declare -a passopt
 
 declare STRUCTURE_TARGET TIMESTAMP bn0 DEFAULT_IMAGE
 DEFAULT_IMAGE=ghcr.io/kineticcafe/sqitch-pgtap:2
-bn0="$(basename "$0")"
 STRUCTURE_TARGET="${STRUCTURE_TARGET:-structure.sql}"
 TIMESTAMP="${TIMESTAMP:-"$(date -u +%Y%m%d%H%M%S)"}"
+bn0="$(basename "$0")"
 readonly DEFAULT_IMAGE STRUCTURE_TARGET TIMESTAMP bn0
 
 puts() {
@@ -542,8 +542,13 @@ run-help() {
   fi
 }
 
-cmd="$1"
-shift
+case "${bn0}" in
+sqitch | pg_prove) cmd="${bn0}" ;;
+*)
+  cmd="$1"
+  shift
+  ;;
+esac
 
 declare -a args interactive
 interactive=(-it)
@@ -557,7 +562,9 @@ while (($#)); do
   shift
 done
 
-[[ -t 0 ]] || interactive=()
+if ! [[ -t 0 ]] || ! [[ -t 1 ]]; then
+  interactive=()
+fi
 
 if has-function "run-${cmd}"; then
   setup

@@ -1,5 +1,7 @@
 dialect = "uk"
 
+auto_sync = false
+
 update_check = true
 
 search_mode = "fuzzy"
@@ -7,6 +9,8 @@ filter_mode = "global"
 
 search_mode_shell_up_key_binding = "skim"
 filter_mode_shell_up_key_binding = "directory"
+
+inline_height = 25
 
 workspaces = true
 
@@ -28,4 +32,17 @@ history_filter = [
   '^cd\s+\.\.',                        # `cd ..`
   '^(?:mix|pnpm|yarn)\b\s+\bformat\b', # * format
   '^(?:e[xz]a|ls)\b\s+',               # exa | eza | or ls
+]
+
+show_help = false
+
+common_subcommands = [
+  "cargo",
+  "go",
+  "git",
+  "npm",
+  "yarn",
+  "pnpm",
+  "mix",
+  "port",
 ]

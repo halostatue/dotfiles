@@ -38,8 +38,14 @@
 {{-   $sequenceEditor = $programs.interactive_rebase_tool }}
 {{- end -}}
 {{- if or $programs.xdg_open $programs.macos_open -}}
-{{-   $webBrowser = or ($programs.xdg_open $programs.macos_open) -}}
+{{-   $webBrowser = or $programs.xdg_open $programs.macos_open -}}
 {{- end -}}
+
+{{- if $programs.git_absorb -}}
+[absorb]
+  autoStageIfNothingStaged = true
+
+{{ end -}}
 
 [advice]
   skippedCherryPicks = false
@@ -51,7 +57,7 @@
   whitespace = nowarn
 
 [blame]
-  ignoreRevsFile = .git-blame-ignore-revs
+  # ignoreRevsFile = .git-blame-ignore-revs
 
 [branch]
   autosetuprebase = always
@@ -74,7 +80,7 @@
 [commit]
   cleanup = scissors
   verbose = true
-{{- if $commitTemplate }}  template = {{ $commitTemplate | quote }}{{- end }}
+{{ if $commitTemplate }} #  template = {{ $commitTemplate | quote }}{{- end }}
 
 [conflicts]
   editor = gvim
@@ -144,6 +150,11 @@
 [help]
   autocorrect = 7
 
+[index]
+  # This can be removed as a default configuration after libgit2 1.7.3 or later.
+  # https://github.com/libgit2/libgit2/issues/6531
+  skipHash = false
+
 [init]
   defaultBranch = main
 
@@ -176,7 +187,7 @@
   autosquash = true
   autostash = true
   missingCommitsCheck = error
-  updateRefs = true
+  # updateRefs = true
 
 [receive]
   fsckobjects = true

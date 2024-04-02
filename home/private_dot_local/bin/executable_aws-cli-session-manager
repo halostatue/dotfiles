@@ -2,7 +2,7 @@
 
 declare engine image mountopt aws_cli_version force_tty read_write
 engine="${ENGINE:-docker}" # for planned compatibility with podman
-aws_cli_version="${AWS_CLI_VERSION:-2.15.6}"
+aws_cli_version="${AWS_CLI_VERSION:-2.15.23}"
 image="${IMAGE:-ghcr.io/kineticcafe/aws-cli-session-manager:${aws_cli_version}}"
 force_tty=false
 read_write=false
