@@ -1,6 +1,7 @@
 {{- /* Initialize variables for use in this file */ -}}
 {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
-{{- $commitTemplate := ".config/git/commit-message" -}}
+{{- /* $commitTemplate := ".config/git/commit-message" */ -}}
+{{- $commitTemplate := "" -}}
 {{- $coreAttributesFile := ".config/git/attributes" -}}
 {{- $excludesFile := ".config/git/ignore" -}}
 {{- $corePager := "" -}}
@@ -10,18 +11,18 @@
 {{- $sequenceEditor := "" -}}
 {{- $webBrowser := "" -}}
 
-{{- /* Set the values  */ -}}
-{{- if stat (join .chezmoi.homeDir $commitTemplate) -}}
-{{-   $commitTemplate = joinPath "~" $commitTemplate -}}
-{{- else -}}
-{{-   $commitTemplate = "" -}}
-{{- end -}}
-{{- if stat (join .chezmoi.homeDir $coreAttributesFile) -}}
+{{- /* Set the values */ -}}
+{{- /* if stat (joinPath .chezmoi.homeDir $commitTemplate) */ -}}
+{{- /*  $commitTemplate = joinPath "~" $commitTemplate */ -}}
+{{- /* else */ -}}
+{{- /*  $commitTemplate = "" */ -}}
+{{- /* end */ -}}
+{{- if stat (joinPath .chezmoi.homeDir $coreAttributesFile) -}}
 {{-   $coreAttributesFile = joinPath "~" $coreAttributesFile -}}
 {{- else -}}
 {{-   $coreAttributesFile = "" -}}
 {{- end -}}
-{{- if stat (join .chezmoi.homeDir $excludesFile) -}}
+{{- if stat (joinPath .chezmoi.homeDir $excludesFile) -}}
 {{-   $excludesFile = joinPath "~" $excludesFile -}}
 {{- else -}}
 {{-   $excludesFile = "" -}}
@@ -80,7 +81,9 @@
 [commit]
   cleanup = scissors
   verbose = true
-{{ if $commitTemplate }} #  template = {{ $commitTemplate | quote }}{{- end }}
+{{- if $commitTemplate }}
+  #  template = {{ $commitTemplate | quote }}
+{{- end }}
 
 [conflicts]
   editor = gvim

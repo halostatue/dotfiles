@@ -15,7 +15,7 @@ fi
 if [[ "${PWD}" != "${root}" ]]; then
   prefix="$(git rev-parse --show-prefix)"
 else
-  prefix
+  prefix=""
 fi
 
 cd "${root}" || exit 1
