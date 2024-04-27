@@ -1,0 +1,69 @@
+# chezmoi:template:left-delimiter="# (:" right-delimiter=":)"
+
+# (:- $ssh_agents := (list "1Password" "secretive" "ssh-agent") -:)
+# (:- $git_signing_formats := (list "ssh" "gpg" "none") -:)
+
+# (:- $email := promptStringOnce . "email" "Email" -:)
+# (:- $name := promptStringOnce . "name" "Name" -:)
+
+# (:- $github_username := promptStringOnce . "github.user" "Github Username" -:)
+
+# (:- $personal_1password_account := promptStringOnce . "onepassword.personal" "1Password Personal " -:)
+# (:- $work_1password_account := promptStringOnce . "onepassword.work" "1Password Work Account" -:)
+
+# (:- $git_signing_format := promptChoiceOnce . "git.signing.format" "Use which git signing format?" $git_signing_formats -:)
+# (:- $git_signing_key := "" -:)
+# (:- if not (eq $git_signing_format "none") -:)
+# (:-   $message := printf "Git signing key (%s)" $git_signing_format -:)
+# (:-   $git_signing_key = promptStringOnce . "git.signing.key" $message -:)
+# (:- end -:)
+
+# (:- $gpg_default_key := promptStringOnce . "gnupg.default_key" "GnuPG Default Key" -:)
+
+# (:- $ssh_agent := promptChoiceOnce . "ssh.agent" "Which SSH agent to use?" $ssh_agents -:)
+# (:- $debug_scripts := promptBoolOnce . "debug_scripts" "Debug scripts?" -:)
+
+scriptEnv:
+  DEBUG_SCRIPTS: # (: $debug_scripts | quote :)
+
+add:
+  secrets: error
+
+diff:
+  exclude:
+    - scripts
+
+data:
+  email: # (: $email | toYaml :)
+  name: # (: $name | toYaml :)
+
+  debug_scripts: # (: $debug_scripts | toYaml :)
+
+  onepassword:
+    personal: # (: $personal_1password_account | toYaml :)
+    work: # (: $work_1password_account | toYaml :)
+
+  git:
+    signing:
+      format: # (: $git_signing_format | toYaml :)
+      # (: if not (eq $git_signing_format "none") -:)
+      key: # (: $git_signing_key | toYaml :)
+
+  # (:- end :)
+
+  github:
+    user: # (: $github_username | toYaml :)
+
+  ruby:
+    hoe:
+      email: # (: $email | toYaml :)
+    rubygems:
+      user: # (: $email | toYaml :)
+
+  gnupg:
+    # (: if $gpg_default_key -:)
+    default_key: # (: $gpg_default_key | toYaml :)
+  # (:- end :)
+
+  ssh:
+    agent: # (: $ssh_agent | toYaml :)
