@@ -19,20 +19,6 @@ if exists(":Man") != 2 | runtime ftplugin/man.vim | endif
 
 " Configurations that need to be set _before_ loading / autoloading plug-ins to prevent certain behaviours.
 
-" vim-polyglot: Disable languages or add-ins.
-" - <name> disables the plugin from Polyglot entirely.
-" - <name>.plugin disables the plugin except for filetype detection.
-" - autoindent disables vim-sleuth like heuristics
-" - sensible disables a copy of vim-sensible
-" - ftdetect disables filetype detection
-let g:polyglot_disabled = [
-                  \   'autoindent',
-                  \   'bzl',
-                  \   'go',
-                  \   'cue',
-                  \   'sensible',
-                  \ ]
-
 " Is configuration
 let g:is#do_default_mappings = 0
 

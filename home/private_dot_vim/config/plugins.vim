@@ -190,6 +190,9 @@ function! s:packager_init() abort
   call packager#add('mhinz/vim-startify')
 
   " Polyglot: https://github.com/sheerun/vim-polyglot
+  "
+  " Polyglot remains garbage.
+  "
   " Provides syntax and indentation for the following syntaxes I
   " care about: ansible, applescript, C/C++, Crystal, CSV, Cucumber/Gherkin,
   " Dart, D, Dockerfile / Docker-Compose, Elixir, Elm, Erlang, Fish, Git,
@@ -197,7 +200,144 @@ function! s:packager_init() abort
   " Nim, Objective-C, Perl, PLpgSQL, PlantUML, Pony, Python, Raku, RAML,
   " Reason, Ruby, Rust, SCSS, Shell, Svelte, SVG, Swift, Terraform, TOML,
   " Vue, XML, and Zig.
-  call packager#add('sheerun/vim-polyglot')
+  " call packager#add('sheerun/vim-polyglot')
+
+  " Ansible: https://github.com/pearofducks/ansible-vim
+  call packager#add('pearofducks/ansible-vim')
+  " AppleScript: https://github.com/mityu/vim-applescript
+  call packager#add('mityu/vim-applescript')
+  " Brewfile: https://github.com/bfontaine/Brewfile.vim
+  call packager#add('bfontaine/Brewfile.vim')
+  " C/C++: https://github.com/vim-jp/vim-cpp
+  call packager#add('vim-jp/vim-cpp')
+  " Caddy: https://github.com/isobit/vim-caddyfile
+  call packager#add('isobit/vim-caddyfile')
+  " CMake: https://github.com/pboettch/vim-cmake-syntax
+  call packager#add('pboettch/vim-cmake-syntax')
+  " Clojure: https://github.com/clojure-vim/clojure.vim
+  call packager#add('clojure-vim/clojure.vim')
+  " CoffeeScript: https://github.com/kchmck/vim-coffee-script
+  call packager#add('kchmck/vim-coffee-script')
+  " C/C++: https://github.com/bfrg/vim-cpp-modern
+  call packager#add('bfrg/vim-cpp-modern')
+  " Crystal: https://github.com/vim-crystal/vim-crystal
+  call packager#add('vim-crystal/vim-crystal')
+  " CSV: https://github.com/chrisbra/csv.vim
+  call packager#add('chrisbra/csv.vim')
+  " Cucumber (Gherkin): https://github.com/tpope/vim-cucumber
+  call packager#add('tpope/vim-cucumber')
+  " Dart: https://github.com/dart-lang/dart-vim-plugin
+  call packager#add('dart-lang/dart-vim-plugin')
+  " Dhall: https://github.com/vmchale/dhall-vim
+  call packager#add('vmchale/dhall-vim')
+  " D: https://github.com/JesseKPhillips/d.vim
+  call packager#add('JesseKPhillips/d.vim')
+  " Elixir: https://github.com/elixir-editors/vim-elixir
+  call packager#add('elixir-editors/vim-elixir')
+  " Erlang: https://github.com/vim-erlang/vim-erlang-runtime
+  call packager#add('vim-erlang/vim-erlang-runtime')
+  " Fennel (Lua Lisp): https://github.com/bakpakin/fennel.vim
+  call packager#add('bakpakin/fennel.vim')
+  " Fish shell: https://github.com/blankname/vim-fish
+  call packager#add('blankname/vim-fish')
+  " Git: https://github.com/tpope/vim-git
+  call packager#add('tpope/vim-git')
+  " .gitignore: https://github.com/SirJson/fzf-gitignore
+  call packager#add('SirJson/fzf-gitignore')
+  " Gleam: https://github.com/gleam-lang/gleam.vim
+  call packager#add('gleam-lang/gleam.vim')
+  " Go: https://github.com/fatih/vim-go
+  call packager#add('fatih/vim-go')
+  " GraphQL: https://github.com/jparise/vim-graphql
+  call packager#add('jparise/vim-graphql')
+  " Haskell: https://github.com/neovimhaskell/haskell-vim
+  call packager#add('neovimhaskell/haskell-vim')
+  " Haxe: https://github.com/jdonaldson/vaxe
+  call packager#add('jdonaldson/vaxe')
+  " Hjson: https://github.com/hjson/vim-hjson
+  call packager#add('hjson/vim-hjson')
+  " HTML: https://github.com/othree/html5.vim
+  call packager#add('othree/html5.vim')
+  " Idris2: https://github.com/edwinb/idris2-vim
+  call packager#add('edwinb/idris2-vim')
+  " icalendar: https://github.com/chutzpah/icalendar.vim
+  call packager#add('chutzpah/icalendar.vim')
+  " SQL Template Literals for JavaScript: https://github.com/statico/vim-javascript-sql
+  call packager#add('statico/vim-javascript-sql')
+  " JavaScript: https://github.com/pangloss/vim-javascript
+  call packager#add('pangloss/vim-javascript')
+  " jq: https://github.com/vito-c/jq.vim
+  call packager#add('vito-c/jq.vim')
+  " JSON: https://github.com/elzr/vim-json
+  call packager#add('elzr/vim-json')
+  " JSONc: https://github.com/neoclide/jsonc.vim
+  call packager#add('neoclide/jsonc.vim')
+  " Jsonnet: https://github.com/google/vim-jsonnet
+  call packager#add('google/vim-jsonnet')
+  " JSX, which can never be pretty: https://github.com/MaxMEllon/vim-jsx-pretty
+  call packager#add('MaxMEllon/vim-jsx-pretty')
+  " Julia: https://github.com/JuliaEditorSupport/julia-vim
+  call packager#add('JuliaEditorSupport/julia-vim')
+  " Just: https://github.com/NoahTheDuke/vim-just
+  call packager#add('NoahTheDuke/vim-just')
+  " Kotlin: https://github.com/udalov/kotlin-vim
+  call packager#add('udalov/kotlin-vim')
+  " Generic log highlighting: https://github.com/MTDL9/vim-log-highlighting
+  call packager#add('MTDL9/vim-log-highlighting')
+  " Lua 5.3: https://github.com/tbastos/vim-lua
+  call packager#add('tbastos/vim-lua')
+  " Markdown: https://github.com/preservim/vim-markdown
+  call packager#add('preservim/vim-markdown')
+  " Mermaid.js: https://github.com/mracos/mermaid.vim
+  call packager#add('mracos/mermaid.vim')
+  " Nim: https://github.com/zah/nim.vim
+  call packager#add('zah/nim.vim')
+  " Nix: https://github.com/LnL7/vim-nix
+  call packager#add('LnL7/vim-nix')
+  " Objective-C: https://github.com/b4winckler/vim-objc
+  call packager#add('b4winckler/vim-objc')
+  " OCaml: https://github.com/ocaml/vim-ocaml
+  call packager#add('ocaml/vim-ocaml')
+  " Perl5: https://github.com/vim-perl/vim-perl
+  call packager#add('vim-perl/vim-perl')
+  " PgSQL: https://github.com/lifepillar/pgsql.vim
+  call packager#add('lifepillar/pgsql.vim')
+  " PlantUML: https://github.com/aklt/plantuml-syntax
+  call packager#add('aklt/plantuml-syntax')
+  " Python: https://github.com/vim-python/python-syntax
+  call packager#add('vim-python/python-syntax')
+  " Raku: https://github.com/Raku/vim-raku
+  call packager#add('Raku/vim-raku')
+  " Python requirements.txt: https://github.com/raimon49/requirements.txt.vim
+  call packager#add('raimon49/requirements.txt.vim')
+  " Ruby: https://github.com/vim-ruby/vim-ruby
+  call packager#add('vim-ruby/vim-ruby')
+  " Rust: https://github.com/rust-lang/rust.vim
+  call packager#add('rust-lang/rust.vim')
+  " SCSS: https://github.com/cakebaker/scss-syntax.vim
+  call packager#add('cakebaker/scss-syntax.vim')
+  " Shell: https://github.com/lunacookies/vim-sh
+  call packager#add('lunacookies/vim-sh')
+  " Svelte: https://github.com/leafOfTree/vim-svelte-plugin
+  call packager#add('leafOfTree/vim-svelte-plugin')
+  " SVG: https://github.com/vim-scripts/svg.vim
+  call packager#add('vim-scripts/svg.vim')
+  " Swift: https://github.com/keith/swift.vim
+  call packager#add('keith/swift.vim')
+  " Terraform: https://github.com/hashivim/vim-terraform
+  call packager#add('hashivim/vim-terraform')
+  " TOML: https://github.com/cespare/vim-toml
+  call packager#add('cespare/vim-toml')
+  " Typescript: https://github.com/HerringtonDarkholme/yats.vim
+  call packager#add('HerringtonDarkholme/yats.vim')
+  " Vue: https://github.com/posva/vim-vue
+  call packager#add('posva/vim-vue')
+  " XML with enhancements: https://github.com/amadeus/vim-xml
+  call packager#add('amadeus/vim-xml')
+  " XSLT: https://github.com/vim-scripts/XSLT-syntax
+  call packager#add('vim-scripts/XSLT-syntax')
+
+
   " MJML: https://github.com/amadeus/vim-mjml
   call packager#add('amadeus/vim-mjml')
   " Elvish shell: https://github.com/dmix/elvish.vim

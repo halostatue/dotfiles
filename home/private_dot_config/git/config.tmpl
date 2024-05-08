@@ -1,9 +1,10 @@
 {{- /* Initialize variables for use in this file */ -}}
 {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
-{{- /* $commitTemplate := ".config/git/commit-message" */ -}}
+{{- /* $commitTemplate := joinPath .chezmoi.homeDir ".config/git/commit-message" */ -}}
 {{- $commitTemplate := "" -}}
-{{- $coreAttributesFile := ".config/git/attributes" -}}
-{{- $excludesFile := ".config/git/ignore" -}}
+{{- $coreAttributesFile := joinPath .chezmoi.homeDir ".config/git/attributes" -}}
+{{- $excludesFile := joinPath .chezmoi.homeDir ".config/git/ignore" -}}
+{{- $skiplistFile := joinPath .chezmoi.homeDir ".config/git/commit-skiplist" -}}
 {{- $corePager := "" -}}
 {{- $credentialsHelper := "" -}}
 {{- $githubUser := "" -}}
@@ -11,33 +12,19 @@
 {{- $sequenceEditor := "" -}}
 {{- $webBrowser := "" -}}
 
-{{- /* Set the values */ -}}
-{{- /* if stat (joinPath .chezmoi.homeDir $commitTemplate) */ -}}
-{{- /*  $commitTemplate = joinPath "~" $commitTemplate */ -}}
-{{- /* else */ -}}
-{{- /*  $commitTemplate = "" */ -}}
-{{- /* end */ -}}
-{{- if stat (joinPath .chezmoi.homeDir $coreAttributesFile) -}}
-{{-   $coreAttributesFile = joinPath "~" $coreAttributesFile -}}
-{{- else -}}
-{{-   $coreAttributesFile = "" -}}
-{{- end -}}
-{{- if stat (joinPath .chezmoi.homeDir $excludesFile) -}}
-{{-   $excludesFile = joinPath "~" $excludesFile -}}
-{{- else -}}
-{{-   $excludesFile = "" -}}
-{{- end -}}
-
 {{- if $programs.delta -}}
 {{-   $corePager = $programs.delta -}}
 {{- else if $programs.diff_so_fancy -}}
 {{-   $corePager = printf "%q | less --tabs=4 -RFX" $programs.diff_so_fancy -}}
 {{- end -}}
+
 {{- $githubUser = .github.user -}}
 {{- $githubToken = onepasswordRead "op://Personal/github-cli-tools/credential" .onepassword.personal -}}
+
 {{- if $programs.interactive_rebase_tool -}}
 {{-   $sequenceEditor = $programs.interactive_rebase_tool }}
 {{- end -}}
+
 {{- if or $programs.xdg_open $programs.macos_open -}}
 {{-   $webBrowser = or $programs.xdg_open $programs.macos_open -}}
 {{- end -}}
@@ -130,6 +117,11 @@
   prune = true
   recurseSubmodules = on-demand
 
+{{ if $skiplistFile -}}
+[fetch.fsck]
+    skipList = {{ $skiplistFile | quote }}
+
+{{- end }}
 [format]
   pretty = %C(yellow)%h%C(reset) %C(red)%ad%C(reset) | %s%d %C(green)[%aN]%C(reset)
   signOff = true
@@ -195,6 +187,11 @@
 [receive]
   fsckobjects = true
 
+{{ if $skiplistFile -}}
+[receive.fsck]
+    skipList = {{ $skiplistFile | quote }}
+
+{{- end }}
 [stash]
   showPatch = true
 
