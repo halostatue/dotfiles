@@ -48,4 +48,6 @@ let g:splitjoin_java_argument_split_last_newline = v:true
 
 let g:lsc_auto_map = v:true
 
-runtime config/plugins/install_packager.vim
+let g:FerretNvim = v:false
+
+runtime config/plugins/install_plugin_manager.vim

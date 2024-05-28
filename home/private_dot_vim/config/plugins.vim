@@ -16,515 +16,522 @@ elseif s:fzf_bin == '/usr/local/bin/fzf' && isdirectory('/usr/local/opt/fzf')
   set rtp+=/usr/local/opt/fzf
 endif
 
-function! s:packager_init() abort
-  packadd vim-packager
-
-  call packager#init()
-
-  " `config/plugins/install_packager.vim` will install this automatically, adding it here
-  " makes it self-managing: https://github.com/kristijanhusak/vim-packager
-  call packager#add('kristijanhusak/vim-packager', { 'type': 'opt' })
-
-  " Improved incremental search: https://github.com/wincent/loupe
-  call packager#add('wincent/loupe')
-
-  call packager#add('lambdalisue/suda.vim') " https://lambdalisue/suda.vim
-
-  " Cross-File Search:
-  " https://github.com/dyng/ctrlsf.vim
-  call packager#add('dyng/ctrlsf.vim')
-  " https://github.com/yegappan/grep
-  call packager#add('yegappan/grep')
-
-  " Edit files as `file.txt:24:15` and move to the correct spot:
-  " https://github.com/wsdjeg/vim-fetch
-  call packager#add('wsdjeg/vim-fetch')
-
-  " `mkdir -p` for file creation: https://github.com/duggiefresh/vim-easydir
-  call packager#add('duggiefresh/vim-easydir')
-
-  " Improved matchit: https://github.com/andymass/vim-matchup
-  call packager#add('andymass/vim-matchup')
-
-  " Load .envrc for vim: https://github.com/direnv/direnv.vim
-  call packager#add('direnv/direnv.vim')
-
-  " Load editor configuration for vim: https://github.com/editorconfig/vim-editorconfig
-  call packager#add('editorconfig/editorconfig-vim')
-
-  " Pipe output into a scratch / temporary buffer:
-  " https://github.com/AndrewRadev/bufferize.vim
-  call packager#add('AndrewRadev/bufferize.vim')
-
-  " Show the undo tree, pure vimscript. (vim-mundo requires Python.)
-  " https://github.com/mbbill/undotree
-  call packager#add('mbbill/undotree')
-
-  " Database queries in vim.
-  " https://github.com/tpope/vim-dadbod
-  call packager#add('tpope/vim-dadbod')
-  " https://github.com/kristijanhusak/vim-dadbod-completion
-  call packager#add('kristijanhusak/vim-dadbod-completion')
-  " https://github.com/kristijanhusak/vim-dadbod-ui
-  call packager#add('kristijanhusak/vim-dadbod-ui')
-
-  " Tim Pope utilities.
-  " Repeat plugin maps: https://github.com/tpope/vim-repeat
-  call packager#add('tpope/vim-repeat')
-  " Readline-style support: https://github.com/tpope/vim-rsi
-  call packager#add('tpope/vim-rsi')
-  " Change surrounds easily: https://github.com/tpope/vim-surround
-  call packager#add('tpope/vim-surround')
-  " Paired mappings: https://github.com/tpope/vim-unimpaired
-  call packager#add('tpope/vim-unimpaired')
-  " Abbreviation, Subversion, and Coercion: https://github.com/tpope/vim-abolish
-  call packager#add('tpope/vim-abolish')
-  " Improved C-A / C-X, especially on dates: https://github.com/tpope/vim-speeddating
-  call packager#add('tpope/vim-speeddating')
-  " Project configuration with projections: https://github.com/tpope/vim-projectionist
-  call packager#add('tpope/vim-projectionist')
-  " Unix command sugar: https://github.com/tpope/vim-eunuch
-  call packager#add('tpope/vim-eunuch')
-  " Asynchronous compiler support: https://github.com/tpope/vim-dispatch
-  call packager#add('tpope/vim-dispatch')
-  " Comment management: https://github.com/tpope/vim-commentary
-  call packager#add('tpope/vim-commentary')
-  " End certain structures automatically: https://github.com/tpope/vim-endwise
-  call packager#add('tpope/vim-endwise')
-  " Better HTML/template tag mapping: https://github.com/tpope/vim-ragtag
-  call packager#add('tpope/vim-ragtag')
-  " Evaluate expression: https://github.com/fvictorio/vim-eval-expression
-  call packager#add('fvictorio/vim-eval-expression')
-
-  " Session Management
-  " Handle Vim sessions like a pro: https://github.com/dhruvasagar/vim-prosession
-  " Continuously updated session files: https://github.com/tpope/vim-obsession
-  call packager#add('dhruvasagar/vim-prosession', {
-        \   'type': 'opt',
-        \   'requires': [['tpope/vim-obsession', { 'type': 'opt' }]]
-        \ })
-
-  " Preview the contents of registers: https://github.com/junegunn/vim-peekaboo
-  call packager#add('junegunn/vim-peekaboo')
-
-  " Only obey some modeline settings: https://github.com/alexghergh/securemodelines
-  call packager#add('alexghergh/securemodelines')
-
-  " Makes `gx` do the right thing with URLs: https://github.com/tyru/open-browser.vim
-  call packager#add('tyru/open-browser.vim')
-
-  " Sort lines with a motion: https://github.com/christoomey/vim-sort-motion
-  call packager#add('christoomey/vim-sort-motion')
-
-  " Change PWD to a project root. https://github.com/airblade/vim-rooter
-  call packager#add('airblade/vim-rooter')
-
-  " Add `emoji#for` function: https://github.com/junegunn/vim-emoji
-  call packager#add('junegunn/vim-emoji')
-
-  if ! s:fzf_added
-    " Add fzf support: https://github.com/junegunn/fzf
-    call packager#add('junegunn/fzf')
-  endif
-  " https://github.com/junegunn/fzf.vim
-  call packager#add('junegunn/fzf.vim')
-
-  " Add tooling to exchange objects https://github.com/tommcdo/vim-exchange
-  call packager#add('tommcdo/vim-exchange')
-
-  " Add tooling to change multiple objects https://github.com/AndrewRadev/multichange.vim
-  call packager#add('AndrewRadev/multichange.vim')
-
-  " Add tooling to swap list objects https://github.com/machakann/vim-swap
-  call packager#add('machakann/vim-swap')
-
-  " Safely load local `.vimrc` and/or `.vimrc.lua` files:
-  " https://github.com/jenterkin/vim-autosource
-  call packager#add('jenterkin/vim-autosource')
-
-  " Fern is a file tree / explorer: https://github.com/lambdalisue/fern.vim
-  call packager#add('lambdalisue/fern.vim')
-  " Shows git status in the fern tree: https://github.com/lambdalisue/fern-git-status.vim
-  call packager#add('lambdalisue/fern-git-status.vim')
-  " Hijacks directory edits with fern: https://github.com/lambdalisue/fern-hijack.vim
-  call packager#add('lambdalisue/fern-hijack.vim')
-  " Collapse a folder or leave it:
-  " https://github.com/hrsh7th/fern-mapping-collapse-or-leave.vim
-  call packager#add('hrsh7th/fern-mapping-collapse-or-leave.vim')
-  " Integrate fzf: https://github.com/LumaKernel/fern-mapping-fzf.vim
-  call packager#add('LumaKernel/fern-mapping-fzf.vim')
-  " Add bookmarks to fern: https://github.com/lambdalisue/fern-bookmark.vim
-  call packager#add('lambdalisue/fern-bookmark.vim')
-  " Git stage << / unstage >>: https://github.com/lambdalisue/fern-mapping-git.vim
-  call packager#add('lambdalisue/fern-mapping-git.vim')
-  " Mark children: https://github.com/lambdalisue/fern-mapping-mark-children.vim
-  call packager#add('lambdalisue/fern-mapping-mark-children.vim')
-  " Jump to the project top: https://github.com/lambdalisue/fern-mapping-project-top.vim
-  call packager#add('lambdalisue/fern-mapping-project-top.vim')
-  " Send selections to quickfix: https://github.com/lambdalisue/fern-mapping-quickfix.vim
-  call packager#add('lambdalisue/fern-mapping-quickfix.vim')
-  " Floating file preview for Fern: https://github.com/yuki-yano/fern-preview.vim
-  call packager#add('yuki-yano/fern-preview.vim')
-
-  " File Picker:
-  " USING THIS: https://github.com/srstevenson/vim-picker
-  call packager#add('srstevenson/vim-picker')
-  " TRY THIS: https://github.com/liuchengxu/vim-clap
-  " call packager#add('liuchengxu/vim-clap', { 'do': ':Clap install-binary!' })
-  " RE-TRY THIS: https://github.com/vim-ctrlspace/vim-ctrlspace
-  " call packager#add('vim-ctrlspace/vim-ctrlspace')
-
-  " Git so awesome, it should be illegal: https://github.com/tpope/vim-fugitive
-  call packager#add('tpope/vim-fugitive')
-  " Hub to the Git: https://github.com/tpope/vim-rhubarb
-  " call packager#add('tpope/vim-rhubarb')
-  " Git commit browser: https://github.com/junegunn/gv.vim
-  call packager#add('junegunn/gv.vim')
-  " Shows git commit messages for the current line: https://github.com/rhysd/git-messenger.vim
-  call packager#add('rhysd/git-messenger.vim')
-
-  " Sign column support for almost any VCS: https://github.com/mhinz/vim-signify
-  call packager#add('mhinz/vim-signify')
-
-  " Launch screen: https://github.com/mhinz/vim-startify
-  call packager#add('mhinz/vim-startify')
-
-  " Polyglot: https://github.com/sheerun/vim-polyglot
-  "
-  " Polyglot remains garbage.
-  "
-  " Provides syntax and indentation for the following syntaxes I
-  " care about: ansible, applescript, C/C++, Crystal, CSV, Cucumber/Gherkin,
-  " Dart, D, Dockerfile / Docker-Compose, Elixir, Elm, Erlang, Fish, Git,
-  " Gleam, GraphQL, HTML, JavaScript, jq, JSON, Julia, Kotlin, Lua, Markdown,
-  " Nim, Objective-C, Perl, PLpgSQL, PlantUML, Pony, Python, Raku, RAML,
-  " Reason, Ruby, Rust, SCSS, Shell, Svelte, SVG, Swift, Terraform, TOML,
-  " Vue, XML, and Zig.
-  " call packager#add('sheerun/vim-polyglot')
-
-  " Ansible: https://github.com/pearofducks/ansible-vim
-  call packager#add('pearofducks/ansible-vim')
-  " AppleScript: https://github.com/mityu/vim-applescript
-  call packager#add('mityu/vim-applescript')
-  " Brewfile: https://github.com/bfontaine/Brewfile.vim
-  call packager#add('bfontaine/Brewfile.vim')
-  " C/C++: https://github.com/vim-jp/vim-cpp
-  call packager#add('vim-jp/vim-cpp')
-  " Caddy: https://github.com/isobit/vim-caddyfile
-  call packager#add('isobit/vim-caddyfile')
-  " CMake: https://github.com/pboettch/vim-cmake-syntax
-  call packager#add('pboettch/vim-cmake-syntax')
-  " Clojure: https://github.com/clojure-vim/clojure.vim
-  call packager#add('clojure-vim/clojure.vim')
-  " CoffeeScript: https://github.com/kchmck/vim-coffee-script
-  call packager#add('kchmck/vim-coffee-script')
-  " C/C++: https://github.com/bfrg/vim-cpp-modern
-  call packager#add('bfrg/vim-cpp-modern')
-  " Crystal: https://github.com/vim-crystal/vim-crystal
-  call packager#add('vim-crystal/vim-crystal')
-  " CSV: https://github.com/chrisbra/csv.vim
-  call packager#add('chrisbra/csv.vim')
-  " Cucumber (Gherkin): https://github.com/tpope/vim-cucumber
-  call packager#add('tpope/vim-cucumber')
-  " Dart: https://github.com/dart-lang/dart-vim-plugin
-  call packager#add('dart-lang/dart-vim-plugin')
-  " Dhall: https://github.com/vmchale/dhall-vim
-  call packager#add('vmchale/dhall-vim')
-  " D: https://github.com/JesseKPhillips/d.vim
-  call packager#add('JesseKPhillips/d.vim')
-  " Elixir: https://github.com/elixir-editors/vim-elixir
-  call packager#add('elixir-editors/vim-elixir')
-  " Erlang: https://github.com/vim-erlang/vim-erlang-runtime
-  call packager#add('vim-erlang/vim-erlang-runtime')
-  " Fennel (Lua Lisp): https://github.com/bakpakin/fennel.vim
-  call packager#add('bakpakin/fennel.vim')
-  " Fish shell: https://github.com/blankname/vim-fish
-  call packager#add('blankname/vim-fish')
-  " Git: https://github.com/tpope/vim-git
-  call packager#add('tpope/vim-git')
-  " .gitignore: https://github.com/SirJson/fzf-gitignore
-  call packager#add('SirJson/fzf-gitignore')
-  " Gleam: https://github.com/gleam-lang/gleam.vim
-  call packager#add('gleam-lang/gleam.vim')
-  " Go: https://github.com/fatih/vim-go
-  call packager#add('fatih/vim-go')
-  " GraphQL: https://github.com/jparise/vim-graphql
-  call packager#add('jparise/vim-graphql')
-  " Haskell: https://github.com/neovimhaskell/haskell-vim
-  call packager#add('neovimhaskell/haskell-vim')
-  " Haxe: https://github.com/jdonaldson/vaxe
-  call packager#add('jdonaldson/vaxe')
-  " Hjson: https://github.com/hjson/vim-hjson
-  call packager#add('hjson/vim-hjson')
-  " HTML: https://github.com/othree/html5.vim
-  call packager#add('othree/html5.vim')
-  " Idris2: https://github.com/edwinb/idris2-vim
-  call packager#add('edwinb/idris2-vim')
-  " icalendar: https://github.com/chutzpah/icalendar.vim
-  call packager#add('chutzpah/icalendar.vim')
-  " SQL Template Literals for JavaScript: https://github.com/statico/vim-javascript-sql
-  call packager#add('statico/vim-javascript-sql')
-  " JavaScript: https://github.com/pangloss/vim-javascript
-  call packager#add('pangloss/vim-javascript')
-  " jq: https://github.com/vito-c/jq.vim
-  call packager#add('vito-c/jq.vim')
-  " JSON: https://github.com/elzr/vim-json
-  call packager#add('elzr/vim-json')
-  " JSONc: https://github.com/neoclide/jsonc.vim
-  call packager#add('neoclide/jsonc.vim')
-  " Jsonnet: https://github.com/google/vim-jsonnet
-  call packager#add('google/vim-jsonnet')
-  " JSX, which can never be pretty: https://github.com/MaxMEllon/vim-jsx-pretty
-  call packager#add('MaxMEllon/vim-jsx-pretty')
-  " Julia: https://github.com/JuliaEditorSupport/julia-vim
-  call packager#add('JuliaEditorSupport/julia-vim')
-  " Just: https://github.com/NoahTheDuke/vim-just
-  call packager#add('NoahTheDuke/vim-just')
-  " Kotlin: https://github.com/udalov/kotlin-vim
-  call packager#add('udalov/kotlin-vim')
-  " Generic log highlighting: https://github.com/MTDL9/vim-log-highlighting
-  call packager#add('MTDL9/vim-log-highlighting')
-  " Lua 5.3: https://github.com/tbastos/vim-lua
-  call packager#add('tbastos/vim-lua')
-  " Markdown: https://github.com/preservim/vim-markdown
-  call packager#add('preservim/vim-markdown')
-  " Mermaid.js: https://github.com/mracos/mermaid.vim
-  call packager#add('mracos/mermaid.vim')
-  " Nim: https://github.com/zah/nim.vim
-  call packager#add('zah/nim.vim')
-  " Nix: https://github.com/LnL7/vim-nix
-  call packager#add('LnL7/vim-nix')
-  " Objective-C: https://github.com/b4winckler/vim-objc
-  call packager#add('b4winckler/vim-objc')
-  " OCaml: https://github.com/ocaml/vim-ocaml
-  call packager#add('ocaml/vim-ocaml')
-  " Perl5: https://github.com/vim-perl/vim-perl
-  call packager#add('vim-perl/vim-perl')
-  " PgSQL: https://github.com/lifepillar/pgsql.vim
-  call packager#add('lifepillar/pgsql.vim')
-  " PlantUML: https://github.com/aklt/plantuml-syntax
-  call packager#add('aklt/plantuml-syntax')
-  " Python: https://github.com/vim-python/python-syntax
-  call packager#add('vim-python/python-syntax')
-  " Raku: https://github.com/Raku/vim-raku
-  call packager#add('Raku/vim-raku')
-  " Python requirements.txt: https://github.com/raimon49/requirements.txt.vim
-  call packager#add('raimon49/requirements.txt.vim')
-  " Ruby: https://github.com/vim-ruby/vim-ruby
-  call packager#add('vim-ruby/vim-ruby')
-  " Rust: https://github.com/rust-lang/rust.vim
-  call packager#add('rust-lang/rust.vim')
-  " SCSS: https://github.com/cakebaker/scss-syntax.vim
-  call packager#add('cakebaker/scss-syntax.vim')
-  " Shell: https://github.com/lunacookies/vim-sh
-  call packager#add('lunacookies/vim-sh')
-  " Svelte: https://github.com/leafOfTree/vim-svelte-plugin
-  call packager#add('leafOfTree/vim-svelte-plugin')
-  " SVG: https://github.com/vim-scripts/svg.vim
-  call packager#add('vim-scripts/svg.vim')
-  " Swift: https://github.com/keith/swift.vim
-  call packager#add('keith/swift.vim')
-  " Terraform: https://github.com/hashivim/vim-terraform
-  call packager#add('hashivim/vim-terraform')
-  " TOML: https://github.com/cespare/vim-toml
-  call packager#add('cespare/vim-toml')
-  " Typescript: https://github.com/HerringtonDarkholme/yats.vim
-  call packager#add('HerringtonDarkholme/yats.vim')
-  " Vue: https://github.com/posva/vim-vue
-  call packager#add('posva/vim-vue')
-  " XML with enhancements: https://github.com/amadeus/vim-xml
-  call packager#add('amadeus/vim-xml')
-  " XSLT: https://github.com/vim-scripts/XSLT-syntax
-  call packager#add('vim-scripts/XSLT-syntax')
-
-
-  " MJML: https://github.com/amadeus/vim-mjml
-  call packager#add('amadeus/vim-mjml')
-  " Elvish shell: https://github.com/dmix/elvish.vim
-  call packager#add('dmix/elvish.vim')
-  " Go: https://github.com/fatih/vim-go
-  call packager#add('fatih/vim-go', { 'do': ':GoInstallBinaries' })
-  " Browserslist constraints: https://github.com/browserslist/vim-browserslist
-  call packager#add('browserslist/vim-browserslist')
-  " Janet lang: https://github.com/janet-lang/janet.vim
-  call packager#add('janet-lang/janet.vim')
-  " Svelte 3: https://github.com/evanleck/vim-svelte
-  call packager#add('evanleck/vim-svelte')
-  " Ruby Signature: https://github.com/jlcrochet/vim-rbs
-  call packager#add('jlcrochet/vim-rbs')
-  " Cue language: https://github.com/hofstadter-io/cue.vim
-  call packager#add('hofstadter-io/cue.vim')
-  " Github Actions (YAML): https://github.com/yasuhiroki/github-actions-yaml.vim
-  call packager#add('yasuhiroki/github-actions-yaml.vim')
-  " Prisma syntax highlighting: https://github.com/prisma/vim-prisma
-  call packager#add('prisma/vim-prisma')
-  " Dafny, a verified programming language: https://github.com/mlr-msft/vim-loves-dafny
-  call packager#add('mlr-msft/vim-loves-dafny')
-  " Nushell: https://github.com/ErichDonGubler/vim-nushell
-  call packager#add('ErichDonGubler/vim-nushell')
-  " casey/just formatting: https://github.com/NoahTheDuke/vim-just
-  call packager#add('NoahTheDuke/vim-just')
-
-  " Generalized Org Mode: https://github.com/chimay/organ
-  call packager#add('chimay/organ')
-
-  " File group manager and more: https://github.com/chimay/wheel
-  call packager#add('chimay/wheel')
-
-  " Colour highlighter: https://github.com/ap/vim-css-color
-  call packager#add('ap/vim-css-color')
-
-  " Autoformat: https://github.com/sbdchd/neoformat
-  call packager#add('sbdchd/neoformat')
-  " Autoset path searching: https://github.com/tpope/vim-apathy
-  call packager#add('tpope/vim-apathy')
-  " Rails support: https://github.com/tpope/vim-rails
-  call packager#add('tpope/vim-rails', { 'type': 'opt' })
-  " Rake support: https://github.com/tpope/vim-rake
-  call packager#add('tpope/vim-rake', { 'type': 'opt' })
-  " Bundler support: https://github.com/tpope/vim-bundler
-  call packager#add('tpope/vim-bundler', { 'type': 'opt' })
-  " Automatically insert continuation bacskslashes for vim files:
-  " https://github.com/lambdalisue/vim-backslash
-  call packager#add('lambdalisue/vim-backslash')
-
-  " Colorschemes
-  " https://github.com/tyrannicaltoucan/vim-quantum
-  call packager#add('tyrannicaltoucan/vim-quantum')
-  " https://github.com/cocopon/iceberg.vim
-  call packager#add('cocopon/iceberg.vim')
-  " https://github.com/habamax/vim-alchemist
-  call packager#add('habamax/vim-alchemist')
-
-  " Display completion function signatures in the command-line:
-  " https://github.com/Shougo/echodoc.vim
-  call packager#add('Shougo/echodoc.vim')
-
-  " Autoclose parentheses: https://github.com/mattn/vim-lexiv
-  call packager#add('mattn/vim-lexiv')
-
-	" Split and join code blocks: https://github.com/AndrewRadev/splitjoin.vim
-  call packager#add('AndrewRadev/splitjoin.vim')
-
-  " LSP Options
-  " https://github.com/dense-analysis/ale
-  " call packager#add('dense-analysis/ale')
-  " https://github.com/rhysd/vim-lsp-ale
-  " call packager#add('rhysd/vim-lsp-ale')
-
-  " https://github.com/neoclide/coc.nvim
-  " call packager#add('neoclide/coc.nvim', { 'branch': 'release' })
-
-  " https://github.com/vn-ki/coc-clap
-  " call packager#add('vn-ki/coc-clap')
-
-  " https://github.com/autozimu/LanguageClient-neovim
-  " call packager#add('autozimu/LanguageClient-neovim')
-
-  " https://github.com/natebosch/vim-lsc
-  " call packager#add('natebosch/vim-lsc')
-
-  " https://github.com/prabirshrestha/vim-lsp
-  call packager#add('prabirshrestha/vim-lsp')
-  " https://github.com/mattn/vim-lsp-settings
-  call packager#add('mattn/vim-lsp-settings')
-  " https://github.com/prabirshrestha/asyncomplete.vim
-  call packager#add('prabirshrestha/asyncomplete.vim')
-  " https://github.com/prabirshrestha/asyncomplete-lsp.vim
-  call packager#add('prabirshrestha/asyncomplete-lsp.vim')
-
-  " https://github.com/yegappan/lsp
-  " call packager#add('yegappan/lsp')
-  " https://github.com/normen/vim-lsp-settings-adapter
-  " call packager#add('normen/vim-lsp-settings-adapter')
-
-  " https://github.com/mattn/vim-lsp-settings
-  " call packager#add('mattn/vim-lsp-settings')
-
-  " LSP and tag view display: https://github.com/liuchengxu/vista.vim
-  call packager#add('liuchengxu/vista.vim')
-
-  " Close HTML tags: https://github.com/alvan/vim-closetag
-  call packager#add('alvan/vim-closetag')
-
-  " Tag rename in pairs: https://github.com/AndrewRadev/tagalong.vim
-  call packager#add('AndrewRadev/tagalong.vim')
-
-  " Manage tag files automatically: https://github.com/ludovicchabant/vim-gutentags
-  call packager#add('ludovicchabant/vim-gutentags')
-
-  " Jump to definitions: https://github.com/pechorin/any-jump.vim
-  call packager#add('pechorin/any-jump.vim')
-
-  " Generate a TOC for Markdown: https://github.com/mzlogin/vim-markdown-toc
-  call packager#add('mzlogin/vim-markdown-toc')
-
-  " Add more targets: https://github.com/wellle/targets.vim
-  call packager#add('wellle/targets.vim')
-
-  " Extended fFtT behaviours: https://github.com/rhysd/clever-f.vim
-  call packager#add('rhysd/clever-f.vim')
-
-  " Aid with git merge / rebase conflict resolution: https://github.com/christoomey/vim-conflicted
-  call packager#add('christoomey/vim-conflicted')
-
-  " Highlight conflict markers: https://github.com/rhysd/conflict-marker.vim
-  call packager#add('rhysd/conflict-marker.vim')
-
-  " Asynchronous execution to quickfix: https://github.com/hauleth/asyncdo.vim
-  call packager#add('hauleth/asyncdo.vim')
-  " Tame quickfix: https://github.com/romainl/vim-qf
-  call packager#add('romainl/vim-qf')
-  " Make enhancements (configured like projectionist): https://github.com/igemnace/vim-makery
-  call packager#add('igemnace/vim-makery')
-
-  " Choose a window by letter: https://github.com/t9md/vim-choosewin
-  call packager#add('t9md/vim-choosewin')
-  " Zoom windows: https://github.com/dhruvasagar/vim-zoom
-  call packager#add('dhruvasagar/vim-zoom')
-
-  " Multi-language Debugger: https://github.com/puremourning/vimspector
-  call packager#add('puremourning/vimspector')
-
-  " Multi-language Test Runner: https://github.com/vim-test/vim-test
-  call packager#add('vim-test/vim-test')
-
-  " Gist commands: https://github.com/mattn/gist-vim
-  call packager#add('mattn/gist-vim', { 'type': 'opt' })
-
-  " Loaded only for specific filetypes on demand. Requires autocommands below.
-  " https://github.com/kristijanhusak/vim-js-file-import
-  call packager#add('kristijanhusak/vim-js-file-import', { 'do': 'npm install' })
-
-  " Terminal reuse: https://github.com/kassio/neoterm
-  call packager#add('kassio/neoterm')
-  " Floating terminal: https://github.com/voldikss/vim-floaterm
-  call packager#add('voldikss/vim-floaterm')
-
-  " https://github.com/liuchengxu/eleline.vim
-  call packager#add('liuchengxu/eleline.vim')
-  " https://github.com/rbong/vim-crystalline
-  " https://github.com/vim-airline/vim-airline/
-  " https://github.com/itchyny/lightline.vim/
-  " https://github.com/tpope/vim-flagship
-
-  " Development utility to bundle useful modules: https://github.com/vim-jp/vital.vim
-  call packager#add('vim-jp/vital.vim', { 'type': 'opt' })
-  " VimL lint: https://github.com/Vimjas/vint
-  call packager#add('Vimjas/vint', { 'type': 'opt' })
-  " Vimscript Test: https://github.com/junegunn/vader.vim
-  call packager#add('junegunn/vader.vim', { 'type': 'opt' })
-  " Vimscript Test: https://github.com/thinca/vim-themis
-  call packager#add('thinca/vim-themis', { 'type': 'opt' })
-  " Vimscript Tricks: https://github.com/chimay/vimscript-tricks
-  call packager#add('chimay/vimscript-tricks')
-
-  " https://github.com/alker0/chezmoi.vim
-  call packager#add('alker0/chezmoi.vim', { 'type': 'opt' })
-endfunction
-
-command! -nargs=* -bar PackagerRefresh call s:packager_init() | call packager#install(<args>)
-command! -nargs=* -bar PackagerInstall call s:packager_init() | call packager#install(<args>)
-command! -nargs=* -bar PackagerUpdate call s:packager_init() | call packager#update(<args>)
-command! -bar PackagerClean call s:packager_init() | call packager#clean()
-command! -bar PackagerStatus call s:packager_init() | call packager#status()
+packadd vim-jetpack
+
+call jetpack#begin()
+
+" Package Manager (self-manage the bootstrapped install)
+" https://github.com/tani/vim-jetpack
+Jetpack 'tani/vim-jetpack', { 'opt': v:true }
+
+" Improved incremental search
+" https://github.com/wincent/loupe
+Jetpack 'wincent/loupe'
+
+" Search multiple files
+" TRY THIS: https://github.com/eugen0329/vim-esearch
+Jetpack 'eugen0329/vim-esearch'
+" TRY THIS: https://github.com/wincent/ferret
+Jetpack 'wincent/ferret'
+
+" Sudo support: https://github.com/lambdalisue/suda.vim
+" Jetpack 'lambdalisue/suda.vim'
+
+" Edit files with line and column
+" https://github.com/wsdjeg/vim-fetch
+Jetpack 'wsdjeg/vim-fetch'
+
+" `mkdir -p` for file creation
+" https://github.com/duggiefresh/vim-easydir
+Jetpack 'duggiefresh/vim-easydir'
+
+" Improved matchit/matchparen
+" https://github.com/andymass/vim-matchup
+Jetpack 'andymass/vim-matchup'
+
+" Load .envrc for vim
+" https://github.com/direnv/direnv.vim
+Jetpack 'direnv/direnv.vim'
+
+" Pipe output into a scratch / temporary buffer
+" https://github.com/AndrewRadev/bufferize.vim
+Jetpack 'AndrewRadev/bufferize.vim'
+
+" Show the undo tree, pure vimscript
+" https://github.com/mbbill/undotree
+Jetpack 'mbbill/undotree'
+
+" Tim Pope utilities.
+" Repeat plugin maps
+" https://github.com/tpope/vim-repeat
+Jetpack 'tpope/vim-repeat'
+" Readline-style support
+" https://github.com/tpope/vim-rsi
+Jetpack 'tpope/vim-rsi'
+" Change surrounds easily
+" https://github.com/tpope/vim-surround
+Jetpack 'tpope/vim-surround'
+" Paired mappings
+" https://github.com/tpope/vim-unimpaired
+Jetpack 'tpope/vim-unimpaired'
+" Abbreviation, Subversion, and Coercion
+" https://github.com/tpope/vim-abolish
+Jetpack 'tpope/vim-abolish'
+" Improved C-A / C-X, especially on dates
+" https://github.com/tpope/vim-speeddating
+Jetpack 'tpope/vim-speeddating'
+" Unix command sugar
+" https://github.com/tpope/vim-eunuch
+Jetpack 'tpope/vim-eunuch'
+" Comment management
+" https://github.com/tpope/vim-commentary
+Jetpack 'tpope/vim-commentary'
+" End certain structures automatically
+" https://github.com/tpope/vim-endwise
+Jetpack 'tpope/vim-endwise'
+" Better HTML/template tag mapping
+" https://github.com/tpope/vim-ragtag
+Jetpack 'tpope/vim-ragtag'
+
+" Evaluate expression
+" https://github.com/fvictorio/vim-eval-expression
+Jetpack 'fvictorio/vim-eval-expression'
+
+" Asynchronous compiler support
+" https://github.com/tpope/vim-dispatch
+Jetpack 'tpope/vim-dispatch'
+
+" Preview the contents of registers
+" https://github.com/junegunn/vim-peekaboo
+Jetpack 'junegunn/vim-peekaboo'
+
+" Only obey some modeline settings
+" https://github.com/alexghergh/securemodelines
+Jetpack 'alexghergh/securemodelines'
+
+" Makes `gx` do the right thing with URLs
+" https://github.com/tyru/open-browser.vim
+Jetpack 'tyru/open-browser.vim'
+
+" Sort lines with a motion
+" https://github.com/christoomey/vim-sort-motion
+Jetpack 'christoomey/vim-sort-motion'
+
+" Change PWD to a project root
+" https://github.com/airblade/vim-rooter
+Jetpack 'airblade/vim-rooter'
+
+" Add `emoji#for` function
+" https://github.com/junegunn/vim-emoji
+Jetpack 'junegunn/vim-emoji'
+
+" Add fzf support
+if ! s:fzf_added
+  " https://github.com/junegunn/fzf
+  Jetpack 'junegunn/fzf'
+endif
+
+" https://github.com/junegunn/fzf.vim
+Jetpack 'junegunn/fzf.vim'
+
+" Safely load local `.vimrc` and/or `.vimrc.lua` files:
+" https://github.com/jenterkin/vim-autosource
+Jetpack 'jenterkin/vim-autosource'
+
+" Fern is a file tree / explorer
+" https://github.com/lambdalisue/vim-fern
+Jetpack 'lambdalisue/vim-fern'
+
+" Shows git status in the fern tree
+" https://github.com/lambdalisue/fern-git-status.vim
+Jetpack 'lambdalisue/fern-git-status.vim'
+" Hijacks directory edits with fern
+" https://github.com/lambdalisue/fern-hijack.vim
+Jetpack 'lambdalisue/fern-hijack.vim'
+" Collapse a folder or leave it
+" https://github.com/hrsh7th/fern-mapping-collapse-or-leave.vim
+Jetpack 'hrsh7th/fern-mapping-collapse-or-leave.vim'
+" Integrate fzf
+" https://github.com/LumaKernel/fern-mapping-fzf.vim
+Jetpack 'LumaKernel/fern-mapping-fzf.vim'
+" Floating file preview for Fern
+" https://github.com/yuki-yano/fern-preview.vim
+Jetpack 'yuki-yano/fern-preview.vim'
+" Highlight current Fern node for active file
+" https://github.com/andykog/fern-highlight.vim
+Jetpack 'andykog/fern-highlight.vim'
+
+" File Picker:
+" USING THIS: https://github.com/srstevenson/vim-picker
+Jetpack 'srstevenson/vim-picker'
+" TRY THIS: https://github.com/liuchengxu/vim-clap
+Jetpack 'liuchengxu/vim-clap', { 'do': { -> clap#installer#force_download() } }
+" RE-TRY THIS: https://github.com/vim-ctrlspace/vim-ctrlspace
+" Jetpack 'vim-ctrlspace/vim-ctrlspace'
+" File group manager and more
+" https://github.com/chimay/wheel
+Jetpack 'chimay/wheel'
+
+" Git so awesome, it should be illegal
+" https://github.com/tpope/vim-fugitive
+Jetpack 'tpope/vim-fugitive'
+
+" Sign column support for almost any VCS
+" https://github.com/mhinz/vim-signify
+Jetpack 'mhinz/vim-signify'
+
+" Launch screen
+" https://github.com/mhinz/vim-startify
+Jetpack 'mhinz/vim-startify'
+
+" Ansible
+" https://github.com/pearofducks/ansible-vim
+Jetpack 'pearofducks/ansible-vim'
+" AppleScript
+" https://github.com/mityu/vim-applescript
+Jetpack 'mityu/vim-applescript', { 'for': 'applescript' }
+" Brewfile
+" https://github.com/bfontaine/Brewfile.vim
+Jetpack 'bfontaine/Brewfile.vim'
+" Browserslist constraints
+" https://github.com/browserslist/vim-browserslist
+Jetpack 'browserslist/vim-browserslist', { 'for': 'browserslist' }
+" C/C++ (Modern)
+" https://github.com/bfrg/vim-cpp-modern
+Jetpack 'bfrg/vim-cpp-modern', { 'for': 'cpp' }
+" Crystal
+" https://github.com/vim-crystal/vim-crystal
+Jetpack 'vim-crystal/vim-crystal', { 'for': 'crystal' }
+" CSV
+" https://github.com/chrisbra/csv.vim
+Jetpack 'chrisbra/csv.vim', { 'for': 'csv' }
+" Cue language
+" https://github.com/hofstadter-io/cue.vim
+Jetpack 'hofstadter-io/cue.vim', { 'for': 'cue' }
+" Dart
+" https://github.com/dart-lang/dart-vim-plugin
+Jetpack 'dart-lang/dart-vim-plugin', { 'for': 'dart' }
+" Dhall
+" https://github.com/vmchale/dhall-vim
+Jetpack 'vmchale/dhall-vim', { 'for': 'dhall' }
+" D
+" https://github.com/JesseKPhillips/d.vim
+Jetpack 'JesseKPhillips/d.vim', { 'for': [ 'd', 'dcov', 'dd', 'ddoc', 'dsdl' ]}
+" Elixir
+" https://github.com/elixir-editors/vim-elixir
+Jetpack 'elixir-editors/vim-elixir', { 'for': 'elixir' }
+" Elvish shell
+" https://github.com/dmix/elvish.vim
+Jetpack 'dmix/elvish.vim', { 'for': 'elvish' }
+" Erlang
+" https://github.com/vim-erlang/vim-erlang-runtime
+Jetpack 'vim-erlang/vim-erlang-runtime', { 'for': 'erlang' }
+" Fennel (Lua Lisp)
+" https://github.com/bakpakin/fennel.vim
+Jetpack 'bakpakin/fennel.vim', { 'for': 'fennel' }
+" Fish shell
+" https://github.com/blankname/vim-fish
+Jetpack 'blankname/vim-fish', { 'for': 'yaml' }
+" Git
+" https://github.com/tpope/vim-git
+Jetpack 'tpope/vim-git', {
+      \   'for': [ 'gitcommit', 'gitconfig', 'gitrebase', 'gitsendemail', 'git' ]
+      \ }
+" Github Actions (YAML)
+" https://github.com/yasuhiroki/github-actions-yaml.vim
+Jetpack 'yasuhiroki/github-actions-yaml.vim', { 'for': 'yaml.gha' }
+" Gleam
+" https://github.com/gleam-lang/gleam.vim
+Jetpack 'gleam-lang/gleam.vim', { 'for': 'gleam' }
+" Go
+" https://github.com/fatih/vim-go
+Jetpack 'fatih/vim-go', {
+      \   'for': [ 'go', 'asm', 'gohtmltmpl', 'gosum', 'gowork', 'gomod' ]
+      \ }
+" GraphQL
+" https://github.com/jparise/vim-graphql
+Jetpack 'jparise/vim-graphql', { 'for': 'graphql' }
+" Haxe
+" https://github.com/jdonaldson/vaxe
+Jetpack 'jdonaldson/vaxe', {
+      \   'for': [ 'flow.javascript', 'haxe', 'hss', 'hxml', 'lime.xml', 'nmml.xml' ]
+      \ }
+" Hjson
+" https://github.com/hjson/vim-hjson
+Jetpack 'hjson/vim-hjson', { 'for': 'hjson' }
+" HTML
+" https://github.com/othree/html5.vim
+Jetpack 'othree/html5.vim', { 'for': 'html' }
+" Idris2
+" https://github.com/edwinb/idris2-vim
+Jetpack 'edwinb/idris2-vim', { 'for': [ 'idris2', 'lidris2' ] }
+" icalendar
+" https://github.com/chutzpah/icalendar.vim
+Jetpack 'chutzpah/icalendar.vim', { 'for': 'icalendar' }
+" Janet lang
+" https://github.com/janet-lang/janet.vim
+Jetpack 'janet-lang/janet.vim', { 'for': 'janet' }
+" JavaScript
+" https://github.com/pangloss/vim-javascript
+Jetpack 'pangloss/vim-javascript', { 'for': 'javascript' }
+" jq
+" https://github.com/vito-c/jq.vim
+Jetpack 'vito-c/jq.vim', { 'for': 'jq' }
+" JSON
+" https://github.com/elzr/vim-json
+Jetpack 'elzr/vim-json', { 'for': 'json' }
+" Jsonnet
+" https://github.com/google/vim-jsonnet
+Jetpack 'google/vim-jsonnet', { 'for': 'jsonnet' }
+" JSX, which can never be pretty
+" https://github.com/MaxMEllon/vim-jsx-pretty
+Jetpack 'MaxMEllon/vim-jsx-pretty'
+" Julia
+" https://github.com/JuliaEditorSupport/julia-vim
+Jetpack 'JuliaEditorSupport/julia-vim'
+" Just
+" https://github.com/NoahTheDuke/vim-just
+Jetpack 'NoahTheDuke/vim-just', { 'for': 'just' }
+" Log highlighting (generic)
+" https://github.com/MTDL9/vim-log-highlighting
+Jetpack 'MTDL9/vim-log-highlighting', { 'for': 'log' }
+" MJML
+" https://github.com/amadeus/vim-mjml
+Jetpack 'amadeus/vim-mjml', { 'for': 'mjml' }
+" Nim
+" https://github.com/zah/nim.vim
+Jetpack 'zah/nim.vim', { 'for': 'nim' }
+" Nix
+" https://github.com/LnL7/vim-nix
+Jetpack 'LnL7/vim-nix', { 'for': 'nix' }
+" OCaml
+" https://github.com/ocaml/vim-ocaml
+Jetpack 'ocaml/vim-ocaml', {
+      \   'for': [
+      \     'dune', 'oasis', 'ocaml', 'ocamlbuild_tags', 'ocpbuild', 'ocpbuildroot',
+      \     'omake', 'opam', 'sexplib'
+      \   ]
+      \ }
+" Perl5
+" https://github.com/vim-perl/vim-perl
+Jetpack 'vim-perl/vim-perl', { 'for': [ 'perl', 'perl6', 'mason' ] }
+" PgSQL
+" https://github.com/lifepillar/pgsql.vim
+Jetpack 'lifepillar/pgsql.vim', { 'for': 'sql' }
+" PlantUML
+" https://github.com/aklt/plantuml-syntax
+Jetpack 'aklt/plantuml-syntax', { 'for': 'plantuml' }
+" Prisma syntax highlighting
+" https://github.com/prisma/vim-prisma
+Jetpack 'prisma/vim-prisma', { 'for': 'prisma' }
+" Ruby
+" https://github.com/vim-ruby/vim-ruby
+Jetpack 'vim-ruby/vim-ruby', { 'for': 'ruby' }
+" Ruby Signature
+" https://github.com/jlcrochet/vim-rbs
+Jetpack 'jlcrochet/vim-rbs', { 'for': 'rbs' }
+" Rust
+" https://github.com/rust-lang/rust.vim
+Jetpack 'rust-lang/rust.vim', { 'for': 'rust' }
+" Svelte
+" https://github.com/leafOfTree/vim-svelte-plugin
+Jetpack 'leafOfTree/vim-svelte-plugin', { 'for': 'svelte' }
+" Swift
+" https://github.com/keith/swift.vim
+Jetpack 'keith/swift.vim', { 'for': 'swift' }
+" Terraform
+" https://github.com/hashivim/vim-terraform
+Jetpack 'hashivim/vim-terraform', { 'for': 'terraform' }
+" Typescript
+" https://github.com/HerringtonDarkholme/yats.vim
+Jetpack 'HerringtonDarkholme/yats.vim', { 'for': 'typescript' }
+" Vue
+" https://github.com/posva/vim-vue
+Jetpack 'posva/vim-vue', { 'for': 'vue' }
+
+
+" Generalized Org Mode
+" https://github.com/chimay/organ
+Jetpack 'chimay/organ'
+
+" Colour highlighter
+" https://github.com/ap/vim-css-color
+Jetpack 'ap/vim-css-color'
+
+" Autoformat
+" https://github.com/sbdchd/neoformat
+Jetpack 'sbdchd/neoformat'
+" Autoset path searching
+" https://github.com/tpope/vim-apathy
+Jetpack 'tpope/vim-apathy'
+" Rails support
+" https://github.com/tpope/vim-rails
+Jetpack 'tpope/vim-rails', { 'opt': 1 }
+" Rake support
+" https://github.com/tpope/vim-rake
+Jetpack 'tpope/vim-rake', { 'opt': 1 }
+" Bundler support
+" https://github.com/tpope/vim-bundler
+Jetpack 'tpope/vim-bundler', { 'opt': 1 }
+" Automatically insert continuation bacskslashes for vim files
+" https://github.com/lambdalisue/vim-backslash
+Jetpack 'lambdalisue/vim-backslash'
+
+" Colorschemes
+" https://github.com/tyrannicaltoucan/vim-quantum
+Jetpack 'tyrannicaltoucan/vim-quantum'
+" https://github.com/cocopon/iceberg.vim
+Jetpack 'cocopon/iceberg.vim'
+" https://github.com/habamax/vim-alchemist
+Jetpack 'habamax/vim-alchemist'
+
+" Display completion function signatures in the command-line
+" https://github.com/Shougo/echodoc.vim
+Jetpack 'Shougo/echodoc.vim'
+
+" Autoclose parentheses
+" https://github.com/mattn/vim-lexiv
+Jetpack 'mattn/vim-lexiv'
+
+" Split and join code blocks
+" https://github.com/AndrewRadev/splitjoin.vim
+Jetpack 'AndrewRadev/splitjoin.vim'
+
+" LSP Options
+" https://github.com/dense-analysis/ale
+" Jetpack 'dense-analysis/ale'
+" https://github.com/rhysd/vim-lsp-ale
+" Jetpack 'rhysd/vim-lsp-ale'
+
+" https://github.com/neoclide/coc.nvim
+" Jetpack 'neoclide/coc.nvim', { 'branch': 'release' }
+
+" https://github.com/vn-ki/coc-clap
+" Jetpack 'vn-ki/coc-clap'
+
+" https://github.com/autozimu/LanguageClient-neovim
+" Jetpack 'autozimu/LanguageClient-neovim'
+
+" https://github.com/natebosch/vim-lsc
+" Jetpack 'natebosch/vim-lsc'
+
+" https://github.com/prabirshrestha/vim-lsp
+Jetpack 'prabirshrestha/vim-lsp'
+" https://github.com/mattn/vim-lsp-settings
+Jetpack 'mattn/vim-lsp-settings'
+" https://github.com/prabirshrestha/asyncomplete.vim
+Jetpack 'prabirshrestha/asyncomplete.vim'
+" https://github.com/prabirshrestha/asyncomplete-lsp.vim
+Jetpack 'prabirshrestha/asyncomplete-lsp.vim'
+
+" https://github.com/yegappan/lsp
+" Jetpack 'yegappan/lsp'
+" https://github.com/normen/vim-lsp-settings-adapter
+" Jetpack 'normen/vim-lsp-settings-adapter'
+
+" https://github.com/mattn/vim-lsp-settings
+" Jetpack 'mattn/vim-lsp-settings'
+
+" LSP and tag view display
+" https://github.com/liuchengxu/vista.vim
+Jetpack 'liuchengxu/vista.vim'
+
+" Close HTML tags
+" https://github.com/alvan/vim-closetag
+Jetpack 'alvan/vim-closetag'
+
+" Tag rename in pairs
+" https://github.com/AndrewRadev/tagalong.vim
+Jetpack 'AndrewRadev/tagalong.vim'
+
+" Manage tag files automatically
+" https://github.com/ludovicchabant/vim-gutentags
+Jetpack 'ludovicchabant/vim-gutentags'
+
+" Jump to definitions
+" https://github.com/pechorin/any-jump.vim
+Jetpack 'pechorin/any-jump.vim'
+
+" Generate a TOC for Markdown
+" https://github.com/mzlogin/vim-markdown-toc
+Jetpack 'mzlogin/vim-markdown-toc'
+
+" Add more targets
+" https://github.com/wellle/targets.vim
+Jetpack 'wellle/targets.vim'
+
+" Extended fFtT behaviours
+" https://github.com/rhysd/clever-f.vim
+Jetpack 'rhysd/clever-f.vim'
+
+" Aid with git merge / rebase conflict resolution
+" https://github.com/christoomey/vim-conflicted
+Jetpack 'christoomey/vim-conflicted'
+
+" Highlight conflict markers
+" https://github.com/rhysd/conflict-marker.vim
+Jetpack 'rhysd/conflict-marker.vim'
+
+" Asynchronous execution to quickfix
+" https://github.com/hauleth/asyncdo.vim
+Jetpack 'hauleth/asyncdo.vim'
+" Tame quickfix
+" https://github.com/romainl/vim-qf
+Jetpack 'romainl/vim-qf'
+" Make enhancements (configured like projectionist)
+" https://github.com/igemnace/vim-makery
+Jetpack 'igemnace/vim-makery'
+
+" Choose a window by letter
+" https://github.com/t9md/vim-choosewin
+Jetpack 't9md/vim-choosewin'
+" Zoom windows
+" https://github.com/dhruvasagar/vim-zoom
+Jetpack 'dhruvasagar/vim-zoom'
+
+" Multi-language Debugger
+" https://github.com/puremourning/vimspector
+Jetpack 'puremourning/vimspector'
+
+" Multi-language Test Runner
+" https://github.com/vim-test/vim-test
+Jetpack 'vim-test/vim-test'
+
+" Gist commands
+" https://github.com/mattn/gist-vim
+Jetpack 'mattn/gist-vim', { 'opt': 1 }
+
+" Terminal reuse
+" https://github.com/kassio/neoterm
+Jetpack 'kassio/neoterm'
+" Floating terminal
+" https://github.com/voldikss/vim-floaterm
+Jetpack 'voldikss/vim-floaterm'
+
+" https://github.com/liuchengxu/eleline.vim
+Jetpack 'liuchengxu/eleline.vim'
+" https://github.com/rbong/vim-crystalline
+" https://github.com/vim-airline/vim-airline/
+" https://github.com/itchyny/lightline.vim/
+" https://github.com/tpope/vim-flagship
+
+" Development utility to bundle useful modules
+" https://github.com/vim-jp/vital.vim
+Jetpack 'vim-jp/vital.vim', { 'opt': 1 }
+" VimL lint
+" https://github.com/Vimjas/vint
+Jetpack 'Vimjas/vint', { 'opt': 1 }
+" Vimscript Test
+" https://github.com/junegunn/vader.vim
+Jetpack 'junegunn/vader.vim', { 'opt': 1 }
+" Vimscript Test
+" https://github.com/thinca/vim-themis
+Jetpack 'thinca/vim-themis', { 'opt': 1 }
+" Vimscript Tricks
+" https://github.com/chimay/vimscript-tricks
+Jetpack 'chimay/vimscript-tricks'
+
+" https://github.com/alker0/chezmoi.vim
+Jetpack 'alker0/chezmoi.vim', { 'opt': 1 }
+
+silent call jetpack#end()

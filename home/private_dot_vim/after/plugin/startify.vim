@@ -8,9 +8,6 @@ let g:startify_change_to_vcs_root = 1
 let g:startify_change_cmd = 'cd'
 
 let g:startify_commands = [
-      \ {'r': ['Refresh plugins', 'PackagerRefresh']},
-      \ {'u': ['Update plugins', 'PackagerUpdate']},
-      \ {'c': ['Clean plugins', 'PackagerClean']},
+      \ {'s': ['Refresh plugins', 'JetpackSync']},
       \ {'t': ['Time startup', 'StartupTime']},
-      \ {'s': ['Start Prosession', 'packadd vim-obsession | packadd vim-prosession | Prosession .']}
       \ ]

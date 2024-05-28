@@ -300,11 +300,6 @@ if test -x $HOME/.bun/bin/bun
     # end
 end
 
-if set --query PNPM_HOME
-    mkdir -p $PNPM_HOME
-    fish_add_path --path $PNPM_HOME
-end
-
 if command --query fortune && status is-interactve
     fortune -s
 end

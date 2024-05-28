@@ -1,3 +1,6 @@
+# Ignore jujutsu
+.jj/
+
 # Compiled sources {{{
 *.com
 *.class
