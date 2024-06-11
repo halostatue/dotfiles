@@ -1,7 +1,7 @@
 scriptencoding utf-8
 
-packadd goyo.vim
-packadd limelight.vim
+" packadd goyo.vim
+" packadd limelight.vim
 
 " Distraction-free writing mode
 let g:pencil#textwidth = 80
@@ -57,4 +57,4 @@ endfunction
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
-nmap <leader>df :Goyo<CR>
+" nmap <leader>df :Goyo<CR>

@@ -133,48 +133,37 @@ call hz#mkpath(hz#xdg_base('data', 'thesaurus'), v:true)
  " opt - for js - https://github.com/kristijanhusak/vim-js-file-import
  " opt - for go - https://github.com/fatih/vim-go
 
-" ['c++=cpp', 'viml=vim', 'bash=sh', 'ini=dosini']
 let g:markdown_fenced_languages = [
       \ 'bash=sh',
+      \ 'console=sh',
       \ 'c++=cpp',
       \ 'css',
       \ 'diff',
       \ 'elixir',
       \ 'erlang',
       \ 'fish',
+      \ 'go',
       \ 'html',
+      \ 'javascript',
       \ 'js=javascript',
       \ 'python',
       \ 'ruby',
       \ 'rust',
       \ 'scss',
       \ 'sql',
+      \ 'vim',
       \ 'viml=vim',
+      \ 'ts=typescript',
+      \ 'typescript',
       \ 'xml',
+      \ 'zsh=sh',
       \ ]
 let g:markdown_syntax_conceal = 0
 let g:markdown_minlines = 100
 
 let g:vim_markdown_conceal = 0
 let g:vim_markdown_conceal_code_blocks = 0
-let g:vim_markdown_fenced_languages = [
-      \ 'bash=sh',
-      \ 'c++=cpp',
-      \ 'css',
-      \ 'diff',
-      \ 'elixir',
-      \ 'erlang',
-      \ 'fish',
-      \ 'html',
-      \ 'js=javascript',
-      \ 'python',
-      \ 'ruby',
-      \ 'rust',
-      \ 'scss',
-      \ 'sql',
-      \ 'viml=vim',
-      \ 'xml',
-      \ ]
+let g:vim_markdown_fenced_languages = deepcopy(g:markdown_fenced_languages)
 let g:vim_markdown_frontmatter = 1
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_json_frontmatter = 1

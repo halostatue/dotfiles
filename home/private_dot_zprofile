@@ -9,3 +9,5 @@ if [ -d /opt/local/bin ]; then
 fi
 
 [ -x "${HOME}/.local/bin/fig" ] && eval "$(fig init zsh post)"
+
+# vim: set ft=zsh

@@ -1,3 +1,5 @@
+# chezmoi:template:left-delimiter="# (:" right-delimiter=":)"
+# (:- $programs := includeTemplate "programs.tmpl" . | fromJson -:)
 colors:
   body: none
   date: none
@@ -5,12 +7,12 @@ colors:
   title: none
 default_hour: 9
 default_minute: 0
-editor: /opt/homebrew/bin/vim
+editor: # (: $programs.vim :)
 encrypt: false
 highlight: true
 indent_character: '|'
 journals:
-  default: /Users/austin/.local/share/jrnl/journal.txt
+  default: # (: joinPath .chezmoi.homeDir ".local/share/jrnl/journal.txt" :)
 linewrap: 79
 tagsymbols: '#@'
 template: false

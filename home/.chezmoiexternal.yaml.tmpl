@@ -1,4 +1,5 @@
-{{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
+# chezmoi:template:left-delimiter="# (:" right-delimiter=":)"
+# (:- $programs := includeTemplate "programs.tmpl" . | fromJson -:)
 
 .vim/pack/plugins/opt/chezmoi.vim:
   pull:
@@ -8,7 +9,7 @@
   type: git-repo
   url: https://github.com/alker0/chezmoi.vim
 
-{{ if $programs.lf -}}
+# (: if $programs.lf -:)
 .config/fish/completions/lf.fish:
   type: archive-file
   url: https://github.com/gokcehan/lf/archive/master.tar.gz
@@ -20,10 +21,4 @@
   url: https://github.com/gokcehan/lf/archive/master.tar.gz
   refreshPeriod: 744h
   path: lf-master/etc/lfcd.fish
-{{- end }}
-
-# test:
-#   type: archive
-#   url: http://localhost:8080/test.tar.gz
-#   archive:
-#     extractAppleDoubleFiles: true
+# (:- end :)

@@ -63,7 +63,7 @@ chrome_links() {
     if is_app_running "${target}"; then
       if not_installed chrome-cli; then
         echo >&2 "chrome-cli is not installed, skipping ${target}"
-        echo >&2 "Install with brew or MacPorts"
+        echo >&2 "Install with Homebrew or MacPorts"
         return
       fi
 
