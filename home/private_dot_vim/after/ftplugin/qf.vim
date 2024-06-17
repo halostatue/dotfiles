@@ -1,7 +1,7 @@
-scriptencoding utf-8
+vim9script
 
 setlocal norelativenumber
 
-if exists(':QuickPeekTogglel')
+if exists(':QuickPeekToggle')
   nnoremap <buffer> <C-P> :QuickPeekToggle<CR>
 endif

@@ -3,7 +3,7 @@
 Author:  Austin Ziegler (forked from Benedykt 'b3niup' Przybyło (forked from
 Mahdi Yusuf))
 
-This plugin requires Vim 7.3 or later.
+This plugin requires Vim 9 or later
 
 Help on using numbers                                              *autonumber*
 

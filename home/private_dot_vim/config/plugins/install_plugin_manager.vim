@@ -1,26 +1,27 @@
 vim9script
-scriptencoding utf-8
 
-const data_site = hz#xdg_path('data', 'site')
-hz#mkpath(data_site, v:true)
+const xdg_data_path = exists('$XDG_DATA_PATH') ?
+    $XDG_DATA_PATH : expand('~/.local/share')
+const vim_site = xdg_data_path .. '/vim/site'
 
-if &packpath !~# data_site
-  &packpath = data_site .. ',' .. &packpath
+if &packpath !~# vim_site
+    &packpath = vim_site .. ',' .. &packpath
 endif
 
-const packager = data_site .. '/pack/packager/opt/vim-packager'
+const pack_root = vim_site .. '/pack/packix/opt'
 
-if has('vim_starting') && !isdirectory(packager .. '/.git')
-  const command = join([
-    'silent !git clone https://github.com/kristijanhusak/vim-packager.git',
-    packager
-  ], ' ')
+mkdir(pack_root, 'p')
+
+const packix_path = pack_root .. '/vim-packix'
+const packix_url = "https://github.com/halostatue/vim-packix.git"
+
+if has('vim_starting') && !isdirectory(packix_path .. '/.git')
+  const command = printf('silent !git clone %s %s', packix_url, packix_path)
 
   silent execute command
 
-  augroup vim-packager-install
+  augroup install-vim-packix
     autocmd!
-
-    autocmd VimEnter * if exists(':PackagerInstall') == 2 | PackagerInstall | endif
+    autocmd VimEnter * if exists(':PackixInstall') == 2 | PackixInstall | endif
   augroup END
 endif

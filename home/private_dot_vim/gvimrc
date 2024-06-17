@@ -1,12 +1,12 @@
-scriptencoding utf-8
+vim9script
 
-" let &guifont="CascadiaCode-Light:h11"
-" let &guifont="FiraCode-Retina:h11"
-" let &guifont="FiraCodeRoman-Regular:h11"
-" let &guifont="JetBrainsMono-Regular:h14"
-" let &guifont="FantasqueSansMono-Regular:h12"
-" let &guifont="IBMPlexMono:h10"
-let &guifont="RecMonoCasual-Regular:h16"
+# &guifont = "CascadiaCode-Light:h11"
+# &guifont = "FiraCode-Retina:h11"
+# &guifont = "FiraCodeRoman-Regular:h11"
+# &guifont = "JetBrainsMono-Regular:h14"
+# &guifont = "FantasqueSansMono-Regular:h12"
+# &guifont = "IBMPlexMono:h10"
+&guifont = "RecMonoCasual-Regular:h16"
 
 if has('gui_win32')
   noremap <A-Space> :simalt ~<CR>
@@ -14,17 +14,19 @@ if has('gui_win32')
   cnoremap <A-Space> <C-C><A-Space>
 endif
 
-" Keep the system clipboard and the vim pasteboard separate. If this behaviour is not desired, uncomment the if
-" statement below.
-set clipboard&
-" if has('unnamedplus')
-"   set clipboard^=unnamedplus
-" else
-"   set clipboard^=unnamed
-" endif
+# Keep the system clipboard and the vim pasteboard separate. If this behaviour
+# is not desired, set g:unify_clipboards to true.
+if get(g:, 'unify_clipboards', false)
+  if has('unnamedplus')
+    set clipboard^=unnamedplus
+  else
+    set clipboard^=unnamed
+  endif
+else
+  set clipboard&
+endif
 
 if has('gui_macvim')
-  set antialias
   set guioptions-=T
   set guioptions-=r
   set guioptions-=R
@@ -33,31 +35,10 @@ if has('gui_macvim')
   set guioptions-=b
   set guioptions-=h
 
-  set fuoptions=maxvert,maxhorz
-  set macligatures
-
-  if get(g:, 'transparency') && has('transparency')
-    set transparency=5 blurradius=25
-  endif
+  set antialias fuoptions=maxvert,maxhorz macligatures
 
   nmap <D-/> gcc
   xmap <D-/> gc
 endif
 
-function! OnRight()
-  set lines=57 columns=106
-  winpos 641 25
-endfunction
-
-function! OnLeft()
-  set lines=57 columns=106
-  winpos 0 25
-endfunction
-
-function! FullWidth()
-  set lines=57 columns=213
-  winpos 0 25
-endfunction
-
-set nomousefocus mousehide
-set winaltkeys=no
+set nomousefocus mousehide winaltkeys=no

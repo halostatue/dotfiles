@@ -1,14 +1,10 @@
-scriptencoding utf-8
+vim9script
 
-" packadd goyo.vim
-" packadd limelight.vim
+# Distraction-free writing mode
+g:pencil#textwidth = 80
+g:goyo_width = 80
 
-" Distraction-free writing mode
-let g:pencil#textwidth = 80
-let g:goyo_width = 80
-let g:vim_markdown_frontmatter = 1
-
-" Enable spellchecking for Markdown
+# Enable spellchecking for Markdown
 setlocal nolist
 setlocal spell
 setlocal foldlevel=999
@@ -16,35 +12,38 @@ setlocal nocindent
 setlocal textwidth=80
 setlocal colorcolumn=+1
 
-" If the buffer is in the wiki
-if(expand('%:p:h')=~"vimwiki")
+# If the buffer is in the wiki
+if expand('%:p:h') =~? 'vimwiki'
   nmap <buffer> <CR> <Plug>VimwikiFollowLink
   nmap <buffer> <Backspace> <Plug>VimwikiGoBackLink
 else
-  " Basically unmap it
+  # Basically unmap it
   nmap <buffer> <F14> <Plug>VimwikiFollowLink
   nmap <buffer> <F15> <Plug>VimwikiGoBackLink
 endif
 
-" Distraction-free writing mode
-function! s:goyo_enter()
-  " light theme
+# packadd goyo.vim
+# packadd limelight.vim
+
+# Distraction-free writing mode
+def EnterGoyo()
+  # light theme
   setlocal background=light
   colorscheme onehalflight
 
-  " turn off cursor-line-highlight auto-indent, whitespace, and in-progress
-  " commands
+  # turn off cursor-line-highlight auto-indent, whitespace, and in-progress
+  # commands
   setlocal noai nolist noshowcmd nocursorline
 
-  " turn on autocorrect
+  # turn on autocorrect
   setlocal spell complete+=s
 
-  Limelight  " Focus on the current paragraph, dim the others
-  SoftPencil " Turn on soft breaks
-  Wordy weak " Highlight weak words
-endfunction
+  Limelight  # Focus on the current paragraph, dim the others
+  SoftPencil # Turn on soft breaks
+  Wordy weak # Highlight weak words
+enddef
 
-function! s:goyo_leave()
+def LeaveGoyo()
   setlocal cursorline
   setlocal showcmd list ai
   setlocal nospell complete-=s
@@ -53,8 +52,15 @@ function! s:goyo_leave()
   NoPencil
   NoWordy
   colorscheme monokai-phoenix
-endfunction
+enddef
 
-autocmd! User GoyoEnter nested call <SID>goyo_enter()
-autocmd! User GoyoLeave nested call <SID>goyo_leave()
-" nmap <leader>df :Goyo<CR>
+if exists(':Goyo')
+  augroup goyo-activity
+    autocmd!
+
+    autocmd! User GoyoEnter nested call <ScriptCmd>EnterGoyo()
+    autocmd! User GoyoLeave nested call <ScriptCmd>LeaveGoyo()
+  augroup END
+
+  nmap <leader>df :Goyo<CR>
+endif

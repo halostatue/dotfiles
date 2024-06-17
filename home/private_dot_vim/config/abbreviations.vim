@@ -1,33 +1,33 @@
-scriptencoding utf-8
+vim9script
 
-" Rulers
-iabbrev raz abcdefghijklmnopqrstuvwxyz
-iabbrev Raz ABCDEFGHIJKLMNOPQRSTUVWXYZ
+# Rulers
+iabbrev rlower abcdefghijklmnopqrstuvwxyz
+iabbrev rupper ABCDEFGHIJKLMNOPQRSTUVWXYZ
 iabbrev r10 1234567890
 iabbrev r40 1234567890123456789012345678901234567890
 iabbrev r80 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 iabbrev r72 123456789012345678901234567890123456789012345678901234567890123456789012
-iabbrev R10 ----------
-iabbrev R40 ----------------------------------------
-iabbrev R80 --------------------------------------------------------------------------------
-iabbrev R72 ------------------------------------------------------------------------
+iabbrev rd10 ----------
+iabbrev rd40 ----------------------------------------
+iabbrev rd80 --------------------------------------------------------------------------------
+iabbrev rd72 ------------------------------------------------------------------------
 
-" General echo editing abbreviations
-" yyyymmdd
+# General echo editing abbreviations
+# yyyymmdd
 iabbrev cdate <C-R>=strftime("%Y%m%d")<CR>
-" yyyy.mm.dd
+# yyyy.mm.dd
 iabbrev cfdate <C-R>=strftime("%Y.%m.%d")<CR>
-" hh:mm
+# hh:mm
 iabbrev ctime <C-R>=strftime("%H:%M")<CR>
-" yyyymmdd hh:mm
+# yyyymmdd hh:mm
 iabbrev cdatetime <C-R>=strftime("%Y%m%d %H:%M")<CR>
-" yyyy.mm.dd hh:mm
+# yyyy.mm.dd hh:mm
 iabbrev cfdatetime <C-R>=strftime("%Y.%m.%d %H:%M")<CR>
-" system long date
+# system long date
 iabbrev clongdate <C-R>=strftime("%a %b %d %X %z %Y")<CR>
-" formatted long date
+# formatted long date
 iabbrev cpdate <C-R>=strftime("%A, %d %B %Y")<CR>
-" ISO datetime
+# ISO datetime
 iabbrev cisodt <C-R>=strftime("%Y-%m-%dT%H:%M:%S%z")<CR>
 
 iabbrev cdt <C-R>=hz#isotime()<CR>

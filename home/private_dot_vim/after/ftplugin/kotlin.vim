@@ -1,4 +1,4 @@
-scriptencoding utf-8
+vim9script
 
 setlocal expandtab
 setlocal shiftwidth=4

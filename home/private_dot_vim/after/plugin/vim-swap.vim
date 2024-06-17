@@ -1,4 +1,8 @@
-scriptencoding utf-8
+vim9script
+
+if mapcheck('<Plug>(swap-interactive)') != ''
+  finish
+endif
 
 nmap g( <Plug>(swap-interactive)
 xmap g( <Plug>(swap-interactive)

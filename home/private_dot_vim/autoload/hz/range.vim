@@ -1,5 +1,8 @@
 scriptencoding utf-8
 
+" Vim9 script has no way of having methods that recieve an implicit range, so
+" this must remain in legacy Vim script.
+
 ""
 " Loop over the range of text and remove duplicate lines without changing the
 " sort order. Originally by Damian Conway, presented in Scripting the Vim

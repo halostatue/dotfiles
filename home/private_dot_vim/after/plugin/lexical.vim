@@ -1,20 +1,16 @@
-scriptencoding utf-8
+vim9script
 
-command! -bang DownloadThesaurus call s:download_thesaurus('<bang>')
+const TARGET = hz#is('windows') ?
+  expand('~/vimfiles/thesaurus/mthesaur.txt') :
+  expand('~/.vim/thesaurus/mthesaur.txt')
 
-function! s:download_thesaurus(force) abort
-  if hz#is#windows()
-    let l:path = expand('~/vimfiles/thesaurus/mthesaur.txt')
-  else
-    let l:path = expand('~/.vim/thesaurus/mthesaur.txt')
-  endif
-  let l:url = 'https://raw.githubusercontent.com/zeke/moby/master/words.txt'
-  let l:download = empty(glob(l:path))
-  if a:force ==# '!' | let l:download = 1 | endif
+const URL = 'https://raw.githubusercontent.com/zeke/moby/master/words.txt'
 
-  if l:download
+def DownloadThesaurus(bang: string)
+  if bang ==# '!' || empty(glob(TARGET))
     echo 'Downloading the Moby thesaurus…'
-    let l:command = '!curl -fLo ' . l:path . ' --create-dirs ' . l:url
-    silent execute l:command
+    silent execute printf('!curl -fsSLo %s --create-dirs %s', TARGET, URL)
   endif
-endfunction
+enddef
+
+command! -bang DownloadThesaurus call <ScriptCmd>DownloadThesaurus('<bang>')

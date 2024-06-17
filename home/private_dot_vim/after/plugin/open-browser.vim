@@ -1,8 +1,14 @@
-scriptencoding utf-8
+vim9script
 
-let g:openbrowser_default_search = 'duckduckgo'
-let g:openbrowser_no_default_menus = v:true
-let g:openbrowser_message_verbosity = 1
+if !exists('*openbrowser#_keymap_smart_search')
+  finish
+endif
 
-nmap gx <Plug>(openbrowser-smart-search)
-vmap gx <Plug>(openbrowser-smart-search)
+g:openbrowser_default_search = 'duckduckgo'
+g:openbrowser_no_default_menus = v:true
+g:openbrowser_message_verbosity = 1
+
+if mapcheck('<Plug>(openbrowser-smart-search)') == ''
+  nmap gx <Plug>(openbrowser-smart-search)
+  vmap gx <Plug>(openbrowser-smart-search)
+endif

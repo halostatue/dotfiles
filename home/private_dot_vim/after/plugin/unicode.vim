@@ -1,3 +1,5 @@
-scriptencoding utf-8
+vim9script
 
-nmap ga <Plug>(UnicodeGA)
+if mapcheck('<Plug>(UnicodeGA)') != ''
+  nmap ga <Plug>(UnicodeGA)
+endif

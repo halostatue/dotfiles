@@ -1,5 +1,7 @@
-scriptencoding utf-8
+vim9script
 
-if exists(':SpeedDatingFormat')
-  SpeedDatingFormat %Y.%m.%d
+if !exists(':SpeedDatingFormat')
+  finish
 endif
+
+SpeedDatingFormat %Y.%m.%d

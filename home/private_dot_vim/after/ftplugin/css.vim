@@ -1,3 +1,3 @@
-scriptencoding utf-8
+vim9script
 
 setlocal iskeyword+=-

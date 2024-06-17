@@ -1,88 +1,124 @@
-scriptencoding utf-8
+vim9script
 
-""
-" autonumber.vim
-" - Forked from myusuf3/numbers.vim and b3niup/numbers.vim and auwsmit/vim-active-numbers
-"
-" Assumes either Neovim or Vim 8+.
+# autonumber.vim
+#
+# Automatically switch between 'number' and 'relativenumber' contextually.
+#
+# Derived from:
+#
+# - https://github.com/myusuf3/numbers.vim
+# - https://github.com/b3niup/numbers.vim
+# - https://github.com/auwsmit/vim-active-numbers
 
-function! autonumber#off() abort
-    setlocal norelativenumber number
-endfunction
+const MODE_RELATIVE = 0
+const MODE_ABSOLUTE = 1
+const MODE_HIDDEN = 2
 
-function! autonumber#relative() abort
-    let w:autonumber_mode = 0
-    call autonumber#reset()
-endfunction
+def Reset()
+  if w:->get('autonumber_ignore', false)
+    return
+  endif
 
-function! autonumber#numbers() abort
-    let w:autonumber_mode = 1
-    call autonumber#reset()
-endfunction
+  w:autonumber_mode = w:->get('autonumber_mode', MODE_RELATIVE)
+  w:autonumber_lock = w:->get('autonumber_lock', false)
 
-function! autonumber#hidden() abort
-    let w:autonumber_mode = 2
-    call autonumber#reset()
-endfunction
+  if w:autonumber_lock
+    return
+  endif
 
-function! autonumber#toggle() abort
-    if w:autonumber_mode == 1
-        let w:autonumber_lock = v:true
-        call autonumber#hidden()
-    elseif w:autonumber_mode == 2
-        let w:autonumber_lock = v:false
-        call autonumber#relative()
-    elseif w:autonumber_mode == 0
-        let w:autonumber_lock = v:false
-        call autonumber#numbers()
-    endif
-endfunction
+  if index(g:autonumber_exclude_filetype, &ft) >= 0
+    w:autonumber_mode = MODE_HIDDEN
+  endif
 
-function! autonumber#reset() abort
-    let w:autonumber_mode = get(w:, 'autonumber_mode', 0)
-    let w:autonumber_lock = get(w:, 'autonumber_lock', v:false)
+  if w:autonumber_mode == MODE_RELATIVE
+    setlocal relativenumber number
+  elseif w:autonumber_mode == MODE_ABSOLUTE
+    Off()
+    setlocal number
+  elseif w:autonumber_mode == MODE_HIDDEN
+    Off()
+    setlocal nonumber
+  endif
+enddef
 
-    if w:autonumber_lock | return | endif
+def Off()
+  setlocal norelativenumber number
+enddef
 
-    if w:autonumber_mode == 0
-        setlocal relativenumber number
-    elseif w:autonumber_mode == 1
-        call autonumber#off()
-        setlocal number
-    elseif w:autonumber_mode == 2
-        call autonumber#off()
-        setlocal nonumber
-    endif
+def Relative()
+  if w:->get('autonumber_ignore', false)
+    return
+  endif
 
-    if index(g:autonumber_exclude_filetype, &ft) >= 0
-        setlocal norelativenumber nonumber
-    endif
-endfunction
+  w:autonumber_mode = MODE_RELATIVE
+  Reset()
+enddef
 
-function! autonumber#enable() abort
-    let g:autonumber_enable = v:true
-    let w:autonumber_lock = v:false
-    call autonumber#relative()
+def Absolute()
+  if w:->get('autonumber_ignore', false)
+    return
+  endif
 
-    augroup autonumber_enable
-        autocmd!
-        autocmd InsertEnter,WinLeave * :call autonumber#numbers()
-        autocmd InsertLeave,VimEnter,WinEnter * :call autonumber#relative()
-        autocmd BufNewFile,BufReadPost,FileType * :call autonumber#reset()
-    augroup END
-endfunction
+  w:autonumber_mode = MODE_ABSOLUTE
+  Reset()
+enddef
 
-function! autonumber#disable() abort
-    call autonumber#hidden()
-    let w:autonumber_lock = v:true
-    let g:autonumber_enable = v:false
-    autocmd! autonumber_enable
-endfunction
+def Hidden()
+  w:autonumber_mode = MODE_HIDDEN
+  Reset()
+enddef
 
-function! autonumber#toggleAll() abort
-    if get(g:, 'autonumber_enable', v:false) == 1
-        call autonumber#disable()
-    else
-        call autonumber#enable()
-    endif
-endfunction
+export def Toggle()
+  if w:->get('autonumber_ignore', false)
+    return
+  endif
+
+  if w:autonumber_mode == MODE_ABSOLUTE
+    w:autonumber_lock = true
+    Hidden()
+  elseif w:autonumber_mode == MODE_HIDDEN
+    w:autonumber_lock = false
+    Relative()
+  elseif w:autonumber_mode == MODE_RELATIVE
+    w:autonumber_lock = false
+    Absolute()
+  endif
+enddef
+
+export def Enable()
+  g:autonumber_enable = true
+  w:autonumber_lock = false
+  Relative()
+
+  augroup autonumber_enable
+    autocmd!
+    autocmd InsertEnter,WinLeave * :call Absolute()
+    autocmd BufEnter,InsertLeave,VimEnter,WinEnter * :call Relative()
+    autocmd BufNewFile,BufReadPost,FileType * :call Reset()
+  augroup END
+enddef
+
+export def Disable()
+  Hidden()
+  w:autonumber_lock = true
+  g:autonumber_enable = false
+  autocmd! autonumber_enable
+enddef
+
+export def TogglePlugin()
+  if g:->get('autonumber_enable', false)
+    Disable()
+  else
+    Enable()
+  endif
+enddef
+
+export def IgnoreWindow(bang: string)
+  if bang == '!'
+    w:autonumber_ignore = true
+  else
+    w:autonumber_ignore = false
+
+    Reset()
+  endif
+enddef

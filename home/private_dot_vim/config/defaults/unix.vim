@@ -1,3 +1,5 @@
-scriptencoding utf-8
+vim9script
 
-if hz#is('windows') || hz#is('cygwin') | finish | endif
+if hz#is('windows') || hz#is('cygwin') 
+  finish 
+endif

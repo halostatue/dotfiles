@@ -1,8 +1,10 @@
-scriptencoding utf-8
+vim9script
 
-let g:abolish_save_file = expand('<sfile>')
+if !exists(':Abolish')
+  finish
+endif
 
-if !exists(':Abolish') | finish | endif
+g:abolish_save_file = expand('<sfile>')
 
 Abolish afterword{,s}                         afterward{}
 Abolish anomol{y,ies}                         anomal{}
@@ -32,5 +34,3 @@ Abolish {,un}orgin{,al}                       {}origin{}
 Abolish {c,m}arraige{,s}                      {}arriage{}
 Abolish {despa,sepe}rat{e,es,ed,ing,ely,ion,ions,or}  {despe,sepa}rat{}
 Abolish {les,compar,compari}sion{,s}          {les,compari,compari}son{}
-
-Abolish Lorem       Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
