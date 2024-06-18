@@ -1,7 +1,5 @@
 tap "homebrew/autoupdate"
 tap "homebrew/bundle"
-tap "homebrew/cask-fonts"
-tap "homebrew/cask-versions"
 tap "homebrew/services"
 tap "reviewdog/tap"
 
@@ -12,12 +10,10 @@ brew "comby" # Tool for changing code across many languages
 brew "csvtk" # Cross-platform, efficient and practical CSV/TSV toolkit in Golang
 brew "datasette" # Open source multi-tool for exploring and publishing data
 brew "docker-slim" # Minify and secure Docker images
-brew "dockle" # Simple security auditing, helping build the Best Docker Images
 brew "epubcheck" # Validate EPUB files, version 2.0 and later
 brew "fclones" # Efficient Duplicate File Finder
 brew "flarectl" # CLI application for interacting with a Cloudflare account
 brew "fping" # Scriptable ping program for checking if multiple hosts are up
-brew "fzf" # Command-line fuzzy finder written in Go
 brew "fzy" # Fast, simple fuzzy text selector with an advanced scoring algorithm
 brew "git" # Distributed revision control system
 brew "git-bug" # Distributed, offline-first bug tracker embedded in git, with bridges
@@ -30,7 +26,6 @@ brew "neovide" # No Nonsense Neovim Client in Rust
 brew "pam-reattach" # PAM module for reattaching to the user's GUI (Aqua) session
 brew "pandoc" # Swiss-army knife of markup format conversion
 brew "pv" # Monitor data's progress through a pipe
-brew "rename" # Perl-powered file rename script with many helpful built-ins
 brew "reviewdog/tap/reviewdog" # Automated code review tool integrated with any code analysis tools regardless of programming language.
 brew "scc" # Fast and accurate code counter with complexity and COCOMO estimates
 brew "shellcheck" # Static analysis and lint tool, for (ba)sh scripts
@@ -50,11 +45,9 @@ brew "universal-ctags" # Maintained ctags implementation
 brew "watch" # Executes a program periodically, showing output fullscreen
 brew "watchexec" # Execute commands when watched files change
 brew "wget" # Internet file retriever
-brew "wxwidgets" # Cross-platform C++ GUI toolkit
 brew "xdg-ninja" # Check your $HOME for unwanted files and directories
 brew "xmlstarlet" # XML command-line utilities
 brew "xq" # Command-line XML and HTML beautifier and content extractor
-brew "yamllint" # Linter for YAML files
 brew "yq" # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "zsxd" # Zelda Mystery of Solarus XD
 
@@ -105,7 +98,7 @@ cask "scrivener" # Word processing software with a typewriter style
 cask "setapp" # Collection of apps available by subscription
 cask "slack" # Team communication and collaboration software
 cask "spatterlight" # Play most kinds of interactive fiction game files
-cask "tableflip" # App to edit markdown files in place
+cask "tableflip" # Edit plain text tables in place: Markdown, CSV, JSON. LaTeX and HTML export
 cask "viscosity" # OpenVPN client with AppleScript support
 cask "visual-studio-code" # Open-source code editor
 cask "webpquicklook" # Quick Look plugin for webp files
@@ -113,13 +106,14 @@ cask "xcodes" # Install and switch between multiple versions of Xcode
 cask "zed" # Multiplayer code editor
 
 ## Fonts
+cask "font-0xproto"
 cask "font-b612-mono"
-cask "font-cascadia-code" # Monospaced font that includes programming ligatures
-cask "font-cascadia-code-pl" # Version of Cascadia Code with embedded Powerline symbols
-cask "font-cascadia-mono" # Version of Cascadia Code without ligatures
-cask "font-cascadia-mono-pl" # Version of Cascadia Code without ligatures and with embedded Powerline symbols
-cask "font-charis-sil" # Unicode-based font family supporting languages using Latin and Cyrillic scripts
-cask "font-commit-mono" # Neutral programming typeface
+cask "font-cascadia-code"
+cask "font-cascadia-code-pl"
+cask "font-cascadia-mono"
+cask "font-cascadia-mono-pl"
+cask "font-charis-sil"
+cask "font-commit-mono"
 cask "font-cormorant-garamond"
 cask "font-courier-prime"
 cask "font-courier-prime-code"
@@ -129,30 +123,29 @@ cask "font-dm-mono"
 cask "font-dm-sans"
 cask "font-dm-serif-display"
 cask "font-dm-serif-text"
-cask "font-eb-garamond" # Garamond typeface based on the 1592 Berner specimen
+cask "font-eb-garamond"
 cask "font-fantasque-sans-mono"
-cask "font-fira-code" # Free monospaced font with programming ligatures
+cask "font-fira-code"
 cask "font-fira-mono"
-cask "font-geist-mono" # Monospaced typeface designed to be used where code is represented
+cask "font-geist-mono"
 cask "font-hack"
-cask "font-hack-nerd-font" # Developer targeted fonts with a high number of glyphs
+cask "font-hack-nerd-font"
 cask "font-ia-writer-duo"
-cask "font-ia-writer-duospace"
 cask "font-ia-writer-mono"
 cask "font-ia-writer-quattro"
-cask "font-ibm-plex" # Corporate typeface for IBM
-cask "font-ibm-plex-mono" # Corporate typeface for IBM
+cask "font-ibm-plex"
+cask "font-ibm-plex-mono"
 cask "font-input"
-cask "font-jetbrains-mono" # Typeface made for developers
-cask "font-juliamono" # Monospaced typeface designed for programming in Julia
-cask "font-monaspace" # Superfamily of fonts for code
-cask "font-mononoki" # Programming font
-cask "font-pt-serif" # Universal type family designed for use together with PT Sans
-cask "font-recursive" # Led by arrow type, a type foundry based in brooklyn, ny, usa
-cask "font-recursive-code" # Recursive's prebuilt text-editor-friendly files, including powerline glyphs
+cask "font-jetbrains-mono"
+cask "font-juliamono"
+cask "font-monaspace"
+cask "font-mononoki"
+cask "font-pt-serif"
+cask "font-recursive"
+cask "font-recursive-code"
 cask "font-source-code-pro"
 cask "font-space-mono"
-cask "font-symbols-only-nerd-font" # Developer targeted fonts with a high number of glyphs
+cask "font-symbols-only-nerd-font"
 
 mas "1Blocker", id: 1365531024
 mas "1Password for Safari", id: 1569813296

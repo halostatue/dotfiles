@@ -8,6 +8,7 @@ angle-grinder
 ansifilter
 antiword
 aqua
+ast-grep
 atuin
 bat
 bat-extras
@@ -28,6 +29,7 @@ csvlens
 dasel
 dateutils
 delve
+deno
 diff-so-fancy
 diffoci
 diffoscope
@@ -56,6 +58,7 @@ fd
 fend
 fish
 flyctl
+fop
 fq
 fselect
 fswatch
@@ -102,6 +105,8 @@ jless
 joshuto
 jq
 jqp
+jujutsu
+julia +gcc13
 just
 lazydocker
 lazygit
@@ -118,10 +123,12 @@ monolith
 moreutils +doc
 mpstats
 murex
+mved
 navi
 neovim
 newreleases
 nim
+nomino
 oauth2c
 oha
 osv-scanner
@@ -150,7 +157,6 @@ shellcheck
 shellharden
 shfmt
 srgn
-starship
 staticcheck
 step-cli
 stgit
@@ -168,6 +174,7 @@ tokei
 trurl
 vhs
 viddy
+wxWidgets-3.2 +compat30
 xh
 xplr
 xsv
