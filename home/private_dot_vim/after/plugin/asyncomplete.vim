@@ -1,6 +1,6 @@
 vim9script
 
-if !exists('*asyncomplete#complete')
+if !exists('g:asyncomplete_manager')
   finish
 endif
 
@@ -29,9 +29,10 @@ if exists('*emoji#for')
 
   def CompleteEmoji(opt: Opts, ctx: Opts)
     if empty(_cache)
-      _cache = emoji#data#dict()->keys()->sort()->map(
-        (_, val) => { word: ':' .. val .. ':', kind: emoji#for(val) }
-      )
+      _cache = emoji#data#dict()
+        ->keys()
+        ->sort()
+        ->map((_, val) => { word: ':' .. val .. ':', kind: emoji#for(val) })
 
       asyncomplete#log('cached emojis')
     endif

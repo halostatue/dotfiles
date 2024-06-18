@@ -1,6 +1,6 @@
 vim9script
 
-if mapcheck('<Plug>(swap-interactive)') != ''
+if mapcheck('<Plug>(swap-interactive)') ==# ''
   finish
 endif
 

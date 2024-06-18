@@ -21,9 +21,9 @@ packadd vim-packix
 import 'packix.vim'
 
 packix.Setup((px: packix.Manager) => {
-  # Package Manager (self-manage the bootstrapped install)
-  # https://github.com/tani/vim-jetpack
-  px.Add('tani/vim-jetpack', { type: 'opt' })
+  # Packix package manager (self-manage the bootstrapped install)
+  # https://github.com/halostatue/vim-packix
+  px.Local('~/dev/oss/forks/vim-packix', { type: 'opt' })
 
   # Improved incremental search
   # https://github.com/wincent/loupe
@@ -33,11 +33,7 @@ packix.Setup((px: packix.Manager) => {
   # TRY THIS: https://github.com/eugen0329/vim-esearch
   px.Add('eugen0329/vim-esearch')
   # TRY THIS: https://github.com/wincent/ferret
-  px.Add('wincent/ferret')
-  # Replacing: https://github.com/dyng/ctrlsf.vim
-  # px.Add('dyng/ctrlsf.vim')
-  # Replacing: https://github.com/yegappan/grep
-  # px.Add('yegappan/grep')
+  # px.Add('wincent/ferret')
 
   # Sudo support: https://github.com/lambdalisue/suda.vim
   # px.Add('lambdalisue/suda.vim')
@@ -146,7 +142,6 @@ packix.Setup((px: packix.Manager) => {
   # Fern is a file tree / explorer
   # https://github.com/lambdalisue/vim-fern
   px.Add('lambdalisue/vim-fern')
-
   # Shows git status in the fern tree
   # https://github.com/lambdalisue/fern-git-status.vim
   px.Add('lambdalisue/fern-git-status.vim')

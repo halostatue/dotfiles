@@ -10,7 +10,7 @@ syn match gitcommitTrailingFullStop "\.$" contained containedin=gitcommitSummary
 var summary_length: number = get(g:, 'gitcommit_summary_length', 50)
 
 var pattern = summary_length < 0 ?
-  '^.*$' : printf('^.*\\%%<%dv.', summary_length + 1)
+  '^.*$' : printf('^.*\%%<%dv.', summary_length + 1)
 
 execute printf(
   'syn match gitcommitSummary "%s" contained containedin=%s nextgroup=%s contains=%s',

@@ -4,7 +4,7 @@ if !exists(':Neoformat')
   finish
 endif
 
-def Neoformat()
+def ApplyNeoformat()
   try
     undojoin
     Neoformat
@@ -14,16 +14,18 @@ def Neoformat()
   endtry
 enddef
 
-def Enable()
+def EnableNeoformat()
   augroup neoformat_config
     autocmd!
-    autocmd BufWritePre * call <ScriptCmd>Neoformat()
+    autocmd BufWritePre * call ApplyNeoformat()
   augroup END
 enddef
 
-def Disable()
+def DisableNeoformat()
   autocmd! neoformat_config
 enddef
 
-command! EnableNeoformat call <ScriptCmd>Enable()
-command! DisableNeoformat call <SCriptCmd>Disable()
+command! EnableNeoformat call EnableNeoformat()
+command! DisableNeoformat call DisableNeoformat()
+
+EnableNeoformat()

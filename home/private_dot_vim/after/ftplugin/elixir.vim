@@ -1,9 +1,8 @@
 vim9script
 
 def TransformUmbrellaTest(cmd: string): string
-  if match(cmd, '^apps/') >= 0
-    return substitute(
-      cmd,
+  if cmd->match('^apps/') >= 0
+    return cmd->substitute(
       'mix test apps/\([^/*]\)/',
       'mix cmd --app \1 mix test --color ',
       ''
