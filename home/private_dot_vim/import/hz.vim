@@ -15,7 +15,6 @@ Info.mac = Bool(!Info.windows && !Info.cygwin && (
   )
 ))
 Info.macgui = Bool(Info.mac && has('gui_running'))
-Info.neovim = false
 Info.sudo = Bool($SUDO_USER !=# '' && $USER !=# $SUDO_USER
   && $HOME !=# expand('~' .. $USER) && $HOME ==# expand('~' .. $SUDO_USER))
 Info.tmux = Bool(exists('$TMUX'))
@@ -25,34 +24,6 @@ const ToggleWindowCommands = {
   quickfix: { close: 'cclose', open: 'copen' },
 }
 
-##
-# @section Introduction, introduction
-# @stylized Hz.vim
-# @library
-# @order introduction config functions compatibility licence
-#
-# @plugin(stylized) is a collection of functions and commands that power
-# Austin Ziegler's vim configuration.
-
-##
-# @section Compatibility
-#
-# All of the functions in @plugin are known to work with MacVim 9.1 and have
-# been rewritten to use Vim 9 script.
-
-##
-# @section Licence
-#
-# @plugin(stylized) is public domain where possible, or licensed under CC0 1.0
-# where not. There are no warranties, implied or expressed, about this @plugin
-# or its suitability or fitness for any particular purpose.
-#
-# See https://creativecommons.org/publicdomain/zero/1.0/legalcode for more
-# information.
-
-##
-# Returns a string representing the underlying platform as @plugin understands
-# it. Will be one of `windows`, `cygwin`, `mac`, or `unix`.
 export def Platform(): string
   if Is('windows')
     return 'windows'
@@ -65,26 +36,18 @@ export def Platform(): string
   endif
 enddef
 
-##
-# Returns true if the underlying status is the {type} declared. An
-# unknown type returns false. Supported values for {type} are: cygwin, mac,
-# macgui, neovim, nvim, sudo, tmux, vim, windows.
 export def Is(type: string): bool
-  return Info[type]
+  return Info->has_key(type) && Info[type]
 enddef
 
-##
-# Report whether the function name provided exists and contains a valid
-# function name. The function name may be a bare name (`fn`) or have
-# parentheses at the end (`fn()`).
-export def IsValidFunction(value: string = null_string): bool
-  return value != null_string && exists(
-    '*' .. substitute(value, '()$', '', '')
+export def IsValidFunction(value: any): bool
+  return value != null && (
+    value->type() == v:t_func || (
+      value->type() == v:t_string && exists('*' .. value->substitute('()$', '', ''))
+    )
   )
 enddef
 
-##
-# Make {path}, prompting unless [force] is provided.
 export def Mkpath(path: string, force: bool = false)
   if !isdirectory(path)
     if force || input(printf('"%s" does not exist; create? [y/N]', path)) =~? '^y'
@@ -93,11 +56,8 @@ export def Mkpath(path: string, force: bool = false)
   endif
 enddef
 
-##
-# Portably produce a proper ISO 8601/RFC3339 timestamp. If [time] is not
-# provided, the current time will be used.
-export def Isotime(time: number = null)
-  var zone = strftime('%z', time == null ? getftime() : time)
+export def Isotime(time: any = null): string
+  var zone = strftime('%z', time == null ? localtime() : time)
     ->substitute('\([-+]\)\(\d\{2}\)\(\d\{2}\)', '\1\2:\3', '')
 
   return time == null ?
@@ -105,116 +65,69 @@ export def Isotime(time: number = null)
     printf('%s%s', strftime('%Y-%m-%dT%H:%M:%S', time), zone)
 enddef
 
-##
-# @usage [dict] [default] Func [args]
-#
-# Try to call the given [Func] with an optional dictionary, default, and
-# arguments.
-#
-#     Try('fugitive#statusline')
-#     Try(function('fugitive#statusline'))
-#
-# If [Func] is a dictionary function (and not a partial function reference),
-# it is necessary to provide the [dict] parameter to properly provide `self`.
-#
-#     Try({}, 'dict.Func')
-#
-# A [default] value may be provided before the function reference, if it is
-# inside of a list.
-#
-#     Try(['default'], 'F')
-#
-# Arguments are passed after the function name or reference.
-#
-#     Try(['default'], 'F', 1, 2, 3)
-#
-# This function is originally by Tim Pope as part of Flagship.
-#
-# @default default=''
-# @default dict={}
-# @default args=[]
 export def Try(args: list<any>): any
   var params = copy(args)
   var dict: dict<any> = {}
   var default: any = null
 
-  if type(get(params, 0)) == v:t_dict
-    dict = remove(params, 0)
+  if params->get(0)->type() == v:t_dict
+    dict = params->remove(0)
   endif
 
-  if type(get(params, 0)) == v:t_list
-    default = remove(params, 0)[0]
+  if params->get(0)->type() == v:t_list
+    default = params->remove(0)->get(0)
   endif
 
-  if empty(params)
+  if params->empty()
     return default
   endif
 
-  var Func = remove(params, 0)
+  var Func = params->remove(0)
 
-  if type(Func) == v:t_func || exists('*' .. Func)
-    return call(Func, args, dict)
-  end
+  if Func->type() == v:t_func || (Func->type() == v:t_string && exists('*' .. Func))
+    return Func->call(params, dict)
+  endif
 
   return default
 enddef
 
-##
-# Answers if {needle} can be found in the provided {haystack} which may be a
-# string, list, or dictionary (where is searches the values).
-#
-# If {haystack} is a string, but {needle} is not, returns false.
-# If {haystack} is neither a string, list, nor dictionary, returns false.
 export def In(haystack: any, needle: any): bool
-  if type(haystack) == v:t_string
-    return type(needle) == v:t_string && strdix(haystack, needle) != -1
-  elseif type(haystack) == v:t_list
-    return index(haystack, needle) != -1
-  elseif type(haystack) == v:t_dict
-    return index(values(haystack), needle) != -1
+  if haystack->type() == v:t_string
+    return needle->type() == v:t_string && haystack->stridx(needle) != -1
+  endif
+
+  if haystack->type() == v:t_list
+    return haystack->index(needle) != -1
+  endif
+
+  if haystack->type() == v:t_dict
+    return haystack->values()->index(needle) != -1
   endif
 
   return false
 enddef
 
-##
-# Trims leading [pattern] from {string}.
-#
-# @default pattern='\_s' The regex for whitespace and newlines.
 export def TrimLeading(value: string, pattern: string = '\_s'): string
   return value->substitute(printf('^%s\+', pattern), '', '')
 enddef
 
-##
-# Trims trailing [pattern] from {string}.
-#
-# @default pattern='\_s' The regex for whitespace and newlines.
 export def TrimTrailing(value: string, pattern: string = '\_s'): string
   return value->substitute(printf('%s\+$', pattern), '', '')
 enddef
 
-##
-# Trims both leading and trailing [pattern] from {string}.
-#
-# @default pattern='\_s' The regex for whitespace and newlines.
 export def Trim(value: string, pattern: string = '\_s'): string
-  return TrimTrailing(TrimLeading(string, pattern), pattern)
+  return TrimTrailing(TrimLeading(value, pattern), pattern)
 enddef
 
-##
-# Executes {command} while saving and restoring the window state.
 export def ExecuteInPlace(cmd: string)
   var saved_view = winsaveview()
   execute cmd
   call winrestview(saved_view)
 enddef
 
-##
-# Executes {command} while saving and restoring the most recent saved search
-# history and the window state.
 export def ExecuteWithSavedSearch(cmd: string)
   var ch = histnr('search')
-  In_place(cmd)
+  ExecuteInPlace(cmd)
 
   while ch != histnr('search')
     histdel('search', -1) 
@@ -223,8 +136,6 @@ export def ExecuteWithSavedSearch(cmd: string)
   @/ = histget('search', -1)
 enddef
 
-##
-# Clean trailing whitespace from the range.
 export def CleanWhitespace(line1: any, line2: any)
   var range = line1 == null ? '' :
     line2 == null ? string(line1) :
@@ -233,28 +144,18 @@ export def CleanWhitespace(line1: any, line2: any)
   ExecuteWithSavedSearch(printf('%ss/\s\+$//e', range))
 enddef
 
-##
-# Gets the value of {setting}, checking for a buffer override then a global
-# value. That is, {setting} will be pulled from |b:|, then |g:|. A [default]
-# value may be provided.
 export def GetSetting(name: string, default: any = null): any
   return get(b:, name, get(g:, name, default))
 enddef
 
-##
-# Execute the normal mode {motion} and return the text that it marks. For this
-# to work, the {motion} must include a visual mode key (`V`, `v`, or `gv`).
-#
-# Both the 'z' register and the original cursor position will be restored
-# after the text is yanked.
 export def GetMotion(motion: string): string
   var cursor = getpos('.')
   var reg = getreg('z')
   var regtype = getregtype('z')
 
-  execute 'normal!' a:motion . '"zy'
+  execute 'normal! ' .. motion .. '"zy'
 
-  text = @z
+  var text = @z
 
   setreg('z', reg, regtype)
   setpos('.', cursor)
@@ -262,8 +163,6 @@ export def GetMotion(motion: string): string
   return text
 enddef
 
-##
-# Programmatically jump to the window identified by {bufname}.
 export def SwitchWindow(bufname: string)
   var nr = bufwinnr(bufname)
 
@@ -272,13 +171,25 @@ export def SwitchWindow(bufname: string)
   endif
 enddef
 
-##
-# Returns a base XDG path. The {type} must be provided and must be one of
-# {data}, {config}, or {runtime}. Additional arguments will be appended to
-# the path.
-#
-# This will produce results on Windows, but they will not be meaningful to
-# how Windows directories are structured.
+export def RangeUniq(line1: number, line2: number, ignore_ws: bool = false)
+  var NormalizeWS = (str: string) =>
+    str->substitute('^\s\+|\s\+$', '', 'g')->substitute('\s+', ' ', 'g')
+
+  var seen: dict<bool> = {}
+  var uniq: list<any> = []
+
+  for line in getline(line1, line2)
+    var nline = '>' .. (ignore_ws ? NormalizeWS(line) : line)
+    if !seen->has_key(nline)
+      uniq->add(line)
+      seen[nline] = true
+    endif
+  endfor
+
+  execute printf(':%s,%sdelete', line1, line2)
+  append(line1 - 1, uniq)
+enddef
+
 export def XdgBase(type: string, parts: list<string> = []): string
   var base: list<string>
 
@@ -297,14 +208,7 @@ export def XdgBase(type: string, parts: list<string> = []): string
   return base->join('/')
 enddef
 
-##
-# Returns the vim XDG path requested. The {type} must be provided and must be
-# one of data, config, or runtime. Additional arguments will be appended to
-# the path.
-#
-# This will produce results on Windows, but they will not be meaningful to how
-# Windows directories are structured.
-export def XdgPath(type: string, parts: list<string>): string
+export def XdgPath(type: string, parts: list<string> = []): string
   return XdgBase(type, ['vim']->extend(parts))
 enddef
 
@@ -364,3 +268,31 @@ export def GetSynstack(): string
     ->map('synIDattr(v:val, ''name'')')
     ->join(' > ')
 enddef
+
+export def UrlEncode(url: string): string
+  var parts = url->split('/', true)
+  var index = parts[0] =~# '^https\=' ? 3 : 1
+
+  parts[index : ] = parts[index : ]->map(
+    (_i, part) => {
+      return substitute(
+        part,
+        '\([^-[:alnum:].=?&]\)',
+        (m) => printf('%%%02X', char2nr(m[1])),
+        'g'
+      )
+    }
+  )
+
+  return parts->join('/')
+enddef
+
+export def UrlDecode(url: string): string
+  return url
+    ->substitute('%0[Aa]\n$', '%0A', '')
+    ->substitute('%0[Aa]', '\n', 'g')
+    ->substitute('+', ' ', 'g')
+    ->substitute('%\(\x\x\)', (m) => nr2char(str2nr('0x' .. m[1], 16)), 'g')
+enddef
+
+defcompile

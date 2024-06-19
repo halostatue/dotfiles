@@ -4,201 +4,260 @@ Austin Ziegler <halostatue@gmail.com>                        *Hz.vim* *hz.vim*
 ==============================================================================
 CONTENTS                                                     *hz.vim-contents*
   1. Introduction........................................|hz.vim-introduction|
-  2. Configuration.............................................|hz.vim-config|
-  3. Functions..............................................|hz.vim-functions|
+  2. Functions..............................................|hz.vim-functions|
+  3. Functional Functions................................|hz.vim-fn-functions|
   4. Compatibility......................................|hz.vim-compatibility|
   5. Licence..................................................|hz.vim-licence|
 
 ==============================================================================
 INTRODUCTION                                             *hz.vim-introduction*
 
-
 Hz.vim is a collection of functions and commands that power Austin Ziegler's
-vim configuration.
-
-==============================================================================
-CONFIGURATION                                                  *hz.vim-config*
-
-                                                                        *g:hz*
-The global default foldtext function for use with |hz#ui#smart_foldtext(()|).
-
-                                                    *b:hz#ui#default_foldtext*
-A buffer-specific default foldtext function for use with
-|hz#ui#smart_foldtext(()|).
-
-                                                             *g:hzvim_guifont*
-The value of guifont. Defaults to Fira Code, Input Mono Narrow, Source Code
-Pro, Inconsolata Medium, Anonymous Pro, DejaVu Sans Mono, and Andale Mono.
-
-                                                        *g:hzvim_guifont_size*
-The pointsize of values in |g:hzvim_guifont| when the point size is not
-provided. The default is 10 points.
+vim configuration. The latest version has been rewritten to use |vim9script|
+so they are only compatible with Vim 9 or later.
 
 ==============================================================================
 FUNCTIONS                                                   *hz.vim-functions*
 
-hz#platform()                                                  *hz#platform()*
-  Returns a string representing the underlying platform as Hz.vim understands
-  it. Will be one of `windows`, `cygwin`, `mac`, or `unix`.
+hz#platform()                                                   *hz#platform()*
+hz.Platform(): string                                           *hz.Platform()*
 
-hz#valid_function({varname})                             *hz#valid_function()*
-  Report whether the function in {varname} provided exists, and if so,
-  contains a valid function name. The function name may be a bare name (`fn`)
-  or have parentheses at the end (`fn()`).
+  Returns a string representing the underlying platform, resulting in one of
+  `windows`, `cygwin`, `mac`, or `unix`.
+
+hz#is({type})                                                         *hz#is()*
+hz.Is({type}: string): bool                                           *hz.Is()*
+
+  Returns `true` if the tested {type} value is defined as true. Supported
+  values for {type} are:
+
+      Type              Condition~
+      windows           |has| win16, win32, or win64
+      cygwin            |has| win32unix
+      mac               not windows or cygwin, |has| mac, macunix, gui_macvim,
+                        or `uname` is `darwin` and does not have `xdg-open`
+      macgui            is mac and has gui_running
+      sudo              $SUDO_USER is set and is not $USER
+      tmux              $TMUX is set
+
+  Unrecognized values will always return `false`.
+
+hz#valid_function({value})                                *hz#valid_function()*
+hz.IsValidFunction({value}: any): bool                   *hz.IsValidFunction()*
+
+  Report whether the {value} is a valid function (|t:v_func|) or function
+  name (|t:v_string|). The function name may be a bare name (`fn`) or have
+  parentheses at the end (`fn()`).
 
 hz#mkpath({path}, [force])                                       *hz#mkpath()*
-  Make {path}, prompting unless [force] is provided.
+hz.MKpath({path}: string, forcE: bool = false)                   *hz.Mkpath()*
+
+  Make {path}, prompting unless [force] is provided. Except for the prompting,
+  equivalent to |mkdir()| with the `'p'` option.
 
 hz#isotime([time])                                              *hz#isotime()*
+hz.Isotime(time: number = null): string                         *hz.Isotime()*
+
   Portably produce a proper ISO 8601/RFC3339 timestamp. If [time] is not
   provided, the current time will be used.
 
 hz#try([dict], [default], {Func}, [args])                           *hz#try()*
+hz.Try(args: list<any>): any                                        *hz.Try()*
 
-  Try to call the given [Func] with an optional dictionary, default, and
-  arguments.
+  NOTE: The preferred form of calling this function is with the autoload
+  function form, as it uses variable arguments. The Vim 9 script import
+  version must use arguments in an array.
+
+  Try to call the given {Func} with an optional dictionary, default, and
+  arguments. >
 
       hz#try('fugitive#statusline')
-  hz#try(function('fugitive#statusline'))
+      hz#try(function('fugitive#statusline'))
+      hz.Try(['fugitive#statusline'])
+      hz.Try([function('fugitive#statusline')])
+<
 
-  If [Func] is a dictionary function (and not a partial function reference),
-  it is necessary to provide the [dict] parameter to properly provide `self`.
+  If {Func} is a dictionary function (and not a partial function reference),
+  the `self` must be provided with the [dict] parameter. >
 
       hz#try({}, 'dict.Func')
+      hz.Try([{}, 'dict.Func'])
+<
 
   A [default] value may be provided before the function reference, if it is
-  inside of a list.
+  inside of a list. >
 
       hz#try(['default'], 'F')
+      hz.Try([['default'], 'F'])
+<
 
-  Arguments are passed after the function name or reference.
+  Arguments are passed after the function name or reference. >
 
       hz#try(['default'], 'F', 1, 2, 3)
+      hz.Try([['default'], 'F', 1, 2, 3])
+<
 
   This function is originally by Tim Pope as part of Flagship.
 
-  [default] is '' if omitted.
-  [dict] is {} if omitted.
-  [args] is [] if omitted.
+  [default] is `null` if omitted.
+  [dict] is `{}` if omitted.
+  [args] is `[]` if omitted.
 
 hz#in({haystack}, {needle})                                          *hz#in()*
-  Answers if {needle} can be found in the provided {haystack} which may be a
-  string, list, or dictionary (where is searches the values).
+hz.In(haystack: any, needle: any): bool                              *hz.In()*
 
-  If {haystack} is a string, but {needle} is not, returns false. If {haystack}
-  is neither a string, list, nor dictionary, returns false.
+  Answers if {needle} can be found in the provided {haystack} which may be
+  a string, list, or dictionary.
 
-hz#trim_leading({string}, [pattern])                       *hz#trim_leading()*
-  Trims leading [pattern] from {string}.
+  If {haystack} is a string, {needle} must also be a string. {haystack} is
+  searched with |stridx()|.
 
-  [pattern] is '\_s' The regex for whitespace and newlines. if omitted.
+  If {haystack} is a list, it is searched with |index()|.
 
-hz#trim_trailing({string}, [pattern])                     *hz#trim_trailing()*
-  Trims trailing [pattern] from {string}.
+  If {haystack} is a dictionary, it is searched with |index()| over the
+  |values()|.
 
-  [pattern] is '\_s' The regex for whitespace and newlines. if omitted.
+  If {haystack} is any other type, the return value is false.
+
+hz#trim_leading({string}, [pattern])                        *hz#trim_leading()*
+hz.TrimLeading(string: string, pattern: string = '\_s'): string
+                                                             *hz.TrimLeading()*
+
+  Trims leading [pattern] from {string}. [pattern] defaults to '\_s', the
+  regex for whitespace and newlines.
+
+hz#trim_trailing({string}, [pattern])                      *hz#trim_trailing()*
+hz.TrimTrailing(string: string, pattern: string = '\_s'): string
+                                                            *hz.TrimTrailing()*
+  Trims trailing [pattern] from {string}. [pattern] defaults to '\_s', the
+  regex for whitespace and newlines.
 
 hz#trim({string}, [pattern])                                       *hz#trim()*
-  Trims both leading and trailing [pattern] from {string}.
+hz.Trim(string: string, pattern: string = '\_s'): string           *hz.Trim()*
 
-  [pattern] is '\_s' The regex for whitespace and newlines. if omitted.
+  Trims both leading and trailing [pattern] from {string}. [pattern] defaults
+  to '\_s', the regex for whitespace and newlines.
 
-hz#in_place({command})                                         *hz#in_place()*
+hz#execute_in_place({command})                          *hz#execute_in_place()*
+hz.ExecuteInPlace(cmd: string)                            *hz.ExecuteInPlace()*
+
   Executes {command} while saving and restoring the window state.
 
-hz#with_saved_search({command})                       *hz#with_saved_search()*
+hz#execute_with_saved_search({command})        *hz#execute_with_saved_search()*
+hz.ExecuteWithSavedSearch(cmd: string)            *hz.ExecuteWithSavedSearch()*
+
   Executes {command} while saving and restoring the most recent saved search
   history and the window state.
 
-hz#clean_whitespace()                                  *hz#clean_whitespace()*
-  Clean trailing whitespace from the range.
+hz#clean_whitespace({line1}, {line2})                   *hz#clean_whitespace()*
+hz#CleanWhitespace(line1: any, line2: any)               *hz.CleanWhitespace()*
 
-hz#get_setting({setting}, [default])                        *hz#get_setting()*
-  Gets the value of {setting}, checking for a buffer override then a global
-  value. That is, {setting} will be pulled from |b:|, then |g:|. A [default]
-  value may be provided.
+  Clean trailing whitespace from the range provided. Uses
+  |hz#execute_with_saved_search()| underneath, so search and window state are
+  restored after execution.
 
-hz#get_motion({motion})                                      *hz#get_motion()*
+hz#get_setting({name}, [default])                            *hz#get_setting()*
+hz.GetSetting(name: string, default: any = null)             *hz.GetSetting()*
+
+  Gets the value of a variable setting {name}, checking for a buffer override
+  then a global value. That is, {name} will be checked from |b:|, then |g:|.
+  A [default] value may be provided. >
+
+  hz#get_setting('foo', false)
+  get(b:, 'foo', get(g:, 'foo', false))
+<
+
+
+hz#get_motion({motion})                                       *hz#get_motion()*
+hz.GetMotion(motion: string): string                           *hz.GetMotion()*
+
   Execute the normal mode {motion} and return the text that it marks. For this
   to work, the {motion} must include a visual mode key (`V`, `v`, or `gv`).
 
   Both the 'z' register and the original cursor position will be restored
   after the text is yanked.
 
-hz#mark_visual({command}, {start}, {end})                   *hz#mark_visual()*
-  Run the normal mode {command} from line {start} to {end}, opening any folds.
+hz#switch_window({bufname})                                *hz#switch_window()*
+hz.SwitchWindow(bufname: string)                            *hz.SwitchWindow()*
 
-
-hz#switch_window({bufname})                               *hz#switch_window()*
   Programmatically jump to the window identified by {bufname}.
 
-hz#buffer#timer({bufnr}, {callback}, [interval])           *hz#buffer#timer()*
-  Sets an update {callback} for a given {bufnr} every [interval], executing
-  infinitely. Returns the timer number.
+hz#range_uniq([ignore_ws])                                    *hz#range_uniq()*
+hz.RangeUniq(line1: number, line2: number, ignore_ws: bool = false)
+                                                               *hz#RangeUniq()*
 
-  [interval] is 500 ms if omitted.
+  Reduces a range of lines in a buffer and removes duplicate lines without
+  changing the sort order of the lines. With [ignore_ws] specified, whitespace
+  differences will be ignored.
 
-hz#cache#root()                                              *hz#cache#root()*
-  Return the cache root path.
+  Ported from code by Damian Conway, originally presented in Scripting the Vim
+  Editor, Part 4 at IBM developerWorks and on GitHub at:
+  https://github.com/thoughtstream/Damian-Conway-s-Vim-Setup/blob/master/.vimrc#L1139-L1168
 
-hz#cache#for({path...})                                       *hz#cache#for()*
-  Create and return a named cache for the given {path...}.
+  Add mappings: >
 
-hz#config#loaded([name])                                  *hz#config#loaded()*
-  If [name] is provided, reports whether a file or pattern matching [name] has
-  been loaded.
+      xnoremap q :call hz#range_uniq()<CR>
+      xnoremap Q :call hz#range_uniq(v:true)<CR>
+<
 
-  If not provided, returns a dict of all configuration files loaded through
-  hz#config functions, as well as the patterns that loaded them in the first
-  place.
+hz#xdg_base({type}, ...parts)                                   *hz#xdg_base()*
+hz.XdgBase(type: string, parts: list<string> = []): string      *hz.XdgBase()*
 
-hz#config#name({pattern})                                   *hz#config#name()*
-  Normalizes the pattern provided to a config pattern.
+  Returns a base XDG path for {type}, which must be one of `data`, `config`,
+  or `cache`. Additional {parts} will be appended to the {type} path.
 
-    * hz#config#name('init') -> 'config/init.vim'
-    * hz#config#name('config/init') -> 'config/init.vim'
-    * hz#config#name('plug/*') -> 'config/plug/*.vim'
-    * hz#config#name('/etc/init.vim') -> '/etc/init.vim'
+      Type      Value             Fallback~
+      data      $XDG_DATA_HOME    $HOME/.local/share
+      config    $XDG_CONFIG_HOME  $HOME/.config
+      cache     $XDG_CACHE_HOME   $HOME/.cache
 
-hz#config#exists([from], {pattern})                       *hz#config#exists()*
-  Returns v:true if {pattern} can be found in [from], which is 'runtimepath'
-  by default.
+  An unrecognized {type} will result in an exception being thrown.
 
-  [from] is 'runtimepath' if omitted.
+  This will produce results on Windows, but they will not be meaningful to
+  how Windows directories are structured.
 
-hz#config#runtime({pattern...})                          *hz#config#runtime()*
-  Source the file or files expressed by {pattern...} from 'runtimepath'. This
-  is similar to the the |:source| command.
+>
+      call hz#xdg_base('data')        " => $HOME/.local/share
+      call hz#xdg_base('data', 'vim') " => $HOME/.local/share/vim
+<
 
-  Multiple patterns may be provided either as multiple arguments or one or
-  more lists of patterns.
+hz#xdg_path({type}, ...parts)                                   *hz#xdg_path()*
+hz.XdgPath(type: string, parts: list<string> = []): string       *hz.XdgPath()*
 
-hz#config#source({pattern...})                            *hz#config#source()*
-  Source the file or files expressed by {pattern...} as config names (see
-  |hz#config#name()| from 'runtimepath'.
+  Returns the XDG base path for {type} with `vim` and additional {parts}
+  appended to the {type} path.
 
-  Multiple patterns may be provided either as multiple arguments or one or
-  more lists of patterns.
+      Type      Value                 Fallback~
+      data      $XDG_DATA_HOME/vim    $HOME/.local/share
+      config    $XDG_CONFIG_HOME/vim  $HOME/.config
+      cache     $XDG_CACHE_HOME/vim   $HOME/.cache
+ 
+  This will produce results on Windows, but they will not be meaningful to how
+  Windows directories are structured.
 
-  If one or more files has been loaded, one or more keys will be set to
-  `v:true`. The following two examples mean the same thing:
+>
+      call hz#xdg_path('data')        " => $HOME/.local/share/vim
+      call hz#xdg_path('data', 'vim') " => $HOME/.local/share/vim/vim
+<
 
-      hz#config#source('editing', 'viewing')
+hz#url_encode({url})                                          *hz#url_encode()*
+hz.UrlEncode(url: string): string                              *hz#UrlEncode()*
 
-      hz#config#source(['editing', 'viewing'])
+  Encodes non-urlsafe values in {url} with percent hex-encoding (e.g.,
+  ' ' becomes '%20'. Only the path and query parameters are encoded.
 
-hz#config#platform()                                    *hz#config#platform()*
-  Sources config files that match the platform has returned from
-  |hz#platform()|.
+  Improves on a version ripped from haskellmode.vim by Andrew Radev (which
+  encoded the entire URL).
 
-hz#config#ui()                                                *hz#config#ui()*
-  If the GUI is running (`has('gui_running')`), sources a `gui` config file.
-  If not, it sources a `terminal` config file.
+hz#url_decode({url})                                          *hz#url_decode()*
+hz#UrlDecode(url: string): string                              *hz#UrlDecode()*
 
-hz#filetype#reset()                                      *hz#filetype#reset()*
-  Reset some commonly changed defaults by filetype/syntax plug-ins to better
-  match my preferences. If a function hz#filetype#&filetype exists, call it
-  (allowing further overrides to be provided as functions in this file).
+  Decodes an encoded {url} back to plain-text.
+
+  Based on a version ripped from unimpaired.vim by Andrew Radev.
+
+==============================================================================
+FUNCTIONAL FUNCTIONS                                     *hz.vim-fn-functions*
 
 hz#fn#add({list}, {item})                                        *hz#fn#add()*
   Add {item} to a copy of {list}. See |add()|.
@@ -336,142 +395,16 @@ hz#fn#all({expr}, {Fn})                                          *hz#fn#all()*
   If {Fn} is a string that is not the name of a function, this function will
   be slower than if it is a function name or a function reference.
 
-hz#is#mac()                                                      *hz#is#mac()*
-  Returns v:true if the platform is a Mac
-
-hz#is#macgui()                                                *hz#is#macgui()*
-  Returns v:true if the platform is a Mac running the MacVim GUI
-
-hz#is#windows()                                              *hz#is#windows()*
-  Returns v:true if the platform is Windows
-
-hz#is#cygwin()                                                *hz#is#cygwin()*
-  Returns v:true if the platform is Cygwin
-
-hz#is#sudo()                                                    *hz#is#sudo()*
-  Returns v:true if the platform is running under `sudo`.
-
-hz#is#tmux()                                                    *hz#is#tmux()*
-  Returns v:true if vim is running under tmux
-
-hz#is#plugged({plug...})                                     *hz#is#plugged()*
-  Returns v:true if any {plug...} has been added to the vim-plug
-  configuration.
-
-  This is used to provide conditional configuration options, such as disabling
-  `netrw` if `NERDTree` is installed).
-
-      Plug 'scrooloose/nerdtree'
-
-      ...
-
-      if hz#is#plugged('nerdtree')       let g:loaded_netrwPlugin = 1
-  ...     endif
-
-hz#range#uniq()                                              *hz#range#uniq()*
-  Loop over the range of text and remove duplicate lines without changing the
-  sort order. Originally by Damian Conway, presented in Scripting the Vim
-  Editor, Part 4 at IBM developerWorks.
-
-  https://www.ibm.com/developerworks/library/l-vim-script-4/index.html
-
-  Add mappings:
-
-      nmap ;u :%call hz#range#uniq()<CR>
-
-      vmap u :call hz#range#uniq()<CR>
-
-hz#toggle#option({option}, [onoff])                       *hz#toggle#option()*
-  Toggle an {option} with `setlocal`. Accepts [onoff] to choose a specific
-  state.
-
-hz#toggle#variable({variable}, [onoff])                 *hz#toggle#variable()*
-  Toggle an option flag {variable}. Accepts [onoff] to choose a specific
-  state.
-
-hz#toggle#gjk_mapping([onoff])                       *hz#toggle#gjk_mapping()*
-  Toggle the mapping of [jk] <--> g[jk]. Accepts [onoff] to chose a specific
-  state (0 or v:false is off).
-
-hz#ui#tabline()                                              *hz#ui#tabline()*
-  Create a cleaner tabline.
-
-      let &tabline = '%!hz#ui#tabline()'
-
-hz#ui#foldtext()                                            *hz#ui#foldtext()*
-  A cleaner foldtext function.
-
-      set foldtext='hz#ui#foldtext()'
-
-hz#ui#smart_foldtext([foldtext])                      *hz#ui#smart_foldtext()*
-  Sets the local 'foldtext' function to either a provided [foldtext] function.
-
-  Without a [foldtext] function provided, a local 'foldtext' value of
-  `getline(v:foldstart)` will be replaced with of |b:hz#ui#default_foldtext|,
-  |g:hz#ui#default_foldtext|, or |foldtext()|.
-
-hz#ui#set_guifont([dict])                                *hz#ui#set_guifont()*
-
-hz#ui#set_guifont([list])
-
-hz#ui#set_guifont([font...])
-
-  Set 'guifont' either from the default |g:hzvim_guifont| or from the provided
-  dictionary (`{ 'font' : points }`) or list (each item is either `['font',
-  points]`, `['font']`, or `'font'`). If the point size is not provided, it is
-  set to |g:hzvim_guifont_size|.
-
-hz#ui#status#buffer()                                  *hz#ui#status#buffer()*
-  Returns the buffer number as `[n/N]`. Suitable for use in setting a status
-  line.
-
-hz#ui#status#preview()                                *hz#ui#status#preview()*
-  Returns `[preview]` if the window is marked as a preview window.
-
-hz#ui#status#filemodifiers()                    *hz#ui#status#filemodifiers()*
-  Returns status line file modifiers.
-
-hz#ui#status#scm()                                        *hz#ui#status#scm()*
-  Returns the SCM status (currently only supports fugitive).
-
-hz#ui#status#conflicted()                          *hz#ui#status#conflicted()*
-  Returns the conflicted status.
-
-hz#ui#status#search()                                  *hz#ui#status#search()*
-  Returns search count information (currently only supports anzu).
-
-hz#ui#status#capslock()                              *hz#ui#status#capslock()*
-  Returns CapsLockStatusline.
-
-hz#ui#status#asyncrun()                              *hz#ui#status#asyncrun()*
-  Returns the current asynchronous run status.
-
-hz#ui#status#syntax()                                  *hz#ui#status#syntax()*
-  Returns a status line value for either syntastic or ale.
-
-hz#url#encode({url})                                         *hz#url#encode()*
-  Encodes non-urlsafe values in {url} with percent hex-encoding (e.g., ' '
-  becomes '%20'. Only the path and query parameters are encoded.
-
-  Improves on a version ripped from haskellmode.vim by Andrew Radev (which
-  encoded the entire URL).
-
-hz#url#decode({url})                                         *hz#url#decode()*
-  Decodes an encoded {url} back to plain-text.
-
-  Based on a version ripped from unimpaired.vim by Andrew Radev.
 
 ==============================================================================
 COMPATIBILITY                                           *hz.vim-compatibility*
 
-
-All of the functions in Hz.vim are known to work with MacVim 8.1. Most of them
-will work on older Vim versions, other platforms, or NeoVim, but compatibility
-is not guaranteed.
+All of the functions in Hz.vim are known to work with MacVim 9.1. They will
+not work with any version of Neovim or Vim 8 or less due to the use of
+|vim9script|.
 
 ==============================================================================
 LICENCE                                                       *hz.vim-licence*
-
 
 Hz.vim is public domain where possible, or licensed under CC0 1.0 where not.
 There are no warranties, implied or expressed, about this Hz.vim or its
@@ -479,6 +412,5 @@ suitability or fitness for any particular purpose.
 
 See https://creativecommons.org/publicdomain/zero/1.0/legalcode for more
 information.
-
 
 vim:tw=78:ts=8:ft=help:norl:

@@ -35,11 +35,11 @@ function! hz#trim_leading(value, pattern = '\_s') abort
 endfunction
  
 function! hz#trim_trailing(value, pattern = '\_s') abort
-  return s:hz.TrimTrailing(a:value, a:pattern/)
+  return s:hz.TrimTrailing(a:value, a:pattern)
 endfunction
 
 function! hz#trim(value, pattern = '\_s') abort
-  return s:hz.Trim(a:value, a:pattern/)
+  return s:hz.Trim(a:value, a:pattern)
 endfunction
 
 function! hz#execute_in_place(cmd) abort
@@ -60,6 +60,10 @@ endfunction
 
 function! hz#get_motion(motion) abort
   return s:hz.GetMotion(a:motion)
+endfunction
+
+function! hz#range_uniq(ignore_ws = false) range abort
+  call s:hz.RangeUniq(a:firstline, a:lastline, a:a:ignore_ws)
 endfunction
 
 function! hz#switch_window(bufname) abort
@@ -88,4 +92,12 @@ endfunction
 
 function! hz#_synstack() abort
   call s:hz.GetSynstack()
+endfunction
+
+function! hz#url_encode(url) abort
+  return s:hz.UrlEncode(a:url)
+endfunction
+
+function! hz#url_decode(url) abort
+  return s:hz.UrlDecode(a:url)
 endfunction
