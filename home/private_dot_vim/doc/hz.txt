@@ -230,10 +230,12 @@ hz.RangeUniq(line1: number, line2: number, ignore_ws: bool = false)
 
                                                  *hz#xdg_base()* *hz.XdgBase()*
 hz#xdg_base({type}, {parts...})
-hz.XdgBase(type: string, parts: list<string> = []): string
+hz.XdgBase(type: string, ...parts: list<any>): string
 
   Returns a base XDG path for {type}, which must be one of `data`, `config`,
-  or `cache`. Additional {parts} will be appended to the {type} path.
+  or `cache`. Additional {parts} will be appended to the {type} path. The
+  {parts} parameter may be a |list| of |string| or a single-element list
+  containing a list of string.
 
       Type      Value             Fallback~
       data      $XDG_DATA_HOME    $HOME/.local/share
@@ -249,9 +251,17 @@ hz.XdgBase(type: string, parts: list<string> = []): string
       call hz#xdg_base('data', 'vim') " => $HOME/.local/share/vim
 <
 
-                                                 *hz#xdg_path()* *hz.XdgPath()*
-hz#xdg_path({type}, {parts...})
-hz.XdgPath(type: string, parts: list<string> = []): string
+                                            *hz#mk_xdg_base()* *hz.MkXdgBase()*
+hz#mk_xdg_base({type}, {parts...})
+hz.MkXdgBase(type: string, ...parts: list<any>): string
+
+  Derives a path with |hz.XdgBase()| with {type} and {parts}, and calls
+  |mkdir()| with the `'p'` option with the derived path, returning it after
+  completion.
+
+                                          *hz#xdg_vim_path()* *hz.XdgVimPath()*
+hz#xdg_vim_path({type}, {parts...})
+hz.XdgVimPath(type: string, parts: list<string> = []): string
 
   Returns the XDG base path for {type} with `vim` and additional {parts}
   appended to the {type} path.
@@ -264,9 +274,17 @@ hz.XdgPath(type: string, parts: list<string> = []): string
   This will produce results on Windows, but they will not be meaningful to how
   Windows directories are structured. >
 
-      call hz#xdg_path('data')        " => $HOME/.local/share/vim
-      call hz#xdg_path('data', 'vim') " => $HOME/.local/share/vim/vim
+      call hz#xdg_vim_path('data')        " => $HOME/.local/share/vim
+      call hz#xdg_vim_path('data', 'vim') " => $HOME/.local/share/vim/vim
 <
+
+                                     *hz#mk_xdg_vim_path()* *hz.MkXdgVimPath()*
+hz#mk_xdg_vim_path({type}, {parts...})
+hz.MkXdgVimPath(type: string, ...parts: list<any>): string
+
+  Derives a path with |hz.XdgVimPath()| with {type} and {parts}, and calls
+  |mkdir()| with the `'p'` option with the derived path, returning it after
+  completion.
 
                                              *hz#url_encode()* *hz#UrlEncode()*
 hz#url_encode({url})
@@ -471,39 +489,19 @@ immutable.Reject(expr1: any, expr2: any): any
   {expr2} is false.
 
                                    *hz#immutable#reduce()* *immutable.Reduce()*
-hz#immutable#reduce({expr}, [initial], {fn})
-immutable.Reduce(expr: any, initial: any, fn: any = null): any
+hz#immutable#reduce({expr}, {fn}, [initial])
+immutable.Reduce(expr: any, fn: func(any, any): any, initial: any = null): any
 
-  Loops over the items in a copy of {expr} and executes {fn} on each item,
-  accumulating the result. If [initial] is not provided, the first item in
-  {expr} is used as the initial value, or an empty dictionary (`{}`) if {expr}
-  is a |dictionary|. When {expr} is empty, the [initial] value will be
-  returned.
+  A lightweight wrapper around |reduce()| that works with |Dictionary| values
+  as well as |String|, |List|, or |Blob|. If {expr} is a dictionary, an
+  omitted [initial] value will default to `{}` and the `value` will be an
+  |items()| entry pair.
 
-  {fn} must be a function reference or lambda that accepts two or three
-  arguments and returns the accumulator value. For non-|dictionary| {expr}
-  values, the two-argument version accepts the value and the accumulator: >
-
-        (value: any, acc: any): any => acc * value
-<
-
-  If {expr} is a dictionary, the two-argument version is a two-element |List|
-  where the elements are the key and value as produced from |items()| and the
-  accumulator: >
-
-        (pair: list<any>, acc: any): any => acc[pair[1]] = pair[0]
-<
-
-  The three-argument version always provides the key/index and value with the
-  accumulator: >
-
-        (key: string, value: any, acc: any): any => acc[value] = key
-        (idx: number, value: any, acc: any): any => acc[value] = idx
-<
+  Copies of {expr} and [initial] will be made as required.
 
                                          *hz#immutable#any()* *immutable.Any()*
 hz#immutable#any({expr}, {fn})
-immutable.any(expr: any, fn: any): bool
+immutable.Any(expr: any, fn: func(any): bool): bool
 
   Loops over the items in a copy of {expr} and executes {fn}, returning true
   if {fn} is true for any value in {expr}. The value of {fn} is the same as
@@ -536,7 +534,7 @@ immutable.any(expr: any, fn: any): bool
 
                                        *hz#immutable#none()* *immutable.None()*
 hz#immutable#none({expr}, {fn})
-immutable.None(expr: any, fn: any): bool
+immutable.None(expr: any, fn: func(any): bool): bool
 
   A complementary of |immutable.Any()| which only returns true if none of the
   items in {expr} pass the test in {fn}. If {expr} is |empty()|, the return
@@ -544,7 +542,7 @@ immutable.None(expr: any, fn: any): bool
 
                                          *hz#immutable#all()* *immutable.all()*
 hz#immutable#all({expr}, {Fn})
-immutable.All(expr: any, fn: any): bool
+immutable.All(expr: any, fn: func(any): bool): bool
 
   A complement to |immutable.Any()| which only returns true if all of the
   items in {expr} pass the test in {fn}. If {expr} is |empty()|, the return

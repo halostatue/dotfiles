@@ -1,10 +1,12 @@
 vim9script
 
-const TARGET = hz#is('windows') ?
-  expand('~/vimfiles/thesaurus/mthesaur.txt') :
-  expand('~/.vim/thesaurus/mthesaur.txt')
-
 const URL = 'https://raw.githubusercontent.com/zeke/moby/master/words.txt'
+
+const TARGET = exists('g:thesaurus_path')
+  ? g:thesaurus_path .. '/mthesaur.txt'
+  : hz#is('windows')
+  ? expand('~/vimfiles/thesaurus/mthesaur.txt')
+  : expand('~/.vim/thesaurus/mthesaur.txt')
 
 def DownloadThesaurus(bang: string)
   if bang ==# '!' || empty(glob(TARGET))

@@ -74,8 +74,16 @@ function! hz#xdg_base(type, ...) abort
   return s:hz.XdgBase(a:type, a:000)
 endfunction
 
-function! hz#xdg_path(type, ...) abort
-  return s:hz.XdgPath(a:type, a:000)
+function! hz#xdg_vim_path(type, ...) abort
+  return s:hz.XdgVimPath(a:type, a:000)
+endfunction
+
+function! hz#mk_xdg_base(type, ...) abort
+  return s:hz.MkXdgBase(a:type, a:000)
+endfunction
+
+function! hz#mk_xdg_vim_path(type, ...) abort
+  return s:hz.MkXdgVimPath(a:type, a:000)
 endfunction
 
 function! hz#_vimscript_user_commands() abort

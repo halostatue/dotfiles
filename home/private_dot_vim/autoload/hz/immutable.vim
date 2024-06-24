@@ -74,8 +74,8 @@ function! hz#immutable#reject(expr1, expr2) abort
   return s:immutable.Reject(a:expr1, a:expr2)
 endfunction
 
-function! hz#immutable#reduce(expr, initial, reducer = v:null) abort
-  return s:immutable.Reduce(a:expr, a:initial, a:reducer)
+function! hz#immutable#reduce(expr, reducer, initial = v:null) abort
+  return s:immutable.Reduce(a:expr, a:reducer, a:initial)
 endfunction
 
 function! hz#immutable#any(expr, fn) abort

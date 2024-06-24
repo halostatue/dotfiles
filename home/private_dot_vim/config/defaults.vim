@@ -60,17 +60,10 @@ set timeout timeoutlen=600
 # Crash recovery write every second, and CursorHold event timeout.
 set updatetime=1000
 
-&directory = hz#xdg_path('cache', 'swap//')
-hz#mkpath(&directory, true)
-
-&undodir = hz#xdg_path('cache', 'undo//')
-hz#mkpath(&undodir, true)
-
-&backupdir = hz#xdg_path('cache', 'backup//')
-hz#mkpath(&backupdir, true)
-
-&viewdir = hz#xdg_path('cache', 'view/')
-hz#mkpath(&viewdir, true)
+&directory = hz#mk_xdg_vim_path('cache', 'swap//')
+&undodir = hz#mk_xdg_vim_path('cache', 'undo//')
+&backupdir = hz#mk_xdg_vim_path('cache', 'backup//')
+&viewdir = hz#mk_xdg_vim_path('cache', 'view/')
 
 set nobackup nowritebackup undofile nofsync
 set sessionoptions+=unix,slash sessionoptions-=options

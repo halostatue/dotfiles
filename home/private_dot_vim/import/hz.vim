@@ -1,5 +1,7 @@
 vim9script
 
+import 'hz/immutable.vim'
+
 def Bool(value: any): bool
   return !!value
 enddef
@@ -180,7 +182,7 @@ export def RangeUniq(line1: number, line2: number, ignore_ws: bool = false)
   append(line1 - 1, uniq)
 enddef
 
-export def XdgBase(type: string, parts: list<string> = []): string
+export def XdgBase(type: string, ...parts: list<any>): string
   var base: list<string>
 
   if type ==# 'data'
@@ -193,13 +195,27 @@ export def XdgBase(type: string, parts: list<string> = []): string
     throw 'Unknown XDG path type "' .. type .. '".'
   endif
 
-  base->extend(parts)
+  if parts->len() > 0
+    base->extend(parts->flattennew())
+  endif
 
   return base->join('/')
 enddef
 
-export def XdgPath(type: string, parts: list<string> = []): string
-  return XdgBase(type, ['vim']->extend(parts))
+export def XdgVimPath(type: string, ...parts: list<any>): string
+  return XdgBase(type, flattennew(['vim', parts]))
+enddef
+
+export def MkXdgPath(type: string, ...parts: list<string>): string
+  var path = XdgBase(type, parts)
+  mkdir(path, 'p')
+  return path
+enddef
+
+export def MkXdgVimPath(type: string, ...parts: list<any>): string
+  var path = XdgVimPath(type, parts)
+  mkdir(path, 'p')
+  return path
 enddef
 
 export def AddVimscriptUserCommandsSyntax()

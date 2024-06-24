@@ -67,9 +67,7 @@ if exists(':TagbarToggle') == 2 && mapcheck('<F8>', 'n') ==# ''
 endif
 
 g:ragtag_global_maps = 1
-
-# g:thesaurus_path =
-hz#mkpath(hz#xdg_base('data', 'thesaurus'), true)
+g:thesaurus_path = hz#mk_xdg_vim_path('data', 'thesaurus')
 
 # https://github.com/reedes/vim-pencil
 # https://github.com/reedes/vim-lexical
@@ -193,8 +191,7 @@ endfor
 g:rooter_patterns = ['.git']
 g:rooter_silent_chdir = true
 
-g:autosource_hashdir = hz#xdg_path('data', 'site', 'autosource_hashes')
-mkdir(g:autosource_hashdir, 'p')
+g:autosource_hashdir = hz#mk_xdg_vim_path('data', 'site', 'autosource_hashes')
 
 # if ! exists('g:organ_loaded')
 #   # ---- DONT FORGET TO INITIALIZE DICTS BEFORE USING THEM

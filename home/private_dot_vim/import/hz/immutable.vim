@@ -34,7 +34,7 @@ export def Remove(object: any, idx: any, end: any = null): any
   endif
 enddef
 
-export def Reverse(object): any
+export def Reverse(object: any): any
   return object->deepcopy()->reverse()
 enddef
 
@@ -112,51 +112,18 @@ export def Reject(expr1: any, Expr2: any): any
   )
 enddef
 
-export def Reduce(expr: any, initial: any, fn: any = null): any
-  var object = expr->deepcopy()
-  var Fn: Funcref
-  var acc: any
-
-  if fn == null
-    Fn = Ref(initial)
-    acc = object->type() == v:t_dict ? {} : object->remove(0)
+export def Reduce(expr: any, Fn: func(any, any): any, initial: any = null): any
+  if expr->type() == v:t_dict()
+    var default: dict<any> = {}
+    return reduce(Items(expr), Fn, initial == null ? default : initial->deepcopy())
+  elseif initial == null
+    return reduce(expr->deepcopy(), Fn)
   else
-    Fn = Ref(fn)
-    acc = initial->deepcopy()
+    return reduce(expr->deepcopy(), Fn, initial->deepcopy())
   endif
-
-  if Fn->type() != v:t_func
-    throw 'Reduce requires a function name or reference.'
-  endif
-
-  if expr->empty()
-    return initial
-  endif
-
-  var arity = Fn->get('args')->length()
-
-  if arity == 2
-    if object->type() == v:t_dict
-      for [k, v] in object->items()
-        acc = Fn([k, v], acc)
-      endfor
-    else
-      for v in object
-        acc = Fn(v, acc)
-      endfor
-    endif
-  elseif arity == 3
-    for [k, v] in object->items()
-      acc = Fn(k, v, acc)
-    endfor
-  else
-    throw 'Invalid argument count for ' .. Fn
-  endif
-
-  return acc
 enddef
 
-export def Any(expr: any, fn: any): bool
+export def Any(expr: any, Fn: func(any): bool): bool
   if expr->empty()
     return false
   endif

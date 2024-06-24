@@ -1,7 +1,6 @@
 vim9script
 
-const vim_site = hz#xdg_path('data', 'site')
-mkdir(vim_site, 'p')
+const vim_site = hz#mk_xdg_vim_path('data', 'site')
 
 if &packpath !~# vim_site
     &packpath = vim_site .. ',' .. &packpath
