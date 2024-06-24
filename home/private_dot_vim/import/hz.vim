@@ -48,6 +48,10 @@ export def IsValidFunction(value: any): bool
   )
 enddef
 
+export def Wrap(value: any): list<any>
+  return value->type() == v:t_list ? value : [value]
+enddef
+
 export def Mkpath(path: string, force: bool = false)
   if !isdirectory(path)
     if force || input(printf('"%s" does not exist; create? [y/N]', path)) =~? '^y'
@@ -65,27 +69,13 @@ export def Isotime(time: any = null): string
     printf('%s%s', strftime('%Y-%m-%dT%H:%M:%S', time), zone)
 enddef
 
-export def Try(args: list<any>): any
-  var params = copy(args)
-  var dict: dict<any> = {}
-  var default: any = null
-
-  if params->get(0)->type() == v:t_dict
-    dict = params->remove(0)
-  endif
-
-  if params->get(0)->type() == v:t_list
-    default = params->remove(0)->get(0)
-  endif
-
-  if params->empty()
-    return default
-  endif
-
-  var Func = params->remove(0)
+export def Try(Func: any, options: dict<any> = {}): any
+  var dict: dict<any> = get(options, 'dict', null_dict)
+  var args: list<any> = get(options, 'args', [])
+  var default: any = get(options, 'default', null)
 
   if Func->type() == v:t_func || (Func->type() == v:t_string && exists('*' .. Func))
-    return Func->call(params, dict)
+    return dict == null_dict ? Func->call(args) : Func->call(args, dict)
   endif
 
   return default

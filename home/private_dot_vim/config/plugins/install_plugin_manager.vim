@@ -1,8 +1,7 @@
 vim9script
 
-const xdg_data_path = exists('$XDG_DATA_PATH') ?
-    $XDG_DATA_PATH : expand('~/.local/share')
-const vim_site = xdg_data_path .. '/vim/site'
+const vim_site = hz#xdg_path('data', 'site')
+mkdir(vim_site, 'p')
 
 if &packpath !~# vim_site
     &packpath = vim_site .. ',' .. &packpath

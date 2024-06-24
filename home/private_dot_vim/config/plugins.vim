@@ -35,8 +35,11 @@ packix.Setup((px: packix.Manager) => {
   # TRY THIS: https://github.com/wincent/ferret
   # px.Add('wincent/ferret')
 
-  # Sudo support: https://github.com/lambdalisue/suda.vim
-  # px.Add('lambdalisue/suda.vim')
+  if hz#is('unix') && !hz#is('mac')
+    # Sudo support
+    # https://github.com/lambdalisue/suda.vim
+    px.Add('lambdalisue/suda.vim')
+  endif
 
   # Edit files with line and column
   # https://github.com/wsdjeg/vim-fetch
@@ -160,6 +163,9 @@ packix.Setup((px: packix.Manager) => {
   # Highlight current Fern node for active file
   # https://github.com/andykog/fern-highlight.vim
   px.Add('andykog/fern-highlight.vim')
+  # Add fern mappings for staging/unstaging
+  # https://github.com/lambdalisue/vim-fern-mapping-git
+  px.Add('lambdalisue/vim-fern-mapping-git')
 
   # File Picker:
   # USING THIS: https://github.com/srstevenson/vim-picker

@@ -1,6 +1,6 @@
 vim9script
 
-if !exists(':UndootreeToggle')
+if !exists(':UndotreeToggle')
   finish
 endif
 

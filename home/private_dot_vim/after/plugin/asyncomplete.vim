@@ -23,16 +23,17 @@ else
   inoremap <expr> <S-Tab> pumvisible() ? '<C-p>' : '<S-Tab>'
 endif
 
-if exists('*emoji#for')
-  type Opts = dict<any>
-  var _cache: Opts = {}
+if packix#is_plugin_installed('vim-emoji')
+  var _cache: list<dict<any>>
 
-  def CompleteEmoji(opt: Opts, ctx: Opts)
+  def CompleteEmoji(opt: dict<any>, ctx: dict<any>)
     if empty(_cache)
       _cache = emoji#data#dict()
         ->keys()
         ->sort()
-        ->map((_, val) => { word: ':' .. val .. ':', kind: emoji#for(val) })
+        ->map((_, val) => {
+          return { word: ':' .. val .. ':', kind: emoji#for(val) }
+        })
 
       asyncomplete#log('cached emojis')
     endif
@@ -45,7 +46,7 @@ if exists('*emoji#for')
     endif
   enddef
 
-  def RegisterEmoji
+  def RegisterEmoji()
     asyncomplete#register_source({
       name: 'emoji',
       allowlist: ['*'],

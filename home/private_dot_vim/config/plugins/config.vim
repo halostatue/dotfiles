@@ -175,6 +175,27 @@ g:neoformat_only_msg_on_error = 1
 
 nmap <C-W><S-C> <Plug>(choosewin)
 
+var disallowed_dispatch_strategies = ['tmux', 'screen']
+
+if hz#is('windows')
+  disallowed_dispatch_strategies->add('windows')
+elseif hz#is('mac')
+  disallowed_dispatch_strategies->add('iterm')
+elseif hz#is('unix')
+  disallowed_dispatch_strategies->add('x11')
+endif
+
+for strategy in disallowed_dispatch_strategies
+  g:['dispatch_no_' .. strategy .. 'make'] = true
+  g:['dispatch_no_' .. strategy .. 'start'] = true
+endfor
+
+g:rooter_patterns = ['.git']
+g:rooter_silent_chdir = true
+
+g:autosource_hashdir = hz#xdg_path('data', 'site', 'autosource_hashes')
+mkdir(g:autosource_hashdir, 'p')
+
 # if ! exists('g:organ_loaded')
 #   # ---- DONT FORGET TO INITIALIZE DICTS BEFORE USING THEM
 #   g:organ_config = {}

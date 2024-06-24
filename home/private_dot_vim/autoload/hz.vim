@@ -22,8 +22,8 @@ function! hz#isotime(time = v:null) abort
   return s:hz.Isotime(a:time)
 endfunction
 
-function! hz#try(...) abort
-  return s:hz.Try(a:000)
+function! hz#try(func, options = {}) abort
+  return s:hz.Try(a:func, a:options)
 endfunction
 
 function! hz#in(haystack, needle) abort
@@ -100,4 +100,8 @@ endfunction
 
 function! hz#url_decode(url) abort
   return s:hz.UrlDecode(a:url)
+endfunction
+
+function! hz#wrap(expr) abort
+  return s:hz.Wrap(a:expr)
 endfunction
