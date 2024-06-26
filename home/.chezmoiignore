@@ -1,53 +1,112 @@
-# .CFUserTextEncoding
-# .DS_Store
-# .Trash/
-# .ansible/
-# .anydesk/
-# .ash_history
-# .aws/*.pem
-# .aws/cli/
-# .awsls/
-# .azuredatastudio/
-# .azuredatastudio/
-# .bash_history
-# .bun/
-# .bundle/
-# .bytebase/
-# .cabal/packages/
-# .cache/
-# .clasprc.json
-# .config/broot/launcher/
-# .config/cheat/cheatsheets/
-# .config/chezmoi/
-# .config/coc/
-# .config/fish/completions/
-# .config/fish/conf.d/
-# .config/fish/fish_variables
-# .config/fisher/
-# .config/htop/
-# .config/iterm2
-# .config/litecli/history
-# .config/litecli/log
-# .config/oni2/extensions
-# .config/oni2/store
-# .config/oni2/workspace
-# .config/tabtab/
-# .dbg_history
-# .degit/
-# .docker/
-# .dotenv-linter-latest-version
-# .ebcache/
-# .envrc
-# .fly/
-# .gem/ruby/
-# .gem/specs/
-# .gitignore
-# .gnupg/*.gpg
-# .gnupg/*.kbx
-# .gnupg_pre_2.1/
-# .gradle/
-# .graphite_user_config
-# .hex/
+.CFUserTextEncoding
+**/.DS_Store
+.Trash/**
+
+.android/**
+.ansible/**
+.anydesk/**
+.aws/**/*.pem
+.aws/cli/history/*.db
+
+.bash_history
+.bun/**
+.bundle/**
+
+.cabal/**
+!.cabal/config
+.cache/**
+.cargo/**
+!.cargo/env
+
+{{ if eq .chezmoi.os "darwin" }}
+.colima/**
+!.colima/default/colima.yaml
+!.colima/ssh_config
+{{ end }}
+
+# Google Apps Script "clasp"
+.clasprc.json
+
+.config/Amazon/**
+.config/cheat/cheatsheets/**
+.config/chezmoi/**
+.config/fish/completions/*
+!.config/fish/completions/aws_completer.fish
+!.config/fish/completions/lf.fish
+.config/fish/conf.d/**
+!.config/fish/conf.d/__abbr.fish
+!.config/fish/conf.d/__aliases.fish
+!.config/fish/conf.d/__custom_functions.fish
+.config/fish/fish_variables
+.config/fish/functions/**
+!.config/fish/functions/compare_deploy_tags.fish
+!.config/fish/functions/gobin-sources.fish
+!.config/fish/functions/lfcd.fish
+!.config/fish/functions/set-docker-host.fish
+.config/gh/hosts.yml
+.config/gita/**
+.config/hcp/**
+.config/htop/**
+.config/iterm2
+.config/iterm2/**
+.config/jgit/**
+.config/karabiner/**
+!.config/karabiner/karabiner.json
+.config/kitty/**
+!.config/kitty/config/*
+!.config/kitty/kitty.conf
+.config/litecli/**
+!config/litecli/config
+.config/lnav/**
+.config/nvim.old/.git
+.config/1Password
+.config/1Password/**
+.config/op/**
+.config/packer/**
+.config/tabtab/**
+.config/yarn/**
+.config/zed/**
+!.config/zed/keymap.json
+!.config/zed/settings.json
+
+.cpan/**
+.cpanm/**
+.cups/**
+
+.deno/**
+.dlv/**
+!.dlv/config.yml
+.docker/**
+.dotenv-linter-latest-version
+
+.fly/**
+
+.gem/specs/**
+# git-extras ignore cache file
+.gi_list
+.gitlater
+.gnupg/**
+!.gnupg/gpg.conf
+
+# Go REPL
+.gore/**
+
+.hex/**
+
+.julia/**
+.kindle/**
+
+{{ if lookPath "pipx" }}
+{{   $pipx := output "pipx" "list" "--json" | fromJson }}
+{{   $entries := $pipx | jq ".venvs | to_entries | map(.value.metadata) | flatten" | first }}
+{{   $apps := $entries | jq "map(.main_package.apps) | flatten" | first }}
+{{   $extra := $entries | jq "map(.injected_packages | to_entries | map(.value.apps)) | flatten" | first }}
+{{   $apps = concat $apps $extra }}
+{{   $apps = $apps | jq "map(\".local/bin/\" + .)" | first }}
+{{   range $app := $apps }}
+{{     . }}{{ end }}
+{{ end }}
+
 # .irb_history
 # .kerl/
 # .kindle/
@@ -107,6 +166,7 @@
 # Documents/
 # Downloads/
 # Dropbox/
+# Justfile
 # LICENCE.md
 # Movies/
 # Music/
@@ -117,7 +177,6 @@
 # Setup/
 # example-nvim.init.lua
 # fishfile.maybe
-# Justfile
 # justfile
 
 .config/configstore
@@ -129,6 +188,7 @@ Library
 .config/lazygit
 {{ end }}
 
+# ChimeHQ MacOS Editor: https://github.com/ChimeHQ/Chime
 {{ if not (stat "/Applications/Chime.app/Contents/MacOS/chimecli") }}
 .local/bin/chime
 {{ end }}

@@ -1,0 +1,39 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run the `open default settings` command
+// from the command palette or from `Zed` application menu.
+{
+  "theme": "Atelier Cave Dark",
+  "features": {
+    "copilot": false
+  },
+  "ui_font_size": 14,
+  "buffer_font_size": 14,
+  "buffer_line_height": "standard",
+  "vim_mode": true,
+  "show_copilot_suggestions": false,
+  "relative_line_numbers": true,
+  "tabs": {
+    "git_status": true,
+    "close_position": "left"
+  },
+  "tab_size": 2,
+  "telemetry": {
+    "metrics": false
+  },
+  "journal": {
+    "hour_format": "hour24"
+  },
+  "terminal": {
+    "line_height": "standard"
+  },
+  "language_overrides": {
+    "Markdown": {
+      "remove_trailing_whitespace_on_save": false
+    }
+  }
+}
