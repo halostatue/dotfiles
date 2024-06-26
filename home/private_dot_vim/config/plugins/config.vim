@@ -251,3 +251,9 @@ g:autosource_hashdir = hz#mk_xdg_vim_path('data', 'site', 'autosource_hashes')
 #   imap <c-cr> <plug>(organ-meta-return)
 #   nnoremap <backspace> :Organ<space>
 # endif
+
+g:ansible_unindent_after_newline = true
+g:cpp_attributes_highlight = true
+g:cpp_function_highlight = true
+g:cpp_member_highlight = true
+g:cpp_simple_highlight = true

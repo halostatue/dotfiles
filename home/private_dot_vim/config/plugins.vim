@@ -208,30 +208,27 @@ packix.Setup((px: packix.Manager) => {
   # CSV
   # https://github.com/chrisbra/csv.vim
   px.Add('chrisbra/csv.vim')
-  # Cue language
-  # https://github.com/hofstadter-io/cue.vim
-  px.Add('hofstadter-io/cue.vim')
   # Dart
   # https://github.com/dart-lang/dart-vim-plugin
-  px.Add('dart-lang/dart-vim-plugin')
+  # px.Add('dart-lang/dart-vim-plugin')
   # Dhall
   # https://github.com/vmchale/dhall-vim
-  px.Add('vmchale/dhall-vim')
+  # px.Add('vmchale/dhall-vim')
   # D
   # https://github.com/JesseKPhillips/d.vim
-  px.Add('JesseKPhillips/d.vim')
+  # px.Add('JesseKPhillips/d.vim')
   # Elixir
   # https://github.com/elixir-editors/vim-elixir
   px.Add('elixir-editors/vim-elixir')
   # Elvish shell
   # https://github.com/dmix/elvish.vim
-  px.Add('dmix/elvish.vim')
+  # px.Add('dmix/elvish.vim')
   # Erlang
   # https://github.com/vim-erlang/vim-erlang-runtime
   px.Add('vim-erlang/vim-erlang-runtime')
   # Fennel (Lua Lisp)
   # https://github.com/bakpakin/fennel.vim
-  px.Add('bakpakin/fennel.vim')
+  # px.Add('bakpakin/fennel.vim')
   # Fish shell
   # https://github.com/blankname/vim-fish
   px.Add('blankname/vim-fish')
@@ -252,7 +249,7 @@ packix.Setup((px: packix.Manager) => {
   px.Add('jparise/vim-graphql')
   # Haxe
   # https://github.com/jdonaldson/vaxe
-  px.Add('jdonaldson/vaxe')
+  # px.Add('jdonaldson/vaxe')
   # Hjson
   # https://github.com/hjson/vim-hjson
   px.Add('hjson/vim-hjson')
@@ -261,7 +258,7 @@ packix.Setup((px: packix.Manager) => {
   px.Add('othree/html5.vim')
   # Idris2
   # https://github.com/edwinb/idris2-vim
-  px.Add('edwinb/idris2-vim')
+  # px.Add('edwinb/idris2-vim')
   # icalendar
   # https://github.com/chutzpah/icalendar.vim
   px.Add('chutzpah/icalendar.vim')
@@ -279,10 +276,10 @@ packix.Setup((px: packix.Manager) => {
   px.Add('elzr/vim-json')
   # Jsonnet
   # https://github.com/google/vim-jsonnet
-  px.Add('google/vim-jsonnet')
+  # px.Add('google/vim-jsonnet')
   # JSX, which can never be pretty
   # https://github.com/MaxMEllon/vim-jsx-pretty
-  px.Add('MaxMEllon/vim-jsx-pretty')
+  # px.Add('MaxMEllon/vim-jsx-pretty')
   # Julia
   # https://github.com/JuliaEditorSupport/julia-vim
   px.Add('JuliaEditorSupport/julia-vim')
@@ -297,13 +294,13 @@ packix.Setup((px: packix.Manager) => {
   px.Add('amadeus/vim-mjml')
   # Nim
   # https://github.com/zah/nim.vim
-  px.Add('zah/nim.vim')
+  # px.Add('zah/nim.vim')
   # Nix
   # https://github.com/LnL7/vim-nix
-  px.Add('LnL7/vim-nix')
+  # px.Add('LnL7/vim-nix')
   # OCaml
   # https://github.com/ocaml/vim-ocaml
-  px.Add('ocaml/vim-ocaml')
+  # px.Add('ocaml/vim-ocaml')
   # Perl5
   # https://github.com/vim-perl/vim-perl
   px.Add('vim-perl/vim-perl')
@@ -330,7 +327,7 @@ packix.Setup((px: packix.Manager) => {
   px.Add('leafOfTree/vim-svelte-plugin')
   # Swift
   # https://github.com/keith/swift.vim
-  px.Add('keith/swift.vim')
+  # px.Add('keith/swift.vim')
   # Terraform
   # https://github.com/hashivim/vim-terraform
   px.Add('hashivim/vim-terraform')
@@ -343,7 +340,7 @@ packix.Setup((px: packix.Manager) => {
 
   # Generalized Org Mode
   # https://github.com/chimay/organ
-  px.Add('chimay/organ')
+  # px.Add('chimay/organ')
 
   # Colour highlighter
   # https://github.com/ap/vim-css-color
@@ -366,7 +363,8 @@ packix.Setup((px: packix.Manager) => {
   px.Add('tpope/vim-bundler', { type: 'opt' })
   # Automatically insert continuation bacskslashes for vim files
   # https://github.com/lambdalisue/vim-backslash
-  px.Add('lambdalisue/vim-backslash')
+  # NOTE: This does not work well with vim9script
+  # px.Add('lambdalisue/vim-backslash')
 
   # Colorschemes
   # https://github.com/tyrannicaltoucan/vim-quantum
@@ -394,24 +392,7 @@ packix.Setup((px: packix.Manager) => {
   # https://github.com/mattn/vim-lexiv
   px.Add('mattn/vim-lexiv')
 
-  # Split and join code blocks
-  # https://github.com/AndrewRadev/splitjoin.vim
-  px.Add('AndrewRadev/splitjoin.vim')
-
   # LSP Options
-  # https://github.com/dense-analysis/ale
-  # px.Add('dense-analysis/ale')
-  # https://github.com/rhysd/vim-lsp-ale
-  # px.Add('rhysd/vim-lsp-ale')
-
-  # https://github.com/neoclide/coc.nvim
-  # px.Add('neoclide/coc.nvim', { branch: 'release' })
-
-  # https://github.com/vn-ki/coc-clap
-  # px.Add('vn-ki/coc-clap')
-
-  # https://github.com/autozimu/LanguageClient-neovim
-  # px.Add('autozimu/LanguageClient-neovim')
 
   # https://github.com/natebosch/vim-lsc
   # px.Add('natebosch/vim-lsc')
@@ -431,11 +412,10 @@ packix.Setup((px: packix.Manager) => {
 
   # https://github.com/yegappan/lsp
   # px.Add('yegappan/lsp')
-  # https://github.com/normen/vim-lsp-settings-adapter
-  # px.Add('normen/vim-lsp-settings-adapter')
-
   # https://github.com/mattn/vim-lsp-settings
   # px.Add('mattn/vim-lsp-settings')
+  # https://github.com/normen/vim-lsp-settings-adapter
+  # px.Add('normen/vim-lsp-settings-adapter')
 
   # LSP and tag view display
   # https://github.com/liuchengxu/vista.vim
@@ -477,12 +457,6 @@ packix.Setup((px: packix.Manager) => {
   # https://github.com/rhysd/conflict-marker.vim
   px.Add('rhysd/conflict-marker.vim')
 
-  # Asynchronous execution to quickfix
-  # https://github.com/hauleth/asyncdo.vim
-  px.Add('hauleth/asyncdo.vim')
-  # Tame quickfix
-  # https://github.com/romainl/vim-qf
-  px.Add('romainl/vim-qf')
   # Make enhancements (configured like projectionist)
   # https://github.com/igemnace/vim-makery
   px.Add('igemnace/vim-makery')
@@ -509,9 +483,6 @@ packix.Setup((px: packix.Manager) => {
   # Terminal reuse
   # https://github.com/kassio/neoterm
   px.Add('kassio/neoterm')
-  # Floating terminal
-  # https://github.com/voldikss/vim-floaterm
-  px.Add('voldikss/vim-floaterm')
 
   # https://github.com/liuchengxu/eleline.vim
   px.Add('liuchengxu/eleline.vim')
@@ -521,6 +492,7 @@ packix.Setup((px: packix.Manager) => {
   # https://github.com/tpope/vim-flagship
   
   # Most Recently (used, written, repositories)
+  # Used with asyncomplete-anylist
   # https://lambdalisue/vim-mr
   px.Add('lambdalisue/vim-mr')
 

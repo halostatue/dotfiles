@@ -12,6 +12,12 @@ g:startify_change_to_dir = false
 g:startify_change_to_vcs_root = true
 g:startify_bookmarks = [ { p: '~/.vim/config/plugins.vim' }]
 g:startify_commands = []
+g:startify_custom_header = 'startify#pad(startify#fortune#boxed())'
+g:startify_custom_footer = [
+  '',
+  "   Vim is charityware. Please read ':help uganda'.",
+  ''
+]
 
 if exists(':StartupTime') == 2
   g:startify_commands->add(['Time startup', 'StartupTime'])
@@ -33,3 +39,5 @@ if exists(':PackixInstall') == 2
     ]
   )
 endif
+
+autocmd User Startified setlocal cursorline

@@ -128,89 +128,37 @@ export def Any(expr: any, Fn: func(any): bool): bool
     return false
   endif
 
-  var Fn = Ref(fn)
-
-  if Fn->type() == v:t_func
-    var arity = Fn->get('args')->length()
-
-    if arity == 1
-      if expr->type() == v:t_dict
-        for [k, v] in Items(expr)
-          if Fn([k, v])
-            return true
-          endif
-        endfor
-      else
-        for v in expr->deepcopy()
-          if Fn(v)
-            return true
-          endif
-        endfor
+  if expr->type() == v:t_dict
+    for [k, v] in Items(expr)
+      if Fn([k, v])
+        return true
       endif
-    elseif arity == 2
-      for [k, v] in Items(expr)
-        if Fn(k, v)
-          return true
-        endif
-      endfor
-    else
-      throw 'Invalid argument count for ' .. Fn
-    endif
-
-    return false
+    endfor
+  else
+    for v in expr->deepcopy()
+      if Fn(v)
+        return true
+      endif
+    endfor
   endif
 
-  return !Filter(expr, Fn)->empty()
+  return false
 enddef
 
-export def None(expr: any, fn: any): bool
+export def None(expr: any, Fn: func(any): bool): bool
   if expr->empty()
     return true
   endif
 
-  return !Any(expr, fn)
+  return !Any(expr, Fn)
 enddef
 
-export def All(expr: any, fn: any): bool
+export def All(expr: any, Fn: func(any): bool): bool
   if expr->empty()
     return true
   endif
 
-  var Fn = Ref(fn)
-
-  if Fn->type() == v:t_func
-    var arity = Fn->get('args')->length()
-
-    if arity == 1
-      if expr->type() == v:t_dict
-        for [k, v] in Items(expr)
-          if !Fn([k, v])
-            return false
-          endif
-        endfor
-      else
-        for v in expr->deepcopy()
-          if !Fn(v)
-            return false
-          endif
-        endfor
-      endif
-    elseif arity == 2
-      for [k, v] in Items(expr)
-        if !Fn(k, v)
-          return false
-        endif
-      endfor
-    else
-      throw 'Invalid argument count for ' .. Fn
-    endif
-
-    return true
-  elseif Fn->type() == v:t_string
-    return None(expr, printf('!(%s)', Fn))
-  endif
-
-  throw 'Invalid type ' .. typename(Fn) .. ' for ' .. Fn
+  return Any(expr, (v: any): bool => !Fn(v))
 enddef
 
 def Ref(fn: any): any
