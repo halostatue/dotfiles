@@ -8,14 +8,8 @@ vim9script
 # &guifont = "IBMPlexMono:h10"
 &guifont = "RecMonoCasual-Regular:h16"
 
-if has('gui_win32')
-  noremap <A-Space> :simalt ~<CR>
-  inoremap <A-Space> <C-O>:simalt ~<CR>
-  cnoremap <A-Space> <C-C><A-Space>
-endif
-
-# Keep the system clipboard and the vim pasteboard separate. If this behaviour
-# is not desired, set g:unify_clipboards to true.
+# Keep the system clipboard and the vim pasteboard separate. If this behaviour is not
+# desired, set g:unify_clipboards to true.
 if get(g:, 'unify_clipboards', false)
   if has('unnamedplus')
     set clipboard^=unnamedplus
@@ -27,14 +21,6 @@ else
 endif
 
 if has('gui_macvim')
-  set guioptions-=T
-  set guioptions-=r
-  set guioptions-=R
-  set guioptions-=l
-  set guioptions-=L
-  set guioptions-=b
-  set guioptions-=h
-
   set antialias fuoptions=maxvert,maxhorz macligatures
 
   nmap <D-/> gcc

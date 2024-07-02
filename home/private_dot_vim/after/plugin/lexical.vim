@@ -4,7 +4,7 @@ const URL = 'https://raw.githubusercontent.com/zeke/moby/master/words.txt'
 
 const TARGET = exists('g:thesaurus_path')
   ? g:thesaurus_path .. '/mthesaur.txt'
-  : hz#is('windows')
+  : hz#Is('windows')
   ? expand('~/vimfiles/thesaurus/mthesaur.txt')
   : expand('~/.vim/thesaurus/mthesaur.txt')
 

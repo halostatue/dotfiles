@@ -189,8 +189,7 @@
 
 {{ if $skiplistFile -}}
 [receive.fsck]
-    skipList = {{ $skiplistFile | quote }}
-
+  skipList = {{ $skiplistFile | quote }}
 {{- end }}
 [stash]
   showPatch = true
@@ -285,4 +284,4 @@
 [include]
   path = ~/.config/git/signatures
 
-{{/* vim: set filetype=gitconfig: */}}
+{{/*- vim: set filetype=gitconfig: */}}

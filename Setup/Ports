@@ -149,6 +149,7 @@ ripgrep
 rlwrap
 ruby-build
 ruby-install
+ruby33 +yjit
 rust-script
 scc
 sd
@@ -171,12 +172,12 @@ tig +doc
 tnef
 toast
 tokei
+topfew
 trurl
 vhs
 viddy
 wxWidgets-3.2 +compat30
 xh
-xplr
 xsv
 yq
 zellij

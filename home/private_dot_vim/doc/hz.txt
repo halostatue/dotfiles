@@ -2,40 +2,38 @@
 
 Author: Austin Ziegler <halostatue@gmail.com>
 
-==============================================================================
+===============================================================================
 CONTENTS
 
-  1. Introduction............................................|hz-introduction|
-  2. Functions..................................................|hz-functions|
-  3. Immutable Functions..............................|hz-immutable-functions|
-  4. Compatibility..........................................|hz-compatibility|
-  5. Licence......................................................|hz-licence|
+  1. Introduction...............................................|hz-introduction|
+  2. Functions.....................................................|hz-functions|
+  3. Immutable Functions.................................|hz-immutable-functions|
+  4. Compatibility.............................................|hz-compatibility|
+  5. Licence.........................................................|hz-licence|
 
-==============================================================================
+===============================================================================
 INTRODUCTION                                                  *hz-introduction*
 
 Hz is a collection of functions and commands that power my vim configuration.
 The latest version has been rewritten to use |vim9script| so they are only
 compatible with Vim 9 or later.
 
-==============================================================================
-FUNCTIONS                                                   *hz-functions*
+===============================================================================
+FUNCTIONS                                                        *hz-functions*
 
-The Vim 9 script examples assume normal import into a |vim9script|. >
-
-      import "hz.vim"
+The Vim 9 script examples assume normal import into a |vim9script|.
+>
+      import autoload "hz.vim"
 <
 
-                                                *hz#platform()* *hz.Platform()*
-hz#platform()
-hz.Platform(): string
+                                                                *hz#Platform()*
+hz#Platform(): string
 
   Returns a |String| representing the underlying platform, resulting in
   a value of `windows`, `cygwin`, `mac`, or `unix`.
 
-                                                            *hz#is()* *hz.Is()*
-hz#is({type})
-hz.Is({type}: string): bool
+                                                                      *hz#Is()*
+hz#Is({type}: string): bool
 
   Returns `true` if the tested {type} value is defined as true. Supported
   values for {type} are:
@@ -51,33 +49,29 @@ hz.Is({type}: string): bool
 
   Unrecognized values will always return `false`.
 
-                                   *hz#valid_function()* *hz.IsValidFunction()*
-hz#valid_function({value})
+                                                         *hz#IsValidFunction()*
 hz.IsValidFunction({value}: any): bool
 
-  Report whether the {value} is a valid function (|t:v_func|) or function
-  name (|t:v_string|). The function name may be a bare name (`fn`) or have
+  Report whether the {value} is a valid function (|t:v_func|) or function name
+  (|t:v_string|). The function name may be a bare name (`fn`) or have
   parentheses at the end (`fn()`). When {value} is a |String| this is
   *similar* to `exists('*funcname')`.
 
-                                                    *hz#mkpath()* *hz.Mkpath()*
-hz#mkpath({path}, [force] = false)
-hz.MKpath({path}: string, force: bool = false)
+                                                                  *hz#Mkpath()*
+hz.Mkpath({path}: string, [force]: bool = false)
 
-  Make {path}, prompting unless [force] is provided as `true`. {path} will be
-  converted from |'encoding'| to |'termencoding'| with |iconv()|. Functionally
-  equivalent to |mkdir()| with the `'p'` option.
+  Make {path}, prompting unless {force} is provided as `true`. {path} will be
+  converted from |'encoding'| to |'termencoding'| with |iconv()|, but is
+  otherwise functionally equivalent to |mkdir()| with the `'p'` option.
 
-                                                  *hz#isotime()* *hz.Isotime()*
-hz#isotime([time])
-hz.Isotime(time: number = null): string
+                                                                 *hz#Isotime()*
+hz.Isotime({time}: number = null): string
 
-  Portably produce a proper ISO 8601/RFC3339 timestamp. If [time] is not
+  Portably produce a proper ISO 8601/RFC3339 timestamp. If {time} is not
   provided, the current |localtime()| will be used.
 
-                                                          *hz#try()* *hz.Try()*
-hz#try({Func}, {options} = {})
-hz.Try(func: any, options: dict<any> = {}): any
+                                                                     *hz#Try()*
+hz.Try({Func}: any, [options]: dict<any> = {}): any
 
   Tries to call the given function {Func} with the provided {options}. {Func}
   may be a |string| function name or a |Funcref|.
@@ -91,38 +85,32 @@ hz.Try(func: any, options: dict<any> = {}): any
       default   |v:null|      The value to return if the function call fails.
 
   Try to call the given {Func} with an optional dictionary, default, and
-  arguments. >
-
-      hz#try('fugitive#statusline')
-      hz#try(function('fugitive#statusline'))
-      hz.Try('fugitive#statusline')
-      hz.Try(function('fugitive#statusline'))
+  arguments.
+>
+      hz#Try('fugitive#statusline')
+      hz#Try(function('fugitive#statusline'))
 <
 
   If {Func} is a dictionary function (and not a partial function reference),
-  the `self` must be provided with the `dict` option >
-
-      hz#try('dict.Func', { 'dict': {} })
-      hz.Try('dict.Func', { dict: {} })
+  the `self` must be provided with the `dict` option
+>
+      hz#Try('dict.Func', { 'dict': {} })
 <
 
-  A `default` value may be provided in the {options}. >
-
-      hz#try('F', { 'default': 'default' })
-      hz.Try('F', { default: 'default' })
+  A `default` value may be provided in the {options}.
+>
+      hz#Try('F', { 'default': 'default' })
 <
 
-  Arguments are passed in `args` key of {options}. >
-
-      hz#try('F', { 'args': [1, 2, 3] })
-      hz.Try('F', { args: [1, 2, 3] })
+  Arguments are passed in `args` key of {options}.
+>
+      hz#Try('F', { 'args': [1, 2, 3] })
 <
 
   This function was originally by Tim Pope as part of Flagship.
 
-                                                            *hz#in()* *hz.In()*
-hz#in({haystack}, {needle})
-hz.In(haystack: any, needle: any): bool
+                                                                      *hz#In()*
+hz#In({haystack}: any, {needle}: any): bool
 
   Answers if {needle} can be found in the provided {haystack} which may be
   a |string|, |list|, or |dictionary|.
@@ -137,61 +125,54 @@ hz.In(haystack: any, needle: any): bool
 
   If {haystack} is any other type, the return value is `false`.
 
-                                         *hz#trim_leading()* *hz.TrimLeading()*
-hz#trim_leading({string}, [pattern])
-hz.TrimLeading(string: string, pattern: string = '\_s'): string
+                                                             *hz#TrimLeading()*
+hz#TrimLeading({string}: string, [pattern]: string = '\_s'): string
 
-  Trims leading [pattern] from {string}. [pattern] defaults to '\_s', the
+  Trims leading {pattern} from {string}. {pattern} defaults to '\_s', the
   regex for whitespace and newlines.
 
-                                       *hz#trim_trailing()* *hz.TrimTrailing()*
-hz#trim_trailing({string}, [pattern])
-hz.TrimTrailing(string: string, pattern: string = '\_s'): string
-  Trims trailing [pattern] from {string}. [pattern] defaults to '\_s', the
+                                                            *hz#TrimTrailing()*
+hz#TrimTrailing({string}: string, [pattern]: string = '\_s'): string
+
+  Trims trailing {pattern} from {string}. {pattern} defaults to '\_s', the
   regex for whitespace and newlines.
 
-                                                        *hz#trim()* *hz.Trim()*
-hz#trim({string}, [pattern])
-hz.Trim(string: string, pattern: string = '\_s'): string
+                                                                    *hz#Trim()*
+hz#Trim({string}: string, [pattern]: string = '\_s'): string
 
-  Trims both leading and trailing [pattern] from {string}. [pattern] defaults
+  Trims both leading and trailing {pattern} from {string}. {pattern} defaults
   to '\_s', the regex for whitespace and newlines.
 
-                                  *hz#execute_in_place()* *hz.ExecuteInPlace()*
-hz#execute_in_place({command})
-hz.ExecuteInPlace(cmd: string)
+                                                          *hz#ExecuteInPlace()*
+hz#ExecuteInPlace({command}: string)
 
   Executes {command} while saving and restoring the window state.
 
-                 *hz#execute_with_saved_search()* *hz.ExecuteWithSavedSearch()*
-hz#execute_with_saved_search({command})
-hz.ExecuteWithSavedSearch(cmd: string)
+                                                  *hz#ExecuteWithSavedSearch()*
+hz#ExecuteWithSavedSearch({command}: string)
 
   Executes {command} with |hz.ExecuteInPlace| while saving and restoring the
   most recent saved search history.
 
-                                 *hz#clean_whitespace()* *hz.CleanWhitespace()*
-hz#clean_whitespace({line1}, {line2})
-hz#CleanWhitespace(line1: any, line2: any)
+                                                         *hz#CleanWhitespace()*
+hz#CleanWhitespace({line1}: any, {line2}: any)
 
   Clean trailing whitespace from the range provided. Search and window state
   are restored by using |hz.ExecuteWithSavedSearch()|.
 
-                                           *hz#get_setting()* *hz.GetSetting()*
-hz#get_setting({name}, [default])
-hz.GetSetting(name: string, default: any = null): any
+                                                              *hz#GetSetting()*
+hz#GetSetting({name}: string, [default]: any = null): any
 
   Gets the value of a variable setting {name}, checking for a buffer override
   then a global value. That is, {name} will be checked from |b:|, then |g:|.
-  A [default] value may be provided. >
-
+  A {default} value may be provided.
+>
   hz#get_setting('foo', false)
   get(b:, 'foo', get(g:, 'foo', false))
 <
 
-                                             *hz#get_motion()* *hz.GetMotion()*
-hz#get_motion({motion})
-hz.GetMotion(motion: string): string
+                                                               *hz#GetMotion()*
+hz#GetMotion({motion}: string): string
 
   Execute the normal mode {motion} and return the text that it marks. For this
   to work, the {motion} must include a visual mode key (`V`, `v`, or `gv`).
@@ -199,38 +180,36 @@ hz.GetMotion(motion: string): string
   Both the 'z' register and the original cursor position will be restored
   after the text is yanked.
 
-                                       *hz#switch_window()* *hz.SwitchWindow()*
-hz#switch_window({bufname})
-hz.SwitchWindow(bufname: string)
+                                                            *hz#SwitchWindow()*
+hz#SwitchWindow({bufname}: string)
 
   Programmatically jump to the window identified by {bufname}.
 
-                                             *hz#range_uniq()* *hz#RangeUniq()*
-hz#range_uniq([ignore_ws]) range
-hz.RangeUniq(line1: number, line2: number, ignore_ws: bool = false)
+                                            *hz#RangeUniq()* *hz#RangeUnique()*
+hz#RangeUniq([ignorews]: bool = false) range
+hz#RangeUnique({line1}: any, {line2}: any, [ignorews]: bool = false)
 
   Reduces a range of lines in a buffer and removes duplicate lines without
-  changing the sort order of the lines. With [ignore_ws] specified, whitespace
+  changing the sort order of the lines. With {ignorews} specified, whitespace
   differences will be ignored.
 
   Ported from code by Damian Conway, originally presented in Scripting the Vim
   Editor, Part 4 at IBM developerWorks and on GitHub at:
   https://github.com/thoughtstream/Damian-Conway-s-Vim-Setup/blob/master/.vimrc#L1139-L1168
 
-  Add mappings: >
-
-      xnoremap q :call hz#range_uniq()<CR>
-      xnoremap Q :call hz#range_uniq(v:true)<CR>
+  Add mappings:
+>
+      xnoremap q <ScriptCmd>hz#RangeUniq()<CR>
+      xnoremap Q <ScriptCmd>hz#RangeUniq(v:true)<CR>
 <
 
-  The |autoload| version of this function is a range function (|func-range|)
-  and implicitly receives the first and last line numbers. It is suitable for
-  use with mappings, where the |vim9script| version is suitable for |command|
-  ranges.
+  `hz#RangeUnique` explicitly accepts the first and last lines suitable for
+  use with |command| ranges. `hz#RangeUniq` is a range function (|func-range|)
+  that implicitly receives the first and last line numbers, suitable for use
+  with mappings.
 
-                                                 *hz#xdg_base()* *hz.XdgBase()*
-hz#xdg_base({type}, {parts...})
-hz.XdgBase(type: string, ...parts: list<any>): string
+                                                                 *hz#XdgBase()*
+hz#XdgBase({type}: string, {...parts}: list<any>): string
 
   Returns a base XDG path for {type}, which must be one of `data`, `config`,
   or `cache`. Additional {parts} will be appended to the {type} path. The
@@ -244,24 +223,22 @@ hz.XdgBase(type: string, ...parts: list<any>): string
 
   An unrecognized {type} will result in an exception being thrown.
 
-  This will produce results on Windows, but they will not be meaningful to
-  how Windows directories are structured. >
-
-      call hz#xdg_base('data')        " => $HOME/.local/share
-      call hz#xdg_base('data', 'vim') " => $HOME/.local/share/vim
+  This will produce results on Windows, but they will not be meaningful to how
+  Windows directories are structured.
+>
+      call hz#XdgBase('data')        " => $HOME/.local/share
+      call hz#XdgBase('data', 'vim') " => $HOME/.local/share/vim
 <
 
-                                            *hz#mk_xdg_base()* *hz.MkXdgBase()*
-hz#mk_xdg_base({type}, {parts...})
-hz.MkXdgBase(type: string, ...parts: list<any>): string
+                                                               *hz#MkXdgBase()*
+hz#MkXdgBase({type}: string, {...parts}: list<any>): string
 
   Derives a path with |hz.XdgBase()| with {type} and {parts}, and calls
   |mkdir()| with the `'p'` option with the derived path, returning it after
   completion.
 
-                                          *hz#xdg_vim_path()* *hz.XdgVimPath()*
-hz#xdg_vim_path({type}, {parts...})
-hz.XdgVimPath(type: string, parts: list<string> = []): string
+                                                              *hz#XdgVimPath()*
+hz#XdgVimPath({type}: string, {...parts}: list<string> = []): string
 
   Returns the XDG base path for {type} with `vim` and additional {parts}
   appended to the {type} path.
@@ -270,43 +247,38 @@ hz.XdgVimPath(type: string, parts: list<string> = []): string
       data      $XDG_DATA_HOME/vim    $HOME/.local/share
       config    $XDG_CONFIG_HOME/vim  $HOME/.config
       cache     $XDG_CACHE_HOME/vim   $HOME/.cache
- 
+
   This will produce results on Windows, but they will not be meaningful to how
   Windows directories are structured. >
 
-      call hz#xdg_vim_path('data')        " => $HOME/.local/share/vim
-      call hz#xdg_vim_path('data', 'vim') " => $HOME/.local/share/vim/vim
+      call hz#XdgVimPath('data')        " => $HOME/.local/share/vim
+      call hz#XdgVimPath('data', 'vim') " => $HOME/.local/share/vim/vim
 <
 
-                                     *hz#mk_xdg_vim_path()* *hz.MkXdgVimPath()*
-hz#mk_xdg_vim_path({type}, {parts...})
-hz.MkXdgVimPath(type: string, ...parts: list<any>): string
+                                                            *hz#MkXdgVimPath()*
+hz#MkXdgVimPath({type}: string, {...parts}: list<any>): string
 
   Derives a path with |hz.XdgVimPath()| with {type} and {parts}, and calls
   |mkdir()| with the `'p'` option with the derived path, returning it after
   completion.
 
-                                             *hz#url_encode()* *hz#UrlEncode()*
-hz#url_encode({url})
-hz.UrlEncode(url: string): string
+                                                               *hz#UrlEncode()*
+hz#UrlEncode({url}: string): string
 
   Encodes non-urlsafe values in {url} with percent hex-encoding (e.g.,
-  ' ' becomes '%20'. Only the path and query parameters are encoded.
+  ` ` becomes `%20`. Only the path and query parameters are encoded.
 
   Improves on a version ripped from haskellmode.vim by Andrew Radev (which
   encoded the entire URL).
 
-                                             *hz#url_decode()* *hz#UrlDecode()*
-hz#url_decode({url})
-hz#UrlDecode(url: string): string
+                                                               *hz#UrlDecode()*
+hz#UrlDecode({url}: string): string
 
-  Decodes an encoded {url} back to plain-text.
+  Decodes an encoded {url} back to plain-text. Based on a version ripped from
+  unimpaired.vim by Andrew Radev.
 
-  Based on a version ripped from unimpaired.vim by Andrew Radev.
-
-                                                        *hz#wrap()* *hz#Wrap()*
-hz#wrap({value})
-hz#Wrap(value: any): list<any>
+                                                                    *hz#Wrap()*
+hz#Wrap({value}: any): list<any>
 
   If {value} is a |List|, it is returned unmodified. If not, it is returned
   wrapped in a |List|. >
@@ -315,7 +287,7 @@ hz#Wrap(value: any): list<any>
         call hz#wrap([10]) " => [10]
 <
 
-==============================================================================
+===============================================================================
 IMMUTABLE FUNCTIONS                                    *hz-immutable-functions*
 
 All of these functions operate on |copy()| or |deepcopy()| versions of their
@@ -326,15 +298,14 @@ The Vim 9 script examples assume normal import into a |vim9script|. >
       import "hz/immutable.vim"
 <
 
-hz#immutable#add({object}, {expr})                         *hz#immutable#add()*
-immutable.Add(object: any, expr: any): any                    *immutable.Add()*
+                                                           *hz#immutable#Add()*
+hz#immutable#Add({object}: any, {expr}: any): any
 
   Append item {expr} to a copy of |List| or |Blob| {object} and return the
   resulting List or Blob. See |add()|.
 
-                                   *hz#immutable#extend()* *immutable.Extend()*
-hz#immutable#extend({expr1}, {expr2}, {expr3} = v:null)
-immutable.Extend(expr1: any, expr2: any, expr3: any = null)
+                                                        *hz#immutable#Extend()*
+hz#immutable#Extend({expr1}: any, {expr2}: any, {expr3}: any = null)
 
   {expr1} and {expr2} must be both |Lists| or both |Dictionaries|. See
   |extend()|.
@@ -345,39 +316,35 @@ immutable.Extend(expr1: any, expr2: any, expr3: any = null)
   {expr3} is zero insert before the first item. When {expr3} is equal to
   len({expr1}) then {expr2} is appended.
 
-  If they are |Dictionaries|: Add copies of all entries from {expr2} to
-  a copy of {expr1}. If a key exists in both {expr1} and {expr2} then {expr3}
-  is used to decide what to do:
+  If they are |Dictionaries|: Add copies of all entries from {expr2} to a copy
+  of {expr1}. If a key exists in both {expr1} and {expr2} then {expr3} is used
+  to decide what to do:
 
         {expr3} value       Meaning~
         "keep"              keep the value from {expr1}
         "force"             use the value from {expr2} (default)
         "error"             give error message |E737|
 
-                                   *hz#immutable#filter()* *immutable.Filter()*
-hz#immutable#filter({expr1}, {expr2})
-immutable.Filter(expr1: any, expr2: any): any
+                                                        *hz#immutable#Filter()*
+hz#immutable#Filter({expr1}: any, {expr2}: any): any
 
   Remove items from a copy of {expr1} using {expr2}. See |filter()|.
 
-                                         *hz#immutable#get()* *immutable.Get()*
-hz#immutable#get({expr}, {index}, [default] = v:null)
-immutable.Get({expr}, {index}, default = null): any
+                                                           *hz#immutable#Get()*
+hz#immutable#Get({expr}, {index}, [default] = null): any
 
-  Get a copy of the item at {index} from {expr}, returning [default] if it is
+  Get a copy of the item at {index} from {expr}, returning {default} if it is
   not available. See |get()|.
 
-                                   *hz#immutable#insert()* *immutable.Insert()*
-hz#immutable#insert({object}, {item}, [idx] = 0)
-immutable.Insert(object: any, item: any, idx: number = 0)
+                                                        *hz#immutable#Insert()*
+hz#immutable#Insert({object}: any, {item}: any, [idx]: number = 0)
 
-  Insert {item} into a copy of {list}, at [idx]. See |insert()|.
+  Insert {item} into a copy of {list}, at {idx}. See |insert()|.
 
-                                   *hz#immutable#remove()* *immutable.Remove()*
-hz#immutable#remove({object}, {idx}, [end])
-immutable.Remove(object: any, index: any, endval: any = null): list<any>
+                                                        *hz#immutable#Remove()*
+hz#immutable#Remove({object}: any, {index}: any, [endval]: any = null): list<any>
 
-  Removes an item at {idx} from a copy of {object}, or from {idx} to [end].
+  Removes an item at {idx} from a copy of {object}, or from {idx} to {endval}.
   This returns a two-item tuple list, the item and the modified list. This
   function is similar to |remove()|, but differs in the return value. >
 
@@ -386,46 +353,40 @@ immutable.Remove(object: any, index: any, endval: any = null): list<any>
 <
 
   To remove an item from object without getting its value, use
-  |immutable.RemoveItem()|.
+  |hz#immutable#RemoveItem()|.
 
 
-                                 *hz#immutable#reverse()* *immutable.Reverse()*
-hz#immutable#reverse({object})
-immutable.Reverse(object: any): any
+                                                       *hz#immutable#Reverse()*
+hz#immutable#Reverse({object}: any): any
 
   Return a reversed copy of {object}. See |reverse()|.
 
-                                       *hz#immutable#sort()* *immutable.Sort()*
-hz#immutable#sort({list}, [how] = v:null, [dict] = v:null)
-immutable.Sort(list: list<any>, how: any = null, dict: dict<any> = null_dict): list<any>
+                                                         *hz#immutable#Sort()*
+hz#immutable#Sort({list}: list<any>, [how]: any = null, [dict]: dict<any> = null_dict): list<any>
 
-  Return a sorted copy of {list} using [how] and optionally [dict] if [how] is
+  Return a sorted copy of {list} using {how} and optionally {dict} if {how} is
   a dictionary function. See |sort()|.
 
-                                       *hz#immutable#uniq()* *immutable.Uniq()*
-hz#immutable#uniq({list}, [func], [dict])
-immutable.Uniq(list: list<any>, func: any = null, dict: dict<any> = null_dict): list<any>
+                                                          *hz#immutable#Uniq()*
+hz#immutable#Uniq({list}: list<any>, [func]: any = null, [dict]: dict<any> = null_dict): list<any>
 
   Return a copy of a {list} where repeated items in {list} have been removed.
   See |uniq()|.
 
-                                       *hz#immutable#keys()* *immutable.Keys()*
-hz#immutable#keys({dict})
-immutable.Keys(dict: dict<any>): list<string>
+                                                          *hz#immutable#Keys()*
+hz#immutable#Keys({dict}: dict<any>): list<string>
 
   Return a copy of the |List| of all keys of {dict}. The |List| is in
   arbitrary order. See |keys()|.
 
-                                   *hz#immutable#values()* *immutable.Values()*
-hz#immutable#values({dict})
-immutable.Values(dict: dict<any>): list<any>
+                                                        *hz#immutable#Values()*
+immutable.Values({dict}: dict<any>): list<any>
 
   Return a copy of the |List| of all values of {dict}. The |List| is in
   arbitrary order. See |values()|.
 
-                                     *hz#immutable#items()* *immutable.Items()*
-hz#immutable#items({dict})
-immutable.Items(dict: any): list<list<any>>
+                                                         *hz#immutable#Items()*
+hz#immutable#Items({dict}: any): list<list<any>>
 
   Returns a deep copy of the |List| of all key-value pairs of {dict}. Each
   |List| item is a list with two items: the key of a {dict} entry and the
@@ -438,11 +399,10 @@ immutable.Items(dict: any): list<list<any>>
       [[0, 'h'], [1, 'e'], [2, 'l'], [3, 'l'], [4, 'o']]
 <
 
-                                 *hz#immutable#replace()* *immutable.Replace()*
-hz#immutable#replace({object}, {idx}, {value})
-immutable.Replace(object: any, idx: any, value: any): any
+                                                       *hz#immutable#Replace()*
+hz#immutable#Replace({object}: any, {idx}: any, {value}: any): any
 
-  Replaces the item at {idx} in a copy of {object} with a copy of {vlaue}. >
+  Replaces the item at {idx} in a copy of {object} with a copy of {value}. >
 
       var list = [1, 2, 3]
       var newList = immutable.Replace(list, 2, 5)
@@ -450,58 +410,50 @@ immutable.Replace(object: any, idx: any, value: any): any
       echo newList      # [1, 5, 3]
 <
 
-                          *hz#immutable#remove_item()* *immutable.RemoveItem()*
-hz#immutable#remove_item({object}, {idx})
-immutable.RemoveItem(object: any, idx: any): any
+                                                    *hz#immutable#RemoveItem()*
+hz#immutable#RemoveItem({object}: any, {idx}: any): any
 
   Returns a copy of {object} where the item at {idx} has been removed.
 
-                                       *hz#immutable#wrap()* *immutable.Wrap()*
-hz#immutable#wrap({expr})
-immutable.Wrap(expr: any): any
+                                                          *hz#immutable#Wrap()*
+hz#immutable#Wrap({expr}: any): any
 
   If {expr} is a |List|, returns a copy of {expr}, otherwise it wraps a copy
   of {expr} in a list. See |hz#wrap()|.
 
-                                 *hz#immutable#flatten()* *immutable.Flatten()*
-hz#immutable#flatten({list}, [maxdepth])
-immutable.Flatten(list: list<any>, maxdepth: number = null)
+                                                       *hz#immutable#Flatten()*
+hz#immutable#Flatten({list}: list<any>, [maxdepth]: number = null)
 
   A wrapper around |flattennew()| operating on a |deepcopy()| of {list}.
 
-                                         *hz#immutable#map()* *immutable.Map()*
-hz#immutable#map({expr1}, {expr2})
-immutable.Map(expr1: any, expr2: any): any
+                                                           *hz#immutable#Map()*
+hz#immutable#Map({expr1}: any, {expr2}: any): any
 
   A wrapper around |mapnew()| operating on a |deepcopy()| of {expr1}.
 
-                                   *hz#immutable#filter()* *immutable.Filter()*
-hz#immutable#filter({expr1}, {expr2})
-immutable.Filter(expr1: any, expr2: any): any
+                                                        *hz#immutable#Filter()*
+hz#immutable#Filter({expr1}: any, {expr2}: any): any
 
   A wrapper around |filter()| operating on a |deepcopy()| of {expr1}.
 
-                                   *hz#immutable#reject()* *immutable.Reject()*
-hz#immutable#reject({expr1}, {expr2})
-immutable.Reject(expr1: any, expr2: any): any
+                                                        *hz#immutable#Reject()*
+hz#immutable#Reject({expr1}: any, {expr2}: any): any
 
   A wrapper around |filter()| operating on a |deepcopy()| of {expr1} where
   {expr2} is false.
 
-                                   *hz#immutable#reduce()* *immutable.Reduce()*
-hz#immutable#reduce({expr}, {fn}, [initial])
-immutable.Reduce(expr: any, fn: func(any, any): any, initial: any = null): any
+                                                        *hz#immutable#Reduce()*
+hz#immutable#Reduce({expr}: any, {fn}: func(any, any): any, [initial]: any = null): any
 
   A lightweight wrapper around |reduce()| that works with |Dictionary| values
   as well as |String|, |List|, or |Blob|. If {expr} is a dictionary, an
-  omitted [initial] value will default to `{}` and the `value` will be an
+  omitted {initial} value will default to `{}` and the `value` will be an
   |items()| entry pair.
 
-  Copies of {expr} and [initial] will be made as required.
+  Copies of {expr} and {initial} will be made as required.
 
-                                         *hz#immutable#any()* *immutable.Any()*
-hz#immutable#any({expr}, {fn})
-immutable.Any(expr: any, fn: func(any): bool): bool
+                                                           *hz#immutable#Any()*
+hz#immutable#Any({expr}: any, {fn}: func(any): bool): bool
 
   Loops over the items in a copy of {expr} and executes {fn}, returning true
   if {fn} is true for any value in {expr}. The value of {fn} is the same as
@@ -532,31 +484,29 @@ immutable.Any(expr: any, fn: func(any): bool): bool
         (idx: number, value: any): bool => idx > 5 && value->length() > 3
 <
 
-                                       *hz#immutable#none()* *immutable.None()*
-hz#immutable#none({expr}, {fn})
-immutable.None(expr: any, fn: func(any): bool): bool
+                                                          *hz#immutable#None()*
+hz#immutable#None({expr}: any, {fn}: func(any): bool): bool
 
   A complementary of |immutable.Any()| which only returns true if none of the
   items in {expr} pass the test in {fn}. If {expr} is |empty()|, the return
   value is `true`.
 
-                                         *hz#immutable#all()* *immutable.all()*
-hz#immutable#all({expr}, {Fn})
-immutable.All(expr: any, fn: func(any): bool): bool
+                                                           *hz#immutable#All()*
+hz#immutable#All({expr}: any, {fn}: func(any): bool): bool
 
   A complement to |immutable.Any()| which only returns true if all of the
   items in {expr} pass the test in {fn}. If {expr} is |empty()|, the return
   value is `true`.
 
 
-==============================================================================
+===============================================================================
 COMPATIBILITY                                                *hz-compatibility*
 
 All of the functions in Hz are known to work with MacVim 9.1. They will not
 work with any version of Neovim or Vim 8 or less due to the use of
 |vim9script|.
 
-==============================================================================
+===============================================================================
 LICENCE                                                            *hz-licence*
 
 Hz is public domain where possible, or licensed under CC0 1.0 where not. There

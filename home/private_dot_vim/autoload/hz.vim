@@ -1,115 +1,265 @@
-scriptencoding utf-8
+vim9script
 
-import 'hz.vim'
+def Bool(value: any): bool
+  return !!value
+enddef
 
-function! hz#platform() abort
-  return s:hz.Platform()
+final Info: dict<bool> = {
+  windows: Bool(has('win16') || has('win32') || has('win64')),
+  cygwin: Bool(has('win32unix')),
+}
+
+Info.mac = Bool(!Info.windows && !Info.cygwin && (
+  has('mac') || has('macunix') || has('gui_macvim') || (
+    !executable('xdg-open') && system('uname') =~? '^darwin'
+  )
+))
+Info.macgui = Bool(Info.mac && has('gui_running'))
+Info.sudo = Bool($SUDO_USER !=# '' && $USER !=# $SUDO_USER
+  && $HOME !=# expand('~' .. $USER) && $HOME ==# expand('~' .. $SUDO_USER))
+Info.tmux = Bool(exists('$TMUX'))
+
+export def Platform(): string
+  if Is('windows')
+    return 'windows'
+  elseif Is('cygwin')
+    return 'cygwin'
+  elseif Is('mac')
+    return 'mac'
+  else
+    return 'unix'
+  endif
+enddef
+
+export def Is(type: string): bool
+  return Info->has_key(type) && Bool(Info[type])
+enddef
+
+export def IsValidFunction(value: any): bool
+  return value != null && (
+    value->type() == v:t_func || (
+      value->type() == v:t_string && exists('*' .. value->substitute('()$', '', ''))
+    )
+  )
+enddef
+
+export def Mkpath(path: string, force: bool = false)
+  if !isdirectory(path)
+    if force || input(printf('"%s" does not exist; create? [y/N]', path)) =~? '^y'
+      mkdir(iconv(path, &encoding, &termencoding), 'p')
+    endif
+  endif
+enddef
+
+export def Isotime(time: any = null): string
+  var zone = strftime('%z', time == null ? localtime() : time)
+    ->substitute('\([-+]\)\(\d\{2}\)\(\d\{2}\)', '\1\2:\3', '')
+
+  return time == null ?
+    printf('%s%s', strftime('%Y-%m-%dT%H:%M:%S'), zone) :
+    printf('%s%s', strftime('%Y-%m-%dT%H:%M:%S', time), zone)
+enddef
+
+export def Try(Func: any, options: dict<any> = {}): any
+  var dict: dict<any> = get(options, 'dict', null_dict)
+  var args: list<any> = get(options, 'args', [])
+  var default: any = get(options, 'default', null)
+
+  if Func->type() == v:t_func || (Func->type() == v:t_string && exists('*' .. Func))
+    return dict == null_dict ? Func->call(args) : Func->call(args, dict)
+  endif
+
+  return default
+enddef
+
+export def In(haystack: any, needle: any): bool
+  if haystack->type() == v:t_string
+    return needle->type() == v:t_string && haystack->stridx(needle) != -1
+  endif
+
+  if haystack->type() == v:t_list
+    return haystack->index(needle) != -1
+  endif
+
+  if haystack->type() == v:t_dict
+    return haystack->values()->index(needle) != -1
+  endif
+
+  return false
+enddef
+
+export def TrimLeading(value: string, pattern: string = '\_s'): string
+  return value->substitute(printf('^%s\+', pattern), '', '')
+enddef
+
+export def TrimTrailing(value: string, pattern: string = '\_s'): string
+  return value->substitute(printf('%s\+$', pattern), '', '')
+enddef
+
+export def Trim(value: string, pattern: string = '\_s'): string
+  return TrimTrailing(TrimLeading(value, pattern), pattern)
+enddef
+
+export def ExecuteInPlace(cmd: string)
+  var saved_view = winsaveview()
+  execute cmd
+  call winrestview(saved_view)
+enddef
+
+export def ExecuteWithSavedSearch(cmd: string)
+  var ch = histnr('search')
+  ExecuteInPlace(cmd)
+
+  while ch != histnr('search')
+    histdel('search', -1)
+  endwhile
+
+  @/ = histget('search', -1)
+enddef
+
+export def CleanWhitespace(line1: any, line2: any)
+  var range = line1 == null ? '' :
+    line2 == null ? string(line1) :
+    string(line1) .. ',' .. string(line2)
+
+  ExecuteWithSavedSearch(printf('%ss/\s\+$//e', range))
+enddef
+
+export def GetSetting(name: string, default: any = null): any
+  return get(b:, name, get(g:, name, default))
+enddef
+
+export def GetMotion(motion: string): string
+  var cursor = getpos('.')
+  var reg = getreg('z')
+  var regtype = getregtype('z')
+
+  execute 'normal! ' .. motion .. '"zy'
+
+  var text = @z
+
+  setreg('z', reg, regtype)
+  setpos('.', cursor)
+
+  return text
+enddef
+
+function RangeUniq(ignore_ws = false) range
+  call RangeUnique(a:firstline, a:lastline, a:ignore_ws)
 endfunction
 
-function! hz#is(type) abort
-  return s:hz.Is(a:type)
-endfunction
+export def RangeUnique(line1: number, line2: number, ignore_ws: bool = false)
+  var NormalizeWS = (str: string) =>
+    str->substitute('^\s\+|\s\+$', '', 'g')->substitute('\s+', ' ', 'g')
 
-function! hz#valid_function(value) abort
-  call s:hz.IsValidFunction(a:value)
-endfunction
+  var seen: dict<bool> = {}
+  var uniq: list<any> = []
 
-function! hz#mkpath(path, force = v:false) abort
-  call s:hz.Mkpath(a:path, a:force)
-endfunction
+  for line in getline(line1, line2)
+    var nline = '>' .. (ignore_ws ? NormalizeWS(line) : line)
+    if !seen->has_key(nline)
+      uniq->add(line)
+      seen[nline] = true
+    endif
+  endfor
 
-function! hz#isotime(time = v:null) abort
-  return s:hz.Isotime(a:time)
-endfunction
+  execute printf(':%s,%sdelete', line1, line2)
+  append(line1 - 1, uniq)
+enddef
 
-function! hz#try(func, options = {}) abort
-  return s:hz.Try(a:func, a:options)
-endfunction
+export def SwitchWindow(bufname: string)
+  var nr = bufwinnr(bufname)
 
-function! hz#in(haystack, needle) abort
-  return s:hz.In(a:haystack, a:needle)
-endfunction
+  if nr >= 0
+    execute printf(':%dwincmd w', nr)
+  endif
+enddef
 
-function! hz#trim_leading(value, pattern = '\_s') abort
-  return s:hz.TrimLeading(a:value, a:pattern)
-endfunction
- 
-function! hz#trim_trailing(value, pattern = '\_s') abort
-  return s:hz.TrimTrailing(a:value, a:pattern)
-endfunction
+export def XdgBase(type: string, ...parts: list<any>): string
+  var base: list<string>
 
-function! hz#trim(value, pattern = '\_s') abort
-  return s:hz.Trim(a:value, a:pattern)
-endfunction
+  if type ==# 'data'
+    base = exists('$XDG_DATA_HOME') ? [$XDG_DATA_HOME] : [$HOME, '.local/share']
+  elseif type ==# 'config'
+    base = exists('$XDG_CONFIG_HOME') ? [$XDG_CONFIG_HOME] : [$HOME, '.config']
+  elseif type ==# 'cache'
+    base = exists('$XDG_CACHE_HOME') ? [$XDG_CACHE_HOME] : [$HOME, '.cache']
+  else
+    throw 'Unknown XDG path type "' .. type .. '".'
+  endif
 
-function! hz#execute_in_place(cmd) abort
-  call s:hz.ExecuteInPlace(a:cmd)
-endfunction
+  if parts->len() > 0
+    base->extend(parts->flattennew())
+  endif
 
-function! hz#execute_with_saved_search(cmd) abort
-  call s:hz.ExecuteWithSavedSearch(a:cmd)
-endfunction
+  return base->join('/')
+enddef
 
-function! hz#clean_whitespace(line1, line2) abort
-  call s:hz.CleanWhitespace(a:line1, a:line2)
-endfunction
+export def XdgVimPath(type: string, ...parts: list<any>): string
+  return XdgBase(type, flattennew(['vim', parts]))
+enddef
 
-function! hz#get_setting(name, default = v:null) abort
-  return s:hz.GetSetting(a:name, a:default)
-endfunction
+export def MkXdgPath(type: string, ...parts: list<string>): string
+  var path = XdgBase(type, parts)
+  mkdir(path, 'p')
+  return path
+enddef
 
-function! hz#get_motion(motion) abort
-  return s:hz.GetMotion(a:motion)
-endfunction
+export def MkXdgVimPath(type: string, ...parts: list<any>): string
+  var path = XdgVimPath(type, parts)
+  mkdir(path, 'p')
+  return path
+enddef
 
-function! hz#range_uniq(ignore_ws = false) range abort
-  call s:hz.RangeUniq(a:firstline, a:lastline, a:a:ignore_ws)
-endfunction
+export def AddVimscriptUserCommandsSyntax()
+  var cmdList: string
 
-function! hz#switch_window(bufname) abort
-  call s:hz.SwitchWindow(a:bufname)
-endfunction
+  redir => cmdList
+  silent! command
+  redir END
 
-function! hz#xdg_base(type, ...) abort
-  return s:hz.XdgBase(a:type, a:000)
-endfunction
+  var commands =
+    cmdList
+      ->split('\n')[1 : ]
+      ->map((_, v) => matchstr(v, '[!"b]*\s\+\zs\u\w*\ze'))
+      ->join()
 
-function! hz#xdg_vim_path(type, ...) abort
-  return s:hz.XdgVimPath(a:type, a:000)
-endfunction
+  if empty(commands)
+    return
+  else
+    execute 'syntax keyword vimCommand' .. commands
+  endif
+enddef
 
-function! hz#mk_xdg_base(type, ...) abort
-  return s:hz.MkXdgBase(a:type, a:000)
-endfunction
+export def UrlEncode(url: string): string
+  var parts = url->split('/', true)
+  var index = parts[0] =~# '^https\=' ? 3 : 1
 
-function! hz#mk_xdg_vim_path(type, ...) abort
-  return s:hz.MkXdgVimPath(a:type, a:000)
-endfunction
+  parts[index : ] = parts[index : ]->map(
+    (_i, part) => {
+      return substitute(
+        part,
+        '\([^-[:alnum:].=?&]\)',
+        (m) => printf('%%%02X', char2nr(m[1])),
+        'g'
+      )
+    }
+  )
 
-function! hz#_vimscript_user_commands() abort
-  call s:hz.AddVimscriptUserCommandsSyntax()
-endfunction
+  return parts->join('/')
+enddef
 
-function! hz#_toggle_jk_mapping(mode = null_string) abort
-  call s:hz.ToggleJkMapping(a:mode)
-endfunction
+export def UrlDecode(url: string): string
+  return url
+    ->substitute('%0[Aa]\n$', '%0A', '')
+    ->substitute('%0[Aa]', '\n', 'g')
+    ->substitute('+', ' ', 'g')
+    ->substitute('%\(\x\x\)', (m) => nr2char(str2nr('0x' .. m[1], 16)), 'g')
+enddef
 
-function! hz#_toggle_special_window(type) abort
-  call s:hz.ToggleSpecialWindow(a:type)
-endfunction
+export def Wrap(value: any): list<any>
+  return value->type() == v:t_list ? value : [value]
+enddef
 
-function! hz#_synstack() abort
-  call s:hz.GetSynstack()
-endfunction
 
-function! hz#url_encode(url) abort
-  return s:hz.UrlEncode(a:url)
-endfunction
-
-function! hz#url_decode(url) abort
-  return s:hz.UrlDecode(a:url)
-endfunction
-
-function! hz#wrap(expr) abort
-  return s:hz.Wrap(a:expr)
-endfunction
+defcompile

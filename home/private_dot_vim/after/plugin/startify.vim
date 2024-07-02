@@ -4,8 +4,7 @@ if !exists(':Startify')
   finish
 endif
 
-g:startify_session_dir = hz#xdg_vim_path('cache', 'session')
-hz#mkpath(g:startify_session_dir, true)
+g:startify_session_dir = hz#MkXdgVimPath('cache', 'session')
 
 g:startify_fortune_use_unicode = true
 g:startify_change_to_dir = false
@@ -24,7 +23,7 @@ if exists(':StartupTime') == 2
 endif
 
 if exists(':PackixInstall') == 2
-  if packix#is_plugin_installed('vim-obsession') && packix#is_plugin_installed('vim-prosession')
+  if packix#IsPluginInstalled('vim-obsession') && packix#IsPluginInstalled('vim-prosession')
     g:startify_commands->insert(
       { S: ['Start Prosession', 'packadd vim-obsession | packadd vim-prosession | Prosession .'] }
     )

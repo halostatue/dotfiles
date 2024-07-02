@@ -1,6 +1,6 @@
 vim9script
 
-if !exists('g:asyncomplete_manager') || !packix#is_plugin_installed('asyncomplete-anylist')
+if !exists('g:asyncomplete_manager') || !packix#IsPluginInstalled('asyncomplete-anylist')
   finish
 endif
 

@@ -268,8 +268,14 @@
 
 {{ if $tool := or $programs.gvim $programs.mvim -}}
 [mergetool "gvim"]
-  cmd = {{ quote $tool }} -d --remote-wait-silent "${LOCAL}" "${MERGED}" "${REMOTE}"
+  cmd = {{ quote $tool }} -d --nofork "${LOCAL}" "${MERGED}" "${REMOTE}"
   trustExitCode = true
+
+# Need a new release of MacVim to use Splice9
+# [mergetool "splice"]
+#   cmd = {{ quote $tool }} --nofork "${BASE}" "${LOCAL}" "${REMOTE}" "${MERGED" -c Splice9Init
+#   trustExitCode = true
+
 {{ end -}}
 
 {{ if $programs.vim -}}

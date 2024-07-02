@@ -12,7 +12,7 @@ function s:highlight(group, bg, fg, style)
   let gui = a:style == '' ? '' : 'gui=' . a:style
   let fg = a:fg == '' ? '' : 'guifg=' . a:fg
   let bg = a:bg == '' ? '' : 'guibg=' . a:bg
-  exec 'hi ' . a:group . ' ' . bg . ' ' . fg  . ' ' . gui
+  execute 'hi ' . a:group . ' ' . bg . ' ' . fg  . ' ' . gui
 endfunction
 
 let s:Color0 = '#aeaeae'

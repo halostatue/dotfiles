@@ -2,6 +2,17 @@ vim9script
 
 runtime config/plugins/before.vim
 
+# # tpope/vim-sensible Load matchit.vim, but only if the user hasn't installed a newer version.
+# if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+#   packadd matchit
+# endif
+
+# # tpope/vim-sensible Enable the :Man command shipped inside Vim's man filetype plugin.
+# if exists(':Man') != 2 && !exists('g:loaded_man') && &filetype !=? 'man'
+#   runtime ftplugin/man.vim
+# endif
+
+
 const fzf_bin = exepath('fzf')
 var fzf_added = false
 
@@ -18,7 +29,7 @@ endif
 
 packadd vim-packix
 
-import 'packix.vim'
+import autoload 'packix.vim'
 
 packix.Setup((px: packix.Manager) => {
   # Packix package manager (self-manage the bootstrapped install)
@@ -35,7 +46,7 @@ packix.Setup((px: packix.Manager) => {
   # TRY THIS: https://github.com/wincent/ferret
   # px.Add('wincent/ferret')
 
-  if hz#is('unix') && !hz#is('mac')
+  if hz#Is('unix') && !hz#Is('mac')
     # Sudo support
     # https://github.com/lambdalisue/suda.vim
     px.Add('lambdalisue/suda.vim')
@@ -64,6 +75,10 @@ packix.Setup((px: packix.Manager) => {
   # Show the undo tree, pure vimscript
   # https://github.com/mbbill/undotree
   px.Add('mbbill/undotree')
+
+  # Highlight and normalize unicode homoglyphs in Vim.
+  # https://github.com/Konfekt/vim-unicode-homoglyphs
+  px.Add('Konfekt/vim-unicode-homoglyphs')
 
   # Tim Pope utilities.
   # Repeat plugin maps
@@ -175,9 +190,23 @@ packix.Setup((px: packix.Manager) => {
   # RE-TRY THIS: https://github.com/vim-ctrlspace/vim-ctrlspace
   # px.Add('vim-ctrlspace/vim-ctrlspace')
 
+  # https://github.com/girishji/scope.vim
+  px.Add('girishji/scope.vim')
+  # https://github.com/Donaldttt/fuzzyy
+  px.Add('Donaldttt/fuzzyy')
+  # This one is not quite ready, because it sets bindings unconditionally
+  # https://github.com/hahdookin/minifuzzy
+  # px.Add('hahdookin/minifuzzy')
+
   # Git so awesome, it should be illegal
   # https://github.com/tpope/vim-fugitive
   px.Add('tpope/vim-fugitive')
+
+  # https://github.com/Eliot00/git-lens.vim
+  px.Add('Eliot00/git-lens.vim')
+
+  # https://github.com/girishji/devdocs.vim
+  px.Add('girishji/devdocs.vim')
 
   # Sign column support for almost any VCS
   # https://github.com/mhinz/vim-signify
@@ -337,6 +366,8 @@ packix.Setup((px: packix.Manager) => {
   # Vue
   # https://github.com/posva/vim-vue
   px.Add('posva/vim-vue')
+  # https://github.com/lacygoill/vim9-syntax
+  px.Add('lacygoill/vim9-syntax')
 
   # Generalized Org Mode
   # https://github.com/chimay/organ
@@ -383,6 +414,10 @@ packix.Setup((px: packix.Manager) => {
   px.Add('spencer-p/vim-bwhcc')
   # https://github.com/robertmeta/nofrils
   px.Add('robertmeta/nofrils')
+  # https://github.com/sjl/badwolf
+  px.Add('sjl/badwolf')
+  # https://github.com/fenetikm/falcon
+  px.Add('fenetikm/falcon')
 
   # Display completion function signatures in the command-line
   # https://github.com/Shougo/echodoc.vim
@@ -453,6 +488,14 @@ packix.Setup((px: packix.Manager) => {
   # https://github.com/christoomey/vim-conflicted
   px.Add('christoomey/vim-conflicted')
 
+  # https://github.com/errael/splice9
+  if v:versionlong >= 9010369 # Vim 9.1 patch 369
+    px.Add('errael/splice9')
+  endif
+
+  # https://github.com/zeminzhou/diffview.vim
+  px.Add('zeminzhou/diffview.vim')
+
   # Highlight conflict markers
   # https://github.com/rhysd/conflict-marker.vim
   px.Add('rhysd/conflict-marker.vim')
@@ -478,19 +521,20 @@ packix.Setup((px: packix.Manager) => {
 
   # Gist commands
   # https://github.com/mattn/gist-vim
-  px.Add('mattn/gist-vim', { type: 'opt' })
+  px.Add('mattn/gist-vim', { type: 'opt', on: 'Gist', requires: [
+    { url: 'mattn/webapi-vim', opts: { type: 'opt', on: 'Gist' } }
+  ] })
 
-  # Terminal reuse
-  # https://github.com/kassio/neoterm
-  px.Add('kassio/neoterm')
+  # # https://github.com/liuchengxu/eleline.vim
+  # px.Add('liuchengxu/eleline.vim')
+  # https://github.com/kennypete/vim-tene
+  px.Add('kennypete/vim-tene')
 
-  # https://github.com/liuchengxu/eleline.vim
-  px.Add('liuchengxu/eleline.vim')
   # https://github.com/rbong/vim-crystalline
   # https://github.com/vim-airline/vim-airline/
   # https://github.com/itchyny/lightline.vim/
   # https://github.com/tpope/vim-flagship
-  
+
   # Most Recently (used, written, repositories)
   # Used with asyncomplete-anylist
   # https://lambdalisue/vim-mr
@@ -511,7 +555,30 @@ packix.Setup((px: packix.Manager) => {
   # Vimscript Tricks
   # https://github.com/chimay/vimscript-tricks
   px.Add('chimay/vimscript-tricks')
+  # Adds editable pop-ups by hacking Vim's terminal popup window
+  # https://github.com/Bakudankun/popupe.vim
+  px.Add('Bakudankun/popupe.vim')
 
   # https://github.com/alker0/chezmoi.vim
   px.Add('alker0/chezmoi.vim', { type: 'opt' })
+
+  # https://github.com/girishji/vimbits
+  px.Add('girishji/vimbits')
+
+  # Currently imaps C-l and C-f without checking over overrides
+  # https://github.com/greeschenko/vim9-ollama
+  # px.Add('greeschenko/vim9-ollama')
+
+  # Alternative to easymotion
+  # https://github.com/monkoose/vim9-stargate
+
+  # Preview quickfix item under cursor in a popup window
+  # https://github.com/bfrg/vim-qf-preview
+  # augroup qfpreview
+  #     autocmd!
+  #     autocmd FileType qf nmap <buffer> p <plug>(qf-preview-open)
+  #     autocmd FileType qf nmap <buffer> q <CMD>close<CR>
+  # augroup END
+
+  # https://github.com/Eliot00/auto-pairs
 })

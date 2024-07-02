@@ -35,7 +35,7 @@ for (let i = 0; i < app.windows.length; ++i) {
 
   for (let j = 0; j < window.tabs.length; ++j) {
     tab = window.tabs[j]
-    tabs.push(tab.url())
+    tabs.push(\`[\${tab.name()}](\${tab.url()})\`)
   }
 }
 

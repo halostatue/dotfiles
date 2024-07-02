@@ -23,7 +23,7 @@ else
   inoremap <expr> <S-Tab> pumvisible() ? '<C-p>' : '<S-Tab>'
 endif
 
-if packix#is_plugin_installed('vim-emoji')
+if packix#IsPluginInstalled('vim-emoji')
   var _cache: list<dict<any>>
 
   def CompleteEmoji(opt: dict<any>, ctx: dict<any>)

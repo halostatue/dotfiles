@@ -1,56 +1,48 @@
-scriptencoding utf-8
+if !has('vim9script')
+  finish
+endif
 
-" Skip setup for vim-tiny/vim-small
-if 0 | finish | endif
+vim9script
 
-""
-" 2021 Version of my vim configuration, starting from scratch.
 if !exists('g:hz_vim_config_version')
-  let g:hz_vim_config_version = '2023.0'
+  g:hz_vim_config_version = '2024.0'
   lockvar g:hz_vim_config_version
 endif
 
-" Use vim settings. First because it changes other options as a side-effect.
-" vint: -ProhibitSetNoCompatible
-if has('vim_starting') | set nocompatible | endif
-" vint: +ProhibitSetNoCompatible
-
-" Load various initialization scripts. All of these should be loaded before
-" packages are loaded, except the one below.
+# chezmoi.vim must be loaded before `filetype plugin indent on`, `syntax enable`,
+# or `syntax on`. https://github.com/alker0/chezmoi.vim?tab=readme-ov-file#install
 try
   packadd chezmoi.vim
 catch /^Vim\%((\a\+)\)\=:E919:/
 endtry
 
-runtime config/defaults.vim
-runtime config/plugins.vim
-runtime config/abbreviations.vim
-runtime config/commands.vim
-runtime config/keys.vim
-runtime config/plugins/config.vim
+# Import global and global-local options.
+import './config/options.vim'
 
-" colorscheme quantum
-colorscheme evening
+# Set `g:` variables, especially those required before plugins are loaded.
+import './config/defaults.vim'
 
-" let g:afterglow_blackout=1
-" let g:afterglow_italic_comments=1
-" let g:afterglow_inherit_background=1
-" silent! colorscheme afterglow
-" silent! colorscheme alduin
+# Add plugins with packix (also auto-install packix)
+import './config/plugins.vim'
 
-" silent! colorscheme anderson
-" silent! colorscheme angr
+# Setup display configuration
+import './config/display.vim'
 
-" let g:ayucolor = "light"
-" let g:ayucolor = "mirage"
-" let g:ayucolor = "dark"
-" silent! colorscheme ayu
+# Add key mappings
+import './config/key_mappings.vim'
 
-" silent! colorscheme apprentice
-" silent! colorscheme deep-space
-" silent! colorscheme deus
+# Configure LSP
+import './config/lsp.vim'
+
+# Configure local autocommands that aren't specific to plugin behaviours.
+import './config/autocmd.vim'
+
+# Define abbreviations
+import './config/abbreviations.vim'
+
+# Define user commands
+import './config/commands.vim'
+
 silent! colorscheme penumbradark++
-
-autocmd User DirenvLoaded normal lh
 
 set secure

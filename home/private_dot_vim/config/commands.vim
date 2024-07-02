@@ -2,11 +2,11 @@ vim9script
 
 ##
 # Close the QuickFix window if open; open if not.
-command! -nargs=0 -bar ToggleQuickfix call hz#_toggle_special_window('quickfix')
+command! -nargs=0 -bar ToggleQuickfix call hz#behaviour#ToggleSpecialWindow('quickfix')
 
 ##
 # Close the Location window if open; open if not.
-command! -nargs=0 -bar ToggleLocation call hz#_toggle_special_window('location')
+command! -nargs=0 -bar ToggleLocation call hz#behaviour#ToggleSpecialWindow('location')
 
 ##
 # Show the syntax highlighting stack under the cursor.
@@ -30,7 +30,7 @@ command! CleanDoubleLines call hz#with_saved_search("s/^\\n\\+/\\r/e")
 
 ##
 # Toggle between strict linewise and wrapped vertical motion.
-command! -nargs=0 -bar ToggleGJK call hz#_toggle_jk_mapping()
+command! -nargs=0 -bar ToggleGJK call hz#behaviour#JkLinewise()
 
 if executable('pdftotext')
   def ReadPDF(file: string)
