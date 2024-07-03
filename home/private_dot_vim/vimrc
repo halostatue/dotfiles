@@ -43,4 +43,7 @@ import './config/abbreviations.vim'
 # Define user commands
 import './config/commands.vim'
 
+# Define projectionist heuristics
+import './config/projections.vim'
+
 set secure

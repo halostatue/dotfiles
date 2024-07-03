@@ -173,6 +173,10 @@ packix.Setup((px: packix.Manager) => {
   # https://github.com/airblade/vim-rooter
   px.Add('airblade/vim-rooter')
 
+  # Granular project configuration with "projections"
+  # https://github.com/tpope/vim-projectionist
+  px.Add('tpope/vim-projectionist')
+
   # Add `emoji#for` function
   # https://github.com/junegunn/vim-emoji
   px.Add('junegunn/vim-emoji')
