@@ -1,17 +1,48 @@
 vim9script
 
-runtime config/plugins/before.vim
+## 1. Add specific useful pre-bundled plugins.
 
-# # tpope/vim-sensible Load matchit.vim, but only if the user hasn't installed a newer version.
-# if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
-#   packadd matchit
-# endif
+# Edit Existing tries to reuse an open Vim instance
+packadd! editexisting
 
-# # tpope/vim-sensible Enable the :Man command shipped inside Vim's man filetype plugin.
-# if exists(':Man') != 2 && !exists('g:loaded_man') && &filetype !=? 'man'
-#   runtime ftplugin/man.vim
-# endif
+# Editorconfig support is bundled now
+packadd! editorconfig
 
+# Vim 9.1.369 or later includes a comment plugin that may replace tpope/vim-commentary
+if v:versionlong >= 9010369
+  packadd! comment
+endif
+
+if exists(':Man') != 2 && !exists('g:loaded_man') && &filetype !=? 'man'
+  runtime ftplugin/man.vim
+endif
+
+## 2. Try to install vim-packix
+
+const vim_site = hz#MkXdgVimPath('data', 'site')
+
+if &packpath !~# vim_site
+    &packpath = vim_site .. ',' .. &packpath
+endif
+
+const pack_root = vim_site .. '/pack/packix/opt'
+mkdir(pack_root, 'p')
+
+const packix_path = pack_root .. '/vim-packix'
+const packix_url = "https://github.com/halostatue/vim-packix.git"
+
+if has('vim_starting') && !isdirectory(packix_path .. '/.git')
+  const command = printf('silent !git clone %s %s', packix_url, packix_path)
+
+  silent execute echo command
+
+  augroup install-vim-packix
+    autocmd!
+    autocmd VimEnter * if exists(':PackixInstall') == 2 | PackixInstall | endif
+  augroup END
+endif
+
+## 3. Use fzf vim integration if present.
 
 const fzf_bin = exepath('fzf')
 var fzf_added = false
@@ -26,6 +57,8 @@ elseif fzf_bin == '/usr/local/bin/fzf' && isdirectory('/usr/local/opt/fzf')
   fzf_added = true
   set rtp+=/usr/local/opt/fzf
 endif
+
+## 3. Use vim-packix to define
 
 packadd vim-packix
 
@@ -476,6 +509,10 @@ packix.Setup((px: packix.Manager) => {
   # https://github.com/mzlogin/vim-markdown-toc
   px.Add('mzlogin/vim-markdown-toc')
 
+  # Add distraction-free writing tools
+  # https://github.com/junegunn/goyo.vim
+  px.Add('junegunn/goyo.vim', { type: 'opt' })
+
   # Add more targets
   # https://github.com/wellle/targets.vim
   px.Add('wellle/targets.vim')
@@ -581,4 +618,18 @@ packix.Setup((px: packix.Manager) => {
   # augroup END
 
   # https://github.com/Eliot00/auto-pairs
+  # https://github.com/monkoose/vim9-autopairs
+  # https://github.com/LunarWatcher/auto-pairs
+  # https://github.com/mityu/vim-alith (text alignment)
+  # https://github.com/wolandark/vimdict (requires `dict` command)
+  # https://github.com/monkoose/vim9-matchparen
+  # https://github.com/kennypete/vim-popped
+  # https://github.com/mityu/vim-cmdhistory
+  # https://github.com/mityu/vim-cobachi # fuzzy finder
+  # https://github.com/Bakudankun/base64.vim
+  # https://github.com/monkoose/vim9-unix
+  # https://github.com/jessepav/vim-boxdraw
+  # https://github.com/hrsh7th/vim-vsnip
+  # https://github.com/hrsh7th/vim-vsnip-integ
+  # https://github.com/rafamadriz/friendly-snippets
 })

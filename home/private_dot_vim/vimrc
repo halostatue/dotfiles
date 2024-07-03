@@ -43,6 +43,4 @@ import './config/abbreviations.vim'
 # Define user commands
 import './config/commands.vim'
 
-silent! colorscheme penumbradark++
-
 set secure

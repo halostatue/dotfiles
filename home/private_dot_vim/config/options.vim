@@ -270,8 +270,6 @@ set diffopt& diffopt+=algorithm:histogram,indent-heuristic
 set wildignorecase wildcharm=<Tab>
 # Wildchar completion shows a list of longest, then full.
 set wildmode=list:longest,list:full
-# Use all options for command-line completion.
-set wildoptions=fuzzy,pum,tagfile
 
 # Extend `suffixes` to support python and Java compiled files
 &suffixes =

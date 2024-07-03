@@ -57,7 +57,7 @@ export def GetSynstack(): string
     ->join(' > ')
 enddef
 
-export def VisualPaste()
+export def VisualPaste(): any
   var savedReg = @"
 
   def Restore()
@@ -66,3 +66,40 @@ export def VisualPaste()
 
   return "p@=Restore()\<CR>"
 enddef
+
+export def ExecuteInPlace(cmd: string)
+  var saved_view = winsaveview()
+  execute cmd
+  call winrestview(saved_view)
+enddef
+
+export def ExecuteWithSavedSearch(cmd: string)
+  var ch = histnr('search')
+  ExecuteInPlace(cmd)
+
+  while ch != histnr('search')
+    histdel('search', -1)
+  endwhile
+
+  @/ = histget('search', -1)
+enddef
+
+export def CleanWhitespace(line1: any, line2: any)
+  var range = line1 == null ? '' :
+    line2 == null ? string(line1) :
+    string(line1) .. ',' .. string(line2)
+
+  ExecuteWithSavedSearch(printf('%ss/\s\+$//e', range))
+enddef
+
+export def Colors(): list<string>
+  var known = globpath(&runtimepath, 'colors/*.vim', 0, 1) +
+    globpath(&packpath, 'pack/*/opt/*/colors/*.vim', 0, 1)
+
+  return known
+    ->map((_, v) => v->fnamemodify(':t:r'))
+    ->sort()
+    ->uniq()
+enddef
+
+defcompile

@@ -1,6 +1,3 @@
 vim9script
 
-autocmd BufNewFile,BufRead PULLREQ_EDITMSG set syntax=gitcommit
-setlocal colorcolumn=51,+0,+6
-setlocal textwidth=72
-setlocal spell
+setlocal colorcolumn=51,+0,+6 textwidth=72 spell

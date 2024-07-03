@@ -47,7 +47,6 @@ augroup END
 # https://github.com/reedes/vim-lexical
 # opt - https://github.com/junegunn/goyo.vim
 # opt - https://github.com/junegunn/limelight.vim
-# opt - https://github.com/vimwiki/vimwiki
 
 # opt - https://github.com/wellle/targets.vim
 # https://github.com/rhysd/clever-f.vim

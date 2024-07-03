@@ -45,8 +45,8 @@ augroup END
 augroup hz-command-window
   autocmd!
   autocmd CmdwinEnter * {
-    nnoremap <buffer><silent> q :<C-u>quit<Return>
-    nnoremap <buffer><silent> <Tab> :<C-u>quit<Return>
+    nnoremap <buffer><silent> q <Cmd>quit<CR>
+    nnoremap <buffer><silent> <Tab> <Cmd>quit<CR>
     cursor(line('$'), 0)
     startinsert!
   }
@@ -56,4 +56,9 @@ augroup END
 augroup hz-vimscript-syntax
   autocmd!
   autocmd Syntax vim hz#AddVimscriptUserCommandsSyntax()
+augroup END
+
+augroup hz-close-help
+  autocmd!
+  autocmd FileType help silent! nmap <buffer> q <Cmd>close<CR>
 augroup END

@@ -100,31 +100,6 @@ export def Trim(value: string, pattern: string = '\_s'): string
   return TrimTrailing(TrimLeading(value, pattern), pattern)
 enddef
 
-export def ExecuteInPlace(cmd: string)
-  var saved_view = winsaveview()
-  execute cmd
-  call winrestview(saved_view)
-enddef
-
-export def ExecuteWithSavedSearch(cmd: string)
-  var ch = histnr('search')
-  ExecuteInPlace(cmd)
-
-  while ch != histnr('search')
-    histdel('search', -1)
-  endwhile
-
-  @/ = histget('search', -1)
-enddef
-
-export def CleanWhitespace(line1: any, line2: any)
-  var range = line1 == null ? '' :
-    line2 == null ? string(line1) :
-    string(line1) .. ',' .. string(line2)
-
-  ExecuteWithSavedSearch(printf('%ss/\s\+$//e', range))
-enddef
-
 export def GetSetting(name: string, default: any = null): any
   return get(b:, name, get(g:, name, default))
 enddef
@@ -175,18 +150,58 @@ export def SwitchWindow(bufname: string)
   endif
 enddef
 
-export def XdgBase(type: string, ...parts: list<any>): string
-  var base: list<string>
+var platformXdgMode = 'xdg' # platform | xdg
 
-  if type ==# 'data'
-    base = exists('$XDG_DATA_HOME') ? [$XDG_DATA_HOME] : [$HOME, '.local/share']
-  elseif type ==# 'config'
-    base = exists('$XDG_CONFIG_HOME') ? [$XDG_CONFIG_HOME] : [$HOME, '.config']
-  elseif type ==# 'cache'
-    base = exists('$XDG_CACHE_HOME') ? [$XDG_CACHE_HOME] : [$HOME, '.cache']
+export def SetPlatformXdgMode(mode: string)
+  if ['platform', 'xdg']->index(mode) >= 0
+    platformXdgMode = mode
   else
+    throw 'Unknown mode `' .. mode .. '`, must be either platform or xdg.'
+  endif
+enddef
+
+# See https://github.com/dirs-dev/directories-rs#basedirs. These should be renamed.
+
+def XdgRoot(type: string): list<string>
+  if ['cache', 'config', 'data']->index(type) <= -1
     throw 'Unknown XDG path type "' .. type .. '".'
   endif
+
+  if Is('mac') && platformXdgMode == 'platform'
+    if type ==# 'cache'
+      return [$HOME, 'Library/Caches']
+    elseif type ==# 'config'
+      return [$HOME, 'Library/Application Support']
+    elseif type ==# 'data'
+      return [$HOME, 'Library/Application Support']
+    endif
+  endif
+
+  if Is('windows') && platformXdgMode == 'platform'
+    if type ==# 'cache'
+      return [$LocalAppData]
+    elseif type ==# 'config'
+      return [$AppData]
+    elseif type ==# 'data'
+      return [$LocalAppData]
+    endif
+  endif
+
+  var home = Is('windows') ? $UserProfile : $HOME
+
+  if type ==# 'cache'
+    return exists('$XDG_CACHE_HOME') ? [$XDG_CACHE_HOME] : [home, '.cache']
+  elseif type ==# 'config'
+    return exists('$XDG_CONFIG_HOME') ? [$XDG_CONFIG_HOME] : [home, '.config']
+  elseif type ==# 'data'
+    return exists('$XDG_DATA_HOME') ? [$XDG_DATA_HOME] : [home, '.local/share']
+  endif
+
+  throw 'Unknown XDG path type "' .. type .. '".'
+enddef
+
+export def XdgBase(type: string, ...parts: list<any>): string
+  var base = XdgRoot(type)
 
   if parts->len() > 0
     base->extend(parts->flattennew())

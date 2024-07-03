@@ -14,7 +14,7 @@ command! -nargs=0 -bar SynStack echo hz#_synstack()<CR>
 
 ##
 # Clean trailing whitespace.
-command! -range CleanWhitespace call hz#clean_whitespace('<line1>', '<line2>')
+command! -range CleanWhitespace hz#behaviour#CleanWhitespace('<line1>', '<line2>')
 
 ##
 # Clean ANSI color escapes from the range.

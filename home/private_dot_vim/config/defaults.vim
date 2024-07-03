@@ -25,6 +25,7 @@ g:loaded_netrwPlugin = true     # netrw: Replaced with Fern
 g:netrw_nogx = true             #        Ensure gx mapping is always disabled.
 g:loaded_2html_plugin = true    # tohtml: This was useful a decade ago
 g:loaded_vimballPlugin = true   # vimball: Not needed with a plugin manager
+g:loaded_matchit = true         # matchit: andymass/vim-matchup is better
 
 ## 3. Set various syntax plugin configurations.
 
@@ -194,6 +195,10 @@ g:autosource_hashdir = hz#MkXdgVimPath('data', 'site', 'autosource_hashes')
 
 # Donaldttt/fuzzyy
 g:enable_fuzzyykeymaps = false
+
+# Distraction-free writing with Pencil and junegunn/goyo-vim
+g:pencil#textwidth = 80
+g:goyo_width = 80
 
 # if ! exists('g:organ_loaded')
 #   # ---- DONT FORGET TO INITIALIZE DICTS BEFORE USING THEM
