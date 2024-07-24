@@ -34,7 +34,7 @@ const packix_url = "https://github.com/halostatue/vim-packix.git"
 if has('vim_starting') && !isdirectory(packix_path .. '/.git')
   const command = printf('silent !git clone %s %s', packix_url, packix_path)
 
-  silent execute echo command
+  silent execute command
 
   augroup install-vim-packix
     autocmd!
@@ -67,7 +67,7 @@ import autoload 'packix.vim'
 packix.Setup((px: packix.Manager) => {
   # Packix package manager (self-manage the bootstrapped install)
   # https://github.com/halostatue/vim-packix
-  px.Local('~/dev/oss/forks/vim-packix', { type: 'opt' })
+  px.Local('~/personal/vim-packix', { type: 'opt' })
 
   # Improved incremental search
   # https://github.com/wincent/loupe
@@ -145,6 +145,16 @@ packix.Setup((px: packix.Manager) => {
   # https://github.com/tpope/vim-ragtag
   px.Add('tpope/vim-ragtag')
 
+  # Pro vim session handling
+  # https://github.com/dhruvasagar/vim-prosession
+  px.Add('dhruvasagar/vim-prosession',
+    { type: 'opt', requires: [
+      # Continuously updated session files
+      # https://github.com/tpope/vim-obsession
+      { url: 'tpope/vim-obsession', opts: { type: 'opt' } }
+    ] }
+  )
+
   # Evaluate expression
   # https://github.com/fvictorio/vim-eval-expression
   px.Add('fvictorio/vim-eval-expression')
@@ -176,6 +186,15 @@ packix.Setup((px: packix.Manager) => {
   # Granular project configuration with "projections"
   # https://github.com/tpope/vim-projectionist
   px.Add('tpope/vim-projectionist')
+  # Rails support
+  # https://github.com/tpope/vim-rails
+  px.Add('tpope/vim-rails', { type: 'opt', on: ['Rails', 'Generate', 'Runner'] })
+  # Rake support
+  # https://github.com/tpope/vim-rake
+  px.Add('tpope/vim-rake', { type: 'opt', on: 'Rake' })
+  # Bundler support
+  # https://github.com/tpope/vim-bundler
+  px.Add('tpope/vim-bundler', { type: 'opt', on: 'Bundle' })
 
   # Add `emoji#for` function
   # https://github.com/junegunn/vim-emoji
@@ -242,6 +261,9 @@ packix.Setup((px: packix.Manager) => {
   # https://github.com/Eliot00/git-lens.vim
   px.Add('Eliot00/git-lens.vim')
 
+  # https://github.com/rizzatti/dash.vim
+  px.Add('rizzatti/dash.vim')
+
   # https://github.com/girishji/devdocs.vim
   px.Add('girishji/devdocs.vim')
 
@@ -256,45 +278,21 @@ packix.Setup((px: packix.Manager) => {
   # Ansible
   # https://github.com/pearofducks/ansible-vim
   px.Add('pearofducks/ansible-vim')
-  # AppleScript
-  # https://github.com/mityu/vim-applescript
-  px.Add('mityu/vim-applescript')
   # Brewfile
   # https://github.com/bfontaine/Brewfile.vim
   px.Add('bfontaine/Brewfile.vim')
   # Browserslist constraints
   # https://github.com/browserslist/vim-browserslist
   px.Add('browserslist/vim-browserslist')
-  # C/C++ (Modern)
-  # https://github.com/bfrg/vim-cpp-modern
-  px.Add('bfrg/vim-cpp-modern')
-  # Crystal
-  # https://github.com/vim-crystal/vim-crystal
-  px.Add('vim-crystal/vim-crystal')
   # CSV
   # https://github.com/chrisbra/csv.vim
   px.Add('chrisbra/csv.vim')
-  # Dart
-  # https://github.com/dart-lang/dart-vim-plugin
-  # px.Add('dart-lang/dart-vim-plugin')
-  # Dhall
-  # https://github.com/vmchale/dhall-vim
-  # px.Add('vmchale/dhall-vim')
-  # D
-  # https://github.com/JesseKPhillips/d.vim
-  # px.Add('JesseKPhillips/d.vim')
   # Elixir
   # https://github.com/elixir-editors/vim-elixir
   px.Add('elixir-editors/vim-elixir')
-  # Elvish shell
-  # https://github.com/dmix/elvish.vim
-  # px.Add('dmix/elvish.vim')
   # Erlang
   # https://github.com/vim-erlang/vim-erlang-runtime
   px.Add('vim-erlang/vim-erlang-runtime')
-  # Fennel (Lua Lisp)
-  # https://github.com/bakpakin/fennel.vim
-  # px.Add('bakpakin/fennel.vim')
   # Fish shell
   # https://github.com/blankname/vim-fish
   px.Add('blankname/vim-fish')
@@ -313,18 +311,12 @@ packix.Setup((px: packix.Manager) => {
   # GraphQL
   # https://github.com/jparise/vim-graphql
   px.Add('jparise/vim-graphql')
-  # Haxe
-  # https://github.com/jdonaldson/vaxe
-  # px.Add('jdonaldson/vaxe')
   # Hjson
   # https://github.com/hjson/vim-hjson
   px.Add('hjson/vim-hjson')
   # HTML
   # https://github.com/othree/html5.vim
   px.Add('othree/html5.vim')
-  # Idris2
-  # https://github.com/edwinb/idris2-vim
-  # px.Add('edwinb/idris2-vim')
   # icalendar
   # https://github.com/chutzpah/icalendar.vim
   px.Add('chutzpah/icalendar.vim')
@@ -340,12 +332,6 @@ packix.Setup((px: packix.Manager) => {
   # JSON
   # https://github.com/elzr/vim-json
   px.Add('elzr/vim-json')
-  # Jsonnet
-  # https://github.com/google/vim-jsonnet
-  # px.Add('google/vim-jsonnet')
-  # JSX, which can never be pretty
-  # https://github.com/MaxMEllon/vim-jsx-pretty
-  # px.Add('MaxMEllon/vim-jsx-pretty')
   # Julia
   # https://github.com/JuliaEditorSupport/julia-vim
   px.Add('JuliaEditorSupport/julia-vim')
@@ -355,18 +341,12 @@ packix.Setup((px: packix.Manager) => {
   # Log highlighting (generic)
   # https://github.com/MTDL9/vim-log-highlighting
   px.Add('MTDL9/vim-log-highlighting')
+  # Markdown
+  # https://github.com/tpope/vim-markdown
+  px.Add('tpope/vim-markdown')
   # MJML
   # https://github.com/amadeus/vim-mjml
   px.Add('amadeus/vim-mjml')
-  # Nim
-  # https://github.com/zah/nim.vim
-  # px.Add('zah/nim.vim')
-  # Nix
-  # https://github.com/LnL7/vim-nix
-  # px.Add('LnL7/vim-nix')
-  # OCaml
-  # https://github.com/ocaml/vim-ocaml
-  # px.Add('ocaml/vim-ocaml')
   # Perl5
   # https://github.com/vim-perl/vim-perl
   px.Add('vim-perl/vim-perl')
@@ -391,9 +371,6 @@ packix.Setup((px: packix.Manager) => {
   # Svelte
   # https://github.com/leafOfTree/vim-svelte-plugin
   px.Add('leafOfTree/vim-svelte-plugin')
-  # Swift
-  # https://github.com/keith/swift.vim
-  # px.Add('keith/swift.vim')
   # Terraform
   # https://github.com/hashivim/vim-terraform
   px.Add('hashivim/vim-terraform')
@@ -405,6 +382,62 @@ packix.Setup((px: packix.Manager) => {
   px.Add('posva/vim-vue')
   # https://github.com/lacygoill/vim9-syntax
   px.Add('lacygoill/vim9-syntax')
+
+  ## Disabled Syntax support
+  # # AppleScript
+  # # https://github.com/mityu/vim-applescript
+  # px.Add('mityu/vim-applescript')
+  # # C/C++ (Modern)
+  # # https://github.com/bfrg/vim-cpp-modern
+  # px.Add('bfrg/vim-cpp-modern')
+  # # Crystal
+  # # https://github.com/vim-crystal/vim-crystal
+  # px.Add('vim-crystal/vim-crystal')
+  # # Cucumber
+  # # https://github.com/tpope/vim-cucumber
+  # px.Add('tpope/vim-cucumber')
+  # # Dart
+  # # https://github.com/dart-lang/dart-vim-plugin
+  # px.Add('dart-lang/dart-vim-plugin')
+  # # Dhall
+  # # https://github.com/vmchale/dhall-vim
+  # px.Add('vmchale/dhall-vim')
+  # # D
+  # # https://github.com/JesseKPhillips/d.vim
+  # px.Add('JesseKPhillips/d.vim')
+  # # Elvish shell
+  # # https://github.com/dmix/elvish.vim
+  # px.Add('dmix/elvish.vim')
+  # # Fennel (Lua Lisp)
+  # # https://github.com/bakpakin/fennel.vim
+  # px.Add('bakpakin/fennel.vim')
+  # Haskell
+  # https://github.com/neovimhaskell/haskell-vim
+  # px.Add('neovimhaskell/haskell-vim')
+  # # Haxe
+  # # https://github.com/jdonaldson/vaxe
+  # px.Add('jdonaldson/vaxe')
+  # # Idris2
+  # # https://github.com/edwinb/idris2-vim
+  # px.Add('edwinb/idris2-vim')
+  # # Jsonnet
+  # # https://github.com/google/vim-jsonnet
+  # px.Add('google/vim-jsonnet')
+  # # JSX, which can never be pretty
+  # # https://github.com/MaxMEllon/vim-jsx-pretty
+  # px.Add('MaxMEllon/vim-jsx-pretty')
+  # # Nim
+  # # https://github.com/zah/nim.vim
+  # px.Add('zah/nim.vim')
+  # # Nix
+  # # https://github.com/LnL7/vim-nix
+  # px.Add('LnL7/vim-nix')
+  # # OCaml
+  # # https://github.com/ocaml/vim-ocaml
+  # px.Add('ocaml/vim-ocaml')
+  # # Swift
+  # # https://github.com/keith/swift.vim
+  # px.Add('keith/swift.vim')
 
   # Generalized Org Mode
   # https://github.com/chimay/organ
@@ -562,9 +595,7 @@ packix.Setup((px: packix.Manager) => {
 
   # Gist commands
   # https://github.com/mattn/gist-vim
-  px.Add('mattn/gist-vim', { type: 'opt', on: 'Gist', requires: [
-    { url: 'mattn/webapi-vim', opts: { type: 'opt', on: 'Gist' } }
-  ] })
+  px.Add('mattn/gist-vim', { type: 'opt', on: 'Gist', requires: 'mattn/webapi-vim' })
 
   # # https://github.com/liuchengxu/eleline.vim
   # px.Add('liuchengxu/eleline.vim')
@@ -583,7 +614,15 @@ packix.Setup((px: packix.Manager) => {
 
   # Development utility to bundle useful modules
   # https://github.com/vim-jp/vital.vim
-  px.Add('vim-jp/vital.vim', { type: 'opt' })
+  px.Add('vim-jp/vital.vim', { type: 'opt', on: 'Vitalize' })
+  # Vim Script Ease
+  # https://github.com/tpope/vim-scriptease
+  px.Add('tpope/vim-scriptease',
+    { type: 'opt', on: [
+      'Breakadd', 'Breakdel', 'Disarm', 'Messages', 'PP', 'Runtime', 'Scriptnames',
+      'Time', 'Verbose'
+    ] }
+  )
   # VimL lint
   # https://github.com/Vimjas/vint
   px.Add('Vimjas/vint', { type: 'opt' })
@@ -604,7 +643,12 @@ packix.Setup((px: packix.Manager) => {
   px.Add('alker0/chezmoi.vim', { type: 'opt' })
 
   # https://github.com/girishji/vimbits
+  # We use configuration to disable parts of this.
   px.Add('girishji/vimbits')
+
+  # https://github.com/rhysd/vim-healthcheck
+  # px.Add('rhysd/vim-healthcheck')
+  px.Local('~/personal/forks/vim/vim-healthcheck')
 
   # Currently imaps C-l and C-f without checking over overrides
   # https://github.com/greeschenko/vim9-ollama
@@ -636,4 +680,14 @@ packix.Setup((px: packix.Manager) => {
   # https://github.com/hrsh7th/vim-vsnip
   # https://github.com/hrsh7th/vim-vsnip-integ
   # https://github.com/rafamadriz/friendly-snippets
+  # https://github.com/tommcdo/vim-exchange
+  # https://github.com/AndrewRadev/switch.vim
+  # https://github.com/AndrewRadev/sideways.vim
+  # https://github.com/AndrewRadev/splitjoin.vim
+  # https://github.com/machakann/vim-sandwich
+  # https://github.com/dstein64/vim-startuptime
+  # https://github.com/SirVer/ultisnips
+  # https://github.com/honza/vim-snippets
+  # https://github.com/mattn/calendar-vim
+  # https://github.com/dhruvasagar/vim-github-review
 })

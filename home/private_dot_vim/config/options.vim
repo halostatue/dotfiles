@@ -92,7 +92,7 @@ set noerrorbells visualbell
 
 # Don't parse modelines (google "vim modeline vulnerability"). We have a plugin for
 # reading modelines safely.
-set nomodeline
+set nomodeline modelines=0
 
 # Do not fold by default. But if, do it up to 3 levels.
 set foldmethod=indent foldnestmax=3 nofoldenable
@@ -114,9 +114,6 @@ setglobal tags+=gems.tags
 
 # Set window title by default.
 set title
-
-# Merge signcolumn with number line (if supported)
-set signcolumn=number
 
 ## 4. Everything else. Some of these are variations on what is in defaults.vim,
 ##    tpope/vim-sensible and sheerun/vimrc. Others are just my preferences.
@@ -275,7 +272,7 @@ set wildmode=list:longest,list:full
 &suffixes =
   &suffixes
     ->split(',')
-    ->extendnew(['.pyc', '.pyo', '.egg-info', '.class'])
+    ->extendnew(['.aux', '.class', '.dvi', '.egg-info', '.idx', '.ps', '.pyc', '.pyo', '.swo'])
     ->uniq()
     ->join(',')
 

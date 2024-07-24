@@ -10,25 +10,25 @@ g:projectionist_heuristics['mix.exs'] = {
     make: 'mix',
     start: 'iex -S mix'
   },
-  '*.ex|*.exs': {
+  '*.ex': {
     makery: {
       lint: { compiler: 'credo' },
       test: { compiler: 'exunit' },
       build: { compiler: 'mix' }
     }
   },
-  '*.ex': {
+  'lib/*.ex': {
+    alternate: 'test/{}_test.exs',
     type: 'lib',
-    template: ['defmodule {camelcase|capitalize|dot} do', 'end']
+    template: ['defmodule {camelcase|capitalize|dot} do', '', 'end']
   },
-  '*_test.exs': {
+  'test/*_test.exs': {
+    alternate: 'lib/{}.ex',
     type: 'test',
     dispatch: 'mix test {file}',
     make: 'mix test {file}',
     template: [
       'defmodule {camelcase|capitalize|dot}Test do',
-      '  @moduledoc false',
-      '',
       '  use ExUnit.Case, async: true',
       '',
       '  alias {camelcase|capitalize|dot}',
@@ -42,12 +42,6 @@ g:projectionist_heuristics['mix.exs'] = {
       '  end',
       'end'
     ],
-  },
-  'lib/*.ex|apps/*/lib/*.ex': {
-    alternate: 'test/{}_test.exs',
-  },
-  'test/*_test.exs|apps/*/test/*_test.exs': {
-    alternate: 'lib/{}.ex',
   },
   'apps/*/mix.exs': { type: 'app' },
   'mix.exs': { type: 'mix' },

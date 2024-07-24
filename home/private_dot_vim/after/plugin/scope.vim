@@ -9,7 +9,7 @@ import autoload 'scope/task.vim'
 import autoload 'scope/popup.vim'
 
 def FindGit()
-  var dir = system("git rev-parse --showtoplevel 2>/dev/null")->trim()
+  var dir = system("git rev-parse --show-toplevel 2>/dev/null")->trim()
 
   if v:shell_error != 0 || dir == getcwd()
     dir = '.'
@@ -23,7 +23,7 @@ enddef
 # 'lst'     represents a list of all files where each list entry is a dict of
 #           the form `{ text: filename }`
 # 'prompt'  string is what the user typed so far
-def FilterItems(lst: list<dict<any>>, prompt: string): list<any>   
+def FilterItems(lst: list<dict<any>>, prompt: string): list<any>
   if prompt->empty()
     # when nothing is typed display all files in the popup window
     return [lst, [lst]]
@@ -39,8 +39,10 @@ def FindFile()
   # create the popup object
   var menu: popup.FilterMenu = popup.FilterMenu.new(
     "File",
-    "[],
-    (res, key) => { exe $"e {res.text}" },
+    [],
+    (res, _key) => {
+      execute $"e {res.text}"
+    },
     null_function,
     FilterItems
   )
@@ -48,7 +50,7 @@ def FindFile()
   # create async job object
   var job: task.AsyncCmd
 
- FindGit()<CR> job = task.AsyncCmd.new('fd -tf --follow'->split(),
+  job = task.AsyncCmd.new('fd -tf --follow'->split(),
     (items: list<string>) => {
       # this function is called periodically as new file names are received
       if menu.Closed()
@@ -104,3 +106,5 @@ augroup scope-quickfix-history
   autocmd QuickFixCmdPost chistory cwindow
   autocmd QuickFixCmdPost lhistory lwindow
 augroup END
+
+defcompile

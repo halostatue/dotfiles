@@ -74,16 +74,6 @@ if command --query pandoc
     end
 end
 
-function 64enc -d "encode a given image file as base64 and output css background property to clipboard"
-    openssl base64 -in "$argv" | awk -v ext=(get_ext $argv) '{ str1=str1 $0 }END{ print "background:url(data:image/"ext";base64,"str1");" }' | pbcopy
-    echo "$argv encoded to clipboard"
-end
-
-function 64font -d "encode a given font file as base64 and output css background property to clipboard"
-    openssl base64 -in "$argv" | awk -v ext=(get_ext $argv) '{ str1=str1 $0 }END{ print "src:url(\"data:font/"ext";base64,"str1"\")  format(\""ext"\");" }' | pbcopy
-    echo "$argv encoded as font and copied to clipboard"
-end
-
 function urlenc -d "url encode the passed string"
     if test (count $argv) -gt 0
         echo -n "$argv" | perl -pe's/([^-_.~A-Za-z0-9])/sprintf("%%%02X", ord($1))/seg'
@@ -193,8 +183,8 @@ if status is-interactive
     end
 
     if not set --query MAGIC_ENTER_LIST_COMMAND
-        if command --query eza exa
-            set --universal MAGIC_ENTER_LIST_COMMAND (basename (command --search eza exa)[1])' -l .'
+        if command --query eza
+            set --universal MAGIC_ENTER_LIST_COMMAND eza' -l .'
         else
             set --universal MAGIC_ENTER_LIST_COMMAND ls -lh .
         end
@@ -225,20 +215,22 @@ if status is-interactive
     bind \r magic_enter
     bind \n magic_enter
 
-    set --local __setup_fzf_bindings \
-        --directory=\ct \
-        --git_log=\cgl \
-        --git_status=\cgs \
-        --processes=\cgp \
-        --history
+    if functions --query fzf_configure_bindings
+        set --local __setup_fzf_bindings \
+            --directory=\ct \
+            --git_log=\cgl \
+            --git_status=\cgs \
+            --processes=\cgp \
+            --history
 
-    if command --query atuin mcfly
-        set --erase __setup_fzf_bindings[-1]
+        if command --query atuin mcfly
+            set --erase __setup_fzf_bindings[-1]
+        end
+
+        fzf_configure_bindings $__setup_fzf_bindings
+
+        set --erase __setup_fzf_bindings
     end
-
-    fzf_configure_bindings $__setup_fzf_bindings
-
-    set --erase __setup_fzf_bindings
 
     if command --query atuin
         atuin init fish | source

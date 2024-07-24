@@ -34,7 +34,6 @@
   autoStageIfNothingStaged = true
 
 {{ end -}}
-
 [advice]
   skippedCherryPicks = false
   addEmptyPathspec = false
@@ -70,8 +69,8 @@
   verbose = true
 {{- if $commitTemplate }}
   #  template = {{ $commitTemplate | quote }}
-{{- end }}
 
+{{ end }}
 [conflicts]
   editor = gvim
 
@@ -107,8 +106,8 @@
 
 [credential "https://gist.github.com"]
   helper = !{{ $programs.gh }} auth git-credential
-{{- end }}
 
+{{ end -}}
 [feature]
   manyFiles = true
 
@@ -121,7 +120,7 @@
 [fetch.fsck]
     skipList = {{ $skiplistFile | quote }}
 
-{{- end }}
+{{ end -}}
 [format]
   pretty = %C(yellow)%h%C(reset) %C(red)%ad%C(reset) | %s%d %C(green)[%aN]%C(reset)
   signOff = true
@@ -135,9 +134,9 @@
   user = {{ $githubUser | quote }}
 {{- if $githubToken }}
   token = {{ $githubToken | quote }}
-{{- end -}}
 {{- end }}
 
+{{ end -}}
 [grep]
   extendRegexp = true
   lineNumber = true
@@ -190,7 +189,8 @@
 {{ if $skiplistFile -}}
 [receive.fsck]
   skipList = {{ $skiplistFile | quote }}
-{{- end }}
+
+{{ end -}}
 [stash]
   showPatch = true
 
@@ -211,13 +211,13 @@
 
 [transfer]
   fsckobjects = true
-{{ if $programs.git_trim }}
 
+{{ if $programs.git_trim }}
 # https://github.com/foriequal0/git-trim
 [trim]
   bases = master,main,gh-pages
-{{ end }}
 
+{{ end -}}
 [versionsort]
   suffix = ""
   suffix = "-rc"
@@ -251,8 +251,8 @@
 {{ if $webBrowser -}}
 [web]
   browser = {{ $webBrowser }}
-{{- end }}
 
+{{ end -}}
 [rerere]
   enabled = true
 
@@ -265,16 +265,16 @@
 {{ if $sequenceEditor -}}
 [sequence]
   editor = {{ $sequenceEditor }}
-{{- end }}
 
+{{ end -}}
 {{ if lookPath "git-lfs" -}}
 [filter "lfs"]
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
-{{- end }}
 
+{{ end -}}
 [include]
   path = ~/.config/git/aliases
 
@@ -284,4 +284,19 @@
 [include]
   path = ~/.config/git/signatures
 
-{{/*- vim: set filetype=gitconfig: */}}
+[includeIf "hasconfig:remote.*.url:git@github.com:KineticCommerce/**"]
+  path = ~/.config/git/identities/work
+
+[includeIf "hasconfig:remote.*.url:git@github.com:KineticCafe/**"]
+  path = ~/.config/git/identities/work
+
+[includeIf "hasconfig:remote.*.url:git@github.com:halostatue/**"]
+  path = ~/.config/git/identities/personal
+
+[includeIf "hasconfig:remote.*.url:git@github.com:mime-types/**"]
+  path = ~/.config/git/identities/personal
+
+[includeIf "gitdir:~/personal"]
+  path = ~/.config/git/identities/personal
+
+{{/* vim: set filetype=gitconfig */}}

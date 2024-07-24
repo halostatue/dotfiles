@@ -6,7 +6,7 @@
 .ansible/**
 .anydesk/**
 .aws/**/*.pem
-.aws/cli/history/*.db
+.aws/cli
 
 .bash_history
 .bun/**
@@ -29,7 +29,8 @@
 
 .config/Amazon/**
 .config/cheat/cheatsheets/**
-.config/chezmoi/**
+.config/chezmoi
+.config/configstore
 .config/fish/completions/*
 !.config/fish/completions/aws_completer.fish
 !.config/fish/completions/lf.fish
@@ -44,6 +45,7 @@
 !.config/fish/functions/lfcd.fish
 !.config/fish/functions/set-docker-host.fish
 .config/gh/hosts.yml
+.config/git-switch-user
 .config/gita/**
 .config/hcp/**
 .config/htop/**
@@ -58,6 +60,7 @@
 .config/litecli/**
 !config/litecli/config
 .config/lnav/**
+.config/nvim
 .config/nvim.old/.git
 .config/1Password
 .config/1Password/**
@@ -79,6 +82,8 @@
 .docker/**
 .dotenv-linter-latest-version
 
+.envrc
+
 .fly/**
 
 .gem/specs/**
@@ -96,6 +101,8 @@
 .julia/**
 .kindle/**
 
+.local/bin/chezmoi
+# pipx-managed files in ~/.local/bin
 {{ if lookPath "pipx" }}
 {{   $pipx := output "pipx" "list" "--json" | fromJson }}
 {{   $entries := $pipx | jq ".venvs | to_entries | map(.value.metadata) | flatten" | first }}
@@ -107,87 +114,6 @@
 {{     . }}{{ end }}
 {{ end }}
 
-# .irb_history
-# .kerl/
-# .kindle/
-# .lemminx/
-# .lesshst
-# .lima/
-# .local/include
-# .local/lib/
-# .local/pipx/
-# .local/share/
-# .local/state/
-# .m2/
-# .macports/
-# .mcfly/
-# .mix/
-# .murex_history
-# .murex_modules/
-# .murex_preload
-# .murex_profile
-# .node_repl_history
-# .npm/
-# .oracle_jre_usage/
-# .pnpm-state.json
-# .pnpm-state/
-# .pnpm-store/
-# .prettierd
-# .proxyman-data/
-# .proxyman/
-# .pry.d/
-# .psql_history
-# .pulumi/
-# .python_history
-# .rdbg_history
-# .redhat/
-# .rediscli_history
-# .rubies/
-# .rustup/
-# .sdkman/
-# .solargraph/
-# .sqlite_history
-# .terraform.d/
-# .tig_history
-# .tlaplus/
-# .ts_node_repl_history
-# .vim/session
-# .viminfo
-# .visidata/
-# .vscode/
-# .wget-hsts
-# .yarn/
-# .yarnrc
-# .zsh_history
-# .zsh_sessions/
-# Applications/
-# ChezMoi.code-workspace
-# Desktop/
-# Documents/
-# Downloads/
-# Dropbox/
-# Justfile
-# LICENCE.md
-# Movies/
-# Music/
-# Pictures/
-# Public/
-# README.md
-# Secrets/
-# Setup/
-# example-nvim.init.lua
-# fishfile.maybe
-# justfile
-
-.config/configstore
-
-{{ if eq .chezmoi.os "linux" }}
-Library
-{{ else if eq .chezmoi.os "darwin" }}
-# LazyGit is configured in Library/Application Support/lazygit on macOS
-.config/lazygit
-{{ end }}
-
 # ChimeHQ MacOS Editor: https://github.com/ChimeHQ/Chime
 {{ if not (stat "/Applications/Chime.app/Contents/MacOS/chimecli") }}
 .local/bin/chime
@@ -196,6 +122,76 @@ Library
 {{ if not (lookPath "alacritty") }}
 .config/fish/alacritty.fish
 .config/alacritty/alacritty.yml
+{{ end }}
+
+
+.local/pipx
+.local/share
+.local/state
+
+.m2
+.macports
+.macports/history
+.mix
+
+.nb
+.net
+.node_repl_history
+.npm
+
+.ollama
+
+.pnpm-state
+.prettierd
+.pry.d
+.python_history
+
+.rustup
+.sobelow
+.sqlite_history
+.ssh/**
+!.ssh/allowed_signers
+!.ssh/authorized_keys
+!.ssh/config
+!.ssh/known_hosts
+
+.tclsh_history
+.terminfo
+.terraform.d
+.tig_history
+.ts_node_repl_history
+.twilio-cli
+
+.viminfo
+.vscode
+
+.wget-hsts
+
+.yarn
+.yarnrc
+
+.zsh_history
+
+{{ if eq .chezmoi.os "linux" }}
+Library
+{{ else if eq .chezmoi.os "darwin" }}
+**/.localized
+
+# LazyGit is configured in Library/Application Support/lazygit on macOS
+.config/lazygit
+
+Library/.dash_yard
+Library/Accessibility
+Library/Accounts
+Library/AppleMediaServices
+Library/Application Scripts
+# Library/Application Support
+# !Library/Application Support/BBEdit/**
+# !Library/Application Support/Code/**
+# !Library/Application Support/fm/**
+# !Library/Application Support/gh-dash/**
+# !Library/Application Support/lazy-git/**
+# !Library/Application Support/tealdeer/**
 {{ end }}
 
 {{ if not (dig "aws" "credentials_source" false .) }}

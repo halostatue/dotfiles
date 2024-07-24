@@ -27,7 +27,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -53,7 +53,10 @@
   },
   "atlascode.bitbucket.issues.createJiraEnabled": true,
   "atlascode.bitbucket.pipelines.explorerEnabled": false,
-  "atlascode.bitbucket.preferredRemotes": ["origin", "upstream"],
+  "atlascode.bitbucket.preferredRemotes": [
+    "origin",
+    "upstream"
+  ],
   "atlascode.bitbucket.statusbar.enabled": false,
   "atlascode.bitbucket.statusbar.showLogin": true,
   "atlascode.bitbucket.statusbar.showUser": true,
@@ -81,7 +84,9 @@
   "aws.telemetry": false,
   "breadcrumbs.enabled": true,
   "breadcrumbs.filePath": "off",
-  "cSpell.enableFiletypes": ["liquid"],
+  "cSpell.enableFiletypes": [
+    "liquid"
+  ],
   "cSpell.enabledLanguageIds": [
     "asciidoc",
     "c",
@@ -145,7 +150,10 @@
   "editor.linkedEditing": true,
   "editor.minimap.enabled": false,
   "editor.minimap.maxColumn": 50,
-  "editor.rulers": [80, 100],
+  "editor.rulers": [
+    80,
+    100
+  ],
   "editor.suggestSelection": "first",
   "editor.tabSize": 2,
   "editor.tokenColorCustomizations": {
@@ -178,13 +186,19 @@
   },
   "elixir.credo.credoConfiguration": "vscode",
   "elixirLS.enableTestLenses": true,
-  "emmet.excludeLanguages": ["markdown", "typescriptreact", "typescript"],
+  "emmet.excludeLanguages": [
+    "markdown",
+    "typescriptreact",
+    "typescript"
+  ],
   "emmet.includeLanguages": {
     "vue-html": "html"
   },
   "emmet.showAbbreviationSuggestions": true,
   "eslint.alwaysShowStatus": true,
-  "eslint.codeActionsOnSave.rules": ["unused-imports/no-unused-imports"],
+  "eslint.codeActionsOnSave.rules": [
+    "unused-imports/no-unused-imports"
+  ],
   "eslint.format.enable": true,
   "eslint.run": "onSave",
   "explorer.confirmDelete": false,
@@ -219,7 +233,10 @@
   "githubPullRequests.defaultMergeMethod": "rebase",
   "githubPullRequests.telemetry.enabled": false,
   "gitlens.advanced.telemetry.enabled": false,
-  "gitlens.blame.highlight.locations": ["gutter", "overview"],
+  "gitlens.blame.highlight.locations": [
+    "gutter",
+    "overview"
+  ],
   "gitlens.views.compare.location": "gitlens",
   "gitlens.views.fileHistory.location": "explorer",
   "gitlens.views.lineHistory.location": "explorer",
@@ -279,8 +296,13 @@
   "vim.leader": "<space>",
   "vim.normalModeKeyBindingsNonRecursive": [
     {
-      "before": ["g", "r"],
-      "commands": ["editor.action.goToReferences"]
+      "before": [
+        "g",
+        "r"
+      ],
+      "commands": [
+        "editor.action.goToReferences"
+      ]
     }
   ],
   "vim.sneak": true,
@@ -341,5 +363,6 @@
   },
   "XSLT.tasks.saxonJar": "~/.local/share/SaxonHE10-8J/saxon-he-10.8.jar",
   "workbench.editor.empty.hint": "hidden",
-  "workbench.editor.tabActionLocation": "left"
+  "workbench.editor.tabActionLocation": "left",
+  "extensiontotal.apiKeySetting": "{{ onepasswordRead "op://Personal/VS Code ExtensionTotal/credential" .onepassword.personal }}"
 }

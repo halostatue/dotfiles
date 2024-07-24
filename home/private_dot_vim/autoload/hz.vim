@@ -226,26 +226,6 @@ export def MkXdgVimPath(type: string, ...parts: list<any>): string
   return path
 enddef
 
-export def AddVimscriptUserCommandsSyntax()
-  var cmdList: string
-
-  redir => cmdList
-  silent! command
-  redir END
-
-  var commands =
-    cmdList
-      ->split('\n')[1 : ]
-      ->map((_, v) => matchstr(v, '[!"b]*\s\+\zs\u\w*\ze'))
-      ->join()
-
-  if empty(commands)
-    return
-  else
-    execute 'syntax keyword vimCommand' .. commands
-  endif
-enddef
-
 export def UrlEncode(url: string): string
   var parts = url->split('/', true)
   var index = parts[0] =~# '^https\=' ? 3 : 1

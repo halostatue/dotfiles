@@ -5,7 +5,7 @@ legacy_version_file = false
 ERL_AFLAGS = "-kernel shell_history enabled shell_history_file_bytes 5242880"
 
 [tools]
-elixir = "1.15.7-otp-26"
+elixir = "1.16"
 erlang = "26.2"
 node = "20"
 ruby = "3.2"

@@ -55,10 +55,15 @@ augroup END
 # Add the current defined user commands to vim syntax
 augroup hz-vimscript-syntax
   autocmd!
-  autocmd Syntax vim hz#AddVimscriptUserCommandsSyntax()
+  autocmd Syntax vim hz#behaviour#AddVimscriptUserCommandsSyntax()
 augroup END
 
 augroup hz-close-help
   autocmd!
   autocmd FileType help silent! nmap <buffer> q <Cmd>close<CR>
+augroup END
+
+augroup hz-bufferize
+  autocmd!
+  autocmd FileType bufferize command! -buffer Rerun exec 'Bufferize ' .. b:bufferize_source_command
 augroup END

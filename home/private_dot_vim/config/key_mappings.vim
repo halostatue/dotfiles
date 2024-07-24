@@ -11,7 +11,7 @@ g:hz_config_key_mappings_loaded = true
 # Use CTRL-L to clear the highlighting of 'hlsearch' (off by default) and call
 # :diffupdate.
 if maparg('<C-L>', 'n')->empty()
-  nnoremap <silent> <C-l> <Cmd>nohlsearch<Bar><Cmd>diffupdate<CR><C-l>
+  nnoremap <silent> <C-l> <Cmd>nohlsearch<Bar>diffupdate<CR><C-l>
 endif
 
 # Close the current undo sequence and start a new undo sequence before
@@ -40,6 +40,9 @@ nnoremap Y y$
 # Keep flags when repeating last substitute command.
 nnoremap & <Cmd>&&<CR>
 xnoremap & <Cmd>&&<CR>
+
+# Use repeat operator with visual selection
+xnoremap . :normal! .<CR>
 
 # Reselect the previously selected visual area on shift left or right.
 xnoremap > >gv
@@ -107,13 +110,6 @@ map <Leader>Tz <Plug>TeneZ
 # t9md/vim-choosewin
 nmap <C-W><S-C> <Plug>(choosewin)
 
-# Move deferred processing into packix
-import 'deferred.vim'
-
-# deferred.Define('CheckHealth', 'vim-healthcheck')
-deferred.Define('Vitalize', 'vital.vim')
-
-
 if mapcheck('<Plug>NormalizeHomoglyphs') == ''
   nmap zy <Plug>(NormalizeHomoglyphs)
   xmap zy <Plug>(NormalizeHomoglyphs)
@@ -122,3 +118,9 @@ endif
 
 # Make sure pasting in visual mode doesn't replace paste buffer
 vnoremap <silent> <expr> p hz#VisualPaste()
+
+# Focus splits
+nnoremap <silent> <c-h> <c-w>h
+nnoremap <silent> <c-j> <c-w>j
+nnoremap <silent> <c-k> <c-w>k
+nnoremap <silent> <c-l> <c-w>l

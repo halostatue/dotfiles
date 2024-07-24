@@ -108,3 +108,6 @@ iabbrev (17)@ ⓱
 iabbrev (18)@ ⓲
 iabbrev (19)@ ⓳
 iabbrev (20)@ ⓴
+
+cabbrev vb vertical sbuffer
+cabbrev vbuffer vertical sbuffer

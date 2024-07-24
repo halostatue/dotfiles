@@ -102,4 +102,24 @@ export def Colors(): list<string>
     ->uniq()
 enddef
 
+export def AddVimscriptUserCommandsSyntax()
+  var cmdList: string
+
+  redir => cmdList
+  silent! command
+  redir END
+
+  var commands =
+    cmdList
+      ->split('\n')[1 : ]
+      ->map((_, v) => matchstr(v, '[!"b]*\s\+\zs\u\w*\ze'))
+      ->join()
+
+  if empty(commands)
+    return
+  else
+    execute 'syntax keyword vimCommand' .. commands
+  endif
+enddef
+
 defcompile
