@@ -16,8 +16,8 @@ prSections:
     filter: 'is:open mentions:@me -author:@me archived:false'
     layout:
       repo: { width: 30 }
-  - title: Kinetic
-    filters: 'is:open archived:false user:KineticCommerce'
+  - title: Kinetic Cafe OSS
+    filters: 'is:open archived:false user:KineticCafe'
     layout:
       repo: { width: 30 }
   - title: Chezmoi
@@ -39,8 +39,8 @@ issuesSections:
     filter: 'is:open mentions:@me -author:@me archived:false'
     layout:
       repo: { width: 30 }
-  - title: Kinetic
-    filters: 'is:open archived:false user:KineticCommerce'
+  - title: Kinetic Cafe OSS
+    filters: 'is:open archived:false user:KineticCafe'
     layout:
       repo: { width: 30 }
   - title: Chezmoi

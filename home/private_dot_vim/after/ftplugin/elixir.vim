@@ -16,4 +16,4 @@ g:test#custom_transformations = { elixir_umbrella: TransformUmbrellaTest }
 g:test#transformation = 'elixir_umbrella'
 
 nmap <buffer> <Leader>I i\|> IO.inspect(label: "")<ESC>hi
-imap <buffer> <Leader>I \|> IO.inspect(label: "")<ESC>hi
+# imap <buffer> <Leader>I \|> IO.inspect(label: "")<ESC>hi

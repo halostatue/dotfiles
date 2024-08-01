@@ -1,9 +1,0 @@
-{{- $geminabox := onepasswordDetailsFields "rubygems-geminabox-kinetic" "" .onepassword.work }}
-{{-
-  $url := printf "https://%s:%s@%s"
-    $geminabox.username.value
-    $geminabox.credential.value
-    $geminabox.hostname.value
--}}
----
-:host: {{ $url | quote }}

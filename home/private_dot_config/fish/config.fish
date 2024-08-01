@@ -42,7 +42,7 @@ end
 #     end
 # end
 
-set CDPATH . ~/.links/ ~/dev ~/dev/kinetic ~/oss ~/oss/github ~
+set CDPATH . ~/.links/ ~/personal ~
 
 if command --query pngcrush
     function crush -d pngcrush

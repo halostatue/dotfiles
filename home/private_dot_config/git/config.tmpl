@@ -296,6 +296,15 @@
   path = ~/.config/git/identities/work
 
 [includeIf "hasconfig:remote.*.url:git@github.com:KineticCafe/**"]
+  path = ~/.config/git/identities/personal
+
+[includeIf "gitdir:~/work/kineticcafe/**"]
+  path = ~/.config/git/identities/personal
+
+[includeIf "gitdir:~/work/kineticcafe-org/**"]
+  path = ~/.config/git/identities/personal
+
+[includeIf "gitdir:~/work/kinetic"]
   path = ~/.config/git/identities/work
 
 [includeIf "hasconfig:remote.*.url:git@github.com:halostatue/**"]

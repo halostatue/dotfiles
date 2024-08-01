@@ -1,6 +1,6 @@
 vim9script
 
-if exists(':Scope')
+if exists(':Scope') == 2
   import autoload 'scope/popup.vim'
 
   def Things()
