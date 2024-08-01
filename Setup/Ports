@@ -13,9 +13,11 @@ atuin
 bat
 bat-extras
 binocle
+broot
 cabal
 cargo2port
 certstrap
+chafa
 chainloop
 changie
 checkmake
@@ -26,6 +28,7 @@ container-diff
 cosign
 crystal
 csvlens
+ctpv
 dasel
 dateutils
 delve
@@ -84,6 +87,7 @@ gleam
 glow
 gmake
 go
+go-mmv
 go2port
 goaccess
 goawk
@@ -98,6 +102,7 @@ grex
 grype
 gum
 hexyl
+htmd-cli
 htmlq
 hwatch
 hyperfine
@@ -154,6 +159,7 @@ rust-script
 scc
 sd
 seaport
+sfm
 shellcheck
 shellharden
 shfmt
@@ -166,8 +172,10 @@ stylua
 svu
 tag
 tealdeer
+terminal-notifier
 tfmigrate
 tfupdate
+the_silver_searcher
 tig +doc
 tnef
 toast
@@ -176,9 +184,11 @@ topfew
 trurl
 vhs
 viddy
+vifm
 wxWidgets-3.2 +compat30
 xh
 xsv
+yajl
 yq
 zellij
 zoxide

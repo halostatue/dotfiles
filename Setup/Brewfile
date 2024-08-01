@@ -74,6 +74,7 @@ cask "insomnia" # HTTP and GraphQL Client
 cask "iterm2" # Terminal emulator as alternative to Apple's Terminal app
 cask "itsycal" # Menu bar calendar
 cask "kindle-previewer" # Preview and audit Kindle eBooks
+cask "maccy" # Clipboard manager
 cask "macvim" # Text editor
 cask "macwhisper" # Speech recognition tool
 cask "meetingbar" # Shows the next meeting in the menu bar
@@ -102,6 +103,7 @@ cask "viscosity" # OpenVPN client with AppleScript support
 cask "visual-studio-code" # Open-source code editor
 cask "webpquicklook" # Quick Look plugin for webp files
 cask "xcodes" # Install and switch between multiple versions of Xcode
+cask "xprocheck" # Anti-malware scan logging tool
 cask "zed" # Multiplayer code editor
 
 ## Fonts
@@ -160,6 +162,7 @@ mas "Data Jar", id: 1453273600
 mas "Developer", id: 640199958
 mas "Esse", id: 1438921989
 mas "Exporter", id: 1099120373
+mas "Flighty", id: 1358823008
 mas "GRIS+", id: 1617349089
 mas "GarageBand", id: 682658836
 mas "GoodLinks", id: 1474335294
