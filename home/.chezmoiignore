@@ -193,7 +193,3 @@ Library/Application Scripts
 # !Library/Application Support/lazy-git/**
 # !Library/Application Support/tealdeer/**
 {{ end }}
-
-{{ if not (dig "aws" "credentials_source" false .) }}
-.aws/credentials
-{{ end }}
