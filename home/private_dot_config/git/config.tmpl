@@ -65,12 +65,13 @@
   untracked = white bold
 
 [commit]
-  cleanup = scissors
-  verbose = true
 {{- if $commitTemplate }}
   #  template = {{ $commitTemplate | quote }}
+{{- end }}
+  cleanup = scissors
+  verbose = true
+  gpgsign = true
 
-{{ end }}
 [conflicts]
   editor = gvim
 
@@ -137,6 +138,13 @@
 {{- end }}
 
 {{ end -}}
+[gpg]
+  format = ssh
+
+[gpg "ssh"]
+  allowedSignersFile = {{ joinPath "~" ".ssh/allowed_signers" }}
+  # program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
 [grep]
   extendRegexp = true
   lineNumber = true
@@ -176,6 +184,7 @@
   autoSetupRemote = true
   default = simple
   followTags = true
+  gpgSign = false # if-asked
 
 [rebase]
   autosquash = true
@@ -201,7 +210,9 @@
   fetchJobs = 0
 
 [tag]
+  forceSignAnnotated = true
   sort = version:refname
+  gpgsign = true
 
 [tar "tar.xz"]
   command = xz -c
@@ -281,9 +292,6 @@
 [include]
   path = ~/.config/git/diff-merge
 
-[include]
-  path = ~/.config/git/signatures
-
 [includeIf "hasconfig:remote.*.url:git@github.com:KineticCommerce/**"]
   path = ~/.config/git/identities/work
 
@@ -296,7 +304,10 @@
 [includeIf "hasconfig:remote.*.url:git@github.com:mime-types/**"]
   path = ~/.config/git/identities/personal
 
-[includeIf "gitdir:~/personal"]
+[includeIf "gitdir:~/personal/**"]
   path = ~/.config/git/identities/personal
 
+[includeIf "gitdir:~/mess/**"]
+  path = ~/.config/git/identities/personal
+{{- "" -}}
 {{/* vim: set filetype=gitconfig */}}
