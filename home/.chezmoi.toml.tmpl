@@ -1,0 +1,41 @@
+{{- $ssh_agents := (list "1Password" "secretive" "ssh-agent") -}}
+{{- $email := promptStringOnce . "email" "Email" -}}
+{{- $name := promptStringOnce . "name" "Name" -}}
+{{- $github_username := promptStringOnce . "github.user" "Github Username" -}}
+{{- $personal_1password_account := promptStringOnce . "onepassword.personal" "1Password Personal " -}}
+{{- $gpg_default_key := promptStringOnce . "gnupg.default_key" "GnuPG Default Key" -}}
+{{- $ssh_agent := promptChoiceOnce . "ssh.agent" "Which SSH agent to use?" $ssh_agents -}}
+
+[scriptEnv]
+DEBUG_SCRIPTS = "false"
+
+[add]
+secrets = "error"
+
+[diff]
+exclude = ["scripts"]
+
+[data]
+email = {{ $email | toToml }}
+name = {{ $name | toToml }}
+debug_scripts = false
+
+[data.onepassword]
+personal = {{ $personal_1password_account | toToml }}
+
+[data.github]
+user = {{ $github_username | toToml }}
+
+[data.ruby.hoe]
+email = {{ $email | toToml }}
+
+[data.ruby.rubygems]
+user = {{ $email | toToml }}
+
+{{ if $gpg_default_key -}}
+[data.gnupg]
+default_key = {{ $gpg_default_key | toToml }}
+{{- end }}
+
+[data.ssh]
+agent = {{ $ssh_agent | toToml }}
