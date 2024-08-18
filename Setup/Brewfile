@@ -1,4 +1,3 @@
-tap "homebrew/autoupdate"
 tap "homebrew/bundle"
 tap "homebrew/services"
 tap "reviewdog/tap"
@@ -22,7 +21,6 @@ brew "gitleaks" # Audit git repos for secrets
 brew "lnav" # Curses-based tool for viewing and analyzing log files
 brew "mas" # Mac App Store command-line interface
 brew "moreutils" # Collection of tools that nobody wrote when UNIX was young
-brew "neovide" # No Nonsense Neovim Client in Rust
 brew "pam-reattach" # PAM module for reattaching to the user's GUI (Aqua) session
 brew "pandoc" # Swiss-army knife of markup format conversion
 brew "pv" # Monitor data's progress through a pipe
@@ -70,10 +68,12 @@ cask "gpg-suite-no-mail" # Tools to protect your files
 cask "hazel" # Automated organisation
 cask "hex-fiend" # Hex editor focussing on speed
 cask "httpie" # Testing client for REST, GraphQL, and HTTP APIs
+cask "imhex" # Hex editor for reverse engineers
 cask "insomnia" # HTTP and GraphQL Client
 cask "iterm2" # Terminal emulator as alternative to Apple's Terminal app
 cask "itsycal" # Menu bar calendar
 cask "kindle-previewer" # Preview and audit Kindle eBooks
+cask "kitty" # GPU-based terminal emulator
 cask "maccy" # Clipboard manager
 cask "macvim" # Text editor
 cask "macwhisper" # Speech recognition tool
@@ -102,6 +102,7 @@ cask "tableflip" # Edit plain text tables in place: Markdown, CSV, JSON. LaTeX a
 cask "viscosity" # OpenVPN client with AppleScript support
 cask "visual-studio-code" # Open-source code editor
 cask "webpquicklook" # Quick Look plugin for webp files
+cask "wezterm" # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "xcodes" # Install and switch between multiple versions of Xcode
 cask "xprocheck" # Anti-malware scan logging tool
 cask "zed" # Multiplayer code editor

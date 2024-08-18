@@ -273,7 +273,7 @@
 
 # Need a new release of MacVim to use Splice9
 # [mergetool "splice"]
-#   cmd = {{ quote $tool }} --nofork "${BASE}" "${LOCAL}" "${REMOTE}" "${MERGED" -c Splice9Init
+#   cmd = {{ quote $tool }} --nofork "${BASE}" "${LOCAL}" "${REMOTE}" "${MERGED}" -c Splice9Init
 #   trustExitCode = true
 
 {{ end -}}
@@ -281,6 +281,10 @@
 {{ if $programs.vim -}}
 [mergetool "vimdiff"]
   cmd = {{ $programs.vim }} -d "${LOCAL}" "${MERGED}" "${REMOTE}"
+  trustExitCode = true
+
+[mergetool "conflicted"]
+  cmd = {{ $programs.vim }} +Conflicted
   trustExitCode = true
 
 {{ end -}}

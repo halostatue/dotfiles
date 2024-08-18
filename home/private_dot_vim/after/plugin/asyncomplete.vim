@@ -23,40 +23,40 @@ else
   inoremap <expr> <S-Tab> pumvisible() ? '<C-p>' : '<S-Tab>'
 endif
 
-if packix#IsPluginInstalled('vim-emoji')
-  var _cache: list<dict<any>>
-
-  def CompleteEmoji(opt: dict<any>, ctx: dict<any>)
-    if empty(_cache)
-      _cache = emoji#data#dict()
-        ->keys()
-        ->sort()
-        ->map((_, val) => {
-          return { word: ':' .. val .. ':', kind: emoji#for(val) }
-        })
-
-      asyncomplete#log('cached emojis')
-    endif
-
-    var typed = ctx['typed']
-    var startcol = match(typed, ':[^: \t]*$')
-
-    if startcol > -1
-      asyncomplete#complete(opt['name'], ctx, startcol + 1, _cache)
-    endif
-  enddef
-
-  def RegisterEmoji()
-    asyncomplete#register_source({
-      name: 'emoji',
-      allowlist: ['*'],
-      completor: CompleteEmoji
-    })
-  enddef
-
-  augroup asyncomplete-emoji
-    autocmd!
-
-    autocmd User asyncomplete_setup call RegisterEmoji()
-  augroup END
-endif
+# if packix#IsPluginInstalled('vim-emoji')
+#   var _cache: list<dict<any>>
+#
+#   def CompleteEmoji(opt: dict<any>, ctx: dict<any>)
+#     if empty(_cache)
+#       _cache = emoji#data#dict()
+#         ->keys()
+#         ->sort()
+#         ->map((_, val) => {
+#           return { word: ':' .. val .. ':', kind: emoji#for(val) }
+#         })
+#
+#       asyncomplete#log('cached emojis')
+#     endif
+#
+#     var typed = ctx['typed']
+#     var startcol = match(typed, ':[^: \t]*$')
+#
+#     if startcol > -1
+#       asyncomplete#complete(opt['name'], ctx, startcol + 1, _cache)
+#     endif
+#   enddef
+#
+#   def RegisterEmoji()
+#     asyncomplete#register_source({
+#       name: 'emoji',
+#       allowlist: ['*'],
+#       completor: CompleteEmoji
+#     })
+#   enddef
+#
+#   augroup asyncomplete-emoji
+#     autocmd!
+#
+#     autocmd User asyncomplete_setup call RegisterEmoji()
+#   augroup END
+# endif

@@ -1,11 +1,17 @@
 [settings]
+always_keep_download = false
+always_keep_install = false
+asdf_compat = false
+experimental = true
 legacy_version_file = false
+paranoid = true
 
 [env]
 ERL_AFLAGS = "-kernel shell_history enabled shell_history_file_bytes 5242880"
 
 [tools]
-elixir = "1.16"
-erlang = "26.2"
+elixir = "1.17.2-otp-27"
+erlang = "27.0.1"
 node = "20"
-ruby = "3.2"
+ruby = "3.3"
+usage = "latest"

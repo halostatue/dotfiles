@@ -85,9 +85,6 @@ josharian/impl
 # inframap
 # https://github.com/cycloidio/inframap
 cycloidio/inframap
-# keyify
-# https://honnef.co/go/tools/cmd/keyify
-honnef.co/go/tools/cmd/keyify
 # ksuid
 # https://github.com/segmentio/ksuid
 segmentio/ksuid/cmd/ksuid

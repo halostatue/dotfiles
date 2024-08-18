@@ -33,6 +33,7 @@ dasel
 dateutils
 delve
 deno
+dict
 diff-so-fancy
 diffoci
 diffoscope
@@ -130,8 +131,6 @@ mpstats
 murex
 mved
 navi
-neovim
-newreleases
 nim
 nomino
 oauth2c

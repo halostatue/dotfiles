@@ -48,6 +48,7 @@ pipx install ruff
 pipx install runlike
 pipx install saws
 pipx install shallow-backup
+pipx install slack-export-viewer
 pipx install sqlfluff
 pipx install ssh-audit
 pipx install strec --include-deps

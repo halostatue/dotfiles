@@ -96,6 +96,7 @@ packix.Setup((px: packix.Manager) => {
   # Improved matchit/matchparen
   # https://github.com/andymass/vim-matchup
   px.Add('andymass/vim-matchup')
+  # https://github.com/monkoose/vim9-matchparen
 
   # Load .envrc for vim
   # https://github.com/direnv/direnv.vim
@@ -122,7 +123,11 @@ packix.Setup((px: packix.Manager) => {
   px.Add('tpope/vim-rsi')
   # Change surrounds easily
   # https://github.com/tpope/vim-surround
-  px.Add('tpope/vim-surround')
+  # px.Add('tpope/vim-surround')
+  # My port. There appear to be a few bugs.
+  px.Local('~/personal/forks/vim/vim-surround')
+  # Alternative: https://github.com/machakann/vim-sandwich
+
   # Paired mappings
   # https://github.com/tpope/vim-unimpaired
   px.Add('tpope/vim-unimpaired')
@@ -241,25 +246,23 @@ packix.Setup((px: packix.Manager) => {
   # File Picker:
   # USING THIS: https://github.com/srstevenson/vim-picker
   px.Add('srstevenson/vim-picker')
-  # TRY THIS: https://github.com/liuchengxu/vim-clap
-  px.Add('liuchengxu/vim-clap', { do: (_) => clap#installer#force_download() })
-  # RE-TRY THIS: https://github.com/vim-ctrlspace/vim-ctrlspace
-  # px.Add('vim-ctrlspace/vim-ctrlspace')
-
   # https://github.com/girishji/scope.vim
   px.Add('girishji/scope.vim')
   # https://github.com/Donaldttt/fuzzyy
   px.Add('Donaldttt/fuzzyy')
-  # This one is not quite ready, because it sets bindings unconditionally
-  # https://github.com/hahdookin/minifuzzy
-  # px.Add('hahdookin/minifuzzy')
 
   # Git so awesome, it should be illegal
   # https://github.com/tpope/vim-fugitive
   px.Add('tpope/vim-fugitive')
+  # Fugitive-based Git branch viewer
+  # https://github.com/rbong/vim-flog
+  px.Add('rbong/vim-flog', {
+    type: 'opt',
+    on: ['Flog', 'Flogsplit', 'Floggit'],
+    requires: 'tpope/vim-fugitive' })
 
-  # https://github.com/Eliot00/git-lens.vim
-  px.Add('Eliot00/git-lens.vim')
+  # # https://github.com/Eliot00/git-lens.vim
+  # px.Add('Eliot00/git-lens.vim')
 
   # https://github.com/rizzatti/dash.vim
   px.Add('rizzatti/dash.vim')
@@ -453,19 +456,6 @@ packix.Setup((px: packix.Manager) => {
   # Autoset path searching
   # https://github.com/tpope/vim-apathy
   px.Add('tpope/vim-apathy')
-  # Rails support
-  # https://github.com/tpope/vim-rails
-  px.Add('tpope/vim-rails', { type: 'opt' })
-  # Rake support
-  # https://github.com/tpope/vim-rake
-  px.Add('tpope/vim-rake', { type: 'opt' })
-  # Bundler support
-  # https://github.com/tpope/vim-bundler
-  px.Add('tpope/vim-bundler', { type: 'opt' })
-  # Automatically insert continuation bacskslashes for vim files
-  # https://github.com/lambdalisue/vim-backslash
-  # NOTE: This does not work well with vim9script
-  # px.Add('lambdalisue/vim-backslash')
 
   # Colorschemes
   # https://github.com/tyrannicaltoucan/vim-quantum
@@ -488,39 +478,53 @@ packix.Setup((px: packix.Manager) => {
   px.Add('sjl/badwolf')
   # https://github.com/fenetikm/falcon
   px.Add('fenetikm/falcon')
+  # https://github.com/dreyks/ir_black
+  px.Add('dreyks/ir_black')
+  # https://github.com/vim-scripts/mayansmoke
+  px.Add('vim-scripts/mayansmoke')
+  # https://github.com/lunacookies/vim-mayanfog
+  px.Add('lunacookies/vim-mayanfog')
 
   # Display completion function signatures in the command-line
   # https://github.com/Shougo/echodoc.vim
   px.Add('Shougo/echodoc.vim')
 
-  # Autoclose parentheses
-  # https://github.com/mattn/vim-lexiv
-  px.Add('mattn/vim-lexiv')
+  # Autoclose paired markers (parens, etc.)
+  # https://github.com/LunarWatcher/auto-pairs
+  px.Add('LunarWatcher/auto-pairs')
+  # vim9 rewrite of jiangmiao/auto-pairs: https://github.com/Eliot00/auto-pairs
+  # vim9 similar to jiangmiao/auto-pairs: https://github.com/monkoose/vim9-autopairs
 
-  # LSP Options
+  # LSP & Autocomplete
+  # With Vim, LSP clients and autocomplete plugins tend to be relatively tightly tied
+  # together.
 
-  # https://github.com/natebosch/vim-lsc
-  # px.Add('natebosch/vim-lsc')
-
-  # https://github.com/prabirshrestha/vim-lsp
-  px.Add('prabirshrestha/vim-lsp')
-  # https://github.com/mattn/vim-lsp-settings
-  px.Add('mattn/vim-lsp-settings')
-  # https://github.com/prabirshrestha/asyncomplete.vim
-  px.Add('prabirshrestha/asyncomplete.vim')
-  # https://github.com/prabirshrestha/asyncomplete-lsp.vim
-  px.Add('prabirshrestha/asyncomplete-lsp.vim')
-  # https://github.com/prabirshrestha/asyncomplete-file.vim
-  px.Add('prabirshrestha/asyncomplete-file.vim')
-  # https://github.com/tsuyoshicho/asyncomplete-anylist
-  px.Add('tsuyoshicho/asyncomplete-anylist')
-
-  # https://github.com/yegappan/lsp
-  # px.Add('yegappan/lsp')
-  # https://github.com/mattn/vim-lsp-settings
-  # px.Add('mattn/vim-lsp-settings')
-  # https://github.com/normen/vim-lsp-settings-adapter
-  # px.Add('normen/vim-lsp-settings-adapter')
+  # LSP Client choices
+  if g:->get('hz_lsp_client', 'yegappan/lsp') == 'yegappan/lsp'
+    # https://github.com/yegappan/lsp
+    px.Add('yegappan/lsp', { requires: [
+      # https://github.com/mattn/vim-lsp-settings
+      'mattn/vim-lsp-settings',
+      # https://github.com/normen/vim-lsp-settings-adapter
+      'normen/vim-lsp-settings-adapter',
+      # https://github.com/girishji/vimcomplete
+      'girishji/vimcomplete',
+    ] })
+  else
+    # https://github.com/prabirshrestha/vim-lsp
+    px.Add('prabirshrestha/vim-lsp', { requires: [
+      # https://github.com/mattn/vim-lsp-settings
+      'mattn/vim-lsp-settings',
+      # https://github.com/prabirshrestha/asyncomplete.vim
+      'prabirshrestha/asyncomplete.vim',
+      # https://github.com/prabirshrestha/asyncomplete-lsp.vim
+      'prabirshrestha/asyncomplete-lsp.vim',
+      # https://github.com/prabirshrestha/asyncomplete-file.vim
+      'prabirshrestha/asyncomplete-file.vim',
+      # https://github.com/tsuyoshicho/asyncomplete-anylist
+      'tsuyoshicho/asyncomplete-anylist',
+    ] })
+  endif
 
   # LSP and tag view display
   # https://github.com/liuchengxu/vista.vim
@@ -654,40 +658,86 @@ packix.Setup((px: packix.Manager) => {
   # https://github.com/greeschenko/vim9-ollama
   # px.Add('greeschenko/vim9-ollama')
 
-  # Alternative to easymotion
-  # https://github.com/monkoose/vim9-stargate
+  # Buffer History
+  # https://github.com/dhruvasagar/vim-buffer-history
+  px.Add('dhruvasagar/vim-buffer-history')
 
-  # Preview quickfix item under cursor in a popup window
-  # https://github.com/bfrg/vim-qf-preview
-  # augroup qfpreview
-  #     autocmd!
-  #     autocmd FileType qf nmap <buffer> p <plug>(qf-preview-open)
-  #     autocmd FileType qf nmap <buffer> q <CMD>close<CR>
-  # augroup END
+  # Exchange two {motion}s
+  # https://github.com/tommcdo/vim-exchange
+  px.Add('tommcdo/vim-exchange')
 
-  # https://github.com/Eliot00/auto-pairs
-  # https://github.com/monkoose/vim9-autopairs
-  # https://github.com/LunarWatcher/auto-pairs
-  # https://github.com/mityu/vim-alith (text alignment)
-  # https://github.com/wolandark/vimdict (requires `dict` command)
-  # https://github.com/monkoose/vim9-matchparen
-  # https://github.com/kennypete/vim-popped
+  # Vim Text Objects
+  # https://github.com/kana/vim-textobj-user
+  px.Add('kana/vim-textobj-user', {
+    requires: [
+      'glts/vim-textobj-comment', # https://github.com/glts/vim-textobj-comment
+      'kana/vim-textobj-datetime', # https://github.com/kana/vim-textobj-datetime
+      'kana/vim-textobj-line', # https://github.com/kana/vim-textobj-line
+      'jceb/vim-textobj-uri', # https://github.com/jceb/vim-textobj-uri
+  ] })
+
+  if executable('dict')
+    # Look up a word with the dictionary protocol
+    # https://github.com/wolandark/vimdict (requires `dict` command)
+    px.Add('wolandark/vimdict')
+  endif
+
+  # Completion for command mode
   # https://github.com/mityu/vim-cmdhistory
-  # https://github.com/mityu/vim-cobachi # fuzzy finder
-  # https://github.com/Bakudankun/base64.vim
-  # https://github.com/monkoose/vim9-unix
+  px.Add('mityu/vim-cmdhistory')
+
+  # Check what is causing slow vim startup time
+  # https://github.com/dstein64/vim-startuptime
+  px.Add('dstein64/vim-startuptime')
+
   # https://github.com/jessepav/vim-boxdraw
   # https://github.com/hrsh7th/vim-vsnip
   # https://github.com/hrsh7th/vim-vsnip-integ
   # https://github.com/rafamadriz/friendly-snippets
-  # https://github.com/tommcdo/vim-exchange
-  # https://github.com/AndrewRadev/switch.vim
-  # https://github.com/AndrewRadev/sideways.vim
   # https://github.com/AndrewRadev/splitjoin.vim
-  # https://github.com/machakann/vim-sandwich
-  # https://github.com/dstein64/vim-startuptime
   # https://github.com/SirVer/ultisnips
   # https://github.com/honza/vim-snippets
-  # https://github.com/mattn/calendar-vim
-  # https://github.com/dhruvasagar/vim-github-review
+  # https://github.com/prabirshrestha/asyncomplete.vim
+  # https://github.com/prabirshrestha/asyncomplete-lsp.vim
+  # https://github.com/hrsh7th/vim-vsnip-integ
+  # https://github.com/reedes/vim-pencil
+  # https://github.com/reedes/vim-lexical
+  # opt - https://github.com/junegunn/goyo.vim
+  # opt - https://github.com/junegunn/limelight.vim
+  # opt - https://github.com/wellle/targets.vim
+  # https://github.com/rhysd/clever-f.vim
+  # https://github.com/edkolev/erlang-motions.vim
+  # opt - https://github.com/mg979/vim-visual-multi
+  # https://github.com/christoomey/vim-conflicted
+  # https://github.com/rhysd/conflict-marker.vim
+  #
+  # https://github.com/tpope/vim-dispatch
+  # https://github.com/hauleth/asyncdo.vim
+  # https://github.com/romainl/vim-qf
+  # https://github.com/romainl/vim-qlist
+  # https://github.com/Olical/vim-enmasse
+  # https://github.com/igemnace/vim-makery
+  # off - https://github.com/AndrewRadev/qftools.vim
+  # off- https://github.com/AndrewRadev/linediff.vim
+  #
+  # https://github.com/t9md/vim-choosewin
+  # https://github.com/dhruvasagar/vim-zoom
+  #
+  # Optional debug / test stuff {{{
+  # opt - https://github.com/Vimjas/vint
+  # opt - https://github.com/puremourning/vimspector
+  # https://github.com/vim-test/vim-test
+  # opt - https://github.com/junegunn/vader.vim
+  # opt - https://github.com/tpope/vim-scriptease
+  # opt - https://github.com/tweekmonster/exception.vim
+  # opt - https://github.com/tweekmonster/helpful.vim
+  # opt - https://github.com/mhinz/vim-lookup
+  # opt - https://github.com/thinca/vim-themis
+  #
+  # opt - https://github.com/mattn/gist-vim
+  # opt - https://github.com/mbbill/undotree
+  #
+  # Loaded only for specific filetypes on demand.
+  # Requires autocommands below.
+  # opt - for go - https://github.com/fatih/vim-go
 })

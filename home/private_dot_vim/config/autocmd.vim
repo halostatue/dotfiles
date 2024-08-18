@@ -22,11 +22,7 @@ augroup END
 # Auto reload if file was changed somewhere else (for autoread)
 augroup hz-checktime
   autocmd!
-  autocmd FocusGained,BufEnter,CursorHold,CursorHoldI,WinEnter * {
-    if !bufexists('[Command Line]')
-      checktime
-    endif
-  }
+  autocmd FocusGained,BufEnter,CursorHold,CursorHoldI,WinEnter * silent! checktime
 augroup END
 
 # Reset paste mode after leaving insert.

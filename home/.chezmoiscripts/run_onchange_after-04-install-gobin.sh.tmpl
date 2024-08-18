@@ -110,30 +110,3 @@ done <"{{ .chezmoi.workingTree }}/Setup/Gobin"
     go install . >/dev/null 2>/dev/null
   fi
 )
-
-(
-  set -e
-  declare tmp
-  tmp="$(mktemp -d)"
-
-  cd "${tmp}"
-
-  export CGO_ENABLED=0
-
-  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
-    git clone https://github.com/rsteube/carapace-bin
-  else
-    git clone https://github.com/rsteube/carapace-bin >/dev/null 2>/dev/null
-  fi
-  cd carapace-bin
-
-  if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
-    go mod download
-    go generate ./cmd/...
-    go install ./cmd/carapace
-  else
-    go mod download >/dev/null 2>/dev/null
-    go generate ./cmd/... >/dev/null 2>/dev/null
-    go install ./cmd/carapace >/dev/null 2>/dev/null
-  fi
-)

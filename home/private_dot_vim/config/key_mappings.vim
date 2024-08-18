@@ -90,37 +90,5 @@ hz#behaviour#JkLinewise(hz#behaviour#JK_STRICT)
 # Toggle between j -> gj (etc.) and normal behaviour.
 nmap <leader>gj <Cmd>hz#bheaviour#JkLinewise()<CR>
 
-# Configure kennypete/vim-tene toggles.
-map <Leader>T% <Plug>Tene%
-map <Leader>Tb <Plug>TeneB
-map <Leader>Tc <Plug>TeneC
-map <Leader>Tf <Plug>TeneF
-map <Leader>Tg <Plug>TeneG
-map <Leader>Th <Plug>TeneH
-map <Leader>Tk <Plug>TeneK
-map <Leader>Tl <Plug>TeneL
-map <Leader>Tm <Plug>TeneM
-map <Leader>Tp <Plug>TeneP
-map <Leader>Ts <Plug>TeneS
-map <Leader>Tu <Plug>TeneU
-map <Leader>Tv <Plug>TeneV
-map <Leader>Tw <Plug>TeneW
-map <Leader>Tz <Plug>TeneZ
-
-# t9md/vim-choosewin
-nmap <C-W><S-C> <Plug>(choosewin)
-
-if mapcheck('<Plug>NormalizeHomoglyphs') == ''
-  nmap zy <Plug>(NormalizeHomoglyphs)
-  xmap zy <Plug>(NormalizeHomoglyphs)
-  nmap zu <Plug>(HighlightHomoglyphs)
-endif
-
 # Make sure pasting in visual mode doesn't replace paste buffer
 vnoremap <silent> <expr> p hz#VisualPaste()
-
-# Focus splits
-nnoremap <silent> <c-h> <c-w>h
-nnoremap <silent> <c-j> <c-w>j
-nnoremap <silent> <c-k> <c-w>k
-nnoremap <silent> <c-l> <c-w>l

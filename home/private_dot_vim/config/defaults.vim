@@ -173,6 +173,9 @@ g:autosource_hashdir = hz#MkXdgVimPath('data', 'site', 'autosource_hashes')
 # Donaldttt/fuzzyy
 g:enable_fuzzyykeymaps = false
 
+# # Enable Eliot00/git-lens.vim
+# g:GIT_LENS_ENABLED = true
+
 # Distraction-free writing with Pencil and junegunn/goyo-vim
 g:pencil#textwidth = 80
 g:goyo_width = 80

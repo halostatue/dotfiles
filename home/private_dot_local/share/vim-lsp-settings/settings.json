@@ -1,0 +1,15 @@
+{
+  "pylsp": {
+    "plugins": {
+      "pycodestyle": {
+        "maxLineLnegth": 120,
+        "indentSize": 2
+      },
+      "ruff": {
+        "enabled": true,
+        "formatEnabled": true,
+        "lineLength": 120
+      }
+    }
+  }
+}

@@ -28,5 +28,5 @@ if ! command -v vim >/dev/null 2>&1; then
 fi
 
 # Vim Spelling File Hashes
-# {{ include (joinPath .chezmoi.sourceDir "private_dot_vim/en.utf-8.add") | sha256sum }}
-vim +'mkspell ~/.vim/spell/en.utf-8.add'
+# {{ include (joinPath .chezmoi.sourceDir "private_dot_vim/spell/en.utf-8.add") | sha256sum }}
+vim +'mkspell ~/.vim/spell/en.utf-8.add' +q

@@ -19,22 +19,22 @@ g:startify_custom_footer = [
 ]
 
 if exists(':StartupTime') == 2
-  g:startify_commands->add(['Time startup', 'StartupTime'])
+  g:startify_commands->add({ T: ['Time startup', 'StartupTime'] })
 endif
 
 if exists(':PackixInstall') == 2
   if packix#IsPluginInstalled('vim-obsession') && packix#IsPluginInstalled('vim-prosession')
     g:startify_commands->insert(
-      { S: ['Start Prosession', 'packadd vim-obsession | packadd vim-prosession | Prosession .'] }
+      { P: ['Start Prosession', 'packadd vim-obsession | packadd vim-prosession | Prosession .'] }
     )
   endif
 
   g:startify_commands->extend(
     [
-      { r: ['Install plugins', 'PackixInstall'] },
-      { u: ['Update plugins', 'PackixUpdate'] },
-      { c: ['Clean plugins', 'PackixClean'] },
-      { s: ['Plugin status', 'PackixStatus'] },
+      { I: ['Install plugins', 'PackixInstall'] },
+      { U: ['Update plugins', 'PackixUpdate'] },
+      { C: ['Clean plugins', 'PackixClean'] },
+      { S: ['Plugin status', 'PackixStatus'] },
     ]
   )
 endif

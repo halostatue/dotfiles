@@ -126,7 +126,9 @@
 
 
 .local/pipx
-.local/share
+.local/share/*
+!.local/share/vim-lsp-settings
+!.local/share/vim-lsp-settings/settings.json
 .local/state
 
 .m2
