@@ -4,14 +4,14 @@ set -uo pipefail
 
 on-ERR() {
   local status=$?
-  echo >&2 Error executing run_once_before_install-2-homebrew.sh
+  echo >&2 Error executing run_once_before_02-install-homebrew.sh
   exit ${status}
 }
 
 trap on-ERR ERR
 
 if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
-  echo 2: Install Homebrew
+  echo 02: Install Homebrew
 
   if "${DEBUG_SCRIPTS:-false}"; then
     set -x

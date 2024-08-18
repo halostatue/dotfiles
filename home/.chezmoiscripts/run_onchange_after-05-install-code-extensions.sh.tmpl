@@ -4,14 +4,14 @@ set -uo pipefail
 
 on-ERR() {
   local status=$?
-  echo >&2 Error executing run_onchange_after_install-5-code-extensions.sh.tmpl
+  echo >&2 Error executing run_onchange_after_05-install-code-extensions.sh.tmpl
   exit ${status}
 }
 
 trap on-ERR ERR
 
 if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
-  echo 5: Install VS Code Extensions
+  echo 05: Install VS Code Extensions
 
   if "${DEBUG_SCRIPTS:-false}"; then
     set -x

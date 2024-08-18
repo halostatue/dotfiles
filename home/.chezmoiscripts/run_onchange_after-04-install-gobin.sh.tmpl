@@ -4,14 +4,14 @@ set -uo pipefail
 
 on-ERR() {
   local status=$?
-  echo >&2 Error executing run_onchange_after_install-4-gobin.sh.tmpl
+  echo >&2 Error executing run_onchange_after_04-install-gobin.sh.tmpl
   exit ${status}
 }
 
 trap on-ERR ERR
 
 if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
-  echo 4: Install Go Binaries
+  echo 04: Install Go Binaries
 
   if "${DEBUG_SCRIPTS:-false}"; then
     set -x

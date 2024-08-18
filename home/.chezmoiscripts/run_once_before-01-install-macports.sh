@@ -4,14 +4,14 @@ set -uo pipefail
 
 on-ERR() {
   local status=$?
-  echo >&2 Error executing run_once_before_install-1-macports.sh
+  echo >&2 Error executing run_once_before_01-install-macports.sh
   exit ${status}
 }
 
 trap on-ERR ERR
 
 if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
-  echo 1: Install MacPorts
+  echo 01: Install MacPorts
 
   if "${DEBUG_SCRIPTS:-false}"; then
     set -x
@@ -25,7 +25,7 @@ Darwin)
 
   if ! command -v port >/dev/null 2>&1; then
     declare MACPORTS_VERSION os_version url
-    MACPORTS_VERSION=2.8.1
+    MACPORTS_VERSION=2.10.1
 
     os_version="$(sw_vers -productVersion)"
 
@@ -44,6 +44,8 @@ Darwin)
     10.16 | 10.16.* | 11 | 11.*) os_version="11-BigSur" ;;
     12 | 12.*) os_version="12-Monterey" ;;
     13 | 13.*) os_version="13-Ventura" ;;
+    14 | 14.*) os_version="14-Sonoma" ;;
+    15 | 15.*) os_version="15-Sequoia" ;;
     *)
       echo >&2 "OS Version ${os_version} is not yet supported."
       exit 1

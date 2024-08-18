@@ -4,14 +4,14 @@ set -uo pipefail
 
 on-ERR() {
   local status=$?
-  echo >&2 Error executing run_once_before_0-prepare-system.sh
+  echo >&2 Error executing run_once_before_00-prepare-system.sh
   exit ${status}
 }
 
 trap on-ERR ERR
 
 if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
-  echo 0: prepare system
+  echo 00: prepare system
 
   if "${DEBUG_SCRIPTS:-false}"; then
     set -x

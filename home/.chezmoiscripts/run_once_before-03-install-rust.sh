@@ -4,14 +4,14 @@ set -uo pipefail
 
 on-ERR() {
   local status=$?
-  echo >&2 Error executing run_once_before_install-3-rust.sh
+  echo >&2 Error executing run_once_before_03-install-rust.sh
   exit ${status}
 }
 
 trap on-ERR ERR
 
 if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
-  echo 3: Install Rust
+  echo 03: Install Rust
 
   if "${DEBUG_SCRIPTS:-false}"; then
     set -x

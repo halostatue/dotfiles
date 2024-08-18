@@ -4,14 +4,14 @@ set -uo pipefail
 
 on-ERR() {
   local status=$?
-  echo >&2 Error executing run_onchange_after_configure-apps.sh
+  echo >&2 Error executing run_onchange_after_07-configure-apps.sh
   exit ${status}
 }
 
 trap on-ERR ERR
 
 if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
-  echo Configure Apps
+  echo 07: Configure Apps
 
   if "${DEBUG_SCRIPTS:-false}"; then
     set -x
