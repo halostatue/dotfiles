@@ -164,6 +164,7 @@
 .ts_node_repl_history
 .twilio-cli
 
+.vim/spell/*.spl
 .viminfo
 .vscode
 

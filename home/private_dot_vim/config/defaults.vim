@@ -28,18 +28,33 @@ g:loaded_vimballPlugin = true   # vimball: Not needed with a plugin manager
 g:loaded_matchit = true         # matchit: andymass/vim-matchup is better
 
 ## 3. Set various syntax plugin configurations.
+#     These options need to be set *before* the syntax loads.
+
+# pearofducks/ansible-vim
+g:ansible_unindent_after_newline = true
+g:ansible_template_syntaxes = { '*.rb.j2': 'ruby' }
+g:ansible_extra_keywords_highlight = true
+
+# elixir-editors/vim-elixir
+g:elixir_use_markdown_for_docs = true
+
+# tpope/vim-git
+g:gitcommit_summary_length = 50
 
 # leafOfTree/vim-svelte-plugin: Typescript and Sass. Typescript depends on
 # leafgarland/typescript-vim or HerringtonDarkholme/yats.vim.
 g:vim_svelte_plugin_use_typescript = true
 g:vim_svelte_plugin_use_sass = true
 
-g:ansible_unindent_after_newline = true
-
+# C++ syntax (builtin)
 g:cpp_attributes_highlight = true
 g:cpp_function_highlight = true
 g:cpp_member_highlight = true
 g:cpp_simple_highlight = true
+
+# Vim syntax (builtin)
+# Allow embedded Lua, mzscheme, Perl, Python, Ruby, and Tcl highlighting.
+g:vimsyn_embed = 'lmpPrt'
 
 ## 4. Set various configurations before loading plug-ins to prevent or set certain
 ##    behaviours.
@@ -52,7 +67,8 @@ endif
 # Put tags in an XDGish path instead of in each directory
 g:gutentags_cache_dir = hz#MkXdgVimPath('cache', 'tags')
 
-# If we enable wincent/ferret, this disabled Neovim job checking.
+# Disable Neovim job checking and default ferret maps
+g:FerretMap = false
 g:FerretNvim = false
 
 # Disable easyjump and fFtT plugins included in the girishji/vimbits suite.
@@ -84,10 +100,6 @@ g:tene_ga = {
   'col()': ['c', '⩙']
 }
 
-# Vim syntax (builtin)
-# Allow embedded Lua, mzscheme, Perl, Python, Ruby, and Tcl highlighting.
-g:vimsyn_embed = 'lmpPrt'
-
 # Enable tpope/vim-endwise abbreviations for certain languages
 g:endwise_abbreviations = true
 
@@ -98,23 +110,6 @@ g:direnv_silent_load = true
 g:EditorConfig_exclude_patterns =
   g:->get('EditorConfig_exclude_patterns', [])
     ->extend(['fugitive://.*', 'fern://.*'])
-
-# sjl/badwolf colour scheme options
-g:badwolf_darkgutter = true           # Gutter is darker
-g:badwolf_tabline = 3                 # Tabline is much ligher
-g:badwolf_css_props_highlight = true  # Highlight CSS properties
-
-# fenetikm/falcon colour scheme options
-g:falcon_italic = true                # Enable italics
-g:falcon_bold = true                  # Enable bold
-
-# ayu-theme/ayu-vim colour scheme style
-g:ayucolor = 'dark'                   # Values: 'dark', 'light', 'mirage'
-
-# robertmeta/nofrils colour scheme options
-g:nofrils_strbackgrounds = true       # Highlight string backgrounds
-g:nofrils_heavycomments = true        # High-contrast comments
-g:nofrils_heavylinenumbers = true     # Brighter line numbers
 
 # tpope/vim-ragtag: Enable insert maps C-x H, C-x /, C-x %, C-x &, C-v %, and C-v &
 g:ragtag_global_maps = true
@@ -171,7 +166,7 @@ g:rooter_cd_cmd = 'lcd'       # Ensure that rooter only changes the window path
 g:autosource_hashdir = hz#MkXdgVimPath('data', 'site', 'autosource_hashes')
 
 # Donaldttt/fuzzyy
-g:enable_fuzzyykeymaps = false
+g:enable_fuzzyy_keymaps = false
 
 # # Enable Eliot00/git-lens.vim
 # g:GIT_LENS_ENABLED = true
@@ -180,61 +175,26 @@ g:enable_fuzzyykeymaps = false
 g:pencil#textwidth = 80
 g:goyo_width = 80
 
-# if ! exists('g:organ_loaded')
-#   # ---- DONT FORGET TO INITIALIZE DICTS BEFORE USING THEM
-#   g:organ_config = {}
-#   g:organ_config.prefixless_plugs = {}
-#   g:organ_config.list = {}
-#   g:organ_config.links = {}
-#   g:organ_config.templates = {}
-#   # ---- enable for every file if > 0
-#   g:organ_config.everywhere = 0
-#   # ---- enable speed keys on first char of headlines and list items
-#   g:organ_config.speedkeys = 1
-#   # ---- key to trigger <plug>(organ-previous)
-#   # ---- and go where speedkeys are available
-#   # ---- examples : <m-p> (default), [z
-#   g:organ_config.previous = '<m-p>'
-#   # ---- choose your mappings prefix
-#   g:organ_config.prefix = '<m-o>'
-#   # ---- enable prefixless maps
-#   g:organ_config.prefixless = 1
-#   # ---- prefixless maps in these modes (default)
-#   # ---- possible values : normal, visual, insert
-#   # ---- visual maps are defined only when significant
-#   g:organ_config.prefixless_modes = ['normal', 'visual', 'insert']
-#   # ---- enable only the prefixless maps you want
-#   # ---- leave a list empty to enable all plugs in the mode
-#   # ---- see the output of :map <plug>(organ- to see available plugs
-#   # g:organ_config.prefixless_plugs.normal = ['organ-backward', 'organ-forward']
-#   # g:organ_config.prefixless_plugs.visual = []
-#   # g:organ_config.prefixless_plugs.insert = []
-#   # ---- number of spaces to indent lists (default)
-#   g:organ_config.list.indent_length = 2
-#   # ---- items chars in unordered list (default)
-#   g:organ_config.list.unordered = #{ org : ['-', '+', '*'], markdown : ['-', '+']}
-#   # ---- items chars in ordered list (default)
-#   g:organ_config.list.ordered = #{ org : ['.', ')'], markdown : ['.']}
-#   # ---- first item counter in an ordered list
-#   # ---- must be >= 0, default 1
-#   g:organ_config.list.counter_start = 1
-#   # ---- number of stored links to keep (default)
-#   g:organ_config.links.keep = 5
-#   # ---- shortcuts to expand templates
-#   # ---- examples from default settings
-#   # ---- run :echo g:organ_config.templates to see all
-#   # -- #+begin_center bloc
-#   g:organ_config.templates['<c'] = 'center'
-#   # -- #+include: line
-#   g:organ_config.templates['+i'] = 'include'
-#   # ---- todo keywoard cycle
-#   # ---- default : todo : TODO - DONE - none
-#   # ---- no need to add none to the list
-#   g:organ_config.todo_cycle = ['TODO', 'IN PROGRESS', 'ALMOST DONE', 'DONE']
-#   # ---- timestamp format
-#   g:organ_config.timestamp_format = '<%Y-%m-%d %a %H:%M>'
-#   # ---- custom maps
-#   nmap <c-cr> <plug>(organ-meta-return)
-#   imap <c-cr> <plug>(organ-meta-return)
-#   nnoremap <backspace> :Organ<space>
-# endif
+# Colour schemes
+
+# tyrannical/toucan/vim-quantum
+g:quantum_black = true
+g:quantum_italics = true
+
+# sjl/badwolf colour scheme options
+g:badwolf_darkgutter = true           # Gutter is darker
+g:badwolf_tabline = 3                 # Tabline is much lighter
+g:badwolf_css_props_highlight = true  # Highlight CSS properties
+
+# fenetikm/falcon colour scheme options
+g:falcon_italic = true                # Enable italics
+g:falcon_bold = true                  # Enable bold
+
+# ayu-theme/ayu-vim colour scheme style
+g:ayucolor = 'dark'                   # Values: 'dark', 'light', 'mirage'
+
+# robertmeta/nofrils colour scheme options
+g:nofrils_strbackgrounds = true       # Highlight string backgrounds
+g:nofrils_heavycomments = true        # High-contrast comments
+g:nofrils_heavylinenumbers = true     # Brighter line numbers
+

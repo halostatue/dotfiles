@@ -73,11 +73,9 @@ packix.Setup((px: packix.Manager) => {
   # https://github.com/wincent/loupe
   px.Add('wincent/loupe')
 
-  # Search multiple files.
-  # TRY THIS: https://github.com/eugen0329/vim-esearch
-  px.Add('eugen0329/vim-esearch')
-  # TRY THIS: https://github.com/wincent/ferret
-  # px.Add('wincent/ferret')
+  # Search across multiple files
+  # https://github.com/wincent/ferret
+  px.Add('wincent/ferret')
 
   if hz#Is('unix') && !hz#Is('mac')
     # Sudo support
@@ -96,11 +94,12 @@ packix.Setup((px: packix.Manager) => {
   # Improved matchit/matchparen
   # https://github.com/andymass/vim-matchup
   px.Add('andymass/vim-matchup')
-  # https://github.com/monkoose/vim9-matchparen
 
-  # Load .envrc for vim
-  # https://github.com/direnv/direnv.vim
-  px.Add('direnv/direnv.vim')
+  if executable('direnv')
+    # Load .envrc for vim
+    # https://github.com/direnv/direnv.vim
+    px.Add('direnv/direnv.vim')
+  endif
 
   # Pipe output into a scratch / temporary buffer
   # https://github.com/AndrewRadev/bufferize.vim
@@ -124,9 +123,10 @@ packix.Setup((px: packix.Manager) => {
   # Change surrounds easily
   # https://github.com/tpope/vim-surround
   # px.Add('tpope/vim-surround')
-  # My port. There appear to be a few bugs.
-  px.Local('~/personal/forks/vim/vim-surround')
+  # My port. There are definitely bugs, especially around visual use.
+  # px.Local('~/personal/forks/vim/vim-surround')
   # Alternative: https://github.com/machakann/vim-sandwich
+  px.Add('machakann/vim-sandwich')
 
   # Paired mappings
   # https://github.com/tpope/vim-unimpaired
@@ -244,10 +244,10 @@ packix.Setup((px: packix.Manager) => {
   px.Add('lambdalisue/vim-fern-mapping-git')
 
   # File Picker:
-  # USING THIS: https://github.com/srstevenson/vim-picker
-  px.Add('srstevenson/vim-picker')
+  # # USING THIS: https://github.com/srstevenson/vim-picker
+  # px.Add('srstevenson/vim-picker')
   # https://github.com/girishji/scope.vim
-  px.Add('girishji/scope.vim')
+  # px.Add('girishji/scope.vim')
   # https://github.com/Donaldttt/fuzzyy
   px.Add('Donaldttt/fuzzyy')
 
@@ -299,9 +299,6 @@ packix.Setup((px: packix.Manager) => {
   # Fish shell
   # https://github.com/blankname/vim-fish
   px.Add('blankname/vim-fish')
-  # Git
-  # https://github.com/tpope/vim-git
-  px.Add( 'tpope/vim-git')
   # Github Actions (YAML)
   # https://github.com/yasuhiroki/github-actions-yaml.vim
   px.Add('yasuhiroki/github-actions-yaml.vim')
@@ -314,27 +311,12 @@ packix.Setup((px: packix.Manager) => {
   # GraphQL
   # https://github.com/jparise/vim-graphql
   px.Add('jparise/vim-graphql')
-  # Hjson
-  # https://github.com/hjson/vim-hjson
-  px.Add('hjson/vim-hjson')
   # HTML
   # https://github.com/othree/html5.vim
   px.Add('othree/html5.vim')
-  # icalendar
-  # https://github.com/chutzpah/icalendar.vim
-  px.Add('chutzpah/icalendar.vim')
   # Janet lang
   # https://github.com/janet-lang/janet.vim
   px.Add('janet-lang/janet.vim')
-  # JavaScript
-  # https://github.com/pangloss/vim-javascript
-  px.Add('pangloss/vim-javascript')
-  # jq
-  # https://github.com/vito-c/jq.vim
-  px.Add('vito-c/jq.vim')
-  # JSON
-  # https://github.com/elzr/vim-json
-  px.Add('elzr/vim-json')
   # Julia
   # https://github.com/JuliaEditorSupport/julia-vim
   px.Add('JuliaEditorSupport/julia-vim')
@@ -383,8 +365,6 @@ packix.Setup((px: packix.Manager) => {
   # Vue
   # https://github.com/posva/vim-vue
   px.Add('posva/vim-vue')
-  # https://github.com/lacygoill/vim9-syntax
-  px.Add('lacygoill/vim9-syntax')
 
   ## Disabled Syntax support
   # # AppleScript
@@ -414,12 +394,15 @@ packix.Setup((px: packix.Manager) => {
   # # Fennel (Lua Lisp)
   # # https://github.com/bakpakin/fennel.vim
   # px.Add('bakpakin/fennel.vim')
-  # Haskell
-  # https://github.com/neovimhaskell/haskell-vim
+  # # Haskell
+  # # https://github.com/neovimhaskell/haskell-vim
   # px.Add('neovimhaskell/haskell-vim')
   # # Haxe
   # # https://github.com/jdonaldson/vaxe
   # px.Add('jdonaldson/vaxe')
+  # # icalendar
+  # # https://github.com/chutzpah/icalendar.vim
+  # px.Add('chutzpah/icalendar.vim')
   # # Idris2
   # # https://github.com/edwinb/idris2-vim
   # px.Add('edwinb/idris2-vim')
@@ -442,10 +425,6 @@ packix.Setup((px: packix.Manager) => {
   # # https://github.com/keith/swift.vim
   # px.Add('keith/swift.vim')
 
-  # Generalized Org Mode
-  # https://github.com/chimay/organ
-  # px.Add('chimay/organ')
-
   # Colour highlighter
   # https://github.com/ap/vim-css-color
   px.Add('ap/vim-css-color')
@@ -453,9 +432,6 @@ packix.Setup((px: packix.Manager) => {
   # Autoformat
   # https://github.com/sbdchd/neoformat
   px.Add('sbdchd/neoformat')
-  # Autoset path searching
-  # https://github.com/tpope/vim-apathy
-  px.Add('tpope/vim-apathy')
 
   # Colorschemes
   # https://github.com/tyrannicaltoucan/vim-quantum
@@ -464,6 +440,8 @@ packix.Setup((px: packix.Manager) => {
   px.Add('cocopon/iceberg.vim')
   # https://github.com/habamax/vim-alchemist
   px.Add('habamax/vim-alchemist')
+  # https://github.com/habamax/vim-habanight
+  px.Add('habamax/vim-habanight')
   # https://github.com/jsit/toast.vim
   px.Add('jsit/toast.vim')
   # https://github.com/pineapplegiant/spaceduck
@@ -484,10 +462,6 @@ packix.Setup((px: packix.Manager) => {
   px.Add('vim-scripts/mayansmoke')
   # https://github.com/lunacookies/vim-mayanfog
   px.Add('lunacookies/vim-mayanfog')
-
-  # Display completion function signatures in the command-line
-  # https://github.com/Shougo/echodoc.vim
-  px.Add('Shougo/echodoc.vim')
 
   # Autoclose paired markers (parens, etc.)
   # https://github.com/LunarWatcher/auto-pairs
