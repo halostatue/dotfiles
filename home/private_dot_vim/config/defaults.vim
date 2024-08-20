@@ -36,7 +36,9 @@ g:ansible_template_syntaxes = { '*.rb.j2': 'ruby' }
 g:ansible_extra_keywords_highlight = true
 
 # elixir-editors/vim-elixir
-g:elixir_use_markdown_for_docs = true
+# Disable this if elixir is an embedded syntax type for Markdown
+# as it will result in a circular load.
+# g:elixir_use_markdown_for_docs = true
 
 # tpope/vim-git
 g:gitcommit_summary_length = 50
@@ -74,31 +76,6 @@ g:FerretNvim = false
 # Disable easyjump and fFtT plugins included in the girishji/vimbits suite.
 g:vimbits_easyjump = false
 g:vimbits_fFtT = false
-
-# Configure kennypete/vim-tene mode characters.
-g:tene_modes = {
-  'n': 'ℕ', 'no': '𝕆', 'nov': '𝕆𝕧', 'noV': '𝕆𝕍', 'noCTRL-V': '𝕆^𝕍',
-  'nil': '𝕀𝕟', 'niR': 'ℝ𝕟', 'niV': '𝕍ℝ', 'nt': '𝕋ℕ',
-  'v': '𝕧', 'vs': 'v𝕤', 'V': '𝕍', 'Vs': '𝕍𝕤', 'CTRL-V': '^𝕍', 'CTRL-Vs': '^𝕍𝕤',
-  's': '𝕤', 'S': '𝕊', 'CTRL-S': '^𝕊',
-  'i': '𝕚', 'ic': '𝕚𝕔', 'ix': '𝕚𝕩',
-  'R': 'ℝ', 'Rc': 'ℝ𝕔', 'Rx': 'ℝ𝕩', 'Rvc': '𝕍ℝ𝕔', 'Rvx': '𝕍ℝ𝕩',
-  'c': 'ℂ', 'ct': 'ℂ𝕥', 'cr': 'ℂ𝕣', 'cv': 'ℂ𝕩', 'cvr': 'ℂ𝕩𝕣', 'ce': '𝕏', 't': '𝕋'
-}
-
-# Configure kennypete/vim-tene icon characters
-g:tene_ga = {
-  'buftypehelp': ['help', '⍰'],
-  'paste': ['P', '🅿'],
-  'mod': ['[+]', '⊕'],
-  'noma': ['[-]', '⊖'],
-  'pvw': ['[Preview]', '📺'],
-  'key': ['E', '🔑'],
-  'spell': ['S', '✓'],
-  'recording': ['@', '⊙'],
-  'ro': ['[RO]', '🚫'],
-  'col()': ['c', '⩙']
-}
 
 # Enable tpope/vim-endwise abbreviations for certain languages
 g:endwise_abbreviations = true

@@ -11,5 +11,20 @@
         "lineLength": 120
       }
     }
+  },
+  "rubocop-lsp-mode": {
+    "disabled": true
+  },
+  "tailwindcss-intellisense": {
+    "disabled": true
+  },
+  "angular-language-server": {
+    "disabled": true
+  },
+  "rome": {
+    "disabled": true
+  },
+  "flow": {
+    "disabled": true
   }
 }

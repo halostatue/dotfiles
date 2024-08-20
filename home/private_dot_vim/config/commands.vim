@@ -89,3 +89,25 @@ endfunction
 command! -bar -nargs=1 -range SExtract :<line1>,<line2>call Extract('split', <q-args>)
 command! -bar -nargs=1 -range VExtract :<line1>,<line2>call Extract('vsplit', <q-args>)
 # command! -bar -nargs=1 -range TExtract :<line1>,<line2>call Extract('tabnew', <q-args>)
+
+# Open vertical spit terminal with the current parent directory. Based on chemzqm/vimrc.
+def OpenTerminal()
+  var bn = bufnr('%')
+  var dir = expand('%:p:h')
+
+  if exists('b:terminal') && !buflisted(b:terminal)
+    unlet b:terminal
+  endif
+
+  if !exists('b:terminal')
+    belowright vertical split +enew
+    execute 'lcd ' .. dir
+    execute 'terminal ++curwin ++norestore'
+    setbufvar(bn, 'terminal', bufnr('%'))
+  else
+    execute 'belowright vertical sbuffer ' .. b:terminal
+    feedkeys("\<C-l>", 'n')
+  endif
+enddef
+
+command! -nargs=0 V :call OpenTerminal()

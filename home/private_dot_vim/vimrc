@@ -46,4 +46,7 @@ import './config/commands.vim'
 # Define projectionist heuristics
 import './config/projections.vim'
 
+# Define the statusline.
+import './config/statusline.vim'
+
 set secure

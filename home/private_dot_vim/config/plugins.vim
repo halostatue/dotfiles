@@ -466,29 +466,34 @@ packix.Setup((px: packix.Manager) => {
   # Autoclose paired markers (parens, etc.)
   # https://github.com/LunarWatcher/auto-pairs
   px.Add('LunarWatcher/auto-pairs')
-  # vim9 rewrite of jiangmiao/auto-pairs: https://github.com/Eliot00/auto-pairs
-  # vim9 similar to jiangmiao/auto-pairs: https://github.com/monkoose/vim9-autopairs
 
-  # LSP & Autocomplete
+  # LSP, Autocomplete, & Snippets
   # With Vim, LSP clients and autocomplete plugins tend to be relatively tightly tied
   # together.
 
-  # LSP Client choices
   if g:->get('hz_lsp_client', 'yegappan/lsp') == 'yegappan/lsp'
     # https://github.com/yegappan/lsp
     px.Add('yegappan/lsp', { requires: [
-      # https://github.com/mattn/vim-lsp-settings
-      'mattn/vim-lsp-settings',
+      # https://github.com/halostatue/vim-lsp-settings
+      { url: 'halostatue/vim-lsp-settings',
+        opts: { branch: 'add-standard-ruby-lsp-mode' } },
       # https://github.com/normen/vim-lsp-settings-adapter
       'normen/vim-lsp-settings-adapter',
       # https://github.com/girishji/vimcomplete
       'girishji/vimcomplete',
+      # https://github.com/hrsh7th/vim-vsnip
+      'hrsh7th/vim-vsnip',
+      # https://github.com/hrsh7th/vim-vsnip-integ
+      'hrsh7th/vim-vsnip-integ',
+      # https://github.com/rafamadriz/friendly-snippets
+      'rafamadriz/friendly-snippets',
     ] })
   else
     # https://github.com/prabirshrestha/vim-lsp
     px.Add('prabirshrestha/vim-lsp', { requires: [
-      # https://github.com/mattn/vim-lsp-settings
-      'mattn/vim-lsp-settings',
+      # https://github.com/halostatue/vim-lsp-settings
+      { url: 'halostatue/vim-lsp-settings',
+        opts: { branch: 'add-standard-ruby-lsp-mode' } },
       # https://github.com/prabirshrestha/asyncomplete.vim
       'prabirshrestha/asyncomplete.vim',
       # https://github.com/prabirshrestha/asyncomplete-lsp.vim
@@ -577,8 +582,6 @@ packix.Setup((px: packix.Manager) => {
 
   # # https://github.com/liuchengxu/eleline.vim
   # px.Add('liuchengxu/eleline.vim')
-  # https://github.com/kennypete/vim-tene
-  px.Add('kennypete/vim-tene')
 
   # https://github.com/rbong/vim-crystalline
   # https://github.com/vim-airline/vim-airline/
@@ -665,9 +668,6 @@ packix.Setup((px: packix.Manager) => {
   px.Add('dstein64/vim-startuptime')
 
   # https://github.com/jessepav/vim-boxdraw
-  # https://github.com/hrsh7th/vim-vsnip
-  # https://github.com/hrsh7th/vim-vsnip-integ
-  # https://github.com/rafamadriz/friendly-snippets
   # https://github.com/AndrewRadev/splitjoin.vim
   # https://github.com/SirVer/ultisnips
   # https://github.com/honza/vim-snippets
@@ -708,7 +708,6 @@ packix.Setup((px: packix.Manager) => {
   # opt - https://github.com/mhinz/vim-lookup
   # opt - https://github.com/thinca/vim-themis
   #
-  # opt - https://github.com/mattn/gist-vim
   # opt - https://github.com/mbbill/undotree
   #
   # Loaded only for specific filetypes on demand.
