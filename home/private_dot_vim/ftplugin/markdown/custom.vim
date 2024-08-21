@@ -2,10 +2,29 @@ vim9script
 
 # Configure Vim's builtin markdown configuration.
 g:markdown_fenced_languages = [
-  'bash=sh', 'console=sh', 'c++=cpp', 'css', 'diff', 'elixir', 'erlang',
-  'fish', 'go', 'html', 'javascript', 'js=javascript', 'python', 'ruby',
-  'rust', 'scss', 'sql', 'vim', 'viml=vim', 'ts=typescript', 'typescript',
-  'xml', 'zsh=sh',
+  'bash=sh',
+  'console=sh',
+  'c++=cpp',
+  'css',
+  'diff',
+  'elixir',
+  'erlang',
+  'fish',
+  'go',
+  'html',
+  'javascript',
+  'js=javascript',
+  'python',
+  'ruby',
+  'rust',
+  'scss',
+  'sql',
+  'vim',
+  'viml=vim',
+  'ts=typescript',
+  'typescript',
+  'xml',
+  'zsh=sh',
 ]
 g:markdown_syntax_conceal = 0
 g:markdown_minlines = 100

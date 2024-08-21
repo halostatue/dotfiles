@@ -27,7 +27,7 @@ def WithVim9Lsp()
   if !packix#IsPluginInstalled('girishji/vimcomplete') | return | endif
 
   var vim_complete_options = {
-    completor: { noNewlineInCompletionEver: true },
+    # completor: { noNewlineInCompletionEver: true },
     buffer: { priority: 1, urlComplete: true, envComplete: true },
     lsp: { enable: true, priority: 20 },
     path: { showPathSeparatorAtEnd: true },
