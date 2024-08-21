@@ -74,6 +74,7 @@ cask "iterm2" # Terminal emulator as alternative to Apple's Terminal app
 cask "itsycal" # Menu bar calendar
 cask "kindle-previewer" # Preview and audit Kindle eBooks
 cask "kitty" # GPU-based terminal emulator
+cask "lm-studio" # Discover, download, and run local LLMs
 cask "maccy" # Clipboard manager
 cask "macvim" # Text editor
 cask "macwhisper" # Speech recognition tool
@@ -82,6 +83,7 @@ cask "microsoft-edge" # Web browser
 cask "monitorcontrol" # Tool to control external monitor brightness & volume
 cask "monodraw" # Tool to create text-based art
 cask "moom" # Utility to move and zoom windows—on one display
+cask "msty" # Run LLMs locally
 cask "obsidian" # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "ollamac" # Interact with Ollama models
 cask "orion" # WebKit based web browser
