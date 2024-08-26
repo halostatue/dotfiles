@@ -1,0 +1,100 @@
+#! /usr/bin/env fish
+
+# An OpenSSL wrapper by Benjamin Kane (github.com/bbkane), originally written in
+# python.
+# https://github.com/bbkane/dotfiles/blob/master/bin_common/bin_commoneasyssl.py
+
+set easyssl_version 0.1.0
+
+function usage --inherit-variable script_name
+    set script_name (status current-filename | path basename)
+    echo "Usage: $script_name [options] cert_or_host [query]
+
+Arguments
+
+  cert_or_host        Filepath to cert or host (www.example.com) to connect to.
+                      Appends :443 automatically. Also used for SNI (also see
+                      --servername)
+  [query]             Optional filter to apply to cert. Valid queries are:
+                      dates, md5, pem, subject, san, text, and all. All or
+                      omitted query skips filtering.
+
+Options
+
+  -s, --servername    The servername to use. Pass NONE to not use SNI
+  -V, --verbose       Print generated openSSL command that is run
+  -v, --version       Show the current version
+"
+end
+
+# Generate the part of the OpenSSL command to get the cert
+function :get
+    set -l cert_or_host $argv[1]
+
+    if test -s $cert_or_host
+        echo "cat $cert_or_host"
+        return 0
+    end
+
+    set -l servername
+
+    if set -q argv[2]
+        set servername $argv[2]
+    else
+        set servername $argv[1]
+    end
+
+    if test "$servername" = NONE
+        # https://stackoverflow.com/a/50770880/2958070
+        # NOTE: might break if openssl updates, see ^
+        echo "echo | openssl s_client -connect $cert_or_host:443 2>/dev/null"
+        return 0
+    end
+
+    echo "echo | openssl s_client -connect $cert_or_host:443 -servername $servername 2>/dev/null"
+    return 0
+end
+
+function :query
+    switch $argv[1]
+        case dates
+            echo " | openssl x509 -in /dev/stdin -noout -dates"
+        case md5
+            echo " | openssl x509 -in /dev/stdin -noout -fingerprint -md5"
+        case pem
+            echo " | openssl x509 -in /dev/stdin -outform pem"
+        case subject
+            echo " | openssl x509 -in /dev/stdin -noout -subject"
+        case san
+            echo ' | openssl x509 -in /dev/stdin -text -noout | awk -F, -v OFS="\\n" \'/Subject: /{x=gsub(/.*CN=/, "  "); printf "Common Name:\\n"$x} /DNS:/{gsub(/ *DNS:/, "  "); $1=$1; printf "\\n\\nSAN Domains:\\n" $0"\\n"}\''
+        case text
+            echo " | openssl x509 -in /dev/stdin -noout -text"
+        case all ''
+            echo ""
+        case '*'
+            echo >&2 Unknown query type \'$argv[1]\'
+            return 1
+    end
+end
+
+set script_name (status current-filename | path basename)
+
+argparse --name $script_name s/servername V/verbose v/version -- $argv
+or return 1
+
+if set -q _flag_version
+    echo $script_name $easyssl_version
+    return 0
+end
+
+argparse --name $script_name -N 1 -X 2 -- $argv
+or return 1
+
+set base (:get $argv[1] $_flag_servername)
+set query (:query $argv[2])
+set cmd $base $query
+
+if set -q _flag_verbose
+    printf "%s\n\n" "$cmd"
+end
+eval "$cmd"

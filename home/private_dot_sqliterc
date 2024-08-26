@@ -1,4 +1,5 @@
-.headers ON
-.mode column
-.nullvalue [NULL]
-.timer On
+.header on
+.mode markdown
+-- .nullvalue [NULL]
+.timer off
+.echo off

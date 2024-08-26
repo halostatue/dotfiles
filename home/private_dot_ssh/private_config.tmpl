@@ -42,7 +42,7 @@ Host *^*
 {{- range $account_name, $account := $account_vaults -}}
 {{-   $vaults := $account.vaults -}}
 {{-
-      $documents := 
+      $documents :=
         output "op" "document" "list" "--account" $account.url "--format" "json"
         | fromJson
         | jq "map(select(.title | startswith(\"ssh-host: \"))) | sort_by(.title)"
@@ -55,17 +55,7 @@ Host *^*
 {{-  end -}}
 {{- end -}}
 
-{{  $pierre := joinPath $ssh "pierre_rsa" -}}
-{{- if stat $pierre -}}
-Host git.pierre.co
-  IdentityFile {{ $pierre }}
-{{- end }}
-
 {{ $colima := joinPath $.chezmoi.homeDir ".colima/ssh_config" -}}
-{{- if stat $colima -}}
+{{- if stat $colima }}
 Include {{ $colima }}
-{{- end }}
-{{ $orbstack := joinPath $.chezmoi.homeDir ".orbstack/ssh/config" -}}
-{{- if stat $orbstack }}
-Include {{ $orbstack }}
 {{- end }}

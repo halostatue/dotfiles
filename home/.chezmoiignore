@@ -151,14 +151,13 @@
 .rustup
 .sobelow
 .sqlite_history
-.ssh/**
+.ssh/*
 !.ssh/allowed_signers
 !.ssh/authorized_keys
 !.ssh/config
 !.ssh/known_hosts
 
 .tclsh_history
-.terminfo
 .terraform.d
 .tig_history
 .ts_node_repl_history
