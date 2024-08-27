@@ -101,18 +101,18 @@ return function(config, wezterm)
       action = act.PaneSelect({ mode = "SwapWithActive" }),
     },
 
-    -- -- -- Cmd-D: Horizontal Split
-    -- {
-    --   key = "d",
-    --   mods = "CMD",
-    --   action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
-    -- },
-    -- -- -- Cmd-Shift-D: Vertical Split
-    -- {
-    --   key = "d",
-    --   mode = "SHIFT|CMD",
-    --   action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
-    -- },
+    -- -- Cmd-D: Horizontal Split
+    {
+      key = "d",
+      mods = "CMD",
+      action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+    },
+    -- -- Cmd-Shift-D: Vertical Split
+    {
+      key = "d",
+      mods = "SHIFT|CMD",
+      action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
+    },
 
     -- Cmd-F: Search (default to current selection)
     { key = "f", mods = "CMD", action = act.Search("CurrentSelectionOrEmptyString") },
