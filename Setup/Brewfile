@@ -23,7 +23,6 @@ brew "mas" # Mac App Store command-line interface
 brew "moreutils" # Collection of tools that nobody wrote when UNIX was young
 brew "pam-reattach" # PAM module for reattaching to the user's GUI (Aqua) session
 brew "pandoc" # Swiss-army knife of markup format conversion
-brew "pv" # Monitor data's progress through a pipe
 brew "reviewdog/tap/reviewdog" # Automated code review tool integrated with any code analysis tools regardless of programming language.
 brew "scc" # Fast and accurate code counter with complexity and COCOMO estimates
 brew "shellcheck" # Static analysis and lint tool, for (ba)sh scripts
@@ -104,7 +103,6 @@ cask "tableflip" # Edit plain text tables in place: Markdown, CSV, JSON. LaTeX a
 cask "viscosity" # OpenVPN client with AppleScript support
 cask "visual-studio-code" # Open-source code editor
 cask "webpquicklook" # Quick Look plugin for webp files
-cask "wezterm" # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "xcodes" # Install and switch between multiple versions of Xcode
 cask "xprocheck" # Anti-malware scan logging tool
 cask "zed" # Multiplayer code editor

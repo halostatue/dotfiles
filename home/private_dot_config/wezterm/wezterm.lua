@@ -38,7 +38,7 @@ local wezterm = require("wezterm")
 -- config.color_scheme = 'Nucolors (terminal.sexy)'
 
 wezterm.on("gui-startup", function(cmd)
-  if ~cmd then
+  if not cmd then
     local main_screen = wezterm.gui.screens().main
     local x = main_screen.width - 1440
     local y = 0

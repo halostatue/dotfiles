@@ -1,227 +1,80 @@
 local platform = require("utils.platform")
 
 return function(config, wezterm)
+  -- I don't use Windows or Linux as a daily driver, so key bindings are ignored on
+  -- non-macOS platforms.
+  if not platform.is_mac then
+    return
+  end
+
   local act = wezterm.action
-  -- Do not conflict with Windows key shortcuts
-  local SUPER = platform.is_mac and "SUPER" or "ALT"
-  local SUPER_REV = platform.is_mac and "SUPER|CTRL" or "ALT|CTRL"
+
+  config.disable_default_key_bindings = true
+  -- config.disable_default_mouse_bindings = true
 
   config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 
-  if platform.is_mac then
-    config.disable_default_key_bindings = true
-  end
-  -- config.disable_default_mouse_bindings = true
+  local NextTab = act.ActivateTabRelative(1)
+  local PrevTab = act.ActivateTabRelative(-1)
+  local NewHomeWindow = act.SpawnCommandInNewWindow({ cwd = wezterm.home_dir })
+  local ActivateLeftPane = act.ActivatePaneDirection("Left")
+  local ActivateRightPane = act.ActivatePaneDirection("Right")
+  local ActivateUpPane = act.ActivatePaneDirection("Up")
+  local ActivateDownPane = act.ActivatePaneDirection("Down")
 
   config.keys = {
-    -- tabs: navigation
-    { key = "Tab", mods = "CTRL", action = act.ActivateTabRelative(1) },
-    { key = "Tab", mods = "SHIFT|CTRL", action = act.ActivateTabRelative(-1) },
-    { key = "Enter", mods = SUPER, action = act.ToggleFullScreen },
-    { key = "[", mods = SUPER, action = act.ActivateTabRelative(-1) },
-    { key = "]", mods = SUPER, action = act.ActivateTabRelative(1) },
-    { key = "[", mods = SUPER_REV, action = act.MoveTabRelative(-1) },
-    { key = "]", mods = SUPER_REV, action = act.MoveTabRelative(1) },
-    { key = "1", mods = "SHIFT|CTRL", action = act.ActivateTab(0) },
-    { key = "1", mods = "SUPER", action = act.ActivateTab(0) },
-    { key = "2", mods = "SHIFT|CTRL", action = act.ActivateTab(1) },
-    { key = "2", mods = "SUPER", action = act.ActivateTab(1) },
-    { key = "3", mods = "SHIFT|CTRL", action = act.ActivateTab(2) },
-    { key = "3", mods = "SUPER", action = act.ActivateTab(2) },
-    { key = "4", mods = "SHIFT|CTRL", action = act.ActivateTab(3) },
-    { key = "4", mods = "SUPER", action = act.ActivateTab(3) },
-    { key = "5", mods = "SHIFT|CTRL", action = act.ActivateTab(4) },
-    { key = "5", mods = "SUPER", action = act.ActivateTab(4) },
-    { key = "6", mods = "SHIFT|CTRL", action = act.ActivateTab(5) },
-    { key = "6", mods = "SUPER", action = act.ActivateTab(5) },
-    { key = "7", mods = "SHIFT|CTRL", action = act.ActivateTab(6) },
-    { key = "7", mods = "SUPER", action = act.ActivateTab(6) },
-    { key = "8", mods = "SHIFT|CTRL", action = act.ActivateTab(7) },
-    { key = "8", mods = "SUPER", action = act.ActivateTab(7) },
-    { key = "9", mods = "SHIFT|CTRL", action = act.ActivateTab(-1) },
-    { key = "9", mods = "SUPER", action = act.ActivateTab(-1) },
+    -- Ctrl-Tab: Next Tab
+    { key = "Tab", mods = "CTRL", action = NextTab },
+    -- Cmd-Shift-]: Next Tab
+    { key = "]", mods = "CMD|SHIFT", action = NextTab },
+    -- Ctrl-Shift-Tab: Previous Tab
+    { key = "Tab", mods = "SHIFT|CTRL", action = PrevTab },
+    -- Cmd-Shift-[: Previous Tab
+    { key = "[", mods = "CMD|SHIFT", action = PrevTab },
+    -- Cmd-1 .. Cmd-8: Select Tabs 1..8
+    { key = "1", mods = "CMD", action = act.ActivateTab(0) },
+    { key = "2", mods = "CMD", action = act.ActivateTab(1) },
+    { key = "3", mods = "CMD", action = act.ActivateTab(2) },
+    { key = "4", mods = "CMD", action = act.ActivateTab(3) },
+    { key = "5", mods = "CMD", action = act.ActivateTab(4) },
+    { key = "6", mods = "CMD", action = act.ActivateTab(5) },
+    { key = "7", mods = "CMD", action = act.ActivateTab(6) },
+    { key = "8", mods = "CMD", action = act.ActivateTab(7) },
+    -- Cmd-9: Selects Last Tab
+    { key = "9", mods = "CMD", action = act.ActivateTab(-1) },
 
-    { key = "C", mods = "CTRL", action = act.CopyTo("Clipboard") },
-    { key = "C", mods = "SHIFT|CTRL", action = act.CopyTo("Clipboard") },
-    { key = "F", mods = "CTRL", action = act.Search("CurrentSelectionOrEmptyString") },
-    { key = "F", mods = "SUPER", action = act.Search("CurrentSelectionOrEmptyString") },
-    {
-      key = "F",
-      mods = "SHIFT|CTRL",
-      action = act.Search("CurrentSelectionOrEmptyString"),
-    },
-    { key = "H", mods = "SUPER", action = act.HideApplication },
-    { key = "K", mods = "SUPER", action = act.ClearScrollback("ScrollbackOnly") },
-    {
-      key = "K",
-      mods = "SUPER|SHIFT",
-      action = act.Multiple({
-        act.ClearScrollback("ScrollbackAndViewport"),
-        act.SendKey({ key = "L", mods = "CTRL" }),
-      }),
-    },
+    -- Cmd-Enter: Full Screen Toggle
+    { key = "Enter", mods = "CMD", action = act.ToggleFullScreen },
 
-    { key = "L", mods = "CTRL", action = act.ShowDebugOverlay },
-    { key = "L", mods = "SHIFT|CTRL", action = act.ShowDebugOverlay },
-    { key = "M", mods = "SUPER", action = act.Hide },
-    { key = "M", mods = "SHIFT|CTRL", action = act.Hide },
-    { key = "N", mods = "CTRL", action = act.SpawnWindow },
-    { key = "N", mods = "SHIFT|CTRL", action = act.SpawnWindow },
-    { key = "P", mods = "CTRL", action = act.ActivateCommandPalette },
-    { key = "P", mods = "SHIFT|CTRL", action = act.ActivateCommandPalette },
-    { key = "Q", mods = "CTRL", action = act.QuitApplication },
-    { key = "Q", mods = "SHIFT|CTRL", action = act.QuitApplication },
-    { key = "R", mods = "CTRL", action = act.ReloadConfiguration },
-    { key = "R", mods = "SHIFT|CTRL", action = act.ReloadConfiguration },
-    { key = "T", mods = "CTRL", action = act.SpawnTab("CurrentPaneDomain") },
-    { key = "T", mods = "SHIFT|CTRL", action = act.SpawnTab("CurrentPaneDomain") },
+    -- Cmd-Q: Quit Application
+    { key = "q", mods = "CMD", action = act.QuitApplication },
 
-    {
-      key = "U",
-      mods = "CTRL",
-      action = act.CharSelect({
-        copy_on_select = true,
-        copy_to = "ClipboardAndPrimarySelection",
-      }),
-    },
-    {
-      key = "U",
-      mods = "SHIFT|CTRL",
-      action = act.CharSelect({
-        copy_on_select = true,
-        copy_to = "ClipboardAndPrimarySelection",
-      }),
-    },
-    { key = "V", mods = "CTRL", action = act.PasteFrom("Clipboard") },
-    { key = "V", mods = "SHIFT|CTRL", action = act.PasteFrom("Clipboard") },
-    { key = "W", mods = "CTRL", action = act.CloseCurrentTab({ confirm = true }) },
-    { key = "W", mods = "SHIFT|CTRL", action = act.CloseCurrentTab({ confirm = true }) },
-    { key = "X", mods = "CTRL", action = act.ActivateCopyMode },
-    { key = "X", mods = "SHIFT|CTRL", action = act.ActivateCopyMode },
-    { key = "Z", mods = "CTRL", action = act.TogglePaneZoomState },
-    { key = "Z", mods = "SHIFT|CTRL", action = act.TogglePaneZoomState },
-    { key = "[", mods = "SHIFT|SUPER", action = act.ActivateTabRelative(-1) },
-    { key = "]", mods = "SHIFT|SUPER", action = act.ActivateTabRelative(1) },
-    { key = "^", mods = "CTRL", action = act.ActivateTab(5) },
-    { key = "^", mods = "SHIFT|CTRL", action = act.ActivateTab(5) },
-    { key = "_", mods = "CTRL", action = act.DecreaseFontSize },
-    { key = "_", mods = "SHIFT|CTRL", action = act.DecreaseFontSize },
-    { key = "c", mods = "SHIFT|CTRL", action = act.CopyTo("Clipboard") },
-    { key = "c", mods = "SUPER", action = act.CopyTo("Clipboard") },
-    {
-      key = "f",
-      mods = "SHIFT|CTRL",
-      action = act.Search("CurrentSelectionOrEmptyString"),
-    },
-    { key = "f", mods = "SUPER", action = act.Search("CurrentSelectionOrEmptyString") },
-    { key = "h", mods = "SHIFT|CTRL", action = act.HideApplication },
-    { key = "h", mods = "SUPER", action = act.HideApplication },
-    { key = "k", mods = "SHIFT|CTRL", action = act.ClearScrollback("ScrollbackOnly") },
-    { key = "k", mods = "SUPER", action = act.ClearScrollback("ScrollbackOnly") },
-    { key = "l", mods = "SHIFT|CTRL", action = act.ShowDebugOverlay },
-    { key = "m", mods = "SHIFT|CTRL", action = act.Hide },
-    { key = "m", mods = "SUPER", action = act.Hide },
-    {
-      key = "n",
-      mods = "SHIFT|CTRL",
-      action = act.SpawnCommandInNewWindow({ cwd = wezterm.home_dir }),
-    },
-    {
-      key = "n",
-      mods = "SUPER",
-      action = act.SpawnCommandInNewWindow({ cwd = wezterm.home_dir }),
-    },
-    { key = "p", mods = "SHIFT|CTRL", action = act.ActivateCommandPalette },
-    { key = "q", mods = "SHIFT|CTRL", action = act.QuitApplication },
-    { key = "q", mods = "SUPER", action = act.QuitApplication },
-    { key = "r", mods = "SHIFT|CTRL", action = act.ReloadConfiguration },
-    { key = "r", mods = "SUPER", action = act.ReloadConfiguration },
-    { key = "t", mods = "SHIFT|CTRL", action = act.SpawnTab("CurrentPaneDomain") },
-    { key = "t", mods = "SUPER", action = act.SpawnTab("CurrentPaneDomain") },
+    -- Cmd-W: Close Current Pane, Tab, or Window
+    { key = "w", mods = "CMD", action = act.CloseCurrentPane({ confirm = true }) },
+    -- Cmd-Ctrl-W: Close Current Pane, Tab, or Window without confirming
+    { key = "w", mods = "CMD|CTRL", action = act.CloseCurrentPane({ confirm = false }) },
+
+    -- Cmd-R: Reload Configuration
+    { key = "r", mods = "CMD", action = act.ReloadConfiguration },
+
+    -- Cmd-T: Create a Tab
+    { key = "t", mods = "CMD", action = act.SpawnTab("CurrentPaneDomain") },
+    -- Cmd-Shift-T: Show the tab navigator
+    { key = "t", mods = "CMD|SHIFT", action = act.ShowTabNavigator },
+
+    -- Cmd-U: Character Select to Clipboard
     {
       key = "u",
-      mods = "SHIFT|CTRL",
+      mods = "CMD",
       action = act.CharSelect({
         copy_on_select = true,
         copy_to = "ClipboardAndPrimarySelection",
       }),
     },
-    { key = "v", mods = "SHIFT|CTRL", action = act.PasteFrom("Clipboard") },
-    { key = "v", mods = "SUPER", action = act.PasteFrom("Clipboard") },
-    { key = "w", mods = "SHIFT|CTRL", action = act.CloseCurrentTab({ confirm = true }) },
-    { key = "w", mods = "SUPER", action = act.CloseCurrentTab({ confirm = true }) },
-    { key = "x", mods = "SHIFT|CTRL", action = act.ActivateCopyMode },
-    { key = "z", mods = "SHIFT|CTRL", action = act.TogglePaneZoomState },
-    { key = "{", mods = "SUPER", action = act.ActivateTabRelative(-1) },
-    { key = "{", mods = "SHIFT|SUPER", action = act.ActivateTabRelative(-1) },
-    { key = "}", mods = "SUPER", action = act.ActivateTabRelative(1) },
-    { key = "}", mods = "SHIFT|SUPER", action = act.ActivateTabRelative(1) },
-    { key = "phys:Space", mods = "SHIFT|CTRL", action = act.QuickSelect },
-    { key = "PageUp", mods = "SHIFT", action = act.ScrollByPage(-1) },
-    { key = "PageUp", mods = "CTRL", action = act.ActivateTabRelative(-1) },
-    { key = "PageUp", mods = "SHIFT|CTRL", action = act.MoveTabRelative(-1) },
-    { key = "PageDown", mods = "SHIFT", action = act.ScrollByPage(1) },
-    { key = "PageDown", mods = "CTRL", action = act.ActivateTabRelative(1) },
-    { key = "PageDown", mods = "SHIFT|CTRL", action = act.MoveTabRelative(1) },
-    {
-      key = "LeftArrow",
-      mods = "SHIFT|CTRL",
-      action = act.ActivatePaneDirection("Left"),
-    },
-    {
-      key = "LeftArrow",
-      mods = "SHIFT|ALT|CTRL",
-      action = act.AdjustPaneSize({ "Left", 1 }),
-    },
-    {
-      key = "RightArrow",
-      mods = "SHIFT|CTRL",
-      action = act.ActivatePaneDirection("Right"),
-    },
-    {
-      key = "RightArrow",
-      mods = "SHIFT|ALT|CTRL",
-      action = act.AdjustPaneSize({ "Right", 1 }),
-    },
-    { key = "UpArrow", mods = "SHIFT|CTRL", action = act.ActivatePaneDirection("Up") },
-    {
-      key = "UpArrow",
-      mods = "SHIFT|ALT|CTRL",
-      action = act.AdjustPaneSize({ "Up", 1 }),
-    },
-    {
-      key = "DownArrow",
-      mods = "SHIFT|CTRL",
-      action = act.ActivatePaneDirection("Down"),
-    },
-    {
-      key = "DownArrow",
-      mods = "SHIFT|ALT|CTRL",
-      action = act.AdjustPaneSize({ "Down", 1 }),
-    },
-    { key = "Copy", mods = "NONE", action = act.CopyTo("Clipboard") },
-    { key = "Paste", mods = "NONE", action = act.PasteFrom("Clipboard") },
-
-    -- misc/useful --
-    { key = "F1", mods = "NONE", action = "ActivateCopyMode" },
-    { key = "F2", mods = "NONE", action = act.ActivateCommandPalette },
-    { key = "F3", mods = "NONE", action = act.ShowLauncher },
-    {
-      key = "F4",
-      mods = "NONE",
-      action = act.ShowLauncherArgs({ flags = "FUZZY|TABS" }),
-    },
-    {
-      key = "F5",
-      mods = "NONE",
-      action = act.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" }),
-    },
-    { key = "F11", mods = "NONE", action = act.ToggleFullScreen },
-    { key = "F12", mods = "NONE", action = act.ShowDebugOverlay },
-    { key = "f", mods = SUPER, action = act.Search({ CaseInSensitiveString = "" }) },
+    -- Cmd-Shift-U: Quick Select URLs
     {
       key = "u",
-      mods = SUPER,
+      mods = "CMD|SHIFT",
       action = act.QuickSelectArgs({
         label = "open url",
         patterns = {
@@ -239,30 +92,87 @@ return function(config, wezterm)
       }),
     },
 
-    -- cursor movement --
-    -- Make Option-Left equivalent to Alt-b which many line editors interpret as backward-word
-    { key = "LeftArrow", mods = "OPT", action = act({ SendString = "\x1bb" }) },
-    -- Make Option-Right equivalent to Alt-f; forward-word
-    { key = "RightArrow", mods = "OPT", action = act({ SendString = "\x1bf" }) },
-    { key = "LeftArrow", mods = SUPER, action = act.SendString("\x1bOH") },
-    { key = "RightArrow", mods = SUPER, action = act.SendString("\x1bOF") },
-    { key = "Backspace", mods = SUPER, action = act.SendString("\x15") },
-    -- ctrl-backspace does what ctrl-u does, clears an entire input line
+    -- Cmd-P: Activate Command Palette
+    { key = "p", mods = "CMD", action = act.ActivateCommandPalette },
+    -- Cmd-Shift-P: Activate Pane Selection
     {
-      key = "Backspace",
-      mods = "CTRL",
-      action = act.SendKey({ key = "u", mods = "CTRL" }),
+      key = "p",
+      mods = "CMD|SHIFT",
+      action = act.PaneSelect({ mode = "SwapWithActive" }),
     },
-    -- search for things that look like git hashes
+
+    -- -- -- Cmd-D: Horizontal Split
+    -- {
+    --   key = "d",
+    --   mods = "CMD",
+    --   action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+    -- },
+    -- -- -- Cmd-Shift-D: Vertical Split
+    -- {
+    --   key = "d",
+    --   mode = "SHIFT|CMD",
+    --   action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
+    -- },
+
+    -- Cmd-F: Search (default to current selection)
+    { key = "f", mods = "CMD", action = act.Search("CurrentSelectionOrEmptyString") },
+
+    -- Cmd-H: Hide the application
+    { key = "h", mods = "CMD", action = act.HideApplication },
+    -- Cmd-Ctrl-H: Activate the pane to the left
+    { key = "h", mods = "CMD|CTRL", action = ActivateLeftPane },
+    -- Cmd-Shift-H: Search for git ref-alikes
     {
       key = "h",
-      mods = "SHIFT|CTRL",
+      mods = "CMD|SHIFT",
       action = act.Search({ Regex = "[a-fA-F0-9]{6,}" }),
     },
 
+    -- Cmd-Ctrl-J: Activate the pane below
+    { key = "j", mods = "CMD|CTRL", action = ActivateDownPane },
+
+    -- Cmd-K: Clear the scrollback
+    { key = "k", mods = "CMD", action = act.ClearScrollback("ScrollbackOnly") },
+    -- Cmd-Ctrl-K: Activate the pane above
+    { key = "k", mods = "CMD|CTRL", action = ActivateUpPane },
+    -- Cmd-Shift-K: Clear the scrollback and clear the terminal
+    {
+      key = "k",
+      mods = "CMD|SHIFT",
+      action = act.Multiple({
+        act.ClearScrollback("ScrollbackAndViewport"),
+        act.SendKey({ key = "L", mods = "CTRL" }),
+      }),
+    },
+
+    -- Cmd-Ctrl-L: Activate the pane to the right
+    { key = "l", mods = "CMD|CTRL", action = ActivateRightPane },
+    -- Cmd-Shift-L: Show the Debug Overlay
+    { key = "l", mods = "CMD|SHIFT", action = act.ShowDebugOverlay },
+    -- Ctrl-Shift-L: Show the Debug Overlay
+    { key = "l", mods = "SHIFT|CTRL", action = act.ShowDebugOverlay },
+    { key = "L", mods = "SHIFT|CTRL", action = act.ShowDebugOverlay },
+
+    -- Cmd-Z: Toggle the active pane's zoom state
+    { key = "z", mods = "CMD", action = act.TogglePaneZoomState },
+
+    -- Cmd-X: Activate Copy Mode
+    { key = "x", mods = "CMD", action = act.ActivateCopyMode },
+    -- Cmd-C: Copy to Clipboard
+    { key = "c", mods = "CMD", action = act.CopyTo("Clipboard") },
+    -- Cmd-V: Paste from Clipboard
+    { key = "v", mods = "CMD", action = act.PasteFrom("Clipboard") },
+
+    -- Cmd-N: Open a new window (~)
+    { key = "n", mods = "CMD", action = NewHomeWindow },
+
+    -- Cmd-M: Minimize the current window
+    { key = "m", mods = "CMD", action = act.Hide },
+
+    -- Cmd-,: Open the main wezterm config file
     {
       key = ",",
-      mods = SUPER,
+      mods = "CMD",
       action = act.SpawnCommandInNewWindow({
         cwd = wezterm.config_dir,
         args = {
@@ -272,88 +182,49 @@ return function(config, wezterm)
         },
       }),
     },
-    {
-      key = "t",
-      mods = SUPER .. "|SHIFT",
-      action = act.ShowTabNavigator,
-    },
 
-    -- copy/paste --
-    { key = "c", mods = "CTRL|SHIFT", action = act.CopyTo("Clipboard") },
-    { key = "v", mods = "CTRL|SHIFT", action = act.PasteFrom("Clipboard") },
+    -- Ctrl-Shift Spacebar: Activate Quick Select
+    { key = "phys:Space", mods = "SHIFT|CTRL", action = act.QuickSelect },
 
-    -- tabs --
-    -- tabs: spawn+close
-    { key = "t", mods = SUPER, action = act.SpawnTab("DefaultDomain") },
-    {
-      key = "w",
-      mods = SUPER_REV,
-      action = act.CloseCurrentTab({ confirm = false }),
-    },
+    -- I don't have a keyboard with page up and page down, but keep these anyway
+    { key = "PageUp", mods = "SHIFT", action = act.ScrollByPage(-1) },
+    { key = "PageDown", mods = "SHIFT", action = act.ScrollByPage(1) },
 
-    -- window --
-    -- spawn windows
-    -- new window should start at ~ not current PWD
-    {
-      key = "n",
-      mods = SUPER,
-      action = act.SpawnCommandInNewWindow({ cwd = wezterm.home_dir }),
-    },
+    -- Shift-Ctrl-*Arrow activates the pane in that direction
+    { key = "LeftArrow", mods = "SHIFT|CTRL", action = ActivateLeftPane },
+    { key = "RightArrow", mods = "SHIFT|CTRL", action = ActivateRightPane },
+    { key = "UpArrow", mods = "SHIFT|CTRL", action = ActivateUpPane },
+    { key = "DownArrow", mods = "SHIFT|CTRL", action = ActivateDownPane },
 
-    -- panes --
-    -- panes: split panes
-    {
-      key = [[\]],
-      mods = SUPER,
-      action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
-    },
-    {
-      key = [[\]],
-      mods = SUPER_REV,
-      action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
-    },
+    -- Option-LeftArrow: Backward Word
+    { key = "LeftArrow", mods = "OPT", action = act.SendString("\x1bb") },
+    -- Cmd-LeftArrow: Beginning of Line
+    { key = "LeftArrow", mods = "CMD", action = act.SendString("\x1bOH") },
+    -- Option-RightArrow: Forward Word
+    { key = "RightArrow", mods = "OPT", action = act.SendString("\x1bf") },
+    -- CMD-RightArrow: End of Line
+    { key = "RightArrow", mods = "CMD", action = act.SendString("\x1bOF") },
 
-    -- panes: zoom+close pane
-    { key = "Enter", mods = SUPER, action = act.TogglePaneZoomState },
-    {
-      key = "w",
-      mods = SUPER,
-      action = act.CloseCurrentPane({ confirm = false }),
-    },
+    -- Leader Bindings. Leader is Ctrl-\
+    { key = "k", mods = "LEADER", action = ActivateUpPane },
+    { key = "j", mods = "LEADER", action = ActivateDownPane },
+    { key = "h", mods = "LEADER", action = ActivateLeftPane },
+    { key = "l", mods = "LEADER", action = ActivateRightPane },
+    { key = "n", mods = "LEADER", action = NewHomeWindow },
+    { key = "t", mods = "LEADER", action = act.SpawnTab("CurrentPaneDomain") },
 
-    -- panes: navigation
-    { key = "k", mods = SUPER_REV, action = act.ActivatePaneDirection("Up") },
-    { key = "j", mods = SUPER_REV, action = act.ActivatePaneDirection("Down") },
-    { key = "h", mods = SUPER_REV, action = act.ActivatePaneDirection("Left") },
-    { key = "l", mods = SUPER_REV, action = act.ActivatePaneDirection("Right") },
-    { key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up") },
-    { key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down") },
-    { key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left") },
-    { key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
-    -- Detach from current domain
+    -- key-tables
+
+    -- leader launcher
     {
-      key = "D",
+      key = "l",
       mods = "LEADER",
-      action = act.DetachDomain("CurrentPaneDomain"),
-    },
-    { key = "l", mods = "LEADER", action = act.ShowLauncher },
-    {
-      key = "n",
-      mods = "LEADER",
-      action = act.SpawnCommandInNewWindow({ cwd = wezterm.home_dir }),
-    },
-    { key = "y", mods = "LEADER", action = act.CopyTo("Clipboard") },
-    { key = "p", mods = "LEADER", action = act.PasteFrom("PrimarySelection") },
-    {
-      key = "p",
-      mods = SUPER_REV,
-      action = act.PaneSelect({
-        alphabet = "1234567890",
-        mode = "SwapWithActiveKeepFocus",
+      action = act.ActivateKeyTable({
+        name = "leader_launcher",
+        one_shot = true,
+        timeout_milliseconds = 500,
       }),
     },
-
-    -- key-tables --
     -- resizes fonts
     {
       key = "f",
@@ -364,64 +235,63 @@ return function(config, wezterm)
         timemout_miliseconds = 1000,
       }),
     },
-    -- resize panes
+    -- manage panes
     {
       key = "p",
       mods = "LEADER",
       action = act.ActivateKeyTable({
-        name = "resize_pane",
+        name = "manage_panes",
         one_shot = false,
         timemout_miliseconds = 1000,
       }),
     },
-    {
-      key = "\\",
-      mods = "LEADER",
-      action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
-    },
-    {
-      key = "|",
-      mods = "LEADER|SHIFT",
-      action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
-    },
-    {
-      key = "-",
-      mods = "LEADER",
-      action = act.SplitVertical({ domain = "CurrentPaneDomain" }),
-    },
-    {
-      key = "t",
-      mods = "LEADER",
-      action = act.SpawnTab("CurrentPaneDomain"),
-    },
-    {
-      key = "[",
-      mods = "LEADER",
-      action = act.ActivateTabRelative(-1),
-    },
-    {
-      key = "]",
-      mods = "LEADER",
-      action = act.ActivateTabRelative(1),
-    },
   }
 
   config.key_tables = {
+    leader_launcher = {
+      { key = "Enter", action = act.ShowLauncher },
+      { key = "t", action = act.ShowLauncherArgs({ flags = "FUZZY|TABS" }) },
+      { key = "w", action = act.ShowLauncherArgs({ flags = "FUZZY|WORKSPACES" }) },
+      { key = "Escape", action = act.PopKeyTable },
+      { key = "q", action = act.PopKeyTable },
+    },
+
     resize_font = {
       { key = "k", action = act.IncreaseFontSize },
       { key = "j", action = act.DecreaseFontSize },
       { key = "r", action = act.ResetFontSize },
-      { key = "Escape", action = "PopKeyTable" },
-      { key = "q", action = "PopKeyTable" },
+      { key = "Escape", action = act.PopKeyTable },
+      { key = "q", action = act.PopKeyTable },
     },
 
-    resize_pane = {
+    manage_panes = {
+      {
+        key = "\\",
+        action = act.Multiple({
+          act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+          act.PopKeyTable,
+        }),
+      },
+      {
+        key = "|",
+        action = act.Multiple({
+          act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
+          act.PopKeyTable,
+        }),
+      },
+      {
+        key = "-",
+        action = act.Multiple({
+          act.SplitVertical({ domain = "CurrentPaneDomain" }),
+          act.PopKeyTable,
+        }),
+      },
       { key = "k", action = act.AdjustPaneSize({ "Up", 3 }) },
       { key = "j", action = act.AdjustPaneSize({ "Down", 3 }) },
       { key = "h", action = act.AdjustPaneSize({ "Left", 3 }) },
       { key = "l", action = act.AdjustPaneSize({ "Right", 3 }) },
-      { key = "Escape", action = "PopKeyTable" },
-      { key = "q", action = "PopKeyTable" },
+      { key = "Escape", action = act.PopKeyTable },
+      { key = "q", action = act.PopKeyTable },
     },
 
     copy_mode = {
@@ -431,7 +301,7 @@ return function(config, wezterm)
       {
         key = "Escape",
         mods = "NONE",
-        action = act.Multiple({ "ScrollToBottom", { CopyMode = "Close" } }),
+        action = act.Multiple({ act.ScrollToBottom, act.CopyMode("Close") }),
       },
       {
         key = "Space",
@@ -487,7 +357,7 @@ return function(config, wezterm)
       {
         key = "c",
         mods = "CTRL",
-        action = act.Multiple({ "ScrollToBottom", { CopyMode = "Close" } }),
+        action = act.Multiple({ act.ScrollToBottom, act.CopyMode("Close") }),
       },
       { key = "d", mods = "CTRL", action = act.CopyMode({ MoveByPage = 0.5 }) },
       { key = "e", mods = "NONE", action = act.CopyMode("MoveForwardWordEnd") },
@@ -502,7 +372,7 @@ return function(config, wezterm)
       {
         key = "g",
         mods = "CTRL",
-        action = act.Multiple({ "ScrollToBottom", { CopyMode = "Close" } }),
+        action = act.Multiple({ act.ScrollToBottom, act.CopyMode("Close") }),
       },
       { key = "h", mods = "NONE", action = act.CopyMode("MoveLeft") },
       { key = "j", mods = "NONE", action = act.CopyMode("MoveDown") },
@@ -513,7 +383,7 @@ return function(config, wezterm)
       {
         key = "q",
         mods = "NONE",
-        action = act.Multiple({ "ScrollToBottom", { CopyMode = "Close" } }),
+        action = act.Multiple({ act.ScrollToBottom, act.CopyMode("Close") }),
       },
       {
         key = "t",
@@ -528,8 +398,9 @@ return function(config, wezterm)
         key = "y",
         mods = "NONE",
         action = act.Multiple({
-          { CopyTo = "ClipboardAndPrimarySelection" },
-          { Multiple = { "ScrollToBottom", { CopyMode = "Close" } } },
+          act.CopyTo("ClipboardAndPrimarySelection"),
+          act.ScrollToBottom,
+          act.CopyMode("Close"),
         }),
       },
       { key = "PageUp", mods = "NONE", action = act.CopyMode("PageUp") },
@@ -559,9 +430,9 @@ return function(config, wezterm)
         key = "Enter",
         mods = "NONE",
         action = act.Multiple({
-          { CopyTo = "PrimarySelection" },
-          { CopyMode = "Close" },
-          { PasteFrom = "PrimarySelection" },
+          act.CopyTo("PrimarySelection"),
+          act.CopyMode("Close"),
+          act.PasteFrom("PrimarySelection"),
         }),
       },
     },
@@ -574,14 +445,13 @@ return function(config, wezterm)
       mods = "CTRL",
       action = act.OpenLinkAtMouseCursor,
     },
+    -- Cmd-click will open the link under the mouse cursor
     {
       event = { Up = { streak = 1, button = "Left" } },
-      mods = "SUPER",
+      mods = "CMD",
       action = act.OpenLinkAtMouseCursor,
     },
   }
 
   config.mouse_wheel_scrolls_tabs = false
-
-  -- config.leader = { key = 'Space', mods = SUPER_REV }
 end

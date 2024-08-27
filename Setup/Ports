@@ -13,7 +13,6 @@ atuin
 bat
 bat-extras
 binocle
-broot
 cabal
 cargo2port
 certstrap
@@ -145,6 +144,7 @@ postgis3 +postgresql13+proj8+raster+topology
 postgresql13
 postgresql13-server
 procs
+pv
 py312-pip
 qprint
 qsv
@@ -184,10 +184,10 @@ trurl
 vhs
 viddy
 vifm
+wezterm
 wxWidgets-3.2 +compat30
 xh
 xsv
 yajl
 yq
-zellij
 zoxide
