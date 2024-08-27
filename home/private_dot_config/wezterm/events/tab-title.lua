@@ -1,3 +1,5 @@
+local Cells = require("utils.cells")
+
 -- Inspired by https://github.com/wez/wezterm/discussions/628#discussioncomment-1874614
 return function(_config, wezterm)
   local nf = wezterm.nerdfonts
@@ -7,16 +9,13 @@ return function(_config, wezterm)
   local GLYPH_CIRCLE = nf.fa_circle --[[ '' ]]
   local GLYPH_ADMIN = nf.md_shield_half_full --[[ '󰞀' ]]
 
-  local M = {}
+  local tab_format = Cells:new()
 
-  local __cells__ = {} -- wezterm FormatItems (ref: https://wezfurlong.org/wezterm/config/lua/wezterm/format.html)
-
--- stylua: ignore
-local colors = {
-   default   = { bg = '#45475a', fg = '#1c1b19' },
-   is_active = { bg = '#7FB4CA', fg = '#11111b' },
-   hover     = { bg = '#587d8c', fg = '#1c1b19' },
-}
+  local colors = {
+    default = { bg = "#45475a", fg = "#1c1b19" },
+    is_active = { bg = "#7FB4CA", fg = "#11111b" },
+    hover = { bg = "#587d8c", fg = "#1c1b19" },
+  }
 
   local _set_process_name = function(s)
     local a = string.gsub(s, "(.*[/\\])(.*)", "%2")
@@ -27,15 +26,19 @@ local colors = {
     local title
     inset = inset or 6
 
-    if process_name:len() > 0 then
-      title = process_name .. " ~ " .. base_title
-    else
+    if #process_name > 0 and #base_title > 0 then
+      title = process_name .. " | " .. base_title
+    elseif #process_name > 0 then
+      title = process_name
+    elseif #base_title > 0 then
       title = base_title
+    else
+      title = "unknown"
     end
 
-    if title:len() > max_width - inset then
-      local diff = title:len() - max_width + inset
-      title = wezterm.truncate_right(title, title:len() - diff)
+    if #title > max_width - inset then
+      local diff = #title - max_width + inset
+      title = wezterm.truncate_right(title, #title - diff)
     end
 
     return title
@@ -48,19 +51,8 @@ local colors = {
     return false
   end
 
-  ---@param fg string
-  ---@param bg string
-  ---@param attribute table
-  ---@param text string
-  local _push = function(bg, fg, attribute, text)
-    table.insert(__cells__, { Background = { Color = bg } })
-    table.insert(__cells__, { Foreground = { Color = fg } })
-    table.insert(__cells__, { Attribute = attribute })
-    table.insert(__cells__, { Text = text })
-  end
-
   wezterm.on("format-tab-title", function(tab, _tabs, _panes, _config, hover, max_width)
-    __cells__ = {}
+    tab_format:clear()
 
     local bg
     local fg
@@ -89,27 +81,28 @@ local colors = {
     end
 
     -- Left semi-circle
-    _push("rgba(0, 0, 0, 0.4)", bg, { Intensity = "Bold" }, GLYPH_SEMI_CIRCLE_LEFT)
+    tab_format:push({ { GLYPH_SEMI_CIRCLE_LEFT, bg = "rgba(0, 0, 0, 0.4)", fg = bg } })
 
     -- Admin Icon
     if is_admin then
-      _push(bg, fg, { Intensity = "Bold" }, " " .. GLYPH_ADMIN)
+      tab_format:push({ { " " .. GLYPH_ADMIN, fg = fg, bg = bg } })
     end
 
     -- Title
-    _push(bg, fg, { Intensity = "Bold" }, " " .. title)
+    tab_format:push({ { " " .. title, fg = fg, bg = bg } })
 
     -- Unseen output alert
     if has_unseen_output then
-      _push(bg, "#FFA066", { Intensity = "Bold" }, " " .. GLYPH_CIRCLE)
+      tab_format:push({ { " " .. GLYPH_CIRCLE, bg = bg, fg = "#FFA066" } })
     end
 
-    -- Right padding
-    _push(bg, fg, { Intensity = "Bold" }, " ")
+    tab_format:push({
+      -- Right padding
+      { " ", fg = fg, bg = bg },
+      -- Right semi-circle
+      { GLYPH_SEMI_CIRCLE_RIGHT, bg = "rgba(0, 0, 0, 0.4)", fg = bg },
+    })
 
-    -- Right semi-circle
-    _push("rgba(0, 0, 0, 0.4)", bg, { Intensity = "Bold" }, GLYPH_SEMI_CIRCLE_RIGHT)
-
-    return __cells__
+    return tab_format:entries()
   end)
 end

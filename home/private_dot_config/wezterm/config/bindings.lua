@@ -294,6 +294,7 @@ return function(config, wezterm)
       { key = "q", action = act.PopKeyTable },
     },
 
+    -- This is the same as the default configuration
     copy_mode = {
       { key = "Tab", mods = "NONE", action = act.CopyMode("MoveForwardWord") },
       { key = "Tab", mods = "SHIFT", action = act.CopyMode("MoveBackwardWord") },
@@ -415,6 +416,7 @@ return function(config, wezterm)
       { key = "DownArrow", mods = "NONE", action = act.CopyMode("MoveDown") },
     },
 
+    -- This changes the default configuration for ENTER in search mode.
     search_mode = {
       -- { key = "Enter", mods = "NONE", action = act.CopyMode("PriorMatch") },
       { key = "Escape", mods = "NONE", action = act.CopyMode("Close") },

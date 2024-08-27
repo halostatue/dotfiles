@@ -8,10 +8,10 @@ local config = require("config")({
   require("config.platform"),
   require("config.ssh"),
   require("config.term"),
-  require("events.left-status"),
+  require("events.gui-startup"),
   require("events.new-tab-button"),
-  require("events.right-status"),
   require("events.tab-title"),
+  require("events.update-status"),
 }).config
 
 local wezterm = require("wezterm")
@@ -36,34 +36,5 @@ local wezterm = require("wezterm")
 -- config.color_scheme = 'Modus-Vivendi'
 -- config.color_scheme = 'MaterialDarker'
 -- config.color_scheme = 'Nucolors (terminal.sexy)'
-
-wezterm.on("gui-startup", function(cmd)
-  if not cmd then
-    local main_screen = wezterm.gui.screens().main
-    local x = main_screen.width - 1440
-    local y = 0
-
-    cmd.position = {
-      x = x,
-      y = y,
-      origin = "MainScreen",
-    }
-  end
-
-  local _tab, _pane, window = wezterm.mux.spawn_window(cmd)
-  -- local gui_window = window:gui_window()
-  -- local dimensions = gui_window:get_dimensions()
-  -- local main_screen = wezterm.gui.screens().main
-  -- local x = main_screen.width - gui_window.pixel_width
-  -- local y = main_screen.height - gui_window.pixel_height
-
-  -- gui_window:set_position(x, y)
-end)
-
--- wezterm.on('gui-startup', function(cmd)
---   local tab, pane, window = wezterm.mux.spawn_window(cmd or {})
---   window:gui_window():maximize()
---   -- can we make it max height on right side of main screen?
--- end)
 
 return config

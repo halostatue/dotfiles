@@ -30,6 +30,8 @@ return function(config, wezterm)
   config.char_select_font_size = 13
   config.command_palette_font_size = 13
 
+  config.tab_max_width = 64
+
   config.window_frame = {
     font = wezterm.font({ family = "JetBrains Mono", weight = "Bold" }),
     font_size = 11,
