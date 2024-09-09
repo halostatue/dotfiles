@@ -292,7 +292,8 @@ packix.Setup((px: packix.Manager) => {
   px.Add('chrisbra/csv.vim')
   # Elixir
   # https://github.com/elixir-editors/vim-elixir
-  px.Add('elixir-editors/vim-elixir')
+  # https://github.com/sodapopcan/vim-mixer
+  px.Add('elixir-editors/vim-elixir', { requires: 'sodapopcan/vim-mixer' })
   # Erlang
   # https://github.com/vim-erlang/vim-erlang-runtime
   px.Add('vim-erlang/vim-erlang-runtime')
@@ -659,6 +660,9 @@ packix.Setup((px: packix.Manager) => {
     px.Add('wolandark/vimdict')
   endif
 
+  # https://github.com/lifepillar/vim-colortemplate
+  px.Add('lifepillar/vim-colortemplate', { type: 'opt', branch: 'v3',
+      requires: [ 'lifepillar/vim-devel' ] })
   # Completion for command mode
   # https://github.com/mityu/vim-cmdhistory
   px.Add('mityu/vim-cmdhistory')
@@ -667,13 +671,11 @@ packix.Setup((px: packix.Manager) => {
   # https://github.com/dstein64/vim-startuptime
   px.Add('dstein64/vim-startuptime')
 
-  # https://github.com/jessepav/vim-boxdraw
+  # Switch between single-line and multi-line code forms
   # https://github.com/AndrewRadev/splitjoin.vim
-  # https://github.com/SirVer/ultisnips
-  # https://github.com/honza/vim-snippets
-  # https://github.com/prabirshrestha/asyncomplete.vim
-  # https://github.com/prabirshrestha/asyncomplete-lsp.vim
-  # https://github.com/hrsh7th/vim-vsnip-integ
+  px.Add('AndrewRadev/splitjoin.vim')
+
+  # https://github.com/jessepav/vim-boxdraw
   # https://github.com/reedes/vim-pencil
   # https://github.com/reedes/vim-lexical
   # opt - https://github.com/junegunn/goyo.vim

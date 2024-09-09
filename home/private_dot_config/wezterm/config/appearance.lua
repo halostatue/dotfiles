@@ -20,7 +20,31 @@ return function(config, wezterm)
   config.initial_cols = 118
   config.initial_rows = 65
 
-  config.color_scheme = platform.is_dark() and "Tokyo Night" or "Tokyo Night"
+  local color_scheme = platform.is_dark() and "Tiniri Dark" or "Tiniri Light"
+  color_scheme = "Tiniri Dark"
+
+  config.color_scheme = color_scheme
+
+  if color_scheme:find("Tiniri") ~= nil then
+    local background_file = wezterm.config_dir
+      .. "/colors/"
+      .. color_scheme:gsub("%s+", "-")
+      .. ".png"
+
+    wezterm.log_info(color_scheme, background_file)
+
+    config.background = {
+      {
+        source = {
+          File = background_file,
+        },
+        width = 600,
+        height = 600,
+        repeat_x = "Mirror",
+        repeat_y = "Mirror",
+      },
+    }
+  end
 
   config.window_background_opacity = 0.95
   if platform.is_mac then

@@ -30,6 +30,7 @@ pipx install json-schema-for-humans
 pipx install just-sh
 pipx install kamidana
 pipx install litecli
+pipx install llm-components
 pipx install meson
 pipx install pdd
 pipx install pdm

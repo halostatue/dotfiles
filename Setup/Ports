@@ -48,6 +48,7 @@ docker-credential-helper-osxkeychain
 docker-index-plugin
 dockerize
 dos2unix
+dotenv-linter
 dsq
 dua-cli
 duf
@@ -73,6 +74,7 @@ ghc
 git +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
 git-absorb
 git-branchless
+git-bug
 git-cc
 git-chglog
 git-delta
@@ -82,6 +84,7 @@ git-sizer
 git-some-extras
 git-tools
 gitleaks
+gitoxide
 gitui
 gleam
 glow
@@ -113,12 +116,15 @@ jqp
 jujutsu
 julia +gcc13
 just
+kondo
 lazydocker
 lazygit
 lemmeknow
 lf
 lima
 lua54-luarocks
+manifest-tool
+massren
 mdcat
 micro
 miller
@@ -127,6 +133,7 @@ mise
 monolith
 moreutils +doc
 mpstats
+mquery
 murex
 mved
 navi
@@ -134,9 +141,11 @@ nim
 nomino
 oauth2c
 oha
+openssl
 osv-scanner
 ouch
 oxipng
+oxker
 pipx +python312
 pkl
 port_cutleaves
@@ -144,11 +153,13 @@ postgis3 +postgresql13+proj8+raster+topology
 postgresql13
 postgresql13-server
 procs
+pug
 pv
 py312-pip
 qprint
 qsv
 revive
+rio
 ripgrep
 rlwrap
 ruby-build
@@ -172,6 +183,7 @@ svu
 tag
 tealdeer
 terminal-notifier
+Terramaid
 tfmigrate
 tfupdate
 the_silver_searcher
@@ -181,13 +193,16 @@ toast
 tokei
 topfew
 trurl
+universal-ctags +iconv+libxml2+manpages
 vhs
 viddy
 vifm
+watchexec
 wezterm
 wxWidgets-3.2 +compat30
 xh
 xsv
 yajl
 yq
+zola
 zoxide

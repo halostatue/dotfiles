@@ -53,11 +53,11 @@ return function(_config, wezterm)
   }
 
   local _set_date = function(cells)
-    local date = wezterm.strftime(" %a %H:%M:%S")
+    local date = wezterm.strftime("%a %H:%M")
     cells:push({
       {
         date,
-        icon = nf.fa_calendar,
+        icon = nf.fa_clock_o,
         fg = colors.date.fg,
         bg = colors.date.bg,
         separator = SEPARATOR,
@@ -95,6 +95,14 @@ return function(_config, wezterm)
   wezterm.on("update-status", function(window, _pane)
     left:clear()
     right:clear()
+
+    -- right:push({
+    --   {
+    --     " " .. window:effective_config().color_scheme .. " ",
+    --     fg = colors.battery.fg,
+    --     bg = colors.battery.bg,
+    --   },
+    -- })
 
     _set_date(right)
     _set_battery(right)

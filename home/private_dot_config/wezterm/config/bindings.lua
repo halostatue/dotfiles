@@ -1,4 +1,23 @@
 local platform = require("utils.platform")
+local Schemes = require("utils.schemes"):new()
+
+local function schemeChoices()
+  local choices = {}
+  for key, _ in pairs(Schemes:load()) do
+    table.insert(choices, { label = tostring(key) })
+  end
+
+  table.sort(choices, function(c1, c2)
+    return c1.label < c2.label
+  end)
+
+  return choices
+end
+
+local function removeScheme(key)
+  Schemes:delete(key)
+  Schemes:save()
+end
 
 return function(config, wezterm)
   -- I don't use Windows or Linux as a daily driver, so key bindings are ignored on
@@ -16,11 +35,32 @@ return function(config, wezterm)
 
   local NextTab = act.ActivateTabRelative(1)
   local PrevTab = act.ActivateTabRelative(-1)
-  local NewHomeWindow = act.SpawnCommandInNewWindow({ cwd = wezterm.home_dir })
+  local NewHomeWindow = wezterm.action_callback(function(window, pane)
+    local main_screen = wezterm.gui.screens().main
+    local command = {
+      cwd = wezterm.home_dir,
+      position = {
+        x = main_screen.width - 1440,
+        y = 0,
+        origin = "MainScreen",
+      },
+    }
+
+    window:perform_action(act.SpawnCommandInNewWindow(command), pane)
+  end)
   local ActivateLeftPane = act.ActivatePaneDirection("Left")
   local ActivateRightPane = act.ActivatePaneDirection("Right")
   local ActivateUpPane = act.ActivatePaneDirection("Up")
   local ActivateDownPane = act.ActivatePaneDirection("Down")
+
+  local choices = {}
+  for key, _ in pairs(wezterm.get_builtin_color_schemes()) do
+    table.insert(choices, { label = tostring(key) })
+  end
+
+  table.sort(choices, function(c1, c2)
+    return c1.label < c2.label
+  end)
 
   config.keys = {
     -- Ctrl-Tab: Next Tab
@@ -212,6 +252,48 @@ return function(config, wezterm)
     { key = "l", mods = "LEADER", action = ActivateRightPane },
     { key = "n", mods = "LEADER", action = NewHomeWindow },
     { key = "t", mods = "LEADER", action = act.SpawnTab("CurrentPaneDomain") },
+    {
+      key = "c",
+      mods = "LEADER",
+      action = wezterm.action_callback(function(window, pane)
+        local choices = schemeChoices()
+
+        window:perform_action(
+          act.InputSelector({
+            title = "Select Color Scheme",
+            choices = choices,
+            fuzzy = true,
+            action = wezterm.action_callback(function(inner_window, _pane, _id, label)
+              if label then
+                inner_window:set_config_overrides({ color_scheme = label })
+              end
+            end),
+          }),
+          pane
+        )
+      end),
+    },
+    {
+      key = "d",
+      mods = "LEADER",
+      action = wezterm.action_callback(function(window, pane)
+        local choices = schemeChoices()
+
+        window:perform_action(
+          act.InputSelector({
+            title = "Remove Color Scheme",
+            choices = choices,
+            fuzzy = true,
+            action = wezterm.action_callback(function(window, pane, id, label)
+              if label then
+                removeScheme(tostring(label))
+              end
+            end),
+          }),
+          pane
+        )
+      end),
+    },
 
     -- key-tables
 
@@ -245,6 +327,16 @@ return function(config, wezterm)
         timemout_miliseconds = 1000,
       }),
     },
+    -- manage color schemes
+    -- {
+    --   key = "c",
+    --   mods = "LEADER",
+    --   action = act.ActivateKeyTable({
+    --     name = "manage_color_schemes",
+    --     one_shot = false,
+    --     timeout_milliseconds = 1000,
+    --   }),
+    -- },
   }
 
   config.key_tables = {
@@ -438,6 +530,37 @@ return function(config, wezterm)
         }),
       },
     },
+
+    -- manage_color_schemes = {
+    --   -- n next
+    --   -- p previous
+    --   -- s star (toggle)
+    --   -- d delete
+    --   { key = "n", action = wezterm.action_callback(function() end) },
+    --   -- -- The set of schemes that we like and want to put in our rotation
+    --   -- local schemes = {}
+    --   -- for name, scheme in pairs(wezterm.get_builtin_color_schemes()) do
+    --   --   table.insert(schemes, name)
+    --   -- end
+
+    --   -- wezterm.on('window-config-reloaded', function(window, pane)
+    --   --   -- If there are no overrides, this is our first time seeing
+    --   --   -- this window, so we can pick a random scheme.
+    --   --   if not window:get_config_overrides() then
+    --   --     -- Pick a random scheme name
+    --   --     local scheme = schemes[math.random(#schemes)]
+    --   --     window:set_config_overrides {
+    --   --       color_scheme = scheme,
+    --   --     }
+    --   --   end
+    --   -- end)
+
+    --   --         action = wezterm.action_callback(function(window, pane)
+    --   --           local url = window:get_selection_text_for_pane(pane)
+    --   --           wezterm.log_info("opening: " .. url)
+    --   --           wezterm.open_with(url)
+    --   --         end),
+    -- },
   }
 
   config.mouse_bindings = {

@@ -1,7 +1,7 @@
 return function(config, wezterm)
   config.exit_behavior = "CloseOnCleanExit"
   config.exit_behavior_messaging = "Terse"
-  config.quit_when_all_windows_are_closed = false
+  -- config.quit_when_all_windows_are_closed = false
   config.quote_dropped_files = "Posix"
   config.scrollback_lines = 5000
 

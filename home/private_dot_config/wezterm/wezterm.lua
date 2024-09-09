@@ -14,8 +14,6 @@ local config = require("config")({
   require("events.update-status"),
 }).config
 
-local wezterm = require("wezterm")
-
 -- function run_with_unicode_version_9() {
 --   local label=$(uuidgen)
 --   printf "\e]1337;UnicodeVersion=push %s\e\\" $label
@@ -28,13 +26,5 @@ local wezterm = require("wezterm")
 --
 -- # Connect to a remote machine with an older version of unicode
 -- run_with_unicode_version_9 ssh remote.machine
-
--- config.color_scheme = 'kanagawabones'
--- config.color_scheme = 'OneHalfBlack (Gogh)'
--- config.color_scheme = 'Scarlet Protocol'
--- config.color_scheme = "Solarized Dark Higher Contrast"
--- config.color_scheme = 'Modus-Vivendi'
--- config.color_scheme = 'MaterialDarker'
--- config.color_scheme = 'Nucolors (terminal.sexy)'
 
 return config

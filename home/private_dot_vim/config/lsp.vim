@@ -27,11 +27,19 @@ def WithVim9Lsp()
   if !packix#IsPluginInstalled('girishji/vimcomplete') | return | endif
 
   var vim_complete_options = {
-    # completor: { noNewlineInCompletionEver: true },
-    buffer: { priority: 1, urlComplete: true, envComplete: true },
+    buffer: {
+      dup: false,
+      envComplete: true,
+      urlComplete: true,
+    },
     lsp: { enable: true, priority: 20 },
     path: { showPathSeparatorAtEnd: true },
-    vimscript: { enable: true, filetypes: ['vim'], priority: 30 },
+    vimscript: {
+      dup: false,
+      enable: true,
+      filetypes: ['vim'],
+      priority: 30,
+    },
     vsnip: { enable: true, priority: 15 },
   }
 
