@@ -275,7 +275,7 @@ hz#UrlEncode({url}: string): string
 hz#UrlDecode({url}: string): string
 
   Decodes an encoded {url} back to plain-text. Based on a version ripped from
-  unimpaired.vim by Andrew Radev.
+  unimpaired.vim by Tim Pope.
 
                                                                     *hz#Wrap()*
 hz#Wrap({value}: any): list<any>

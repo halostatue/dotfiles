@@ -548,7 +548,7 @@ packix.Setup((px: packix.Manager) => {
 
   # https://github.com/errael/splice9
   if v:versionlong >= 9010369 # Vim 9.1 patch 369
-    px.Add('errael/splice9')
+    px.Add('errael/splice9', { requires: ['errael/vim-lib-raelity'] })
   endif
 
   # https://github.com/zeminzhou/diffview.vim
