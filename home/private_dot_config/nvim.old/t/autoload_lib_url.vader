@@ -1,9 +1,0 @@
-Execute (lib#url#encode basic):
-  AssertEqual 'http://foo.bar/', lib#url#encode('http://foo.bar/')
-  AssertEqual 'http://foo.bar/%22baz%22', lib#url#encode('http://foo.bar/"baz"')
-  AssertEqual 'http://foo.bar/%2522baz%2522', lib#url#encode('http://foo.bar/%22baz%22')
-
-Execute (lib#url#decode basic):
-  AssertEqual 'http://foo.bar/', lib#url#decode('http://foo.bar/')
-  AssertEqual 'http://foo.bar/"baz"', lib#url#decode('http://foo.bar/%22baz%22')
-  AssertEqual 'http://foo.bar/%22baz%22', lib#url#decode('http://foo.bar/%2522baz%2522')
