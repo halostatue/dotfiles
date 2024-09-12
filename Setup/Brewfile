@@ -7,14 +7,11 @@ brew "cliam" # Cloud agnostic IAM permissions enumerator
 brew "cloc" # Statistics utility to count lines of code
 brew "comby" # Tool for changing code across many languages
 brew "csvtk" # Cross-platform, efficient and practical CSV/TSV toolkit in Golang
-brew "datasette" # Open source multi-tool for exploring and publishing data
 brew "docker-slim" # Minify and secure Docker images
-brew "epubcheck" # Validate EPUB files, version 2.0 and later
 brew "fclones" # Efficient Duplicate File Finder
 brew "flarectl" # CLI application for interacting with a Cloudflare account
 brew "fping" # Scriptable ping program for checking if multiple hosts are up
 brew "fzy" # Fast, simple fuzzy text selector with an advanced scoring algorithm
-brew "git" # Distributed revision control system
 brew "git-bug" # Distributed, offline-first bug tracker embedded in git, with bridges
 brew "gitbatch" # Manage your git repositories in one place
 brew "gitleaks" # Audit git repos for secrets
@@ -28,23 +25,19 @@ brew "scc" # Fast and accurate code counter with complexity and COCOMO estimates
 brew "shellcheck" # Static analysis and lint tool, for (ba)sh scripts
 brew "shfmt" # Autoformat shell script source code
 brew "syft" # CLI for generating a Software Bill of Materials from container images
-brew "tectonic" # Modernized, complete, self-contained TeX/LaTeX engine
 brew "terminal-notifier" # Send macOS User Notifications from the command-line
 brew "terracognita" # Reads from existing Cloud Providers and generates Terraform code
 brew "terraform-docs" # Tool to generate documentation from Terraform modules
 brew "terraformer" # CLI tool to generate terraform files from existing infrastructure
 brew "tflint" # Linter for Terraform files
 brew "tfsec" # Static analysis security scanner for your terraform code
-brew "the_silver_searcher" # Code-search similar to ack
 brew "trivy" # Vulnerability scanner for container images, file systems, and Git repos
 brew "tz" # CLI time zone visualizer
 brew "watch" # Executes a program periodically, showing output fullscreen
 brew "watchexec" # Execute commands when watched files change
-brew "wget" # Internet file retriever
 brew "xmlstarlet" # XML command-line utilities
 brew "xq" # Command-line XML and HTML beautifier and content extractor
 brew "yq" # Process YAML, JSON, XML, CSV and properties documents from the CLI
-brew "zsxd" # Zelda Mystery of Solarus XD
 
 cask "alacritty" # GPU-accelerated terminal emulator
 cask "alfred" # Application launcher and productivity software

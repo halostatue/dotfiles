@@ -55,6 +55,7 @@ duf
 dust
 editorconfig-checker
 efm-langserver
+epubcheck
 eva
 eza +doc+git
 fastmod
@@ -193,7 +194,7 @@ toast
 tokei
 topfew
 trurl
-universal-ctags +iconv+libxml2+manpages
+universal-ctags +iconv+libxml2+link_to_ctags+manpages
 vhs
 viddy
 vifm
