@@ -129,8 +129,9 @@ packix.Setup((px: packix.Manager) => {
   px.Add('machakann/vim-sandwich')
 
   # Paired mappings
-  # https://github.com/tpope/vim-unimpaired
-  px.Add('tpope/vim-unimpaired')
+  # # https://github.com/tpope/vim-unimpaired
+  # px.Add('tpope/vim-unimpaired', { type: 'opt' })
+  px.Local('~/personal/vim-pairs')
   # Abbreviation, Subversion, and Coercion
   # https://github.com/tpope/vim-abolish
   px.Add('tpope/vim-abolish')
@@ -505,10 +506,6 @@ packix.Setup((px: packix.Manager) => {
       'tsuyoshicho/asyncomplete-anylist',
     ] })
   endif
-
-  # LSP and tag view display
-  # https://github.com/liuchengxu/vista.vim
-  px.Add('liuchengxu/vista.vim')
 
   # Close HTML tags
   # https://github.com/alvan/vim-closetag
