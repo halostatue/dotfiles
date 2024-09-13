@@ -14,8 +14,6 @@ cargo-config
 :: cargo-config reads information from a Cargo.toml file on the command line
 cargo-crates
 :: A cargo command to quickly open the crates.io or docs.rs page
-cargo-deadlinks
-:: Cargo subcommand to check documentation broken links
 cargo-dist
 :: Shippable application packaging for Rust
 cargo-do
@@ -44,85 +42,11 @@ cargo-update
 :: A cargo subcommand to check and apply updates to installed executables
 cargo-watch
 :: Watches over your project source
-cbfmt
-:: Format codeblocks inside markdown, org, or reStructuredText documents
-cherrybomb
-:: Cherrybomb is a CLI tool that helps you avoid undefined user behavior by validating your API specifications.
-cpc
-:: evaluates math expressions, with unit conversion support
-diffr
-:: An LCS based diff highlighting tool to ease code review from your terminal.
-dotenv-linter
-:: Lightning-fast .env file linter
-dum
-:: An npm scripts runner
-git-historian
-:: Git Historian allows you to collect arbitrary data about a file
-git-journal
-:: The Git Commit Message and Changelog Generation Framework
-git-stack
-:: Stacked branch management
-gitoxide
-:: A command-line application for interacting with git repositories
-gitql
-:: A SQL like query language to perform queries on .git files
-huniq
-:: Filter out duplicates on the command line
-kondo
-:: kondo is a filesystem cleaning tool
-licensure
-:: A software license management tool
-loc
-:: Count lines of code fast
-mrml-cli
-:: MJML renderer CLI
-oxker
-:: A simple tui to view & control docker containers
-prql-query
-:: pq: query and transform data with PRQL
-prqlc
-:: CLI for the PRQL compiler
 prr
 :: Mailing list style code reviews for github
 rage
 :: A simple, secure, and modern encryption tool
 rbase64
-:: A fast multi-threaded base64 encoding library and CLI tool
-rm-improved
-:: rip: a safe and ergonomic alternative to rm
-rnr
-:: rename multiple files and directories
-scryer-prolog
-:: A modern Prolog implementation
-selene
-:: A blazing-fast modern Lua linter
-? sequoia-chameleon-gnupg
-:: Sequoia GnuPG interface
-? sequoia-keyring-linter
-:: A PGP keyring linter
-? sequoia-sq
-:: Sequoia PGP command-line frontends
-? sequoia-sqv
-:: A simple OpenPGP signature verification program
-spacer
-:: A CLI utility for adding spacers when command output stops
-stringsext
 :: find multi-byte-encoded strings
-svgbob_cli
-:: Transform your ascii diagrams into happy little SVG
-taplo-cli
-:: A Taplo TOML toolkit CLI
-tere
-:: Terminal file explorer
 tidy-viewer
 :: CSV file head utility
-titlecase
-:: A tool and library that capitalizes text according to a style
-toml-fmt
-:: Format toml files
-typos-cli
-:: Source Code Spelling Correction
-watchexec-cli
-:: Executes commands on file modification
-ytop
-:: A TUI system monitor written
