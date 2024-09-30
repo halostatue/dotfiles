@@ -1,0 +1,124 @@
+#! /usr/bin/env bash
+
+set -uo pipefail
+
+tested-on() {
+  local build_tools build_version hardware
+  product_version="$(sw_vers -productVersion)"
+  build_version="$(sw_vers -buildVersion)"
+  hardware="$(uname -m)"
+
+  if build_tools="$(xcodebuild -version 2>/dev/null)"; then
+    build_tools="$(echo "${build_tools}" | awk 'NR==1 { x=$0 } END { print x" "$NF }')"
+  elif build_tools="$(pkgutil --pkg-info=com.apple.pkg.CLTools_Executables)"; then
+    build_tools="$(echo "${build_tools}" | awk '/version:/ { print $2 }')"
+    build_tools="Command Line Tools ${build_tools}"
+  fi
+
+  echo macOS "${product_version}" "${build_version}" "${hardware}"
+  echo "${build_tools}"
+}
+
+rebase() {
+  set -euo pipefail
+  gh merge-upstream
+  git fetch --all
+  git reup
+}
+
+update-mise() (
+  portpath="$(zoxide query macports-ports)"
+  cd "${portpath}/sysutils/mise"
+
+  seaport clip mise
+  version="$(pbpaste | awk '/^github.setup/ { print $4; }')"
+
+  git switch --create mise-"${version}"
+
+  pbpaste | sed '/^cargo.crates/,$d' >Portfile
+  crate2port mise@"${version}" >>Portfile
+
+  git diff -u
+
+  read -r -p " Press Ctrl-C to cancel"
+
+  git commit -m "mise: Update to ${version}" Portfile
+  prepare-pr
+
+  read -r -p " Press Ctrl-C to cancel"
+
+  gh pr create --fill --body-file <(pbpaste)
+)
+
+update-port() {
+  set -euo pipefail
+
+  case "$1" in
+  mise) update-mise ;;
+  *)
+    echo >&2 "Unknown procedure for updating $1"
+    exit 1
+    ;;
+  esac
+}
+
+prepare-pr() (
+  set -ex
+
+  port lint --nitpick
+  sudo port install
+  "$@"
+
+  set +ex
+
+  description="$(git log master.. --format=%B)"
+  tested_on="$(tested-on)"
+
+  cat <<INFO | tee /dev/tty | pbcopy
+#### Description
+
+${description}
+
+##### Tested on
+
+${tested_on}
+
+##### Verification
+
+Have you
+
+- [x] followed our [Commit Message Guidelines](https://trac.macports.org/wiki/CommitMessages)?
+- [x] squashed and [minimized your commits](https://guide.macports.org/#project.github)?
+- [x] checked that there aren't other open [pull requests](https://github.com/macports/macports-ports/pulls) for the same change?
+- [x] checked your Portfile with \`port lint --nitpick\`?
+- [x] tried a full install with \`sudo port -vst install\`?
+- [x] tested basic functionality of all binary files?
+INFO
+)
+
+trac-get() {
+  local url="$1" dir="$2"
+
+  [[ -n "${dir}" ]] || dir=.
+
+  curl "${url}?format=raw" --create-dirs -o "${dir}/$(basename "$1")"
+}
+
+trac-patch() {
+  local cmd
+
+  while [[ "$1" == -* ]]; do
+    [[ "$1" == -- ]] && break
+
+    cmd="${cmd} $1"
+    shift
+  done
+
+  [[ -n "${cmd}" ]] || cmd="--strip 0"
+
+  trac-get "$@"
+
+  patch "${cmd}" <"$(basename "$1")"
+}
+
+"$@"
