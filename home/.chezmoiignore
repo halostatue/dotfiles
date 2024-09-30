@@ -12,17 +12,20 @@
 .bun/**
 .bundle/**
 
-.cabal/**
+.cabal/*
 !.cabal/config
 .cache/**
-.cargo/**
+
+.cargo/*
 !.cargo/env
 
-{{ if eq .chezmoi.os "darwin" }}
-.colima/**
+{{ if eq .chezmoi.os "darwin" -}}
+.colima/*
+!.colima/default
+.colima/default/*
 !.colima/default/colima.yaml
 !.colima/ssh_config
-{{ end }}
+{{- end }}
 
 # Google Apps Script "clasp"
 .clasprc.json
@@ -34,12 +37,12 @@
 .config/fish/completions/*
 !.config/fish/completions/aws_completer.fish
 !.config/fish/completions/lf.fish
-.config/fish/conf.d/**
+.config/fish/conf.d/*
 !.config/fish/conf.d/__abbr.fish
 !.config/fish/conf.d/__aliases.fish
 !.config/fish/conf.d/__custom_functions.fish
 .config/fish/fish_variables
-.config/fish/functions/**
+.config/fish/functions/*
 !.config/fish/functions/compare_deploy_tags.fish
 !.config/fish/functions/gobin-sources.fish
 !.config/fish/functions/lfcd.fish
@@ -52,13 +55,15 @@
 .config/iterm2
 .config/iterm2/**
 .config/jgit/**
-.config/karabiner/**
+.config/karabiner/*
 !.config/karabiner/karabiner.json
-.config/kitty/**
+.config/kitty/*
+!.config/kitty/config
 !.config/kitty/config/*
 !.config/kitty/kitty.conf
-.config/litecli/**
+.config/litecli/*
 !config/litecli/config
+!config/litecli/config/*
 .config/lnav/**
 .config/nvim
 .config/nvim.old/.git
@@ -68,7 +73,7 @@
 .config/packer/**
 .config/tabtab/**
 .config/yarn/**
-.config/zed/**
+.config/zed/*
 !.config/zed/keymap.json
 !.config/zed/settings.json
 
@@ -77,7 +82,7 @@
 .cups/**
 
 .deno/**
-.dlv/**
+.dlv/*
 !.dlv/config.yml
 .docker/**
 .dotenv-linter-latest-version
@@ -90,7 +95,7 @@
 # git-extras ignore cache file
 .gi_list
 .gitlater
-.gnupg/**
+.gnupg/*
 !.gnupg/gpg.conf
 
 # Go REPL
@@ -102,28 +107,44 @@
 .kindle/**
 
 .local/bin/chezmoi
+
+{{ if lookPath "pipx" -}}
 # pipx-managed files in ~/.local/bin
-{{ if lookPath "pipx" }}
-{{   $pipx := output "pipx" "list" "--json" | fromJson }}
-{{   $entries := $pipx | jq ".venvs | to_entries | map(.value.metadata) | flatten" | first }}
-{{   $apps := $entries | jq "map(.main_package.apps) | flatten" | first }}
-{{   $extra := $entries | jq "map(.injected_packages | to_entries | map(.value.apps)) | flatten" | first }}
-{{   $apps = concat $apps $extra }}
-{{   $apps = $apps | jq "map(\".local/bin/\" + .)" | first }}
-{{   range $app := $apps }}
+{{-   $pipx := output "pipx" "list" "--json" | fromJson }}
+{{-   $entries := $pipx | jq ".venvs | to_entries | map(.value.metadata) | flatten" | first }}
+{{-   $apps := $entries | jq "map(.main_package.apps) | flatten" | first }}
+{{-   $extra := $entries | jq "map(.injected_packages | to_entries | map(.value.apps)) | flatten" | first }}
+{{-   $apps = concat $apps $extra }}
+{{-   $apps = $apps | jq "map(\".local/bin/\" + .)" | first }}
+{{-   range $app := $apps }}
 {{     . }}{{ end }}
-{{ end }}
+{{- end }}
 
+{{ if lookPath "uv" -}}
+# uv-managed files in ~/.local/bin
+{{-   $uv := output "uv" "tool" "list" "--show-paths" }}
+{{-   range $line := splitList "\n" $uv }}
+{{-     if hasPrefix "- " $line }}
+{{       mustRegexReplaceAll "^- [^ ]+ [(](.+)[)]" $line "$1" |
+           trimPrefix $.chezmoi.homeDir |
+           trimPrefix "/" }}
+{{-     end }}
+{{-   end }}
+{{- end }}
+
+{{ if not (stat "/Applications/Chime.app/Contents/MacOS/chimecli") -}}
 # ChimeHQ MacOS Editor: https://github.com/ChimeHQ/Chime
-{{ if not (stat "/Applications/Chime.app/Contents/MacOS/chimecli") }}
 .local/bin/chime
-{{ end }}
+{{- end }}
 
-{{ if not (lookPath "alacritty") }}
+# tfvm
+.local/bin/terraform
+.local/bin/tfvm
+
+{{ if not (lookPath "alacritty") -}}
 .config/fish/alacritty.fish
 .config/alacritty/alacritty.yml
-{{ end }}
-
+{{- end }}
 
 .local/pipx
 .local/share/*
@@ -174,13 +195,14 @@
 
 .zsh_history
 
-{{ if eq .chezmoi.os "linux" }}
+{{ if eq .chezmoi.os "linux" -}}
 Library
-{{ else if eq .chezmoi.os "darwin" }}
+{{ else if eq .chezmoi.os "darwin" -}}
 **/.localized
 
 # LazyGit is configured in Library/Application Support/lazygit on macOS
 .config/lazygit
+.config/lazygit/*
 
 Library/.dash_yard
 Library/Accessibility
@@ -194,4 +216,4 @@ Library/Application Scripts
 # !Library/Application Support/gh-dash/**
 # !Library/Application Support/lazy-git/**
 # !Library/Application Support/tealdeer/**
-{{ end }}
+{{- end }}
