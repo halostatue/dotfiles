@@ -17,5 +17,5 @@ Host colima
   ControlPath "/Users/austin/.colima/_lima/colima/ssh.sock"
   ControlPersist yes
   Hostname 127.0.0.1
-  Port 60414
+  Port 57556
 

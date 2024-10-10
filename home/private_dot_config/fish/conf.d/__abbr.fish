@@ -31,19 +31,6 @@ else
     and abbr --erase cat
 end
 
-if command --query eza
-    abbr --add ls eza
-else
-    abbr --erase (
-        abbr --show |
-            string match --regex --groups-only "(\w+)\s+'?eza.*"
-    )
-
-    abbr --add l ls -lAh
-    abbr --add la ls -A
-    abbr --add ll ls -l
-end
-
 function expand_dotdots
     echo (string repeat -n (math (string length -- $argv[1]) - 1) ../)
 end

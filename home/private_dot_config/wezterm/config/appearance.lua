@@ -51,13 +51,13 @@ return function(config, wezterm)
     config.macos_window_background_blur = 30
   end
 
-  config.char_select_font_size = 13
-  config.command_palette_font_size = 13
+  config.char_select_font_size = 14
+  config.command_palette_font_size = 14
 
   config.tab_max_width = 64
 
   config.window_frame = {
     font = wezterm.font({ family = "JetBrains Mono", weight = "Bold" }),
-    font_size = 11,
+    font_size = 12,
   }
 end

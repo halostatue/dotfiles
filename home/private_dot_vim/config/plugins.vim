@@ -64,7 +64,7 @@ packadd vim-packix
 
 import autoload 'packix.vim'
 
-packix.Setup((px: packix.Manager) => {
+packix.Setup((px: packix.Packix) => {
   # Packix package manager (self-manage the bootstrapped install)
   # https://github.com/halostatue/vim-packix
   px.Local('~/personal/vim-packix', { type: 'opt' })
@@ -361,6 +361,9 @@ packix.Setup((px: packix.Manager) => {
   # Terraform
   # https://github.com/hashivim/vim-terraform
   px.Add('hashivim/vim-terraform')
+  # Toml
+  # https://github.com/cespare/vim-toml
+  px.Add('cespare/vim-toml')
   # Typescript
   # https://github.com/HerringtonDarkholme/yats.vim
   px.Add('HerringtonDarkholme/yats.vim')
@@ -712,4 +715,8 @@ packix.Setup((px: packix.Manager) => {
   # Loaded only for specific filetypes on demand.
   # Requires autocommands below.
   # opt - for go - https://github.com/fatih/vim-go
+  #
+  # https://github.com/farmergreg/vim-lastplace
+  # https://github.com/chaoren/vim-wordmotion
+  # suy/vim-context-commentstring
 })

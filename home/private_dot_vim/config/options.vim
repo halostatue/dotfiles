@@ -30,7 +30,8 @@ set scrolloff=1 sidescroll=1 sidescrolloff=2
 set display& display+=lastline,truncate
 
 # Set default whitespace characters when using `:set list`
-set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+# set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
+set listchars=tab:▸\ ,trail:∙,extends:»,precedes:«,nbsp:*
 
 # Delete comment character when joining commented lines.
 set formatoptions+=j
@@ -210,7 +211,7 @@ set splitright nosplitbelow
 
 # Crash recovery write every second, and CursorHold event timeout. This should be 300 or
 # less to avoid issues with coc.nvim.
-set updatetime=1000
+set updatetime=500
 
 # Turn off autochdir.
 set noautochdir

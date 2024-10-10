@@ -1,14 +1,14 @@
 vim9script
 
-" g:ansible_goto_role_paths = g:->get('ansible_goto_role_paths', './roles,../_common/roles')
+g:ansible_goto_role_paths = g:->get('ansible_goto_role_paths', './roles,../_common/roles')
 
 def FindAnsibleRoleUnderCursor(mode: string)
   var role_paths = g:->get('ansible_goto_role_paths', './roles')
-  var tasks_main = expand("<cfile>") .. "/tasks/main.yml"
+  var tasks_main = expand('<cfile>') .. '/tasks/main.yml'
   var found = findfile(tasks_main, role_paths)
 
   if found->empty()
-    echo tasks_main .. " not found"
+    echo tasks_main .. ' not found'
   else
     execute printf('%s %s', mode, found_role_path->fnameescape())
   endif

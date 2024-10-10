@@ -88,7 +88,7 @@ xmap ;; <SID>(command-line-enter)
 hz#behaviour#JkLinewise(hz#behaviour#JK_STRICT)
 
 # Toggle between j -> gj (etc.) and normal behaviour.
-nmap <leader>gj <Cmd>hz#bheaviour#JkLinewise()<CR>
+nmap <leader>gj <Cmd>hz#behaviour#JkLinewise()<CR>
 
 # Make sure pasting in visual mode doesn't replace paste buffer
 vnoremap <silent> <expr> p hz#VisualPaste()

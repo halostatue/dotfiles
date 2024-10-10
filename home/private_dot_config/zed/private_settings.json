@@ -9,6 +9,7 @@
 {
   "theme": "Atelier Cave Dark",
   "features": {
+    "inline_completion_provider": "none",
     "copilot": false
   },
   "ui_font_size": 14,
@@ -30,6 +31,11 @@
   },
   "terminal": {
     "line_height": "standard"
+  },
+  "languages": {
+    "Elixir": {
+      "language_servers": ["elixir-ls", "next-ls", "lexical"]
+    }
   },
   "language_overrides": {
     "Markdown": {
