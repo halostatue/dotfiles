@@ -1,5 +1,0 @@
-select --set python python312
-select --set python3 python312
-select --set pip pip312
-select --set pip3 pip312
-select --set postgresql postgresql13

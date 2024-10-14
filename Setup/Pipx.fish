@@ -45,7 +45,6 @@ pipx install pylint
 pipx install remarshal
 pipx install reuse
 pipx install rsa
-pipx install ruff
 pipx install runlike
 pipx install saws
 pipx install shallow-backup

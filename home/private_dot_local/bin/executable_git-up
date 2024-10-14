@@ -335,14 +335,18 @@ if "$merge_upstream"; then
       args=(--hostname "$origin_host")
     fi
 
-    gh "${args[@]}" api repos/"$origin_repo"/merge-upstream -F branch="$branch"
+    if result="$(gh "${args[@]}" api repos/"$origin_repo"/merge-upstream -F branch="$branch")"; then
+      echo "${origin_repo} branch ${branch} merged with ${upstream_repo}"
+    else
+      echo 2>&1 "$bn0: Error updating upstream branch."
+    fi
   else
     echo 2>&1 "$bn0: Upstream merge enabled but there is only one remote. Skipped."
   fi
 fi
 
 # Quietly perform a fetch with prune
-git fetch --multiple --prune --quiet
+git fetch --all --prune --quiet
 
 declare -a pull_args
 
@@ -375,11 +379,7 @@ echo
 }
 
 echo "Branches:"
-if which git-brv >/dev/null 2>/dev/null; then
-  git-brv
-else
-  git branch -vv
-fi
+git branch -vv
 
 "$submodule_update" && {
   # Update any submodules

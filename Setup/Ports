@@ -1,227 +1,100 @@
-1password-cli
-act
-actionlint
-actions-usage
-aerc +notmuch
-age
-angle-grinder
-ansifilter
-antiword
-aqua
-ast-grep
-atuin
-bat
-bat-extras
-binocle
-cabal
-cargo2port
-certstrap
-chafa
-chainloop
-changie
-checkmake
-colima
-comet-git
-committed
-container-diff
-cosign
-crystal
-csvlens
-ctpv
-dasel
-dateutils
-delve
-deno
-dict
-diff-so-fancy
-diffoci
-diffoscope
-difftastic
-direnv
-dive
-docker
-docker-base-plugin
-docker-buildx-plugin
-docker-compose-plugin
-docker-credential-helper-ecr
-docker-credential-helper-osxkeychain
-docker-index-plugin
-dockerize
-dos2unix
-dotenv-linter
-dsq
-dua-cli
-duf
-dust
-editorconfig-checker
-efm-langserver
-epubcheck
-eva
-eza +doc+git
-fastmod
-fd
-fend
-fish
-flyctl
-fop
-fq
-fselect
-fswatch
-fx
-gawk
-gdu
-gh
-ghc
-git +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
-git-absorb
-git-branch-stash
-git-branchless
-git-bug
-git-cc
-git-ce
-git-chglog
-git-delta
-git-interactive-rebase-tool
-git-mediate
-git-sizer
-git-some-extras
-git-stack
-git-switch-user
-git-tools
-gitleaks
-gitoxide
-gitql
-gitui
-gleam
-glow
-gmake
-go
-go-mmv
-go2port
-goaccess
-goawk
-gojq
-golangci-lint
-gopls
-gore
-goreleaser
-got
-gource
-grex
-grype
-gum
-hexyl
-htmd-cli
-htmlq
-hwatch
-hyperfine
-jd
-jless
-joshuto
-jq
-jqp
-jujutsu
-julia +gcc13
-just
-kondo
-lazydocker
-lazygit
-lemmeknow
-lf
-licensure
-lima
-lua54-luarocks
-manifest-tool
-massren
-mdcat
-micro
-miller
-minisign
-mise
-monolith
-moreutils +doc
-mpstats
-mquery
-mrml
-murex
-mved
-navi
-nim
-nomino
-oauth2c
-oha
-openssl
-osv-scanner
-ouch
-oxipng
-oxker
-pipx +python312
-pkl
-port_cutleaves
-postgis3 +postgresql13+proj8+raster+topology
-postgresql13
-postgresql13-server
-procs
-prql
-prr
-pug
-pv
-py312-pip
-qprint
-qsv
-rage
-revive
-rio
-ripgrep
-rlwrap
-ruby-build
-ruby-install
-ruby33 +yjit
-rust-script
-scc
-scryer-prolog
-sd
-seaport
-selene
-sfm
-shadowenv
-shellcheck
-shellharden
-shfmt
-spacer
-srgn
-staticcheck
-step-cli
-stgit
-sttr
-stylua
-svu
-tag
-taplo
-tealdeer
-terminal-notifier
-Terramaid
-tfmigrate
-tfupdate
-the_silver_searcher
-tig +doc
-titlecase
-tnef
-toast
-tokei
-topfew
-trurl
-typos
-universal-ctags +iconv+libxml2+link_to_ctags+manpages
-vhs
-viddy
-vifm
-watchexec
-wezterm
-wxWidgets-3.2 +compat30
-xh
-xsv
-yajl
-yq
-zola
-zoxide
+# sysutils
+install atuin
+
+# sysutils: required for docker
+install lima colima
+
+# Docker tools
+install docker amazon-ecr-credential-helper
+install docker-credential-helper-osxkeychain docker-base-plugin
+install docker-buildx-plugin docker-compose-plugin docker-index-plugin
+
+# Tools that use Docker
+install act lazydocker oxker toast
+
+# sysutils: tools that operate on Docker images or registries
+install container-diff diffoci dive manifest-tool mquery nomino
+
+# sysutils
+install diffoscope dua-cli duf dust eza +doc+git fd fswatch gdu go-mmv hexyl
+install hwatch hyperfine just kondo massren mise moreutils +doc mved navi ouch
+install pipx +python312 procs pv rlwrap sfm tag tealdeer trurl viddy vifm
+install watchexec zoxide
+
+# devel
+install actionlint certstrap chainloop changie checkmake comet-git committed
+install direnv dotenv-linter editorconfig-checker efm-langserver flyctl gh
+install git +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34 git-absorb
+install git-branch-stash git-branchless git-bug git-cc git-ce git-chglog
+install git-interactive-rebase-tool git-mediate git-sizer git-some-extras
+install git-stack git-switch-user git-task git-tools gitoxide gitql gitui gmake
+install got gource jqfmt jujutsu lazygit licensure mrml oha prql prr pug revive
+install ruby-build ruby-install rust-script scc selene shadowenv shellcheck
+install shellharden shfmt sol spacer staticcheck stgit stylua svu taplo
+install terramaid tfmigrate tfupdate tig +doc tokei typos
+install universal-ctags +iconv+libxml2+link_to_ctags+manpages
+
+# security
+install 1password-cli age cosign gitleaks grype minisign oauth2c osv-scanner
+install rage step-cli sttr
+
+# textproc
+install angle-grinder ansifilter antiword ast-grep bat bat-extras csvlens dasel
+install dateutils dict diff-so-fancy difftastic dos2unix dsq epubcheck fastmod
+install fop fx git-delta glow goaccess gojq grex htmd-cli htmlq jd jless jq
+install jqp lemmeknow mdcat miller qsv ripgrep sd srgn the_silver_searcher
+install titlecase tnef topfew xsv yajl yq
+
+# macports
+install cargo2port go2port mpstats seaport
+
+# aqua
+install rio terminal-notifier wezterm
+
+# graphics
+install chafa ctpv oxipng wxWidgets-3.2 +compat30
+
+# lang
+install crystal gawk gleam goawk julia +gcc14 nim pkl
+
+# lang: go
+install go delve golangci-lint gopls goreleaser
+
+# lang: haskell
+install ghc cabal
+
+# lang: python
+install py312-pip uv
+
+# lang: rust
+install cargo rust
+
+# lang: prolog
+install scryer-prolog
+
+# lang: ruby
+install ruby33 +yjit
+
+# lang: javascript
+install deno
+
+# math
+install eva fend
+
+# shells
+install fish murex
+
+# editors
+install micro
+
+# www
+install monolith xh zola
+
+# databases
+install postgresql16 postgresql16-server
+
+select --set pip pip312
+select --set pip3 pip312
+select --set postgresql postgresql16
+select --set python python312
+select --set python3 python312

@@ -35,25 +35,9 @@ Darwin)
     exit 0
   fi
 
-  # Requested Ports Hash: {{ include (joinPath .chezmoi.workingTree "Setup/Ports") | sha256sum }}
-  while read -r -a port; do
-    if [[ "${port[*]}" =~ ^\s*#.*$ ]] || [[ "${port[*]}" =~ ^\s*$ ]]; then
-      continue
-    fi
-
-    installed="$(port -q installed "${port[0]}" | wc -l)"
-
-    if ((installed == 0)); then
-      if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
-        sudo port -N install "${port[@]}"
-      else
-        sudo port -qN install "${port[@]}" >/dev/null 2>/dev/null
-      fi
-    fi
-  done <"{{ .chezmoi.workingTree }}/Setup/Ports"
-
-  # Port Selection Hash: {{ include (joinPath .chezmoi.workingTree "Setup/PortsSelect") | sha256sum }}
-  sudo port -F "{{ .chezmoi.workingTree }}/Setup/PortsSelect"
+  # Port Configuration Hash
+  # {{ include (joinPath .chezmoi.workingTree "Setup/Ports") | sha256sum }}
+  sudo port -N -q -F "{{ .chezmoi.workingTree }}/Setup/Ports"
   ;;
 
 *) : ;;
