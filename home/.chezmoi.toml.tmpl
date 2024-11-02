@@ -1,3 +1,4 @@
+{{- $programs := includeTemplate "programs.tmpl" | fromJson -}}
 {{- $ssh_agents := (list "1Password" "secretive" "ssh-agent") -}}
 {{- $email := promptStringOnce . "email" "Email" -}}
 {{- $name := promptStringOnce . "name" "Name" -}}

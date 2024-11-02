@@ -19,47 +19,93 @@ tested-on() {
   echo "${build_tools}"
 }
 
-rebase() {
-  set -euo pipefail
-  gh merge-upstream
-  git fetch --all
-  git reup
+github-setup-version() {
+  awk '/^github.setup/ { print $4; }'
 }
 
-update-mise() (
-  portpath="$(zoxide query macports-ports)"
-  cd "${portpath}/sysutils/mise"
+build-update-pr() {
+  port_name="$(basename "${1:?}")"
 
-  seaport clip mise
-  version="$(pbpaste | awk '/^github.setup/ { print $4; }')"
+  seaport clip "${port_name}"
+  version="$(pbpaste | github-setup-version)"
 
-  git switch --create mise-"${version}"
+  if [[ -z "${version}" ]]; then
+    echo "${port_name} cannot determine version"
+    return 1
+  fi
 
-  pbpaste | sed '/^cargo.crates/,$d' >Portfile
-  crate2port mise@"${version}" >>Portfile
+  if git log --grep="\\b${port_name}.\\+${version}" --since "7 days ago" | grep -q .; then
+    echo "${port_name} ${version} has already been merged."
+    git log --grep="\\b${port_name}.\\+${version}" --since "7 days ago"
+    return 1
+  fi
+
+  if [[ "$(gh pr list --search "${port_name}" -q '(. | length) > 0' --json number)" == true ]]; then
+    echo "${port_name} ${version} already has an open PR."
+    gh pr list --search ruby-build -q 'map("#\(.number) \(.title)") | .[]' --json number,title
+    return 1
+  fi
+
+  cd "$1"
+  shift
+
+  git switch --create "${port_name}-${version}" master
+
+  if pbpaste | grep -q ^cargo.crates; then
+    pbpaste | sed '/^cargo.crates/,$d' >Portfile
+    crate2port "${port_name}"@"${version}" >>Portfile
+  else
+    pbpaste >Portfile
+  fi
 
   git diff -u
+  read -r -p " Press Ctrl-C to cancel"
+
+  git commit -m "${port_name}: Update to ${version}" Portfile
+
+  prepare-pr "${@}"
 
   read -r -p " Press Ctrl-C to cancel"
 
-  git commit -m "mise: Update to ${version}" Portfile
-  prepare-pr
+  gh pr create --dry-run --fill --body-file <(pbpaste)
 
   read -r -p " Press Ctrl-C to cancel"
 
   gh pr create --fill --body-file <(pbpaste)
-)
+}
+
+update-mise() {
+  build-update-pr sysutils/mise mise ls
+}
+
+update-ruby-build() {
+  build-update-pr ruby/ruby-build ruby-build --list
+}
+
+update-colima() {
+  build-update-pr sysutils/colima colima status
+}
 
 update-port() {
   set -euo pipefail
 
-  case "$1" in
-  mise) update-mise ;;
-  *)
-    echo >&2 "Unknown procedure for updating $1"
-    exit 1
-    ;;
-  esac
+  local portpath port_name version
+  portpath="$(zoxide query macports-ports)"
+  cd "${portpath}"
+
+  git switch master
+  git reup
+
+  if [[ $(type -t "update-$1") == function ]]; then
+    "update-$1"
+  else
+    case "$1" in
+    *)
+      echo >&2 "Unknown procedure for updating $1"
+      exit 1
+      ;;
+    esac
+  fi
 }
 
 prepare-pr() (

@@ -197,8 +197,12 @@ merge_upstream=$(git config --get git-up.merge-upstream.enabled)
 rebase=$(git config --get git-up.rebase)
 submodule_update=$(git config --get git-up.submodule-update)
 
-if [[ -z "$merge_upstream" ]] && ((${#remotes[@]} > 1)); then
-  merge_upstream=true
+if ((${#merge_upstream} == 0)); then
+  if ((${#remotes[@]} > 1)); then
+    merge_upstream=true
+  else
+    merge_upstream=false
+  fi
 fi
 
 if [[ -z "$rebase" ]] && [[ "$bn0" == git-reup ]]; then

@@ -31,8 +31,6 @@ return function(config, wezterm)
       .. color_scheme:gsub("%s+", "-")
       .. ".png"
 
-    wezterm.log_info(color_scheme, background_file)
-
     config.background = {
       {
         source = {
