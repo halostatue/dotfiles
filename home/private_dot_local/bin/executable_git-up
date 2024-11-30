@@ -33,36 +33,37 @@ All other options and parameters are passed to 'git-pull'.
 
 Options
 
-  -r, --rebase            Use a rebase flow. This is the default when called
-  --no-rebase             as 'git-reup'. Boolean config value 'git-up.rebase'.
+  -r, --rebase                Use a rebase flow. This is the default when called
+  -R, --no-rebase             as 'git-reup'.
+                              Boolean config 'git-up.rebase'.
 
-  -m, --merge-upstream    Use the GitHub API to merge the upstream default
-  --no-merge-upstream     branch into the fork default branch. Enabled by
-                          default if there are multiple remotes in the current
-                          repo. This enables --branch, --origin, and
-                          --upstream options. Boolean config value
-                          'git-up.merge-upstream.enabled'.
+  -m, --merge-upstream        Use the GitHub API to merge the upstream default
+  -M, --no-merge-upstream     branch into the fork default branch. Enabled by
+                              default if there are multiple remotes in the
+                              current repo. This enables --branch, --origin, and
+                              --upstream options.
+                              Boolean config 'git-up.merge-upstream.enabled'.
 
-  -S, --submodule-update  Updates submodules. Enabled by default. Boolean
-  --no-submodule-update   config value 'git-up.submodule-update'.
+  -s, --submodule-update      Updates submodules. Enabled by default.
+  -S, --no-submodule-update   Boolean config 'git-up.submodule-update'.
 
 Merge Upstream Options
 
-  --branch BRANCH         The name of the branch to use for updating the fork.
-                          Defaults to the upstream repository default branch.
-                          String config value 'git-up.merge-upstream.branch'.
+  --branch BRANCH             The name of the branch to use for updating the
+                              fork. Defaults to the upstream repository default
+                              branch.
+                              String config 'git-up.merge-upstream.branch'.
 
-  --origin NAME           The name of the remote in the current git repo to
-                          use for discovering the target repo. Defaults to
-                          'origin' of the current git repo. String config
-                          value 'git-up.merge-upstream.origin'.
+  --origin NAME               The name of the remote in the current git repo to
+                              use for discovering the target repo. Defaults to
+                              'origin' of the current git repo.
+                              String config 'git-up.merge-upstream.origin'.
 
-  --upstream NAME         The remote, repo name, or URL for the parent
-                          repository; used when '--branch' is not provided.
-                          Defaults 'upstream' of the current git repo. String
-                          config value 'git-up.merge-upstream.upstream'.
+  --upstream NAME             The remote, repo name, or URL for the parent
+                              repository; used when '--branch' is not provided.
+                              Defaults 'upstream' of the current git repo.
+                              String config 'git-up.merge-upstream.upstream'.
 
-Config
 USAGE
 }
 
@@ -215,12 +216,12 @@ fi
 
 while (($#)); do
   case "$1" in
-  --no-rebase) rebase=false ;;
-  --no-merge-upstream) merge_upstream=false ;;
-  --no-submodule-update) submodule_update=false ;;
+  -R | --no-rebase) rebase=false ;;
   -r | --rebase) rebase=true ;;
   -m | --merge-upstream) merge_upstream=true ;;
-  -S | --submodule-update) submodule_update=true ;;
+  -M | --no-merge-upstream) merge_upstream=false ;;
+  -s | --submodule-update) submodule_update=true ;;
+  -S | --no-submodule-update) submodule_update=false ;;
   *) args+=("$1") ;;
   esac
   shift

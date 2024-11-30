@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
-if git show-ref --quiet origin/main || git show-ref --quiet upstream/main; then
-  echo main
+if git remote -v | grep -Ewq 'origin|upstream'; then
+  if git show-ref --quiet origin/main || git show-ref --quiet upstream/main; then
+    echo main
+  else
+    echo master
+  fi
 else
-  echo master
+  git branch -a | grep -Ew 'main|master' | sed 's/^[* ]*//'
 fi

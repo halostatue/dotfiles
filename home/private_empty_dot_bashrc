@@ -1,10 +1,4 @@
 # Check for an interactive session
-#
-# ~/.bashrc: executed by bash(1) for non-login shells.
-#
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
-
 case $- in
 *i*) : ;;
 *) return ;;
@@ -44,6 +38,3 @@ HISTIGNORE="[ ]*"
 HISTTIMEFORMAT='%F %T '
 
 PS1='[\u@\h \W]\$ '
-
-#PROMPT_COMMAND='[[ $? == 0 ]] && es= || es=" error=$? "'
-#PS1="\[$(tput bold)\]\w\[$(tput setaf 1)\]\$es\[$(tput sgr0; tput bold)\]\$ \[$(tput sgr0)\]"

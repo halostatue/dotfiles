@@ -1,0 +1,38 @@
+# vim: ft=gitconfig
+
+[alias]
+  # A typo that turned useful
+  addp = add -p
+
+  # Show current aliases
+  alias = "!git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /"
+
+  co = checkout
+  sw = switch
+
+  # If we type `git git log`, just run `git log`.
+  git = !git
+
+  # Shorter
+  staged = diff --cached
+
+  # Useful when resolving conflicts
+  stc = diff --stat --name-status --cached
+
+  # Show files that have been otherwise ignored
+  ignored = ls-files --others --ignored --exclude-standard
+
+  pushf = push --force-with-lease
+
+  # Show just the subject and body of a particular commit (default: HEAD)
+  message = log -n1 --format=%B
+
+  tags = tag
+
+  type = cat-file -t
+  dump = cat-file -p
+
+  patch = "!git --no-pager diff --no-color"
+
+  # Show the divergent history of current branch and upstream
+  y = "!f() { git log --oneline --graph HEAD @{u} $(git merge-base HEAD @{u})^!; }"

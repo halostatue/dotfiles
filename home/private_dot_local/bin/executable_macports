@@ -9,125 +9,277 @@ tested-on() {
   hardware="$(uname -m)"
 
   if build_tools="$(xcodebuild -version 2>/dev/null)"; then
-    build_tools="$(echo "${build_tools}" | awk 'NR==1 { x=$0 } END { print x" "$NF }')"
+    build_tools="$(echo "$build_tools" | awk 'NR==1 { x=$0 } END { print x" "$NF }')"
   elif build_tools="$(pkgutil --pkg-info=com.apple.pkg.CLTools_Executables)"; then
-    build_tools="$(echo "${build_tools}" | awk '/version:/ { print $2 }')"
-    build_tools="Command Line Tools ${build_tools}"
+    build_tools="$(echo "$build_tools" | awk '/version:/ { print $2 }')"
+    build_tools="Command Line Tools $build_tools"
   fi
 
-  echo macOS "${product_version}" "${build_version}" "${hardware}"
-  echo "${build_tools}"
+  echo macOS "$product_version" "$build_version" "$hardware"
+  echo "$build_tools"
 }
 
-github-setup-version() {
-  awk '/^github.setup/ { print $4; }'
-}
+set-port-version() {
+  if [[ "${port[golang]:-}" ]]; then
+    local repo version prefix
+    read -r repo version prefix <(
+      awk '/^go.setup/ { print $2, $3, $4; }' "${port[clip]}"
+    )
 
-build-update-pr() {
-  port_name="$(basename "${1:?}")"
-
-  seaport clip "${port_name}"
-  version="$(pbpaste | github-setup-version)"
-
-  if [[ -z "${version}" ]]; then
-    echo "${port_name} cannot determine version"
-    return 1
+    port[version]="${version}"
+    port[tag_url]="https://${repo}/refs/tags/${prefix:-}${version}"
   fi
 
-  if git log --grep="\\b${port_name}.\\+${version}" --since "7 days ago" | grep -q .; then
-    echo "${port_name} ${version} has already been merged."
-    git log --grep="\\b${port_name}.\\+${version}" --since "7 days ago"
-    return 1
+  if [[ "${port[github]:-}" ]]; then
+    local owner name version prefix
+    read -r owner name version prefix <(
+      awk '/^github.setup/ { print $2, $3, $4, $5; }' "${port[clip]}"
+    )
+
+    port[version]="${version}"
+    port[tag_url]="https://github.com/${repo}/refs/tags/${prefix:-}${version}"
   fi
-
-  if [[ "$(gh pr list --search "${port_name}" -q '(. | length) > 0' --json number)" == true ]]; then
-    echo "${port_name} ${version} already has an open PR."
-    gh pr list --search ruby-build -q 'map("#\(.number) \(.title)") | .[]' --json number,title
-    return 1
-  fi
-
-  cd "$1"
-  shift
-
-  git switch --create "${port_name}-${version}" master
-
-  if pbpaste | grep -q ^cargo.crates; then
-    pbpaste | sed '/^cargo.crates/,$d' >Portfile
-    crate2port "${port_name}"@"${version}" >>Portfile
-  else
-    pbpaste >Portfile
-  fi
-
-  git diff -u
-  read -r -p " Press Ctrl-C to cancel"
-
-  git commit -m "${port_name}: Update to ${version}" Portfile
-
-  prepare-pr "${@}"
-
-  read -r -p " Press Ctrl-C to cancel"
-
-  gh pr create --dry-run --fill --body-file <(pbpaste)
-
-  read -r -p " Press Ctrl-C to cancel"
-
-  gh pr create --fill --body-file <(pbpaste)
 }
 
-update-mise() {
-  build-update-pr sysutils/mise mise ls
+set-port-type() {
+  port[file]="${port[path]}/Portfile"
+
+  grep -Eq '^PortGroup\s+golang\s+1\.0' "${port[file]}" && port[golang]=true
+  grep -Eq '^PortGroup\s+github\s+1\.0' "${port[file]}" && port[github]=true
+  grep -Eq '^cargo.crates' "${port[file]}" && port[needs_crates]=true
+
+  true
 }
 
-update-ruby-build() {
-  build-update-pr ruby/ruby-build ruby-build --list
+test-port-colima() {
+  limactl info | jq .version -r
 }
 
-update-colima() {
-  build-update-pr sysutils/colima colima status
+test-port-passage() {
+  local id created tmp
+  created=false
+  tmp="$(mktemp)"
+  rm -f "$tmp"
+  id="$(basename "$tmp")"
+
+  if ! [[ -f ~/.passage/identities ]]; then
+    mkdir -p ~/.passage
+    age-keygen -o ~/.passage/identities
+    created=true
+  fi
+
+  (
+    set -x
+    passage generate test."$id"
+    passage rm -f test."$id"
+  )
+
+  "$created" && rm -rf ~/.passage
 }
 
 update-port() {
   set -euo pipefail
 
-  local portpath port_name version
-  portpath="$(zoxide query macports-ports)"
-  cd "${portpath}"
+  local fn branch
+  fn="macports update-port"
+  local -A port
+  local -a port_test
+  port_test=()
 
-  git switch master
+  port[public]=true
+
+  case "$1" in
+  mise)
+    port[category]=sysutils
+    port_test=(mise ls)
+    ;;
+  ruby-build)
+    port[category]=ruby
+    port_test=(ruby-build --list)
+    ;;
+  colima)
+    port[category]=sysutils
+    port_test=(colima status)
+    ;;
+  lima)
+    port[category]=sysutils
+    port_test=(test-port-lima)
+    ;;
+  passage)
+    port[category]=security
+    port_test=(test-port-passage)
+    ;;
+  changie | cocogitto | git-branch-stash | git-bug | git-mediate)
+    port[category]=devel
+    port[public]=false
+    ;;
+  git-ce)
+    port[category]=devel
+    port[public]=false
+    port[cargo_lock]=github
+    ;;
+  git-some-extras | git-stack | git-switch-user | git-task | gitql | jqfmt | licensure)
+    port[category]=devel
+    port[public]=false
+    ;;
+  mrml | prql | prr | sol | typos)
+    port[category]=devel
+    port[public]=false
+    ;;
+  scryer-prolog)
+    port[category]=lang
+    port[public]=false
+    ;;
+  selene)
+    port[category]=lua
+    port[public]=false
+    ;;
+  chainloop | osv-scanner)
+    port[category]=security
+    port[public]=false
+    ;;
+  dunesh)
+    port[category]=shells
+    port[public]=false
+    ;;
+  actions-usage | diffoci | dotenv-linter | fish-paket | manifest-tool | massren)
+    port[category]=sysutils
+    port[public]=false
+    ;;
+  mquery | pug | shadowenv | terramaid)
+    port[category]=sysutils
+    port[public]=false
+    ;;
+  csvquote | htmd-cli | spacer | taplo | titlecase)
+    port[category]=textproc
+    port[public]=false
+    ;;
+  *)
+    echo >&2 "$fn: port $1: No update procedure"
+    return 1
+    ;;
+  esac
+
+  if "${port[public]}"; then
+    port[root]="$(zoxide query macports-ports)"
+  else
+    port[root]="$HOME/ports"
+  fi
+
+  port[name]="$1"
+  port[path]="${port[root]}/${port[category]}/$1"
+
+  cd "${port[root]}"
+
+  branch="$(git main-branch)"
+  git switch "${branch}"
   git reup
 
-  if [[ $(type -t "update-$1") == function ]]; then
-    "update-$1"
-  else
-    case "$1" in
-    *)
-      echo >&2 "Unknown procedure for updating $1"
-      exit 1
-      ;;
-    esac
+  set-port-type
+
+  seaport clip "${port[name]}"
+  port[clip]="$(mktemp)"
+  pbpaste >"${port[clip]}"
+
+  set-port-version
+
+  if [[ -z "${port[version]}" ]]; then
+    echo >&2 "$fn: port ${port[name]} cannot determine next target version"
+    return 1
   fi
+
+  if git log --grep="\\b${port[name]}.\\+${port[version]}" --since "7 days ago" | grep -q .; then
+    echo >&2 "$fn: port ${port[name]}: ${port[version]} has already been merged"
+    git log --grep="\\b${port[name]}.\\+${port[version]}" --since "7 days ago" >&2
+    return 1
+  fi
+
+  if [[ "$(gh pr list --search "${port[name]}" -q '(. | length) > 0' --json number)" == true ]]; then
+    echo >&2 "$fn: port ${port[name]}: ${port[version]} already has an open PR"
+    gh pr list --search ruby-build -q 'map("#\(.number) \(.title)") | .[]' --json number,title >&2
+    return 1
+  fi
+
+  cd "${port[path]}"
+
+  if "${port[public]}"; then
+    git switch --create "${port[name]}-${port[version]}" "${branch}"
+  fi
+
+  if [[ "${port[needs_crates]:-}" ]]; then
+    sed '/^cargo.crates/,$d' "${port[clip]}" >"${port[file]}"
+
+    if [[ "${port[cargo_lock]:-crates}" == github ]]; then
+      crate2port <(curl -sSL "${port[tag_url]}/Cargo.lock") >>"${port[file]}"
+    else
+      crate2port "${port[name]}@${port[version]}" >>"${port[file]}"
+    fi
+  else
+    cp "${port[clip]}" "${port[file]}"
+  fi
+
+  git add "${port[file]}"
+
+  if ! "${port[public]}"; then
+    (
+      cd "${port[root]}"
+      portindex
+      git add PortIndex PortIndex.quick
+    )
+  fi
+
+  git commit -m "${port[name]}: Update to ${port[version]}"
+
+  port[pr]="$(mktemp)"
+  prepare-pr "${port[name]}"
+
+  if "${port[public]}"; then
+    if ! [[ -s "${port[pr]}" ]]; then
+      echo >&2 "$fn: port ${port[name]}: Error generating pull request body"
+      return 1
+    fi
+
+    confirm gh pr create --dry-run --fill --body-file "${port[pr]}"
+
+    gh pr create --fill --body-file "${port[pr]}"
+
+    git switch "${branch}"
+  fi
+
+  rm -f "${port[clip]}" "${port[pr]}"
+}
+
+confirm() {
+  "$@"
+  read -r -p " Press Ctrl-C to cancel or ENTER to continue"
 }
 
 prepare-pr() (
-  set -ex
-
   port lint --nitpick
   sudo port install
-  "$@"
 
-  set +ex
+  if (("${#port_test[@]}")); then
+    "${port_test[@]}"
+  elif "${port[public]}"; then
+    echo >&2 "Cannot prepare public PR without running a port test."
+    exit 1
+  else
+    return 0
+  fi
 
-  description="$(git log master.. --format=%B)"
+  local description tested_on
+  pr_file="${port[pr]:-$(mktemp)}"
+  description="$(git log "${branch:-master}".. --format=%B)"
   tested_on="$(tested-on)"
 
-  cat <<INFO | tee /dev/tty | pbcopy
+  cat >"$pr_file" <<INFO
 #### Description
 
-${description}
+$description
 
 ##### Tested on
 
-${tested_on}
+$tested_on
 
 ##### Verification
 
@@ -140,14 +292,16 @@ Have you
 - [x] tried a full install with \`sudo port -vst install\`?
 - [x] tested basic functionality of all binary files?
 INFO
+
+  cat "$pr_file"
 )
 
 trac-get() {
   local url="$1" dir="$2"
 
-  [[ -n "${dir}" ]] || dir=.
+  [[ -n "$dir" ]] || dir=.
 
-  curl "${url}?format=raw" --create-dirs -o "${dir}/$(basename "$1")"
+  curl "$url?format=raw" --create-dirs -o "$dir/$(basename "$1")"
 }
 
 trac-patch() {
@@ -156,15 +310,19 @@ trac-patch() {
   while [[ "$1" == -* ]]; do
     [[ "$1" == -- ]] && break
 
-    cmd="${cmd} $1"
+    cmd="$cmd $1"
     shift
   done
 
-  [[ -n "${cmd}" ]] || cmd="--strip 0"
+  [[ -n "$cmd" ]] || cmd="--strip 0"
 
   trac-get "$@"
 
-  patch "${cmd}" <"$(basename "$1")"
+  patch "$cmd" <"$(basename "$1")"
+}
+
+update() {
+  update-port "$@"
 }
 
 "$@"

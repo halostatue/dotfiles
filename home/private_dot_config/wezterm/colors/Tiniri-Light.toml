@@ -1,0 +1,46 @@
+# name: Tiniri (Light)
+# author: Vlad Gerasimov
+# license: MIT
+# upstream: https://tiniri.vlad.studio
+# blurb: Optimized for calmness and coziness.
+
+[colors]
+ansi = [
+  "#44403C", # Black
+  "#AD514C", # Red
+  "#538A8A", # Green
+  "#78716C", # Yellow
+  "#356B94", # Blue
+  "#804C6E", # Magenta
+  "#78716C", # Cyan
+  "#DAD8CE", # White
+]
+
+brights = [
+  "#B7B5AC", # Black
+  "#AD514C", # Red
+  "#538A8A", # Green
+  "#78716C", # Yellow
+  "#356B94", # Blue
+  "#BD71A4", # Magenta
+  "#78716C", # Cyan
+  "#E6E4D9", # White
+]
+
+foreground = "#3D3B3A"
+background = "#FAF8F4"
+
+cursor_bg = "#AD514C"
+cursor_border = "#AD514C"
+cursor_fg = "#FAF8F4"
+
+selection_fg = "#3D3B3A"
+selection_bg = "#cddad5"
+
+[colors.indexed]
+
+[metadata]
+aliases = ["Tiniri Light"]
+name = "Tiniri Light"
+origin_url = "https://tiniri.vlad.studio"
+wezterm_version = "Always"

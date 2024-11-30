@@ -18,6 +18,12 @@ if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
   fi
 fi
 
+read-xcode-license() {
+  defaults read /Library/Preferences/com.apple.dt.Xcode |
+    awk '/IDELastGMLicenseAgreedTo/ { print $3; }' |
+    sed 's/;//'
+}
+
 case "$(uname -s)" in
 Darwin)
   declare license arch xcode_path
@@ -28,13 +34,14 @@ Darwin)
     softwareupdate --install-rosetta --agree-to-license
   fi
 
-  license="$(defaults read /Library/Preferences/com.apple.dt.Xcode | awk '/IDELastGMLicenseAgreedTo/ { print $3; }' | sed 's/;//')"
-  if [[ -z "${license}" ]]; then
-    sudo xcodebuild -license
+  if [[ -f /Library/Preferences/com.apple.dt.Xcode.plist ]]; then
+    license="$(read-xcode-license)"
+    if [[ -z "${license}" ]]; then
+      sudo xcodebuild -license
+    fi
   fi
 
   xcode_path="$(xcode-select --print-path)"
-
   if [[ -z "${xcode_path}" ]]; then
     xcode-select --install
   fi

@@ -141,13 +141,13 @@ return function(config, wezterm)
       action = act.PaneSelect({ mode = "SwapWithActive" }),
     },
 
-    -- -- Cmd-D: Horizontal Split
+    -- Cmd-D: Horizontal Split
     {
       key = "d",
       mods = "CMD",
       action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }),
     },
-    -- -- Cmd-Shift-D: Vertical Split
+    -- Cmd-Shift-D: Vertical Split
     {
       key = "d",
       mods = "SHIFT|CMD",
@@ -198,8 +198,25 @@ return function(config, wezterm)
 
     -- Cmd-X: Activate Copy Mode
     { key = "x", mods = "CMD", action = act.ActivateCopyMode },
+
     -- Cmd-C: Copy to Clipboard
     { key = "c", mods = "CMD", action = act.CopyTo("Clipboard") },
+    -- Cmd-Shift-C: Copy current scrollback to Clipboard
+    {
+      key = "a",
+      mods = "CMD",
+      action = wezterm.action_callback(function(window, pane)
+        local dims = pane:get_dimensions()
+        local text = pane:get_text_from_region(
+          0,
+          dims.scrollback_top,
+          0,
+          dims.scrollback_top + dims.scrollback_rows
+        )
+        window:copy_to_clipboard(text:match("^%s*(.-)%s*$"))
+      end),
+    },
+
     -- Cmd-V: Paste from Clipboard
     { key = "v", mods = "CMD", action = act.PasteFrom("Clipboard") },
 

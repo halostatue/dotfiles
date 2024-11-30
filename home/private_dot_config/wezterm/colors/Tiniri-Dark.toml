@@ -1,0 +1,43 @@
+# name: Tiniri (Dark)
+# author: Vlad Gerasimov
+# license: MIT
+# upstream: https://tiniri.vlad.studio
+# blurb: Optimized for calmness and coziness.
+
+[colors]
+ansi = [
+  "#252629", #Black
+  "#c66b67", # Red
+  "#68a0a0", # Green
+  "#AD8301", # Yellow
+  "#EB9350", # Blue
+  "#A89080", # Purple
+  "#A89080", # Cyan
+  "#DBD3CA", # White
+]
+brights = [
+  "#575653", # Black
+  "#c66b67", # Red
+  "#68a0a0", # Green
+  "#D0A215", # Yellow
+  "#EB9350", # Blue
+  "#A89080", # Purple
+  "#A89080", # Cyan
+  "#FFFCF0", # White
+]
+foreground = "#DBD3CA"
+background = "#252629"
+
+cursor_bg = "#C76363"
+cursor_border = "#C76363"
+cursor_fg = "#DBD3CA"
+selection_bg = "#314F52"
+selection_fg = "#DBD3CA"
+
+[colors.indexed]
+
+[metadata]
+aliases = ["Tiniri Dark"]
+name = "Tiniri Dark"
+origin_url = "https://tiniri.vlad.studio"
+wezterm_version = "Always"
