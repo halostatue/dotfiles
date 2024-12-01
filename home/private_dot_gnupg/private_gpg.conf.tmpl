@@ -30,8 +30,8 @@
 # If you have more than 1 secret key in your keyring, you may want to
 # uncomment the following option and set your preferred keyid.
 
-{{ if ne (dig "gnupg" "default_key" "<missing>" .) "<missing>" -}}
-default-key {{ .gnupg.default_key }}
+{{ if hasKey . "gnugpg_default_key" -}}
+default-key {{ .gnupg_default_key }}
 {{- end }}
 
 # If you do not pass a recipient to gpg, it will ask for one.  Using

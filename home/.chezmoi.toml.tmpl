@@ -1,10 +1,9 @@
 {{- $programs := includeTemplate "programs.tmpl" | fromJson -}}
-{{- $ssh_agents := (list "1Password" "secretive" "ssh-agent") -}}
+{{- $ssh_agents := (list "1Password" "ssh-agent") -}}
 {{- $email := promptStringOnce . "email" "Email" -}}
 {{- $name := promptStringOnce . "name" "Name" -}}
 {{- $github_username := promptStringOnce . "github.user" "Github Username" -}}
 {{- $personal_1password_account := promptStringOnce . "onepassword.personal" "1Password Personal " -}}
-{{- $gpg_default_key := promptStringOnce . "gnupg.default_key" "GnuPG Default Key" -}}
 {{- $ssh_agent := promptChoiceOnce . "ssh.agent" "Which SSH agent to use?" $ssh_agents -}}
 
 [scriptEnv]
@@ -32,11 +31,6 @@ email = {{ $email | toToml }}
 
 [data.ruby.rubygems]
 user = {{ $email | toToml }}
-
-{{ if $gpg_default_key -}}
-[data.gnupg]
-default_key = {{ $gpg_default_key | toToml }}
-{{- end }}
 
 [data.ssh]
 agent = {{ $ssh_agent | toToml }}
