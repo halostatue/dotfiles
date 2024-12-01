@@ -23,3 +23,11 @@
   refreshPeriod: 744h
   path: lf-master/etc/lfcd.fish
 # (:- end :)
+
+ports:
+  pull:
+    args:
+      - --ff-only
+  refreshPeriod: 368h # two weeks
+  type: git-repo
+  url: git+ssh://github.com/halostatue/ports.git

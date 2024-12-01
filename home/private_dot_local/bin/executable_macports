@@ -20,25 +20,32 @@ tested-on() {
 }
 
 set-port-version() {
+  set +e
+
+  local version
+  awk '/^version / { print $2; }' "${port[clip]}" >"${port[clip]}.version"
+  read -r version <"${port[clip]}.version"
+  port[version]="${version}"
+
   if [[ "${port[golang]:-}" ]]; then
     local repo version prefix
-    read -r repo version prefix <(
-      awk '/^go.setup/ { print $2, $3, $4; }' "${port[clip]}"
-    )
+    awk '/^go.setup/ { print $2, $3, $4; }' "${port[clip]}" >"${port[clip]}.version"
+    read -r repo version prefix <"${port[clip]}.version"
 
     port[version]="${version}"
-    port[tag_url]="https://${repo}/refs/tags/${prefix:-}${version}"
+    port[tag_url]="https://raw.githubusercontent.com/${repo/github.com\//}/refs/tags/${prefix:-}${version}"
   fi
 
   if [[ "${port[github]:-}" ]]; then
     local owner name version prefix
-    read -r owner name version prefix <(
-      awk '/^github.setup/ { print $2, $3, $4, $5; }' "${port[clip]}"
-    )
+    awk '/^github.setup/ { print $2, $3, $4, $5; }' "${port[clip]}" >"${port[clip]}.version"
+    read -r owner name version prefix <"${port[clip]}.version"
 
     port[version]="${version}"
-    port[tag_url]="https://github.com/${repo}/refs/tags/${prefix:-}${version}"
+    port[tag_url]="https://raw.githubusercontent.com/${owner}/${name}/refs/tags/${prefix:-}${version}"
   fi
+
+  set -e
 }
 
 set-port-type() {
@@ -122,9 +129,19 @@ update-port() {
     port[category]=devel
     port[public]=false
     ;;
-  mrml | prql | prr | sol | typos)
+  mrml | prr | sol)
     port[category]=devel
     port[public]=false
+    ;;
+  prql)
+    port[category]=devel
+    port[public]=false
+    port[cargo_lock]=github
+    ;;
+  typos)
+    port[category]=devel
+    port[public]=false
+    port[cargo_lock]=github
     ;;
   scryer-prolog)
     port[category]=lang
@@ -146,9 +163,14 @@ update-port() {
     port[category]=sysutils
     port[public]=false
     ;;
-  mquery | pug | shadowenv | terramaid)
+  mquery | pug | terramaid)
     port[category]=sysutils
     port[public]=false
+    ;;
+  shadowenv)
+    port[category]=sysutils
+    port[public]=false
+    port[cargo_lock]=github
     ;;
   csvquote | htmd-cli | spacer | taplo | titlecase)
     port[category]=textproc
@@ -160,7 +182,12 @@ update-port() {
     ;;
   esac
 
-  if "${port[public]}"; then
+  if "${port[unstable]:-false}" && ! [[ "${2:-}" == --force ]]; then
+    echo >&2 "$fn: $1 cannot be updated automatically because of Cargo.lock instability"
+    return 1
+  fi
+
+  if "${port[public]:-false}"; then
     port[root]="$(zoxide query macports-ports)"
   else
     port[root]="$HOME/ports"
@@ -183,7 +210,7 @@ update-port() {
 
   set-port-version
 
-  if [[ -z "${port[version]}" ]]; then
+  if [[ -z "${port[version]:-}" ]]; then
     echo >&2 "$fn: port ${port[name]} cannot determine next target version"
     return 1
   fi
@@ -209,8 +236,9 @@ update-port() {
   if [[ "${port[needs_crates]:-}" ]]; then
     sed '/^cargo.crates/,$d' "${port[clip]}" >"${port[file]}"
 
-    if [[ "${port[cargo_lock]:-crates}" == github ]]; then
-      crate2port <(curl -sSL "${port[tag_url]}/Cargo.lock") >>"${port[file]}"
+    if [[ "${port[cargo_lock]:-crates}" == github ]] && [[ "${port[tag_url]:-}" ]]; then
+      curl -sSL "${port[tag_url]}/Cargo.lock" -o "${port[clip]}.Cargo.lock"
+      crate2port "${port[clip]}.Cargo.lock" >>"${port[file]}"
     else
       crate2port "${port[name]}@${port[version]}" >>"${port[file]}"
     fi
@@ -246,7 +274,7 @@ update-port() {
     git switch "${branch}"
   fi
 
-  rm -f "${port[clip]}" "${port[pr]}"
+  rm -f "${port[clip]}"* "${port[pr]}"
 }
 
 confirm() {
@@ -255,14 +283,14 @@ confirm() {
 }
 
 prepare-pr() (
-  port lint --nitpick
+  port lint
   sudo port install
 
   if (("${#port_test[@]}")); then
     "${port_test[@]}"
   elif "${port[public]}"; then
     echo >&2 "Cannot prepare public PR without running a port test."
-    exit 1
+    return 1
   else
     return 0
   fi
@@ -288,7 +316,7 @@ Have you
 - [x] followed our [Commit Message Guidelines](https://trac.macports.org/wiki/CommitMessages)?
 - [x] squashed and [minimized your commits](https://guide.macports.org/#project.github)?
 - [x] checked that there aren't other open [pull requests](https://github.com/macports/macports-ports/pulls) for the same change?
-- [x] checked your Portfile with \`port lint --nitpick\`?
+- [x] checked your Portfile with \`port lint\`?
 - [x] tried a full install with \`sudo port -vst install\`?
 - [x] tested basic functionality of all binary files?
 INFO
@@ -324,5 +352,19 @@ trac-patch() {
 update() {
   update-port "$@"
 }
+
+declare -a args
+args=()
+
+while (($#)); do
+  case "$1" in
+  --trace) set -x ;;
+  *) args+=("$1") ;;
+  esac
+
+  shift
+done
+
+set -- "${args[@]}"
 
 "$@"
