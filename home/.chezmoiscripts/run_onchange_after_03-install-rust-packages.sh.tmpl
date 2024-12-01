@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+# Rust package updates should be run whenever the cargo-liner package file is updated or
+# once a week.
+#
+# Source: {{ includeTemplate "private_dot_cargo/liner.toml.tmpl" | sha256sum }}
+# Weekly: {{ output "date" "+%V" | trim }}
+
+readonly script_name=run_onchange_after_03-install-rust-packages.sh.tmpl
+# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
+setup 03: Install Rust Packages
+
+if ! has cargo || ! [[ -s "${HOME}"/.cargo/env ]]; then
+  warn "cargo (rust) is not installed"
+  exit 0
+fi
+
+if ! has cargo-liner; then
+  warn "cargo-liner is not installed"
+  exit 0
+fi
+
+case "$(uname -s)" in
+Darwin)
+  if has port && ! [[ "$(command -v cargo 2>/dev/null)" == "/opt/local/bin/cargo" ]]; then
+    # There are known issues with Macports libiconv and git for Rust packages.
+    sudo port -q deactivate -f libiconv >/dev/null 2>&1 || true
+    sudo port -q deactivate -f git >/dev/null 2>&1 || true
+
+    reenable-libiconv() {
+      sudo port -q activate libiconv >/dev/null 2>&1 || true
+      sudo port -q activate git >/dev/null 2>&1 || true
+    }
+
+    trap reenable-libiconv EXIT
+  fi
+  ;;
+
+*) : ;;
+esac
+
+if verbose; then
+  cargo liner ship -v
+else
+  cargo liner ship -q
+fi

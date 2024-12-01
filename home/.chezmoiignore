@@ -18,6 +18,24 @@
 
 .cargo/*
 !.cargo/env
+!.cargo/liner.toml
+
+{{ if and (eq .chezmoi.os "darwin") (lookPath "brew") -}}
+{{
+     $alacritty := output "brew" "info" "alacritty" "--json=v2"
+       | fromJson
+       | jq ".casks[0]"
+       | first
+-}}
+{{   if not $alacritty.installed -}}
+.terminfo/61/alacritty
+.terminfo/61/alacritty-direct
+{{-  end }}
+{{- end }}
+
+{{ if not (stat "/Applications/WezTerm.app") -}}
+.terminfo/77/wezterm
+{{- end }}
 
 {{ if eq .chezmoi.os "darwin" -}}
 .colima/*
@@ -27,7 +45,7 @@
 !.colima/ssh_config
 {{- end }}
 
-# Google Apps Script "clasp"
+{{/* Google Apps Script "clasp" */}}
 .clasprc.json
 
 .config/Amazon/**
@@ -48,6 +66,8 @@
 !.config/fish/functions/lfcd.fish
 !.config/fish/functions/set-docker-host.fish
 .config/gh/hosts.yml
+.config/git/identities/*
+!.config/git/identities/git_identities.sh
 .config/git-switch-user
 .config/gita/**
 .config/hcp/**
@@ -67,8 +87,9 @@
 .config/lnav/**
 .config/nvim
 .config/nvim.old/.git
-.config/1Password
-.config/1Password/**
+.config/1Password/*
+!.config/1Password/ssh
+!.config/1Password/ssh/agent.coml
 .config/op/**
 .config/packer/**
 .config/tabtab/**
@@ -92,13 +113,13 @@
 .fly/**
 
 .gem/specs/**
-# git-extras ignore cache file
+{{/* git-extras ignore cache file */}}
 .gi_list
 .gitlater
 .gnupg/*
 !.gnupg/gpg.conf
 
-# Go REPL
+{{/* Go REPL */}}
 .gore/**
 
 .hex/**
@@ -107,9 +128,14 @@
 .kindle/**
 
 .local/bin/chezmoi
+{{ if regexMatch "py312-awscli2 " (output "port" "echo" "active") }}
+.local/bin/aws
+.local/bin/aws-cli-session-manager
+.local/bin/aws_completer
+{{ end }}
 
 {{ if lookPath "pipx" -}}
-# pipx-managed files in ~/.local/bin
+{{/* pipx-managed files in ~/.local/bin */}}
 {{-   $pipx := output "pipx" "list" "--json" | fromJson }}
 {{-   $entries := $pipx | jq ".venvs | to_entries | map(.value.metadata) | flatten" | first }}
 {{-   $apps := $entries | jq "map(.main_package.apps) | flatten" | first }}
@@ -121,7 +147,7 @@
 {{- end }}
 
 {{ if lookPath "uv" -}}
-# uv-managed files in ~/.local/bin
+{{/* uv-managed files in ~/.local/bin */}}
 {{-   $uv := output "uv" "tool" "list" "--show-paths" }}
 {{-   range $line := splitList "\n" $uv }}
 {{-     if hasPrefix "- " $line }}
@@ -133,11 +159,11 @@
 {{- end }}
 
 {{ if not (stat "/Applications/Chime.app/Contents/MacOS/chimecli") -}}
-# ChimeHQ MacOS Editor: https://github.com/ChimeHQ/Chime
+{{/* ChimeHQ MacOS Editor: https://github.com/ChimeHQ/Chime */}}
 .local/bin/chime
 {{- end }}
 
-# tfvm
+{{/* tfvm */}}
 .local/bin/terraform
 .local/bin/tfvm
 
@@ -200,7 +226,7 @@ Library
 {{ else if eq .chezmoi.os "darwin" -}}
 **/.localized
 
-# LazyGit is configured in Library/Application Support/lazygit on macOS
+{{/* LazyGit is configured in Library/Application Support/lazygit on macOS */}}
 .config/lazygit
 .config/lazygit/*
 
@@ -209,11 +235,11 @@ Library/Accessibility
 Library/Accounts
 Library/AppleMediaServices
 Library/Application Scripts
-# Library/Application Support
-# !Library/Application Support/BBEdit/**
-# !Library/Application Support/Code/**
-# !Library/Application Support/fm/**
-# !Library/Application Support/gh-dash/**
-# !Library/Application Support/lazy-git/**
-# !Library/Application Support/tealdeer/**
+{{/* Library/Application Support */}}
+{{/* !Library/Application Support/BBEdit/** */}}
+{{/* !Library/Application Support/Code/** */}}
+{{/* !Library/Application Support/fm/** */}}
+{{/* !Library/Application Support/gh-dash/** */}}
+{{/* !Library/Application Support/lazy-git/** */}}
+{{/* !Library/Application Support/tealdeer/** */}}
 {{- end }}

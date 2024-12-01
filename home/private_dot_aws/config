@@ -1,5 +1,0 @@
-[preview]
-cloudfront = true
-
-[default]
-cli_history = enabled

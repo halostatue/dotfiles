@@ -1,4 +1,10 @@
-{{/* Add all '^aws-credentials: ' documents from all 1Password accounts. */}}
+[preview]
+cloudfront = true
+
+[default]
+cli_history = enabled
+{{/* Add all '^aws-config: ' documents from all 1Password accounts. */}}
+{{- $mise := or (lookPath "mise") "mise" }}
 {{- $account_vaults := includeTemplate "1password_vaults.tmpl" . | fromJson -}}
 {{- range $account_name, $account := $account_vaults -}}
 {{-   $vaults := $account.vaults -}}
@@ -6,13 +12,14 @@
       $documents :=
         output "op" "document" "list" "--account" $account.url "--format" "json"
         | fromJson
-        | jq "map(select(.title | startswith(\"aws-credentials: \"))) | sort_by(.title)"
+        | jq "map(select(.title | startswith(\"aws-config: \"))) | sort_by(.title)"
         | first
 -}}
 {{-   range $document := $documents -}}
 {{-     $vault_name := (get $vaults $document.vault.id).name }}
 {{      printf "# '%v/%v' (from %v)" $vault_name $document.title $account.url }}
 
-{{      onepasswordDocument $document.id $document.vault.id $account.url }}
+{{      onepasswordDocument $document.id $document.vault.id $account.url |
+          replaceAllRegex "mise" $mise }}
 {{-  end -}}
 {{- end -}}

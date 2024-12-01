@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# Go package updates should be run whenever the gup package file is updated or once
+# a week.
+#
+# Source: {{ includeTemplate "private_dot_config/gup/gup.conf.tmpl" | sha256sum }}
+# Weekly: {{ output "date" "+%V" | trim }}
+
+readonly script_name=run_onchange_after-04-install-gobin.sh.tmpl
+# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
+setup 04: Install Go Binaries
+
+if ! has go; then
+  warn "go is not installed"
+  exit 0
+fi
+
+if ! has gup; then
+  go install github.com/nao1215/gup@latest
+fi
+
+gup import --input '{{ joinPath .chezmoi.homeDir ".config/gup/gup.conf" }}'
+
+# Installations that require manual installation
+(
+  set -e
+  declare tmp
+  tmp="$(mktemp -d)"
+
+  cd "${tmp}"
+
+  if verbose; then
+    git clone https://github.com/minamijoyo/tfschema
+  else
+    git clone https://github.com/minamijoyo/tfschema >/dev/null 2>/dev/null
+  fi
+
+  cd tfschema
+
+  if verbose; then
+    go install .
+  else
+    go install . >/dev/null 2>/dev/null
+  fi
+
+  cd -
+  rm -rf "${tmp}"
+)

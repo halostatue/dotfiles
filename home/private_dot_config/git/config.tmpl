@@ -5,6 +5,7 @@
 {{- $coreAttributesFile := joinPath .chezmoi.homeDir ".config/git/attributes" -}}
 {{- $excludesFile := joinPath .chezmoi.homeDir ".config/git/ignore" -}}
 {{- $skiplistFile := joinPath .chezmoi.homeDir ".config/git/commit-skiplist" -}}
+{{- $identities := includeTemplate "1password_git_identities.tmpl" . | fromJson -}}
 {{- $corePager := "" -}}
 {{- $credentialsHelper := "" -}}
 {{- $githubUser := "" -}}
@@ -15,7 +16,7 @@
 {{- if $programs.delta -}}
 {{-   $corePager = $programs.delta -}}
 {{- else if $programs.diff_so_fancy -}}
-{{-   $corePager = printf "%q | less --tabs=4 -RFX" $programs.diff_so_fancy -}}
+{{-   $corePager = printf "%s | less --tabs=4 -RFX" $programs.diff_so_fancy -}}
 {{- end -}}
 
 {{- $githubUser = .github.user -}}
@@ -239,17 +240,11 @@
   insteadOf = gist:
 [url "git@bitbucket.org:"]
   insteadOf = bb:
-# TODO: These should be chezmoi-configurable
-[url "git@github.com:KineticCommerce/"]
-  insteadOf = kinetic:
-[url "git@github.com:KineticCommerce/"]
-  insteadOf = https://github.com/KineticCommerce/
-[url "git@github.com:halostatue/"]
-  insteadOf = halostatue:
-[url "git@github.com:halostatue/"]
-  insteadOf = https://github.com/halostatue/
-[url "git@github.com:mime-types/"]
-  insteadOf = https://github.com/mime-types/
+{{  range $account_name, $configs := $identities -}}
+{{-   range $config_name, $config := $configs -}}
+{{-     range $_, $url := $config.data.url }}
+[url {{ $url.use | quote }}]
+  insteadOf = {{ $url.match }}{{ end }}{{ end }}{{ end }}
 
 # Repos should be configured individually for the user,
 # at least until I have time to figure out how to better handle
@@ -286,35 +281,20 @@
 {{ end -}}
 [include]
   path = ~/.config/git/aliases
-
 [include]
   path = ~/.config/git/diff-merge
 
-[includeIf "hasconfig:remote.*.url:git@github.com:KineticCommerce/**"]
-  path = ~/.config/git/identities/work
+{{  range $account_name, $configs := $identities -}}
+{{-   range $config_name, $config := $configs -}}
+{{-     range $_, $include := $config.data.includes -}}
+{{-       $name := printf "~/.config/git/identities/%s-%s-%s" $account_name $config_name $include.identity -}}
+{{        if eq $include.type "remote_url" -}}
+[includeIf "hasconfig:remote.*.url:{{ $include.match }}**"]
+  path = {{ $name }}
+{{ else if eq $include.type "gitdir" -}}
+[includeIf "gitdir:{{ $include.match }}/**"]
+  path = {{ $name }}
+{{ end }}{{ end }}{{ end }}{{ end }}
 
-[includeIf "hasconfig:remote.*.url:git@github.com:KineticCafe/**"]
-  path = ~/.config/git/identities/personal
-
-[includeIf "gitdir:~/work/kineticcafe/**"]
-  path = ~/.config/git/identities/personal
-
-[includeIf "gitdir:~/work/kineticcafe-org/**"]
-  path = ~/.config/git/identities/personal
-
-[includeIf "gitdir:~/work/kinetic"]
-  path = ~/.config/git/identities/work
-
-[includeIf "hasconfig:remote.*.url:git@github.com:halostatue/**"]
-  path = ~/.config/git/identities/personal
-
-[includeIf "hasconfig:remote.*.url:git@github.com:mime-types/**"]
-  path = ~/.config/git/identities/personal
-
-[includeIf "gitdir:~/personal/**"]
-  path = ~/.config/git/identities/personal
-
-[includeIf "gitdir:~/mess/**"]
-  path = ~/.config/git/identities/personal
 {{- "" -}}
 {{/* vim: set filetype=gitconfig */}}

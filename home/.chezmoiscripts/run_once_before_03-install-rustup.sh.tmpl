@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+readonly script_name=run_once_before-03-install-rustup.sh.tmpl
+# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
+setup 03: Install Rust via Rustup
+
+if has port; then
+  sudo port -f -q deactivate rust cargo || true
+fi
+
+set -e
+
+if ! has cargo || ! has rustc; then
+  if ! has rustup || ! [[ -x "${HOME}/.cargo/bin/rustup" ]]; then
+    if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
+      curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |
+        sh -s -- --verbose -y --no-modify-path
+    else
+      curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |
+        sh -s -- --quiet -y --no-modify-path
+    fi
+  fi
+fi
+
+# shellcheck disable=SC1091
+source "${HOME}"/.cargo/env
+
+declare flags
+flags=(--force --locked)
+
+if ! verbose; then
+  flags=(--quiet)
+fi
+
+# Install cargo-liner for managing Cargo binaries. This replaces cargo-binstall and
+# cargo-update.
+if ! command -v cargo-liner >/dev/null 2>/dev/null; then
+  cargo install "${flags[@]}" cargo-liner
+fi
+
+set +e
+
+if has port; then
+  sudo port -f -q activate rust cargo || true
+fi

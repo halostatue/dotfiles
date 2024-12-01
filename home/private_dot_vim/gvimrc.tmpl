@@ -1,0 +1,36 @@
+vim9script
+
+# &guifont = "CascadiaCode-Light:h11"
+# &guifont = "FiraCode-Retina:h11"
+# &guifont = "FiraCodeRoman-Regular:h11"
+# &guifont = "JetBrainsMono-Regular:h14"
+# &guifont = "FantasqueSansMono-Regular:h12"
+# &guifont = "IBMPlexMono:h10"
+# gets y height
+# osascript -e 'tell application \"Finder\" to get bounds of window of desktop' | cut -d ',' -f 4 | xargs
+{{ if eq (or (get . "role") "personal") "personal" -}}
+&guifont = "RecMonoCasual-Regular:h16"
+{{- else -}}
+&guifont = "RecMonoCasual-Regular:h13"
+{{- end }}
+
+# Keep the system clipboard and the vim pasteboard separate. If this behaviour is not
+# desired, set g:unify_clipboards to true.
+if get(g:, 'unify_clipboards', false)
+  if has('unnamedplus')
+    set clipboard^=unnamedplus
+  else
+    set clipboard^=unnamed
+  endif
+else
+  set clipboard&
+endif
+
+if has('gui_macvim')
+  set antialias fuoptions=maxvert,maxhorz macligatures
+
+  nmap <D-/> gcc
+  xmap <D-/> gc
+endif
+
+set nomousefocus mousehide winaltkeys=no

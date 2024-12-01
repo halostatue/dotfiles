@@ -55,6 +55,19 @@ Host *^*
 {{-  end -}}
 {{- end -}}
 
+{{- $identities := includeTemplate "1password_git_identities.tmpl" . | fromJson -}}
+{{- range $account_name, $configs := $identities -}}
+{{-   range $config_name, $config := $configs -}}
+{{-     if hasKey $config.data "ssh" -}}{{- range $ssh_name, $ssh_config := $config.data.ssh }}
+Host {{ $ssh_name }}
+  HostName {{ $ssh_config.hostname }}
+  User {{ $ssh_config.user }}
+  IdentityFile ~/.ssh/{{ $account_name }}-{{ $config_name }}-{{ $ssh_config.identity }}.pub
+  IdentitiesOnly yes
+{{-     end }}{{ end -}}
+{{-   end -}}
+{{- end }}
+
 {{ $colima := joinPath $.chezmoi.homeDir ".colima/ssh_config" -}}
 {{- if stat $colima }}
 Include {{ $colima }}

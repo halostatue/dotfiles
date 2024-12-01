@@ -58,7 +58,7 @@ set-port-type() {
   true
 }
 
-test-port-colima() {
+test-port-lima() {
   limactl info | jq .version -r
 }
 
@@ -176,6 +176,11 @@ update-port() {
     port[category]=textproc
     port[public]=false
     ;;
+  rebels-in-the-sky)
+    port[category]=games
+    port[crate]=rebels
+    port_test=(rebels --version)
+    ;;
   *)
     echo >&2 "$fn: port $1: No update procedure"
     return 1
@@ -240,7 +245,7 @@ update-port() {
       curl -sSL "${port[tag_url]}/Cargo.lock" -o "${port[clip]}.Cargo.lock"
       crate2port "${port[clip]}.Cargo.lock" >>"${port[file]}"
     else
-      crate2port "${port[name]}@${port[version]}" >>"${port[file]}"
+      crate2port "${port[crate]:-${port[name]}}@${port[version]}" >>"${port[file]}"
     fi
   else
     cp "${port[clip]}" "${port[file]}"

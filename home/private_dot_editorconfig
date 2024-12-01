@@ -18,7 +18,7 @@ binary_next_line   = false
 function_next_line = false
 keep_padding       = false
 space_redirects    = false
-switch_case_indent = true
+switch_case_indent = false
 
 [{{,GNU}{M,m}akefile,go.mod,go.sum,*.go,.gitmodules}]
 indent_style = tab

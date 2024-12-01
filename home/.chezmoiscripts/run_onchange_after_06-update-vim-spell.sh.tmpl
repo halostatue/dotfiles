@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+readonly script_name=run_onchange_after-06-update-vim-spell.sh.tmpl
+# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
+setup 06: Update Vim Spell File
+
+if ! has vim; then
+  warn "vim is not installed"
+  exit 0
+fi
+
+# Vim Spelling File Hashes
+# {{ include (joinPath .chezmoi.sourceDir "private_dot_vim/spell/en.utf-8.add") | sha256sum }}
+vim +'mkspell ~/.vim/spell/en.utf-8.add' +q

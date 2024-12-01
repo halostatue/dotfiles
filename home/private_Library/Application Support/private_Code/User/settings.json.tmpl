@@ -60,23 +60,23 @@
   "atlascode.bitbucket.statusbar.enabled": false,
   "atlascode.bitbucket.statusbar.showLogin": true,
   "atlascode.bitbucket.statusbar.showUser": true,
-  "atlascode.jira.enabled": false,
+  "atlascode.jira.enabled": true,
   "atlascode.jira.jqlList": [
     {
+      "id": "f0e39a1c-de13-4c6d-a467-6905fe4510ab",
       "enabled": true,
-      "id": "ca784941-c358-41f4-a1a8-086b882c204e",
-      "monitor": true,
-      "name": "My halogenmobile Issues",
+      "name": "My forteio Issues",
       "query": "assignee = currentUser() AND resolution = Unresolved ORDER BY lastViewed DESC",
-      "siteId": "07fee6e6-7976-4da1-b16d-7428d7df575f"
+      "siteId": "5b7be463-fc32-493a-aac0-d8b0a1ea4eb0",
+      "monitor": true
     },
     {
+      "id": "a54e9a06-5e2a-46b0-954a-f01d29670d22",
       "enabled": true,
-      "id": "1ba4fa1e-0549-4e92-bac6-aff42cf6498f",
-      "monitor": true,
-      "name": "My ascendis Issues",
+      "name": "My northernlabs Issues",
       "query": "assignee = currentUser() AND resolution = Unresolved ORDER BY lastViewed DESC",
-      "siteId": "fb834bd8-09b4-4a5a-b3b1-fdf1d96383d5"
+      "siteId": "2253b768-7e6c-4574-890d-c8ed9b613ff4",
+      "monitor": true
     }
   ],
   "atlascode.jira.statusbar.enabled": false,
@@ -354,7 +354,7 @@
     "!Split sequence"
   ],
   "yaml.schemas": {
-    "file:///Users/austin/.vscode/extensions/atlassian.atlascode-3.0.10/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
+    "file:///Users/austin/.vscode/extensions/atlassian.atlascode-3.0.14/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
   },
   "zeplin.enableTelemetry": false,
   "[xslt]": {
@@ -363,5 +363,6 @@
   "XSLT.tasks.saxonJar": "~/.local/share/SaxonHE10-8J/saxon-he-10.8.jar",
   "workbench.editor.empty.hint": "hidden",
   "workbench.editor.tabActionLocation": "left",
-  "extensiontotal.apiKeySetting": "{{ onepasswordRead "op://Personal/VS Code ExtensionTotal/credential" .onepassword.personal }}"
+  "extensiontotal.apiKeySetting": "{{ onepasswordRead "op://Personal/VS Code ExtensionTotal/credential" .onepassword.personal }}",
+  "atlascode.bitbucket.enabled": false
 }

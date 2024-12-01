@@ -67,7 +67,11 @@ import autoload 'packix.vim'
 packix.Setup((px: packix.Packix) => {
   # Packix package manager (self-manage the bootstrapped install)
   # https://github.com/halostatue/vim-packix
-  px.Local('~/personal/vim-packix', { type: 'opt' })
+  if isdirectory(expand('~/personal/vim-packix'))
+    px.Local('~/personal/vim-packix', { type: 'opt' })
+  else
+    px.Add('halostatue/vim-packix', { type: 'opt' })
+  endif
 
   # Improved incremental search
   # https://github.com/wincent/loupe
@@ -131,7 +135,11 @@ packix.Setup((px: packix.Packix) => {
   # Paired mappings
   # # https://github.com/tpope/vim-unimpaired
   # px.Add('tpope/vim-unimpaired', { type: 'opt' })
-  px.Local('~/personal/vim-pairs')
+  if isdirectory(expand('~/personal/vim-pairs'))
+    px.Local('~/personal/vim-pairs')
+  else
+    px.Add('halostatue/vim-pairs')
+  endif
   # Abbreviation, Subversion, and Coercion
   # https://github.com/tpope/vim-abolish
   px.Add('tpope/vim-abolish')
@@ -630,7 +638,11 @@ packix.Setup((px: packix.Packix) => {
 
   # https://github.com/rhysd/vim-healthcheck
   # px.Add('rhysd/vim-healthcheck')
-  px.Local('~/personal/forks/vim/vim-healthcheck')
+  if isdirectory(expand('~/personal/forks/vim/vim-healthcheck'))
+    px.Local('~/personal/forks/vim/vim-healthcheck')
+  else
+    px.Add('halostatue/vim-healthcheck')
+  endif
 
   # Currently imaps C-l and C-f without checking over overrides
   # https://github.com/greeschenko/vim9-ollama

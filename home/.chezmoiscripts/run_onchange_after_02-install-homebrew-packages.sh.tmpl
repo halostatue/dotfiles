@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# Macports packages should be rerun when the ports file is updated.
+#
+# Source: {{ includeTemplate "private_dot_config/packages/Brewfile.tmpl" | sha256sum }}
+
+readonly script_name=run_onchange_after-02-install-homebrew-packages.sh.tmpl
+# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
+setup 02: Install Homebrew Packages
+
+case "$(uname -s)" in
+Darwin)
+  if ! command -v brew >/dev/null 2>&1; then
+    case "$(uname -m)" in
+    arm64) HOMEBREW_PREFIX="/opt/homebrew" ;;
+    *) HOMEBREW_PREFIX="/usr/local" ;;
+    esac
+
+    if ! [[ -x "${HOMEBREW_PREFIX}/bin/brew" ]]; then
+      [[ "${CHEZMOI_VERBOSE:-}" == 1 ]] && echo >&2 Homebrew is not installed
+      exit 0
+    fi
+
+    eval "$(${HOMEBREW_PREFIX}/bin/brew shellenv)" || true
+  fi
+
+  declare -a flags
+  flags=()
+
+  if ! verbose; then
+    flags+=(--quiet)
+  fi
+
+  HOMEBREW_CASK_OPTS=--no-quarantine brew bundle "${flags[@]}" \
+    --file ~/.config/packages/Brewfile
+  ;;
+
+*) : ;;
+esac

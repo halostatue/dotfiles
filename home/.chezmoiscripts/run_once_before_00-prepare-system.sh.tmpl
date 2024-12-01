@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+readonly script_name=run_once_before_00-prepare-system.sh.tmpl
+# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
+setup 00: prepare system
+
+read-xcode-license() {
+  if [[ -f /Library/Preferences/com.apple.dt.Xcode.plist ]]; then
+    defaults read /Library/Preferences/com.apple.dt.Xcode |
+      awk '/IDELastGMLicenseAgreedTo/ { print $3; }' |
+      sed 's/;//'
+  else
+    return 1
+  fi
+}
+
+set -e
+
+case "$(uname -s)" in
+Darwin)
+  declare license arch xcode_path
+  arch="$(uname -m)"
+
+  # Install Rosetta on an Apple Silicon mac
+  if [[ "${arch}" == arm64 ]] && ! [[ -f /Library/Apple/usr/share/rosetta/rosetta ]]; then
+    softwareupdate --install-rosetta --agree-to-license
+  fi
+
+  if license="$(read-xcode-license)"; then
+    [[ -z "${license}" ]] && sudo xcodebuild -license
+  fi
+
+  xcode_path="$(xcode-select --print-path)"
+  if [[ -z "${xcode_path}" ]]; then
+    xcode-select --install
+  fi
+  ;;
+
+*) : ;;
+esac

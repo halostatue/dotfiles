@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# VS Code Extensions package updates should be run whenever the package file is updated.
+#
+# Source: {{ includeTemplate "private_dot_config/packages/vscode.tmpl" | sha256sum }}
+# Weekly: {{ output "date" "+%V" | trim }}
+readonly script_name=run_onchange_after-05-install-code-extensions.sh.tmpl
+# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
+setup 05: Install VS Code Extensions
+
+if ! has code; then
+  warn "code is not installed"
+  exit 0
+fi
+
+while read -r -a extension; do
+  if [[ "${extension[*]}" =~ ^\s*#.*$ ]] || [[ "${extension[*]}" =~ ^\s*$ ]]; then
+    continue
+  fi
+
+  if verbose; then
+    code --install-extension "${extension[@]}"
+  else
+    code --install-extension "${extension[@]}" >/dev/null 2>/dev/null
+  fi
+done <~/.config/packages/vscode

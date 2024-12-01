@@ -1,0 +1,257 @@
+{{- $personal := eq (get . "role") "personal" -}}
+{{- $work := eq (get . "role") "work" -}}
+
+install 1password-cli
+install act
+install actionlint
+install age
+install amazon-ecr-credential-helper
+install angle-grinder
+install ansifilter
+install antiword
+install ast-grep
+install atuin
+install bat
+install bat-extras
+install cabal
+install cargo
+install cargo2port
+install certstrap
+install chafa
+install chainloop
+install changie
+install checkmake
+{{ if $work -}}
+install chezmoi
+{{- end }}
+install cloc
+install cocogitto
+install colima
+install comet-git
+install committed
+install container-diff
+install cosign
+install crystal
+install csvlens
+install csvquote
+install ctpv
+install dasel
+install dateutils
+install delve
+install deno
+install dict
+install diff-so-fancy
+install diffoci
+install diffoscope
+install difftastic
+install direnv
+install dive
+install docker
+install docker-base-plugin
+install docker-buildx-plugin
+install docker-compose-plugin
+install docker-credential-helper-osxkeychain
+install docker-index-plugin
+install dos2unix
+install dotenv-linter
+install dsq
+install dua-cli
+install duf
+install dust
+install editorconfig-checker
+install efm-langserver
+install epubcheck
+install eva
+install eza +doc+git
+install fastmod
+install fclones
+install fd
+install fend
+install fish
+install flyctl
+install fop
+install fping
+install fswatch
+install fx
+install fzy
+install g-ls
+install gawk
+install gdu
+install gh
+install ghc
+install git +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
+install git-absorb
+install git-branch-stash
+install git-branchless
+install git-bug
+install git-cc
+install git-ce
+install git-chglog
+install git-delta
+install git-interactive-rebase-tool
+install git-mediate
+install git-sizer
+install git-some-extras
+install git-stack
+install git-switch-user
+install git-task
+install git-tools
+install gitleaks
+install gitoxide
+install gitql
+install gitui
+install gleam
+install glow
+install gmake
+install go
+install go-mmv
+install go2port
+install goaccess
+install goawk
+install gojq
+install golangci-lint
+install gopls
+install goreleaser
+install got
+install grex
+install grype
+install hexyl
+install htmd-cli
+install htmlq
+install hwatch
+install hyperfine
+install jd
+install jless
+install jq
+install jqfmt
+install jqp
+install jujutsu
+install julia +gcc14
+install just
+install kondo
+install lazydocker
+install lazygit
+install lemmeknow
+install licensure
+install lima
+install lnav
+install mani
+install manifest-tool
+install massren
+install mdcat
+install micro
+install miller
+install minisign
+install mise
+install monolith
+install moreutils +doc
+install mpstats
+install mquery
+install mrml
+install murex
+install mved
+install navi
+install nim
+install nomino
+install oath-toolkit
+install oauth2c
+install oha
+install osv-scanner
+install ouch
+install oxipng
+install oxker
+install pandoc
+install passage
+install pipx +python312
+{{ if not (regexMatch "^15\\." (output "sw_vers" "-productVersion")) -}}
+install pkl
+{{- end }}
+install postgresql16
+install postgresql16-server
+install procs
+install prql
+install prr
+install pug
+install pv
+install py312-awscli2
+install py312-pip
+install qsv
+install rage
+{{ if $personal -}}
+install rebels-in-the-sky
+{{- end }}
+{{ if $work -}}
+install redis
+{{- end }}
+install revive
+install ripgrep
+install rlwrap
+install ruby-build
+install ruby-install
+install ruby33 +yjit
+install rust
+install rust-script
+install scc
+install scryer-prolog
+install sd
+install seaport
+install selene
+install sfm
+install shadowenv
+install shellcheck
+install shellharden
+install shfmt
+install sol
+install spacer
+install srgn
+install staticcheck
+install step-cli
+install stgit
+install sttr
+install stylua
+install svu
+install tag
+install taplo
+install tealdeer
+{{ if stat "/Applications/Xcode.app" -}}
+install terminal-notifier
+{{- end }}
+install terraform-docs
+install terraformer
+install terramaid
+install tfmigrate
+install tfsec
+install tfupdate
+install the_silver_searcher
+install tig +doc
+install titlecase
+install tnef
+install toast
+install tokei
+install topfew
+install trivy
+install trurl
+install typos
+install universal-ctags +iconv+libxml2+link_to_ctags+manpages
+install uv
+install viddy
+install vifm
+install watch
+install watchexec
+install wxWidgets-3.2 +compat30
+install xh
+install xmlstarlet
+install xq
+install xsv
+install yajl
+install yank
+install yq
+install zola
+install zoxide
+
+select --set awscli py312-awscli2
+select --set pip pip312
+select --set pip3 pip312
+select --set postgresql postgresql16
+select --set python python312
+select --set python3 python312

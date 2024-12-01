@@ -16,6 +16,7 @@ nnoremap <silent> <leader>th :FuzzyHighlights<CR>
 nnoremap <silent> <leader>ti :FuzzyCommands<CR>
 nnoremap <silent> <leader>tr :FuzzyGrep<CR>
 nnoremap <silent> <leader>tt :FuzzyBuffers<CR>
-if g:enable_fuzzyy_MRU_files
+
+if g:->get('enable_fuzzyy_MRU_files')
   nnoremap <silent> <leader>tm :FuzzyMRUFiles<CR>
 endif

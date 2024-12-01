@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+# Macports packages should be rerun when the ports file is updated.
+#
+# Source: {{ includeTemplate "private_dot_config/packages/ports.tmpl" | sha256sum }}
+
+readonly script_name=run_onchange_after-01-install-macports-packages.sh.tmpl
+# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
+setup 01: Install MacPorts Ports
+
+case "$(uname -s)" in
+Darwin)
+  if ! command -v port >/dev/null 2>/dev/null; then
+    if ! echo "${PATH}" | grep -q /opt/local/bin; then
+      export PATH=/opt/local/bin:/opt/local/sbin:"${PATH}"
+    fi
+  fi
+
+  if ! command -v port >/dev/null 2>/dev/null; then
+    warn MacPorts is not installed
+    exit 0
+  fi
+
+  sudo port -N -q -F ~/.config/packages/ports
+  ;;
+
+*) : ;;
+esac
