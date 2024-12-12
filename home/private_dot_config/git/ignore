@@ -62,8 +62,8 @@ config.codekit
 # }}
 
 # Configs {{{
-.env
-.env.*
+# .env
+# .env.*
 # }}}
 
 # Editors {{{

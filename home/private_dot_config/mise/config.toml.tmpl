@@ -1,9 +1,7 @@
 {{- $work := eq (get . "role") "work" -}}
 {{- $vivo_hex_api_key := "" -}}
 {{- if $work -}}
-{{-   $vivo_hex_api_key =
-    onepasswordRead "op://Northern Labs/rlvbids4mm46mozbxeplzfphem/credential" | toToml
--}}
+{{-   $vivo_hex_api_key = onepasswordRead "op://Northern Labs/rlvbids4mm46mozbxeplzfphem/credential" -}}
 {{- end -}}
 
 [settings]
@@ -16,8 +14,9 @@ paranoid = true
 
 [env]
 ERL_AFLAGS = "-kernel shell_history enabled shell_history_file_bytes 5242880"
+RIPGREP_CONFIG_PATH = {{ joinPath .chezmoi.homeDir ".ripgreprc" | quote }}
 {{- if $vivo_hex_api_key }}
-VIVO_HEX_API_KEY = {{ $vivo_hex_api_key }}
+VIVO_HEX_API_KEY = {{ $vivo_hex_api_key | quote }}
 {{- end }}
 
 [tools]
@@ -44,5 +43,5 @@ run = [
 
 [tasks.hex-auth.env]
 {{- if $vivo_hex_api_key }}
-VIVO_HEX_API_KEY = {{ $vivo_hex_api_key }}
+VIVO_HEX_API_KEY = {{ $vivo_hex_api_key | quote }}
 {{- end }}

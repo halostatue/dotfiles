@@ -33,9 +33,9 @@
     <key>RunAtLoad</key>
     <true />
     <key>StandardErrorPath</key>
-    <string>{{ .chezmoi.homeDir }}/.colima/colima.log</string>
+    <string>{{ joinPath .chezmoi.homeDir ".colima/colima.log" }}</string>
     <key>StandardOutPath</key>
-    <string>{{ .chezmoi.homeDir }}/.colima/colima.log</string>
+    <string>{{ joinPath .chezmoi.homeDir ".colima/colima.log" }}</string>
     <key>WorkingDirectory</key>
     <string>{{ .chezmoi.homeDir }}</string>
   </dict>

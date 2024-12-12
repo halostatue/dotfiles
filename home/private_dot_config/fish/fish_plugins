@@ -4,7 +4,6 @@ ilancosman/clownfish
 patrickf1/colored_man_pages.fish
 patrickf1/fzf.fish
 halostatue/fish-brew@v3.x
-halostatue/fish-docker@v1.x
 halostatue/fish-elixir@v1.x
 halostatue/fish-go@v2.x
 halostatue/fish-haskell@v2.x

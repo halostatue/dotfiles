@@ -18,9 +18,9 @@ VerifyHostKeyDNS yes
 
 {{ $agent := "" -}}
 {{- if eq .ssh.agent "1password" -}}
-{{-   $agent = joinPath $.chezmoi.homeDir "/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" -}}
+{{-   $agent = joinPath $.chezmoi.homeDir "Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" -}}
 {{- else if eq .ssh.agent "secretive" -}}
-{{-   $agent = joinPath $.chezmoi.homeDir "/Library/Containers/com.maxgoedjen.agent.SecretAgent/Data/socket.ssh" -}}
+{{-   $agent = joinPath $.chezmoi.homeDir "Library/Containers/com.maxgoedjen.agent.SecretAgent/Data/socket.ssh" -}}
 {{- end -}}
 {{ if and ($agent) (stat $agent) -}}
 Host *

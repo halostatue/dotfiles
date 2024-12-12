@@ -1,24 +1,32 @@
---column
---line-number
---hidden
---follow
---no-heading
+# Don't let ripgrep vomit really long lines to my terminal, and show a preview.
+--max-columns=150
+--max-columns-preview
+
+# Smart defaults
 --smart-case
---glob=!.git/**/*
---glob=!.elixir_ls/**/*
---glob=!node_modules/**/*
---glob=!_build/**/*
---glob=!tags
---glob=!priv/static/**/*
---glob=!bower_components/**/*
---glob=!storage/**/*
---glob=!tmp/**/*
---glob=!coverage/**/*
---glob=!deps/**/*
---glob=!.hg/**/*
---glob=!.svn/**/*
---glob=!.sass-cache/**/*
---glob=!public/**/*
+--hidden
+--column
+--pretty
+# --line-number
+
+# Exclude detritus folders and files
 --glob=!*.cache
---glob=!.Trash/**/*
---glob=!.licenses/**/*
+--glob=!.Trash/*
+--glob=!.elixir_ls/*
+--glob=!.git/*
+--glob=!.hg/*
+--glob=!.jj/*
+--glob=!.licenses/*
+--glob=!.sass-cache/*
+--glob=!.svn/*
+--glob=!_build/*
+--glob=!bower_components/*
+--glob=!coverage/*
+--glob=!deps/*
+--glob=!node_modules/*
+--glob=!priv/static/*
+--glob=!public/*
+--glob=!storage/*
+--glob=!tags
+--glob=!TAGS
+--glob=!tmp/*
