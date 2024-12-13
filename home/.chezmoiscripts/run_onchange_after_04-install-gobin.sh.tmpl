@@ -7,8 +7,10 @@
 # Weekly: {{ output "date" "+%V" | trim }}
 
 readonly script_name=run_onchange_after-04-install-gobin.sh.tmpl
-# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
-setup 04: Install Go Binaries
+readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'
+# shellcheck source=lib/lib.bash
+source "${lib_bash}"
+setup '04: Install Go Binaries'
 
 if ! has go; then
   warn "go is not installed"
@@ -19,15 +21,15 @@ if ! has gup; then
   go install github.com/nao1215/gup@latest
 fi
 
-gup import --input '{{ joinPath .chezmoi.homeDir ".config/gup/gup.conf" }}'
+readonly conf='{{ joinPath .chezmoi.homeDir ".config/gup/gup.conf" }}'
+gup import --input "${conf}"
 
 # Installations that require manual installation
 (
-  set -e
   declare tmp
   tmp="$(mktemp -d)"
 
-  cd "${tmp}"
+  cd "${tmp}" || exit 1
 
   if verbose; then
     git clone https://github.com/minamijoyo/tfschema
@@ -35,7 +37,7 @@ gup import --input '{{ joinPath .chezmoi.homeDir ".config/gup/gup.conf" }}'
     git clone https://github.com/minamijoyo/tfschema >/dev/null 2>/dev/null
   fi
 
-  cd tfschema
+  cd tfschema || exit 1
 
   if verbose; then
     go install .
@@ -43,6 +45,6 @@ gup import --input '{{ joinPath .chezmoi.homeDir ".config/gup/gup.conf" }}'
     go install . >/dev/null 2>/dev/null
   fi
 
-  cd -
+  cd - || exit 1
   rm -rf "${tmp}"
 )

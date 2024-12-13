@@ -2,7 +2,7 @@
 
 name='*'
 
-output='Reservations[].Instances[].{ID: InstanceId,Hostname: PublicDnsName,Name: Tags[?Key==`Name`].Value | [0],PrivateID: PrivateIpAddress, Type: InstanceType, Launched: LaunchTime}'
+output=$'Reservations[].Instances[].{ID: InstanceId,Hostname: PublicDnsName,Name: Tags[?Key==`Name`].Value | [0],PrivateID: PrivateIpAddress, Type: InstanceType, Launched: LaunchTime}'
 
 while test $# -gt 0; do
   case "${1}" in
@@ -21,7 +21,7 @@ while test $# -gt 0; do
     exit 0
     ;;
   -s | --short)
-    output='Reservations[].Instances[].{Name: Tags[?Key==`Name`].Value | [0],PrivateID: PrivateIpAddress, Hostname: PublicDnsName}'
+    output=$'Reservations[].Instances[].{Name: Tags[?Key==`Name`].Value | [0],PrivateID: PrivateIpAddress, Hostname: PublicDnsName}'
     shift
     ;;
   -r | --region)
@@ -36,7 +36,7 @@ while test $# -gt 0; do
 done
 
 aws2 ec2 describe-instances \
-  --filter Name=instance-state-name,Values=running Name=tag:Name,Values=${name} \
+  --filter Name=instance-state-name,Values=running Name=tag:Name,Values="${name}" \
   "${region[@]}" \
   --output table \
   --query "${output}"

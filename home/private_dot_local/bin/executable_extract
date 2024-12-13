@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
 set -euo pipefail
 
@@ -36,12 +36,12 @@ declare show i
 show=
 
 for i in "$@"; do
-  case "$i" in
+  case "${i}" in
   --show)
-    show=echo
+    show='echo'
     ;;
   *)
-    args+=("$i")
+    args+=("${i}")
     ;;
   esac
 done

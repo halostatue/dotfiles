@@ -4,7 +4,9 @@
 set -uo pipefail
 
 setup() {
-  (($#)) && info "$*"
+  if (($#)); then
+    info "$*"
+  fi
 
   if verbose && [[ "${DEBUG_SCRIPTS:-}" = true ]]; then
     set -x

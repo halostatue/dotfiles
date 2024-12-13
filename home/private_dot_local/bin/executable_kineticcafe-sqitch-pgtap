@@ -1,9 +1,11 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
 # This is a helper to run Sqitch, pgTAP, and PostgreSQL commands through the
 # kineticcafe/sqitch-pgtap Docker image. There is nothing modifiable in this
 # script. All configuration is handled by defaults, parameters, or environment
 # variables.
+
+set -o pipefail
 
 declare SQITCH_DBNAME SQITCH_TARGET cmd home_dest image uname_s user
 declare -a passopt
@@ -18,7 +20,7 @@ readonly DEFAULT_IMAGE STRUCTURE_TARGET TIMESTAMP bn0
 puts() {
   local message
 
-  if [ ${#} -eq 0 ] && [ ! -t 0 ]; then
+  if [[ ${#} -eq 0 ]] && [[ ! -t 0 ]]; then
     message="$(cat -)"
   else
     message="$*"
@@ -78,7 +80,9 @@ has-command() {
 }
 
 has-function() {
-  LC_ALL=C test "$(type -t "$1")" == function
+  local typeof
+  typeof=$(type -t "$1")
+  LC_ALL=C test "${typeof}" == function
 }
 
 fail() {
@@ -130,7 +134,8 @@ setup() {
   uname_s="$(uname -s)"
 
   home_dest=/home/"${user}"
-  [[ "$(id -u "${user}")" -eq 0 ]] && home_dest=/root
+  id=$(id -u "${user}")
+  [[ "${id}" -eq 0 ]] && home_dest=/root
 
   apply-platform-options
 
@@ -214,10 +219,13 @@ run() {
   set-command "$1" || fail "Unsupported run command '$1'."
   shift
 
+  idu="$(id -u)"
+  idg="$(id -g)"
+
   docker run "${interactive[@]}" --rm --network host \
-    --mount "type=bind,src=$(pwd),dst=/repo" \
+    --mount "type=bind,src=${PWD},dst=/repo" \
     --mount "type=bind,src=${HOME},dst=${home_dest},readonly" \
-    --user "$(id -u):$(id -g)" \
+    --user "${idu}:${idg}" \
     "${passopt[@]}" "${image}" "${cmd}" "$@"
 }
 
@@ -389,13 +397,14 @@ run-structure() {
       compare=true
       clean=true
       ;;
+    *) : ;;
     esac
   done
 
   if "${clean}"; then
     dbname="clean_$(run openssl rand -hex 16 | tr -d '\r')"
 
-    if (($(psql --list | grep -c "${dbname}"))); then
+    if psql --list | grep -q "${dbname}"; then
       quiet must-run dropdb "${dbname}"
     fi
 
@@ -417,6 +426,7 @@ run-structure() {
       export PAGER=
     fi
 
+    # shellcheck disable=SC2312
     diff -u \
       <(clean-structure "${STRUCTURE_TARGET}") \
       <(clean-structure "${target}") &&
@@ -469,6 +479,7 @@ run-release() {
     --dest-dir | --dir)
       bundle="${arg}"
       ;;
+    *) : ;;
     esac
 
     if [[ -n "${last_arg}" ]]; then
@@ -492,9 +503,11 @@ run-release() {
 
   if [[ -z "${tarball}" ]]; then
     if very-quiet git remote get-url origin; then
-      tarball="$(basename "$(git remote get-url origin)" .git)"
+      origin="$(git remote get-url origin)"
+      tarball="$(basename "${origin}" .git)"
     elif very-quiet git rev-parse --show-toplevel; then
-      tarball="$(basename "$(git rev-parse --show-toplevel)")"
+      toplevel="$(git rev-parse --show-toplevel)"
+      tarball="$(basename "${toplevel}")"
     else
       tarball="$(basename "${PWD}")"
     fi

@@ -81,7 +81,7 @@ require "yaml"
 CONFIG_FN = ".git-wtfrc"
 
 def pluralize(number, value)
-  "#{number} #{value}#{self != 1 ? "s" : ""}"
+  "#{number} #{value}#{(self != 1) ? "s" : ""}"
 end
 
 if ARGV.delete("--help") || ARGV.delete("-h")
@@ -172,11 +172,13 @@ end
 def widget merged_in, remote_only = false, local_only = false, local_only_merge = false
   left, right = if remote_only then %w[{ }]
   elsif local_only then %w[( )]
-  else %w([ ])
+  else
+    %w([ ])
   end
   middle = if merged_in && local_only_merge then green("~")
   elsif merged_in then green("x")
-  else " "
+  else
+    " "
   end
   print left, middle, right
 end

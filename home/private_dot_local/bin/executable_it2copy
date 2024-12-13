@@ -5,24 +5,26 @@ trap clean_up INT
 
 inosc=0
 
-function clean_up() {
-  if [[ $inosc == 1 ]]; then
+clean_up() {
+  if [[ ${inosc} == 1 ]]; then
     print_st
   fi
 }
 
-function show_help() {
-  echo "Usage: $(basename $0)" 1>&2
-  echo "          Copies to clipboard from standard input" 1>&2
-  echo "       $(basename $0) filename" 1>&2
-  echo "          Copies to clipboard from file" 1>&2
+show_help() {
+  cat >&2 <<HELP
+Usage: $(basename "$0")
+          Copies to clipboard from standard input
+       $(basename "$0") filename
+          Copies to clipboard from file
+HELP
 }
 
 # tmux requires unrecognized OSC sequences to be wrapped with DCS tmux;
 # <sequence> ST, and for all ESCs in <sequence> to be replaced with ESC ESC. It
 # only accepts ESC backslash for ST.
-function print_osc() {
-  if [[ $TERM == screen* ]]; then
+print_osc() {
+  if [[ "${TERM}" == screen* ]]; then
     printf "\033Ptmux;\033\033]"
   else
     printf "\033]"
@@ -30,8 +32,8 @@ function print_osc() {
 }
 
 # More of the tmux workaround described above.
-function print_st() {
-  if [[ $TERM == screen* ]]; then
+print_st() {
+  if [[ "${TERM}" == screen* ]]; then
     printf "\a\033\\"
   else
     printf "\a"
@@ -39,7 +41,7 @@ function print_st() {
 }
 
 # Look for command line flags.
-while [ $# -gt 0 ]; do
+while (($#)); do
   case "$1" in
   -h | --h | --help)
     show_help
@@ -51,11 +53,11 @@ while [ $# -gt 0 ]; do
     exit 1
     ;;
   *)
-    if [ -r "$1" ]; then
+    if [[ -r "$1" ]]; then
       data=$(base64 <"$1")
       print_osc
       inosc=1
-      printf '1337;Copy=:%s' "$data"
+      printf '1337;Copy=:%s' "${data}"
       print_st
       inosc=0
       exit 0
@@ -65,12 +67,11 @@ while [ $# -gt 0 ]; do
     fi
     ;;
   esac
-  shift
 done
 
 data=$(base64)
 print_osc
 inosc=1
-printf '1337;Copy=:%s' "$data"
+printf '1337;Copy=:%s' "${data}"
 print_st
 inosc=0

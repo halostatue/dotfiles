@@ -1,8 +1,11 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
+
+set -o pipefail
 
 # Based on https://github.com/gabebw/dotfiles/blob/main/bin/all-links.
 
-if [[ "$(uname -s)" != Darwin ]]; then
+uname_s="$(uname -s)"
+if [[ "${uname_s}" != Darwin ]]; then
   echo >&2 "This script only runs on macOS."
   exit 1
 fi
@@ -67,7 +70,8 @@ chrome_links() {
         return
       fi
 
-      CHROME_BUNDLE_IDENTIFIER="$(bundle_identifier "${target}")" \
+      bid="$(bundle_identifier "${target}")"
+      CHROME_BUNDLE_IDENTIFIER="${bid}" \
         chrome-cli list links |
         cut -f2 -d' ' |
         grep -v '^view-source:' |

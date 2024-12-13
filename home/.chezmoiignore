@@ -20,21 +20,14 @@
 !.cargo/env
 !.cargo/liner.toml
 
-{{ if and (eq .chezmoi.os "darwin") (lookPath "brew") -}}
-{{
-     $alacritty := output "brew" "info" "alacritty" "--json=v2"
-       | fromJson
-       | jq ".casks[0]"
-       | first
--}}
-{{   if not $alacritty.installed -}}
+{{ if not (lookPath "alacritty") -}}
 .terminfo/61/alacritty
 .terminfo/61/alacritty-direct
-{{-  end }}
 {{- end }}
 
 {{ if not (stat "/Applications/WezTerm.app") -}}
 .terminfo/77/wezterm
+.local/bin/wezterm
 {{- end }}
 
 {{ if eq .chezmoi.os "darwin" -}}
@@ -128,6 +121,13 @@
 .kindle/**
 
 .local/bin/chezmoi
+
+{{ if not (lookPath "brew") -}}
+.local/bin/brew-bump
+.local/bin/brew-cleanup
+{{- end }}
+
+
 {{ if regexMatch "py312-awscli2 " (output "port" "echo" "active") }}
 .local/bin/aws
 .local/bin/aws-cli-session-manager
@@ -158,9 +158,23 @@
 {{-   end }}
 {{- end }}
 
-{{ if not (stat "/Applications/Chime.app/Contents/MacOS/chimecli") -}}
+{{ if not (stat "/Applications/Chime.app") -}}
 {{/* ChimeHQ MacOS Editor: https://github.com/ChimeHQ/Chime */}}
 .local/bin/chime
+{{- end }}
+
+{{ if not (stat "/Applications/iTerm.app") -}}
+.local/bin/it2api
+.local/bin/it2attention
+.local/bin/it2check
+.local/bin/it2copy
+.local/bin/it2dl
+.local/bin/it2getvar
+.local/bin/it2git
+.local/bin/it2setcolor
+.local/bin/it2setkeylabel
+.local/bin/it2ul
+.local/bin/it2universion
 {{- end }}
 
 {{/* tfvm */}}

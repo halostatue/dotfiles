@@ -5,8 +5,10 @@
 # Source: {{ includeTemplate "private_dot_config/packages/Brewfile.tmpl" | sha256sum }}
 
 readonly script_name=run_onchange_after-02-install-homebrew-packages.sh.tmpl
-# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
-setup 02: Install Homebrew Packages
+readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'
+# shellcheck source=lib/lib.bash
+source "${lib_bash}"
+setup '02: Install Homebrew Packages'
 
 case "$(uname -s)" in
 Darwin)

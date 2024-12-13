@@ -14,12 +14,12 @@
 
 set -uo pipefail
 
-bn0="$(basename "$0")"
+bn0="$(basename "${0}")"
 readonly bn0
 
 usage() {
   cat <<USAGE
-Usage: $bn0 [options]
+Usage: ${bn0} [options]
 
 An enhanced git-pull that shows a short log of changes immediately after
 merging (git-up) or rebasing (git-reup or git-up --rebase). Submodules are
@@ -76,13 +76,13 @@ halt-error() {
     shift
   fi
 
-  echo >&2 "$bn0: $*"
-  "$call_usage" && usage >&2
+  echo >&2 "${bn0}: $*"
+  "${call_usage}" && usage >&2
   exit 1
 }
 
 git rev-parse --is-inside-work-tree 2>/dev/null 1>/dev/null ||
-  halt-error "$PWD is not a git working tree"
+  halt-error "${PWD} is not a git working tree"
 
 readonly user_re='[^:@]+'
 readonly pass_re='[^@]+'
@@ -91,38 +91,38 @@ readonly port_re='[0-9]+'
 readonly path_re='/([^?#]*)'
 readonly query_re='\?([^#]+)'
 readonly fragment_re='#(.*)'
-readonly auth_re="($user_re)(:($pass_re))?@"
-readonly connection_re="($auth_re)?($host_re)(:($port_re))?"
-readonly url_re="^https://$connection_re($path_re)?($query_re)?($fragment_re)?"
-readonly ssh_re="^ssh://git@([^:]+)(:($port_re))?/(.*)$"
+readonly auth_re="(${user_re})(:(${pass_re}))?@"
+readonly connection_re="(${auth_re})?(${host_re})(:(${port_re}))?"
+readonly url_re="^https://${connection_re}(${path_re})?(${query_re})?(${fragment_re})?"
+readonly ssh_re="^ssh://git@([^:]+)(:(${port_re}))?/(.*)$"
 readonly scp_re="^git@([^:]+):(.*)$"
 
 parse-repo-path() {
-  if [[ "$1" =~ ^([^/]+)/([^/]+)(/.*)?$ ]]; then
+  if [[ "${1}" =~ ^([^/]+)/([^/]+)(/.*)?$ ]]; then
     echo "${BASH_REMATCH[1]}/${BASH_REMATCH[2]/.git/}"
   else
-    echo "invalid repo path: $1"
+    echo >&2 "invalid repo path: ${1}"
     return 1
   fi
 }
 
 get-repo-from-url() {
-  parse-repo-url "$1" repo
+  parse-repo-url "${1}" repo
 }
 
 get-host-from-url() {
-  parse-repo-url "$1" host
+  parse-repo-url "${1}" host
 }
 
 parse-repo-url() {
   local url url_part host repo
-  url="$1"
-  url_part="$2"
+  url="${1}"
+  url_part="${2}"
 
-  if [[ "$url" =~ $url_re ]]; then
+  if [[ "${url}" =~ ${url_re} ]]; then
     if [[ -z "${BASH_REMATCH[5]}" ]] || [[ -z "${BASH_REMATCH[9]}" ]]; then
       # Missing host and/or path
-      echo "invalid URL: $url"
+      echo >&2 "invalid URL: ${url}"
       return 1
     fi
 
@@ -133,12 +133,12 @@ parse-repo-url() {
     fi
 
     if ! repo="$(parse-repo-path "${BASH_REMATCH[9]}")"; then
-      echo "$repo"
+      echo >&2 "${repo}"
       return 1
     fi
-  elif [[ "$url" =~ $ssh_re ]]; then
+  elif [[ "${url}" =~ ${ssh_re} ]]; then
     if [[ -z "${BASH_REMATCH[1]}" ]] || [[ -z "${BASH_REMATCH[4]}" ]]; then
-      echo "invalid URL: $url"
+      echo "invalid URL: ${url}"
       return 1
     fi
 
@@ -147,9 +147,9 @@ parse-repo-url() {
     if ! repo="$(parse-repo-path "${BASH_REMATCH[4]}")"; then
       return 1
     fi
-  elif [[ "$url" =~ $scp_re ]]; then
+  elif [[ "${url}" =~ ${scp_re} ]]; then
     if [[ -z "${BASH_REMATCH[1]}" ]] || [[ -z "${BASH_REMATCH[2]}" ]]; then
-      echo "invalid URL: $url"
+      echo "invalid URL: ${url}"
       return 1
     fi
 
@@ -158,15 +158,15 @@ parse-repo-url() {
       return 1
     fi
   else
-    echo "invalid URL: $url"
+    echo "invalid URL: ${url}"
     return 1
   fi
 
-  case "$url_part" in
-  host) echo "$host" ;;
-  repo) echo "$repo" ;;
+  case "${url_part}" in
+  host) echo "${host}" ;;
+  repo) echo "${repo}" ;;
   *)
-    echo "invalid URL part: $url_part"
+    echo "invalid URL part: ${url_part}"
     return 1
     ;;
   esac
@@ -189,9 +189,10 @@ upstream_host=
 upstream_repo=
 upstream_url=
 
+# shellcheck disable=SC2312
 readarray -t remotes < <(git remote)
 for remote in "${remotes[@]}"; do
-  remote_urls["$remote"]="$(git remote get-url "$remote")"
+  remote_urls["${remote}"]="$(git remote get-url "${remote}")"
 done
 
 merge_upstream=$(git config --get git-up.merge-upstream.enabled)
@@ -206,67 +207,67 @@ if ((${#merge_upstream} == 0)); then
   fi
 fi
 
-if [[ -z "$rebase" ]] && [[ "$bn0" == git-reup ]]; then
+if [[ -z "${rebase}" ]] && [[ "${bn0}" == git-reup ]]; then
   rebase=true
 fi
 
-if [[ -z "$submodule_update" ]]; then
+if [[ -z "${submodule_update}" ]]; then
   submodule_update=true
 fi
 
 while (($#)); do
-  case "$1" in
+  case "${1}" in
   -R | --no-rebase) rebase=false ;;
   -r | --rebase) rebase=true ;;
   -m | --merge-upstream) merge_upstream=true ;;
   -M | --no-merge-upstream) merge_upstream=false ;;
   -s | --submodule-update) submodule_update=true ;;
   -S | --no-submodule-update) submodule_update=false ;;
-  *) args+=("$1") ;;
+  *) args+=("${1}") ;;
   esac
   shift
 done
 
 set -- "${args[@]}"
 
-if "$merge_upstream" && ! which gh >/dev/null 2>/dev/null; then
+if "${merge_upstream}" && ! command -v gh >/dev/null 2>/dev/null; then
   merge_upstream=false
 fi
 
-if "$merge_upstream"; then
+if "${merge_upstream}"; then
   origin=$(git config --get git-up.merge-upstream.origin)
   upstream=$(git config --get git-up.merge-upstream.upstream)
   branch=$(git config --get git-up.merge-upstream.branch)
 
   if ((${#remotes[@]} > 1)); then
     while (($#)); do
-      case "$1" in
+      case "${1}" in
       -o | --origin)
-        if [[ -z "$2" ]]; then
-          halt-error "$1 requires a value"
+        if [[ -z "${2}" ]]; then
+          halt-error "${1} requires a value"
         fi
 
-        origin="$2"
+        origin="${2}"
         shift
         ;;
       -u | --upstream)
-        if [[ -z "$2" ]]; then
-          halt-error "$1 requires a value"
+        if [[ -z "${2}" ]]; then
+          halt-error "${1} requires a value"
         fi
 
-        upstream="$2"
+        upstream="${2}"
         shift
         ;;
       -b | --branch)
-        if [[ -z "$2" ]]; then
-          halt-error "$1 requires a value"
+        if [[ -z "${2}" ]]; then
+          halt-error "${1} requires a value"
         fi
 
-        branch="$2"
+        branch="${2}"
         shift
         ;;
       *)
-        args+=("$1")
+        args+=("${1}")
         ;;
       esac
 
@@ -275,78 +276,78 @@ if "$merge_upstream"; then
 
     set -- "${args[@]}"
 
-    [[ -z "$origin" ]] && origin=origin
+    [[ -z "${origin}" ]] && origin=origin
 
-    if origin_repo="$(get-repo-from-url "$origin")}"; then
-      origin_host="$(get-host-from-url "$origin")"
-      origin_url="$origin"
-    elif origin_repo="$(parse-repo-path "$origin")"; then
+    if origin_repo="$(get-repo-from-url "${origin}")}"; then
+      origin_host="$(get-host-from-url "${origin}")"
+      origin_url="${origin}"
+    elif origin_repo="$(parse-repo-path "${origin}")"; then
       :
     else
-      origin_url="${remote_urls["$origin"]}"
+      origin_url="${remote_urls["${origin}"]}"
 
-      if [[ -z "$origin_url" ]]; then
-        halt-error "origin remote '$origin' does not exist in git repo"
+      if [[ -z "${origin_url}" ]]; then
+        halt-error "origin remote '${origin}' does not exist in git repo"
       fi
 
-      if ! origin_repo="$(get-repo-from-url "$origin_url")"; then
-        halt-error "origin remote: $origin_repo"
+      if ! origin_repo="$(get-repo-from-url "${origin_url}")"; then
+        halt-error "origin remote: ${origin_repo}"
       fi
 
-      origin_host="$(get-host-from-url "$origin_url")"
+      origin_host="$(get-host-from-url "${origin_url}")"
     fi
 
-    if [[ -z "$branch" ]]; then
-      [[ -z "$upstream" ]] && upstream=upstream
+    if [[ -z "${branch}" ]]; then
+      [[ -z "${upstream}" ]] && upstream=upstream
 
-      if upstream_repo="$(get-repo-from-url "$upstream")"; then
-        upstream_host="$(get-host-from-url "$upstream")"
-        upstream_url="$upstream"
-      elif upstream_repo="$(parse-repo-path "$upstream")"; then
+      if upstream_repo="$(get-repo-from-url "${upstream}")"; then
+        upstream_host="$(get-host-from-url "${upstream}")"
+        upstream_url="${upstream}"
+      elif upstream_repo="$(parse-repo-path "${upstream}")"; then
         :
       else
-        upstream_url="${remote_urls["$upstream"]}"
+        upstream_url="${remote_urls["${upstream}"]}"
 
-        if [[ -z "$upstream_url" ]]; then
-          halt-error "upstream remote '$upstream' does not exist in git repo"
+        if [[ -z "${upstream_url}" ]]; then
+          halt-error "upstream remote '${upstream}' does not exist in git repo"
         fi
 
-        if ! upstream_repo="$(get-repo-from-url "$upstream_url")"; then
-          halt-error "upstream remote: $upstream_repo"
+        if ! upstream_repo="$(get-repo-from-url "${upstream_url}")"; then
+          halt-error "upstream remote: ${upstream_repo}"
         fi
 
-        upstream_host="$(get-host-from-url "$upstream_url")"
+        upstream_host="$(get-host-from-url "${upstream_url}")"
       fi
 
       args=()
 
-      if [[ -n "$upstream_host" ]] && [[ "$upstream_host" != github.com ]]; then
-        args=(--hostname "$upstream_host")
+      if [[ -n "${upstream_host}" ]] && [[ "${upstream_host}" != github.com ]]; then
+        args=(--hostname "${upstream_host}")
       fi
 
       # Get the default branch from the upstream
-      if ! branch="$(gh "${args[@]}" api repos/"$upstream_repo" --template '{{ .default_branch }}')"; then
-        halt-error "could not get default branch from $upstream_repo"
+      if ! branch="$(gh "${args[@]}" api repos/"${upstream_repo}" --template '{{ .default_branch }}')"; then
+        halt-error "could not get default branch from ${upstream_repo}"
       fi
 
-      if [[ -z "$branch" ]]; then
-        halt-error "could not get default branch from $upstream_repo"
+      if [[ -z "${branch}" ]]; then
+        halt-error "could not get default branch from ${upstream_repo}"
       fi
     fi
 
     args=()
 
-    if [[ -n "$origin_host" ]] && [[ "$origin_host" != github.com ]]; then
-      args=(--hostname "$origin_host")
+    if [[ -n "${origin_host}" ]] && [[ "${origin_host}" != github.com ]]; then
+      args=(--hostname "${origin_host}")
     fi
 
-    if result="$(gh "${args[@]}" api repos/"$origin_repo"/merge-upstream -F branch="$branch")"; then
+    if _result="$(gh "${args[@]}" api repos/"${origin_repo}"/merge-upstream -F branch="${branch}")"; then
       echo "${origin_repo} branch ${branch} merged with ${upstream_repo}"
     else
-      echo 2>&1 "$bn0: Error updating upstream branch."
+      echo 2>&1 "${bn0}: Error updating upstream branch."
     fi
   else
-    echo 2>&1 "$bn0: Upstream merge enabled but there is only one remote. Skipped."
+    echo 2>&1 "${bn0}: Upstream merge enabled but there is only one remote. Skipped."
   fi
 fi
 
@@ -362,31 +363,31 @@ else
 fi
 
 # when invoked as git-reup, run as `git pull --rebase'
-"$rebase" && pull_args=(--rebase "${pull_args[@]}")
+"${rebase}" && pull_args=(--rebase "${pull_args[@]}")
 
 git pull "${pull_args[@]}"
 echo
 
 # show diffstat of all changes if we're pulling with --rebase. not
 # sure why git-pull only does this when merging.
-"$rebase" && {
+"${rebase}" && {
   declare diff
-  diff=$(git --no-pager diff --color --stat HEAD@{1}.. | sed 's/^/ /')
+  diff=$(git --no-pager diff --color --stat "HEAD@{1}.." | sed 's/^/ /')
 
-  [[ -z "$diff" ]] || printf "Diff:\n%s\n\n" "$diff"
+  [[ -z "${diff}" ]] || printf "Diff:\n%s\n\n" "${diff}"
 }
 
 # show an abbreviated commit log of stuff that was just merged.
 {
   declare log
-  log=$(git log --color --pretty=oneline --abbrev-commit HEAD@{1}.. | sed 's/^/  /')
-  [[ -z "$log" ]] || printf "Log:\n%s\n\n" "$log"
+  log=$(git log --color --pretty=oneline --abbrev-commit "HEAD@{1}.." | sed 's/^/  /')
+  [[ -z "${log}" ]] || printf "Log:\n%s\n\n" "${log}"
 }
 
 echo "Branches:"
 git branch -vv
 
-"$submodule_update" && {
+"${submodule_update}" && {
   # Update any submodules
   git submodule --quiet update --init --recursive
 }

@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# {{- $env := (joinPath .chezmoi.homeDir ".config/env") -}}
+# {{- if stat $env -}}
+# env: {{ include $env | sha256sum }}
+# {{- end -}}
+
+# shellcheck disable=SC2034
+readonly script_name=run_once_before-03-install-rust.sh.tmpl
+readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'
+# shellcheck source=lib/lib.bash
+source "${lib_bash}"
+setup '03: Prepare Rust Installation'
+
+use_rustup='{{ or (get . "use_rustup") false }}'
+if [[ "${use_rustup}" == true ]]; then
+  if has port; then
+    sudo port -f -q deactivate rust cargo || true
+  fi
+
+  if ! has cargo || ! has rustc; then
+    if ! has rustup || ! [[ -x "${HOME}/.cargo/bin/rustup" ]]; then
+      if [[ "${CHEZMOI_VERBOSE:-}" == 1 ]]; then
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |
+          sh -s -- --verbose -y --no-modify-path
+      else
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs |
+          sh -s -- --quiet -y --no-modify-path
+      fi
+    fi
+  fi
+fi
+
+if [[ -s "${HOME}/.cargo/env" ]]; then
+  # shellcheck disable=SC1091
+  source "${HOME}"/.cargo/env
+
+  if has cargo; then
+
+    declare -a flags
+    flags=(--force --locked)
+
+    if ! verbose; then
+      flags+=(--quiet)
+    fi
+
+    # Install cargo-liner for managing Cargo binaries. This replaces cargo-binstall and
+    # cargo-update.
+    if ! command -v cargo-liner >/dev/null 2>/dev/null; then
+      cargo install "${flags[@]}" cargo-liner || exit 1
+    fi
+  fi
+fi
+
+if [[ "${use_rustup}" == true ]] && has port; then
+  sudo port -f -q activate rust cargo || true
+fi

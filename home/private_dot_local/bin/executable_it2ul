@@ -1,57 +1,62 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -eo pipefail
 
 trap clean_up EXIT
-_STTY=$(stty -g) ## Save current terminal setup
-stty -echo       ## Turn off echo
+_STTY="$(stty -g)" ## Save current terminal setup
+stty -echo         ## Turn off echo
 
-function clean_up() {
-  stty "$_STTY" ## Restore terminal settings
+clean_up() {
+  stty "${_STTY}" ## Restore terminal settings
 }
 
-function show_help() {
-  echo "Usage: $(basename $0) [destination [tar flags]]" 1>&2
-  echo "  If given, the destination specifies the directory to place downloaded files."
-  echo "  Further options are passed through to tar. See your system's manpage for tar for details."
+show_help() {
+  cat >&2 <<HELP
+Usage: $(basename "$0") [destination [tar flags]]
+
+If given, the destination specifies the directory to place downloaded
+files. Further options are passed through to tar. See your system's manpage
+for tar for details.
+HELP
 }
 
-function bad_input() {
-  echo "Bad input: %1" 1>&2
+bad_input() {
+  echo >&2 "Bad input: $1"
   exit 1
 }
 
-function die() {
-  echo "Fatal error: $1" 1>&2
+die() {
+  echo >&2 "Fatal error: $1"
   exit 1
 }
 
-function read_base64_stanza() {
-  value=""
-  while read line; do
-    if [ "$line" == "" ]; then
+read_base64_stanza() {
+  while read -r line; do
+    if [[ "${line}" == "" ]]; then
       break
     fi
-    printf "%s" "$line"
+    printf "%s" "${line}"
   done
 }
 
-function decode() {
+decode() {
   VERSION=$(base64 --version 2>&1)
-  if [[ "$VERSION" =~ fourmilab ]]; then
+  if [[ "${VERSION}" =~ fourmilab ]]; then
     BASE64ARG=-d
-  elif [[ "$VERSION" =~ GNU ]]; then
+  elif [[ "${VERSION}" =~ GNU ]]; then
     BASE64ARG=-di
   else
     BASE64ARG=-D
   fi
 
-  base64 "$BASE64ARG" <<<"$1"
+  base64 "${BASE64ARG}" <<<"$1"
 }
 
 # tmux requires unrecognized OSC sequences to be wrapped with DCS tmux;
 # <sequence> ST, and for all ESCs in <sequence> to be replaced with ESC ESC. It
 # only accepts ESC backslash for ST.
-function print_osc() {
-  if [[ $TERM == screen* ]]; then
+print_osc() {
+  if [[ "${TERM}" == screen* ]]; then
     printf "\033Ptmux;\033\033]"
   else
     printf "\033]"
@@ -59,35 +64,35 @@ function print_osc() {
 }
 
 # More of the tmux workaround described above.
-function print_st() {
-  if [[ $TERM == screen* ]]; then
+print_st() {
+  if [[ "${TERM}" == screen* ]]; then
     printf "\a\033\\"
   else
     printf "\a"
   fi
 }
 
-function send_request_for_upload() {
+send_request_for_upload() {
   print_osc
-  printf '1337;RequestUpload=format=tgz' ""
+  printf '1337;RequestUpload=format=tgz'
   print_st
 }
 
-location="$PWD"
-if [[ $# > 0 ]]; then
+location="$(PWD)"
+if (($#)); then
   location="$1"
   shift
 fi
 
 send_request_for_upload
-read status
+read -r status
 
-if [[ $status == ok ]]; then
-  data=$(read_base64_stanza)
+if [[ "${status}" == ok ]]; then
+  data="$(read_base64_stanza)"
   clean_up
-  decode "$data" | tar -x -z -C "$location" -f - $* 1>&2
-elif [[ $status == abort ]]; then
-  echo "Upload aborted" 1>&2
+  decode "${data}" | tar -x -z -C "${location}" -f - "$@" >&2
+elif [[ "${status}" == abort ]]; then
+  echo >&2 "Upload aborted"
 else
-  die "Unknown status: $status" 1>&2
+  die >&2 "Unknown status: ${status}"
 fi

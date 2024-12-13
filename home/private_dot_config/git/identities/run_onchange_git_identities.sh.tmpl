@@ -1,20 +1,21 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
+
+# shellcheck disable=SC2154,SC2250
 
 # Identities should be updated whenever any of the identity documents change.
-{{- $identities := includeTemplate "1password_git_identities.tmpl" . | fromJson -}}
-{{- range $account_name, $configs := $identities -}}
-{{-   range $config_name, $config := $configs }}
-# git-identities {{ $account_name }} {{ $config_name }}: {{ $config.sha256sum }}
-cat >"{{ $account_name }}-git-identities: {{ $config_name }}" <<CONFIG
+# {{ $identities := includeTemplate "1password_git_identities.tmpl" . | fromJson }}
+# {{ range $account_name, $configs := $identities }}
+# {{   range $config_name, $config := $configs }}
+
+# git-identities {{ $account_name }}/{{ $config_name }}: {{ $config.sha256sum }}
+mkdir -p $'{{ $account_name }}'
+cat >"{{ $account_name }}/git-identities: {{ $config_name }}.yml" <<CONFIG
 {{ $config.file }}
 CONFIG
 
-{{      range $identity_name, $identity := $config.data.identities }}
-{{-       $user_name := or (get $identity "name") $config.data.name -}}
-{{-       $key := or (get $identity "key") $config.data.key -}}
-{{-       if regexMatch "^op://" $key -}}
-{{-         $key = onepasswordRead $key $config.account -}}
-{{-       end -}}
+# {{     range $identity_name, $identity := $config.data.identities }}
+# {{       $user_name := or (get $identity "name") $config.data.name }}
+# {{       $key := or (get $identity "key") $config.data.key }}
 cat >"{{ $account_name }}-{{ $config_name }}-{{ $identity_name }}" <<ID
 # vim: ft=gitconfig
 # git identity: {{ $account_name }}-{{ $config_name }}-{{ $identity_name }}
@@ -29,6 +30,6 @@ cat >~/.ssh/"{{ $account_name }}-{{ $config_name }}-{{ $identity_name }}.pub" <<
 {{ $key }}
 KEY
 chmod 0600 ~/.ssh/"{{ $account_name }}-{{ $config_name }}-{{ $identity_name }}.pub"
-{{      end -}}
-{{-   end -}}
-{{- end -}}
+# {{      end }}
+# {{   end }}
+# {{ end }}

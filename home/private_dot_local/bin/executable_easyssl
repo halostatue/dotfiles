@@ -1,7 +1,6 @@
-#! /usr/bin/env fish
+#!/usr/bin/env fish
 
-# An OpenSSL wrapper by Benjamin Kane (github.com/bbkane), originally written in
-# python.
+# An OpenSSL wrapper by Benjamin Kane (github.com/bbkane), originally written in python.
 # https://github.com/bbkane/dotfiles/blob/master/bin_common/bin_commoneasyssl.py
 
 set easyssl_version 0.1.0

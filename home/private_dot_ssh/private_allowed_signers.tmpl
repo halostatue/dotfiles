@@ -12,6 +12,6 @@
 {{-     end -}}
 {{-   end -}}
 {{- end -}}
-{{ range $key, $_emails := $keys -}}
-{{   $key }}
+{{ range $key, $emails := $keys -}}
+{{   join "," $emails }} {{ $key }}
 {{ end -}}

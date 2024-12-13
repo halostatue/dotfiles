@@ -5,8 +5,10 @@
 # Source: {{ includeTemplate "private_dot_config/packages/ports.tmpl" | sha256sum }}
 
 readonly script_name=run_onchange_after-01-install-macports-packages.sh.tmpl
-# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
-setup 01: Install MacPorts Ports
+readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'
+# shellcheck source=lib/lib.bash
+source "${lib_bash}"
+setup '01: Install MacPorts Ports'
 
 case "$(uname -s)" in
 Darwin)

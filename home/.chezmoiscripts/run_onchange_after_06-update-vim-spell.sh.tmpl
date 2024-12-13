@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 readonly script_name=run_onchange_after-06-update-vim-spell.sh.tmpl
-# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
-setup 06: Update Vim Spell File
+readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'
+# shellcheck source=lib/lib.bash
+source "${lib_bash}"
+setup '06: Update Vim Spell File'
 
 if ! has vim; then
   warn "vim is not installed"

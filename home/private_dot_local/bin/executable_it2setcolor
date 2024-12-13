@@ -1,11 +1,12 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 open=0
 
 # tmux requires unrecognized OSC sequences to be wrapped with DCS tmux;
 # <sequence> ST, and for all ESCs in <sequence> to be replaced with ESC ESC. It
 # only accepts ESC backslash for ST.
-function print_osc() {
-  if [[ $TERM == screen* ]]; then
+print_osc() {
+  if [[ "${TERM}" == screen* ]]; then
     printf "\033Ptmux;\033\033]"
   else
     printf "\033]"
@@ -13,27 +14,20 @@ function print_osc() {
 }
 
 # More of the tmux workaround described above.
-function print_st() {
-  if [[ $TERM == screen* ]]; then
+print_st() {
+  if [[ "${TERM}" == screen* ]]; then
     printf "\a\033\\"
   else
     printf "\a"
   fi
 }
 
-# set_color key rgb
-function set_color() {
-  print_osc
-  printf '1337;SetColors=%s=%s' "$1" "$2"
-  print_st
-}
-
-function error() {
+error() {
   echo "ERROR: $*" 1>&2
 }
 
-function show_help() {
-  if [ $open = 1 ]; then
+show_help() {
+  if [[ "${open}" = 1 ]]; then
     print_st
   fi
   echo "Usage"
@@ -69,13 +63,13 @@ function show_help() {
 }
 
 # Show help if no arguments and no stdin.
-if [ $# -eq 0 ]; then
+if [[ $# -eq 0 ]]; then
   show_help
   exit
 fi
 
 # Look for command line flags.
-while [ $# -gt 0 ]; do
+while (($#)); do
   case "$1" in
   -h | --h | --help)
     show_help
@@ -87,11 +81,11 @@ while [ $# -gt 0 ]; do
     exit 1
     ;;
   *)
-    if [ $# -lt 2 ]; then
+    if [[ $# -lt 2 ]]; then
       show_help
       exit
     fi
-    if [ $open = 0 ]; then
+    if [[ "${open}" = 0 ]]; then
       open=1
       print_osc
       printf '1337;SetColors='
@@ -106,7 +100,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-if [ $open = 1 ]; then
+if [[ "${open}" = 1 ]]; then
   print_st
 else
   show_help

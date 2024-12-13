@@ -7,7 +7,7 @@ declare cmd
 
 candidates=(pbcopy cb xclip xsel clipboard clip)
 
-[[ "${wayland_display}" ]] && candidates=(wl-copy "${candidates[@]}")
+(("${#wayland_display:-}")) && candidates=(wl-copy "${candidates[@]}")
 
 if ! cmd="$(command -v "${candidates[@]}" | head -1)"; then
   cat >&2 <<MISSING

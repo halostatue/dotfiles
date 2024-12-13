@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 readonly script_name=run_after_fisher-update.sh.tmpl
-# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
+readonly lib_bash='{{ (joinPath .chezmoi.workingTree "lib/lib.bash") }}'
+# shellcheck source=lib/lib.bash
+source "${lib_bash}"
+# shellcheck disable=SC2119
 setup
 
 # Make sure that we have fish and fisher

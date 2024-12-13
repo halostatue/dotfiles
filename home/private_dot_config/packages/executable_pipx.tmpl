@@ -1,10 +1,10 @@
-#! /usr/bin/env bash
-# {{- $personal := eq (get . "role") "personal" -}}
+#!/usr/bin/env bash
 
-# {{- if $personal }}
-# HTTPie: modern, user-friendly command-line HTTP client for the API era.
+# {{ $personal := eq (get . "role") "personal" }}
+# {{ if $personal }}
+# {{/* HTTPie: modern, user-friendly command-line HTTP client for the API era. */}}
 pipx install httpie &&
   pipx inject httpie httpie-http2 httpie-oauth
-# {{ end -}}
-# Generic Coloriser
+# {{ end }}
+# {{/* Generic Coloriser */}}
 pipx install strec --include-deps

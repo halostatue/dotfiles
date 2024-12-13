@@ -5,13 +5,13 @@ root = true
 
 # all files
 [*]
-indent_style = space
-indent_size = 2
-end_of_line = lf
 charset = utf-8
-trim_trailing_whitespace = true
+end_of_line = lf
+indent_size = 2
+indent_style = space
 insert_final_newline = true
 max_line_length = 90
+trim_trailing_whitespace = true
 
 # shfmt configuration
 binary_next_line   = false
@@ -20,15 +20,23 @@ keep_padding       = false
 space_redirects    = false
 switch_case_indent = false
 
-[{{,GNU}{M,m}akefile,go.mod,go.sum,*.go,.gitmodules}]
+[{{,GNU,gnu}{M,m}akefile,*.mk}]
 indent_style = tab
 indent_size = 4
 
-[*.{md,.markdown}]
+[{go.mod,go.sum,*.go}]
+indent_style = tab
+indent_size = 4
+
+[.gitmodules]
+indent_style = tab
+indent_size = 4
+
+[*.{md,markdown}]
 trim_trailing_whitespace = false
 max_line_length = 78
 
-[*.py]
+[*.{py,ipynb}]
 indent_size = 4
 
 [node_modules/**]

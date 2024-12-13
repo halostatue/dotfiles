@@ -1,4 +1,6 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
+
+set -o pipefail
 
 declare engine image mountopt aws_cli_version force_tty read_write
 engine="${ENGINE:-docker}" # for planned compatibility with podman

@@ -1,4 +1,6 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
+
+set -o pipefail
 
 declare image user
 image=${IMAGE:-ghcr.io/kineticcafe/ansible:5.0}
@@ -29,7 +31,8 @@ declare -a passopt extra args interactive
 interactive=(-it)
 
 home_dst=/home/ansible
-if [[ "$(id -u "${user}")" -eq 0 ]]; then
+idu="$(id -u "${user}")"
+if [[ "${idu}" -eq 0 ]]; then
   home_dst=/root
 fi
 passopt+=(-e "HOME=${home_dst}")
@@ -125,6 +128,7 @@ ansible-connection | ansible-console) args+=("$(basename "$0")") ;;
 ansible-doc | ansible-galaxy | ansible-inventory) args+=("$(basename "$0")") ;;
 ansible-playbook | ansible-pull) args+=("$(basename "$0")") ;;
 ansible-test | ansible-vault) args+=("$(basename "$0")") ;;
+*) : ;;
 esac
 
 while (($#)); do
@@ -191,6 +195,7 @@ version)
   shift
   set -- --version "${@}"
   ;;
+*) : ;;
 esac
 
 if [[ -n "${entrypoint}" ]]; then
@@ -330,6 +335,7 @@ ansible-galaxy)
       *) args+=("$1") ;;
       esac
       ;;
+    *) : ;;
     esac
   done
 
@@ -374,6 +380,7 @@ ansible-pull)
 ansible-vault)
   want[vault_password]=true
   ;;
+*) : ;;
 esac
 
 if [[ "$*" =~ \b--version\b ]] || [[ "$*" =~ \b--help\b ]] || [[ "$*" =~ \b-h\b ]]; then
@@ -516,5 +523,5 @@ esac
 
 # shellcheck disable=SC2086
 docker run "${interactive[@]}" --rm --network host \
-  --mount "type=bind,src=$(pwd),dst=/repo" \
+  --mount "type=bind,src=${PWD},dst=/repo" \
   "${passopt[@]}" "${image}" "$@" "${extra[@]}"

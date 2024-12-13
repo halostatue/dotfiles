@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 readonly script_name=run_once_before_00-prepare-system.sh.tmpl
-# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
-setup 00: prepare system
+readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'
+# shellcheck source=lib/lib.bash
+source "${lib_bash}"
+setup '00: Prepare system'
 
 read-xcode-license() {
   if [[ -f /Library/Preferences/com.apple.dt.Xcode.plist ]]; then
@@ -13,8 +15,6 @@ read-xcode-license() {
     return 1
   fi
 }
-
-set -e
 
 case "$(uname -s)" in
 Darwin)

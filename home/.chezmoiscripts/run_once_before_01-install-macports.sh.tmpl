@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 readonly script_name=run_once_before-01-install-macports.sh.tmpl
-# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
-setup 01: Install MacPorts
+readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'
+# shellcheck source=lib/lib.bash
+source "${lib_bash}"
+setup '01: Install MacPorts'
 
 case "$(uname -s)" in
 Darwin)
@@ -44,11 +46,10 @@ Darwin)
     )" || exit 1
 
     (
-      set -e
-      cd "${tmp}"
-      curl "${url}" -o MacPorts.pkg
-      sudo installer -pkg MacPorts.pkg -target /
-    )
+      cd "${tmp}" || exit 1
+      curl "${url}" -o MacPorts.pkg || exit 1
+      sudo installer -pkg MacPorts.pkg -target / || exit 1
+    ) || exit 1
   fi
 
   if ! grep -q "file://${HOME}/ports" /opt/local/etc/macports/sources.conf; then

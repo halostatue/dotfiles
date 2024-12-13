@@ -38,6 +38,7 @@ show-conflicts() {
 }
 
 show-editor() {
+  # shellcheck disable=SC2312
   if [[ -n "${GIT_CONFLICTS_EDITOR}" ]]; then
     echo "${GIT_CONFLICTS_EDITOR}"
   elif [[ -n "${GIT_EDITOR}" ]]; then
@@ -60,6 +61,7 @@ show-editor() {
 edit-conflicts() {
   local -a conflicts
 
+  # shellcheck disable=SC2312
   if readarray -t conflicts < <(show-conflicts); then
     if ((${#conflicts[@]})); then
       "$(show-editor)" "${conflicts[@]}"
@@ -138,5 +140,6 @@ set-editor)
     git config --global --add conflicts.editor "${wanted_editor}"
   fi
   ;;
+*) : ;;
 
 esac

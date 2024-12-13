@@ -10,7 +10,20 @@ format:
       --stdin-file-path=finicky.js <home/private_dot_finicky.js.tmpl | \
       sponge home/private_dot_finicky.js.tmpl
     @shfmt -w home/.chezmoiscripts/* lib/lib.bash lib/update.sh
-    @standardrb --fix lib/update.rb
+    @ruff check --fix \
+      home/private_dot_local/bin/executable_git-blame-colored \
+      home/private_dot_local/bin/executable_git-show-branch-activity \
+      home/private_dot_local/bin/executable_it2api \
+      home/private_dot_local/bin/executable_linkoln
+    @ruff format \
+      home/private_dot_local/bin/executable_git-blame-colored \
+      home/private_dot_local/bin/executable_git-show-branch-activity \
+      home/private_dot_local/bin/executable_it2api \
+      home/private_dot_local/bin/executable_linkoln
+    @standardrb --fix lib/update.rb \
+      home/private_dot_local/bin/executable_git-cleanup \
+      home/private_dot_local/bin/executable_git-wtf \
+      home/private_dot_local/bin/executable_nato
 
 # Update all package files
 update-packages: ports homebrew go rust code ruby python

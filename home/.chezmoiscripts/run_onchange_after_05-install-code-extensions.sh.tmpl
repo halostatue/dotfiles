@@ -5,8 +5,10 @@
 # Source: {{ includeTemplate "private_dot_config/packages/vscode.tmpl" | sha256sum }}
 # Weekly: {{ output "date" "+%V" | trim }}
 readonly script_name=run_onchange_after-05-install-code-extensions.sh.tmpl
-# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
-setup 05: Install VS Code Extensions
+readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'
+# shellcheck source=lib/lib.bash
+source "${lib_bash}"
+setup '05: Install VS Code Extensions'
 
 if ! has code; then
   warn "code is not installed"

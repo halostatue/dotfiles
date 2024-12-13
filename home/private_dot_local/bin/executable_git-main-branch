@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
 if git remote -v | grep -Ewq 'origin|upstream'; then
   if git show-ref --quiet origin/main || git show-ref --quiet upstream/main; then
     echo main

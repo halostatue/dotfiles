@@ -1,0 +1,7 @@
+# Aliasing within the AWS CLI
+#
+# See: https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-alias.html for more information about cli aliases.
+# See: https://github.com/dannysteenman/aws-toolbox for potential examples
+
+[toplevel]
+whoami = sts get-caller-identity

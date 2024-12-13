@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
 {
   \unalias builtin
   \unset -f builtin
@@ -42,7 +44,8 @@ resolve() (
       builtin return 1
     fi
 
-    builtin cd "$(builtin command dirname -- "${target}")" || builtin exit 1
+    td=$(builtin command dirname -- "${target}")
+    builtin cd "${td}" || builtin exit 1
     fname="$(builtin command basename -- "${target}")"
 
     [[ "${fname}" = / ]] && fname=''
@@ -59,7 +62,10 @@ resolve() (
 
   case "${fname}" in
   .) builtin printf '%s' "${targetDir%/}" ;;
-  ..) builtin printf '%s' "$(builtin command dirname -- "${targetDir}")" ;;
+  ..)
+    td=$(builtin command dirname -- "${targetDir}")
+    builtin printf '%s' "${td}"
+    ;;
   *) builtin printf '%s' "${targetDir%/}/${fname}" ;;
   esac
 )
@@ -135,7 +141,7 @@ fi
 if ! "${config_provided}"; then
   configs=("${PWD}"/.hadolint.{yaml,yml})
 
-  [[ -n "${XDG_CONFIG_HOME}" ]] && configs+=("{$XDG_CONFIG_HOME}"/hadolint.{yaml,yml})
+  [[ -n "${XDG_CONFIG_HOME}" ]] && configs+=("${XDG_CONFIG_HOME}"/hadolint.{yaml,yml})
 
   configs+=("${HOME}"/.config/hadolint.{yaml,yml})
   configs+=("${HOME}"/.hadolint/hadolint.{yaml,yml})

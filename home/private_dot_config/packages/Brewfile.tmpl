@@ -3,7 +3,7 @@
 
 {{ if $work -}}
 tap "browsers-software/tap"
-{{- end }}
+{{ end -}}
 tap "homebrew/bundle"
 tap "homebrew/services"
 tap "reviewdog/tap"
@@ -278,3 +278,9 @@ mas "iMovie", id: 408981434
 mas "junkworld", id: 6448185316
 mas "xScope", id: 889428659
 {{- end }}
+{{/* Things to consider
+brew "common-fate/granted/granted"
+brew "turbot/tap/flowpipe" # not in ports
+brew "turbot/tap/powerpipe" # not in ports
+brew "turbot/tap/steampipe" # also in ports
+*/}}

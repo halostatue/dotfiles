@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
 set -o pipefail
 
@@ -42,6 +42,7 @@ EOF
 
 run_create() {
   set -e
+  # shellcheck disable=SC2312
   aws --profile "${profile}" iam create-access-key --user-name "${username}" |
     jq -r -f <(
       cat <<JQ
@@ -157,6 +158,7 @@ deactivate | delete)
     exit 1
   fi
   ;;
+*) : ;;
 esac
 
 "run_${cmd}"

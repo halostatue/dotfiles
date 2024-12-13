@@ -28,9 +28,15 @@
 #
 # More examples can be found here:
 #  https://developer.1password.com/docs/ssh/agent/config
+
+{{- $identities := includeTemplate "1password_git_identities.tmpl" . | fromJson -}}
+{{- $vaults := dict -}}
+{{- range $_account, $configs := $identities -}}
+{{-   range $_config_name, $config := $configs -}}
+{{-     $vaults = merge (dict $config.data.vault true) -}}
+{{-   end -}}
+{{- end -}}
+{{ range $vault, $_present := $vaults }}
 [[ssh-keys]]
-vault = "Private"
-{{- if eq (get . "role") "work" }}
-[[ssh-keys]]
-vault = "Northern Labs"
-{{- end }}
+vault = {{ $vault | quote }}
+{{ end -}}

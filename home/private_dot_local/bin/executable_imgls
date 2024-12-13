@@ -1,17 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -o pipefail
 
 # tmux requires unrecognized OSC sequences to be wrapped with DCS tmux;
 # <sequence> ST, and for all ESCs in <sequence> to be replaced with ESC ESC. It
 # only accepts ESC backslash for ST.
-function print_osc() {
-  if [ x"$TERM" = "xscreen" ]; then
+print_osc() {
+  if [[ "${TERM}" = "screen" ]]; then
     printf "\033Ptmux;\033\033]"
   else
     printf "\033]"
   fi
 }
 
-function check_dependency() {
+check_dependency() {
   if ! (builtin command -V "$1" >/dev/null 2>&1); then
     echo "imgcat: missing dependency: can't find $1" 1>&2
     exit 1
@@ -19,28 +21,30 @@ function check_dependency() {
 }
 
 # More of the tmux workaround described above.
-function print_st() {
-  if [ x"$TERM" = "xscreen" ]; then
+print_st() {
+  if [[ "${TERM}" = "screen" ]]; then
     printf "\a\033\\"
   else
     printf "\a"
   fi
 }
 
-function list_file() {
+list_file() {
   fn=$1
-  test -f "$fn" || return 0
-  dims=$(php -r 'if (!is_file($argv[1])) exit(1); $a = getimagesize($argv[1]); if ($a==FALSE) exit(1); else { echo $a[0] . "x" .$a[1]; exit(0); }' -- "$fn")
+  test -f "${fn}" || return 0
+  # shellcheck disable=SC2016
+  dims=$(php -r 'if (!is_file($argv[1])) exit(1); $a = getimagesize($argv[1]); if ($a==FALSE) exit(1); else { echo $a[0] . "x" .$a[1]; exit(0); }' -- "${fn}")
   rc=$?
-  if [[ $rc == 0 ]]; then
+  if [[ ${rc} == 0 ]]; then
     print_osc
-    printf '1337;File=name='$(echo -n "$fn" | base64)";"
-    wc -c -- "$fn" | awk '{printf "size=%d",$1}'
+    # shellcheck disable=SC2312
+    printf '1337;File=name=%s;' "$(echo -n "${fn}" | base64)"
+    wc -c -- "${fn}" | awk '{printf "size=%d",$1}'
     printf ";inline=1;height=3;width=3;preserveAspectRatio=true"
     printf ":"
-    base64 <"$fn"
+    base64 <"${fn}"
     print_st
-    if [ x"$TERM" == "xscreen" ]; then
+    if [[ "${TERM}" == "screen" ]]; then
       # This works in plain-old tmux but does the wrong thing in iTerm2's tmux
       # integration mode. tmux doesn't know that the cursor moves when the
       # image code is sent, while iTerm2 does. I had to pick one, since
@@ -56,10 +60,10 @@ function list_file() {
     else
       printf '\033[A'
     fi
-    echo -n "$dims "
-    ls -ld -- "$fn"
+    echo -n "${dims} "
+    ls -ld -- "${fn}"
   else
-    ls -ld -- "$fn"
+    ls -ld -- "${fn}"
   fi
 }
 
@@ -67,12 +71,13 @@ check_dependency php
 check_dependency base64
 check_dependency wc
 
-if [ $# -eq 0 ]; then
+if [[ $# -eq 0 ]]; then
+  # shellcheck disable=SC2312
   for fn in *; do
-    list_file "$fn"
+    list_file "${fn}"
   done < <(ls -ls)
 else
   for fn in "$@"; do
-    list_file "$fn"
+    list_file "${fn}"
   done
 fi

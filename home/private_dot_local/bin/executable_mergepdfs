@@ -24,6 +24,7 @@ case $# in
   usage >&2
   exit 1
   ;;
+*) : ;;
 esac
 
 declare output

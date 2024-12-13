@@ -1,19 +1,22 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-if [ $# -lt 1 ]; then
-  echo "Usage: $(basename $0) file ..."
+set -eo pipefail
+
+if [[ $# -lt 1 ]]; then
+  echo "Usage: $(basename "$0") file ..."
   exit 1
 fi
 
-function load_version() {
-  if [ -z ${IT2DL_BASE64_VERSION+x} ]; then
-    export IT2DL_BASE64_VERSION=$(base64 --version 2>&1)
+load_version() {
+  if [[ -z "${IT2DL_BASE64_VERSION+x}" ]]; then
+    IT2DL_BASE64_VERSION=$(base64 --version 2>&1)
+    export IT2DL_BASE64_VERSION
   fi
 }
 
-function b64_encode() {
+b64_encode() {
   load_version
-  if [[ "$IT2DL_BASE64_VERSION" =~ GNU ]]; then
+  if [[ "${IT2DL_BASE64_VERSION}" =~ GNU ]]; then
     # Disable line wrap
     base64 -w0
   else
@@ -22,17 +25,19 @@ function b64_encode() {
 }
 
 for fn in "$@"; do
-  if [ -r "$fn" ]; then
-    [ -d "$fn" ] && {
-      echo "$fn is a directory"
+  if [[ -r "${fn}" ]]; then
+    [[ -d "${fn}" ]] && {
+      echo "${fn} is a directory"
       continue
     }
-    printf '\033]1337;File=name=%s;' $(echo -n "$fn" | b64_encode)
-    wc -c "$fn" | awk '{printf "size=%d",$1}'
+
+    name="$(echo -n "${fn}" | b64_encode)"
+    printf '\033]1337;File=name=%s;' "${name}"
+    wc -c "${fn}" | awk '{printf "size=%d",$1}'
     printf ":"
-    base64 <"$fn"
+    base64 <"${fn}"
     printf '\a'
   else
-    echo File $fn does not exist or is not readable.
+    echo "File ${fn} does not exist or is not readable."
   fi
 done

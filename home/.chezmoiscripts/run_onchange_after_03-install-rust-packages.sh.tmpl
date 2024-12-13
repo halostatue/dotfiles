@@ -7,8 +7,10 @@
 # Weekly: {{ output "date" "+%V" | trim }}
 
 readonly script_name=run_onchange_after_03-install-rust-packages.sh.tmpl
-# {{ include (joinPath .chezmoi.workingTree "lib/lib.bash") }}
-setup 03: Install Rust Packages
+readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'
+# shellcheck source=lib/lib.bash
+source "${lib_bash}"
+setup '03: Install Rust Packages'
 
 if ! has cargo || ! [[ -s "${HOME}"/.cargo/env ]]; then
   warn "cargo (rust) is not installed"
@@ -20,9 +22,13 @@ if ! has cargo-liner; then
   exit 0
 fi
 
+use_rustup='{{ or (get . "use_rustup") false }}'
+
 case "$(uname -s)" in
 Darwin)
-  if has port && ! [[ "$(command -v cargo 2>/dev/null)" == "/opt/local/bin/cargo" ]]; then
+  if [[ "${use_rustup}" == true ]] && has port &&
+    cargo=$(command -v cargo 2>/dev/null) &&
+    ! [[ "${cargo}" == "/opt/local/bin/cargo" ]]; then
     # There are known issues with Macports libiconv and git for Rust packages.
     sudo port -q deactivate -f libiconv >/dev/null 2>&1 || true
     sudo port -q deactivate -f git >/dev/null 2>&1 || true

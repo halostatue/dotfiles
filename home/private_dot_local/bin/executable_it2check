@@ -1,46 +1,45 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -eo pipefail
 
 # Make sure stdin and stdout are a tty.
-if [ ! -t 0 ]; then
-  exit 1
-fi
-if [ ! -t 1 ]; then
+if [[ ! -t 0 ]] || [[ ! -t 1 ]]; then
   exit 1
 fi
 
 # Read some bytes from stdin. Pass the number of bytes to read as the first argument.
-function read_bytes() {
-  numbytes=$1
-  dd bs=1 count=$numbytes 2>/dev/null
+read_bytes() {
+  numbytes="$1"
+  dd bs=1 count="${numbytes}" 2>/dev/null
 }
 
-function read_dsr() {
+read_dsr() {
   # Reading response to DSR.
   dsr=""
-  spam=$(read_bytes 2)
+  read_bytes 2 >/dev/null
   byte=$(read_bytes 1)
-  while [ "${byte}" != "n" ]; do
+  while [[ "${byte}" != "n" ]]; do
     dsr=${dsr}${byte}
     byte=$(read_bytes 1)
   done
-  echo ${dsr}
+  echo "${dsr}"
 }
 
 # Extract the terminal name from DSR 1337
-function terminal {
+terminal() {
   echo -n "$1" | sed -e 's/ .*//'
 }
 
 # Extract the version number from DSR 1337
-function version {
+version() {
   echo -n "$1" | sed -e 's/.* //'
 }
 
 trap clean_up EXIT
-_STTY=$(stty -g) ## Save current terminal setup
+_STTY="$(stty -g)" # Save current terminal setup
 
-function clean_up() {
-  stty "$_STTY" ## Restore terminal settings
+clean_up() {
+  stty "${_STTY}" # Restore terminal settings
 }
 
 # Enter raw mode and turn off echo so the terminal and I can chat quietly.
@@ -48,7 +47,7 @@ stty -echo -icanon raw
 
 # Support for the extension first appears in this version of iTerm2:
 MIN_VERSION=2.9.20160304
-if [ $# -eq 1 ]; then
+if [[ $# -eq 1 ]]; then
   MIN_VERSION=$1
 fi
 
@@ -65,7 +64,7 @@ echo -n '[1337n'
 echo -n '[5n'
 
 version_string=$(read_dsr)
-if [ "${version_string}" != "0" -a "${version_string}" != "3" ]; then
+if [[ "${version_string}" != "0" ]] && [[ "${version_string}" != "3" ]]; then
   # Already read DSR 1337. Read DSR 5 and throw it away.
   dsr=$(read_dsr)
 else
@@ -78,4 +77,4 @@ version=$(version "${version_string}")
 term=$(terminal "${version_string}")
 
 # Check if they match what we're looking for. This becomes the return code of the script.
-test "$term" = ITERM2 -a \( "$version" \> "$MIN_VERSION" -o "$version" = "$MIN_VERSION" \)
+test "${term}" = ITERM2 -a \( "${version}" \> "${MIN_VERSION}" -o "${version}" = "${MIN_VERSION}" \)

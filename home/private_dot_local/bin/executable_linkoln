@@ -5,8 +5,8 @@
 
 # Just standard library for portability
 import sys
-import urllib.request
 import time
+import urllib.request
 
 # Input from file, output to stdout
 # Suggested usage:
@@ -110,7 +110,7 @@ def google_it(query):
         # Parsing html is easy
         top_result = contents.split(b"link-text")[1]
         top_link = top_result.split(b">")[1].split(b"<")[0]
-    except:
+    except Exception:
         # Leave for human to fix
         return f"ERROR: {query}"
     return "https://" + top_link.decode("utf-8")
@@ -127,7 +127,7 @@ while rem != "":
                     closing = close
                     state = S_IGNORE
                     break
-            except:
+            except Exception:
                 pass
         if state == S_IGNORE:
             continue
@@ -137,7 +137,7 @@ while rem != "":
                 inside = ""
                 state = S_EATING
                 continue
-        except:
+        except Exception:
             pass
         rem = eat(rem, 1)
 
@@ -163,7 +163,7 @@ while rem != "":
 
     # Frick your computer is on fire
     else:
-        assert false, "Invalid state"
+        assert False, "Invalid state"
 
 # Google all the queries
 print()

@@ -4,7 +4,6 @@ set -e
 
 if (($#)); then
   remote_branch="$1"
-
 else
   remote_branch="$(git main-branch)"
 fi

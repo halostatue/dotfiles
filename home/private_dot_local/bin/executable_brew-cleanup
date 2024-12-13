@@ -1,11 +1,17 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -euo pipefail
+set -eo pipefail
 
-(
-    cd "$(brew --repo)" && git prune && git gc
-)
+if command -v brew >/dev/null 2>/dev/null; then
+  if repo="$(brew --repo)"; then
+    (cd "${repo}" && git prune && git gc) &
+  fi
 
-brew cleanup
+  brew cleanup
 
-rm -rf "$(brew --cache)"
+  if cache="$(brew --cache)"; then
+    rm -rf "${cache}"
+  fi
+else
+  echo "Homebrew is not installed."
+fi
