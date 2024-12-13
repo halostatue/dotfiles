@@ -6,8 +6,7 @@
 --smart-case
 --hidden
 --column
---pretty
-# --line-number
+--line-number
 
 # Exclude detritus folders and files
 --glob=!*.cache

@@ -29,7 +29,8 @@ go:
 
 # Update Rust binaries (using 'cargo-liner')
 rust:
-    @cargo liner import --force
+    @cargo liner import --force --compatible --keep-self --keep-local -qq
+    @sed -E 's/= "([^"]+)"/= { version = "\1", locked = true }/g' ~/.cargo/liner.toml | sponge ~/.cargo/liner.toml
     @vimdiff ~/.cargo/liner.toml home/private_dot_cargo/liner.toml.tmpl
 
 # Update Visual Studio Code packages

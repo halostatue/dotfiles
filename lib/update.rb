@@ -13,7 +13,8 @@ def tmpdiff(target, lines, debug)
 
   begin
     tmp = File.join(tmpdir, File.basename(target, ".tmpl"))
-    File.write(tmp, lines.join("\n") + "\n")
+    data = lines.join("\n") + "\n"
+    File.write(tmp, data.gsub("\n\n\n", "\n\n"))
     spawn(["vimdiff", tmp, target].shelljoin)
     Process.wait
   ensure

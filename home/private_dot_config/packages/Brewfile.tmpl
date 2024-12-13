@@ -100,6 +100,9 @@ cask "obsidian" # Knowledge base that works on top of a local folder of plain te
 {{ if $personal -}}
 cask "ollamac" # Interact with Ollama models
 {{- end }}
+{{ if $work -}}
+cask "openlens" # Open source build of Lens Kubernetes IDE
+{{- end }}
 cask "orion" # WebKit based web browser
 {{ if $personal -}}
 cask "pieces" # Code snippets, screenshots and workflow context
@@ -197,6 +200,9 @@ cask "font-zed-mono"
 mas "1Blocker", id: 1365531024
 {{- end }}
 mas "1Password for Safari", id: 1569813296
+{{ if $work -}}
+mas "AdGuard for Safari", id: 1440147259
+{{- end }}
 {{ if $personal -}}
 mas "Acorn", id: 1547371478
 mas "Actions", id: 1586435171
