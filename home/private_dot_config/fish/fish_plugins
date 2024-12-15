@@ -2,7 +2,7 @@ jorgebucaran/fisher
 halostatue/fish-utils-core@v2.x
 ilancosman/clownfish
 patrickf1/colored_man_pages.fish
-patrickf1/fzf.fish
+patrickf1/fzf.fish@v10.3
 halostatue/fish-brew@v3.x
 halostatue/fish-elixir@v1.x
 halostatue/fish-go@v2.x
@@ -24,3 +24,4 @@ nickeb96/puffer-fish
 halostatue/gitlater@v1.0.0
 kpbaks/autols.fish
 adamchristiansen/vertical-fish
+kidonng/preview.fish

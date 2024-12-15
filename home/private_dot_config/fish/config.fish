@@ -82,10 +82,46 @@ function urlenc -d "url encode the passed string"
     end
 end
 
-if functions --query has:keg
-    if has:keg nnn
+if functions --query has_keg
+    if has_keg nnn
         source (brew --prefix nnn)/share/nnn/quitcd/quitcd.fish
     end
+end
+
+if command --query fzf
+    if command --query rg
+        set -gx FZF_DEFAULT_COMMAND 'rg --files --no-ignore-vcs --hidden'
+    end
+
+    if command --query eza
+        set -g fzf_preview_dir_cmd 'eza --all --color=always --classify=always'
+    end
+
+    if command --query delta
+        set -g fzf_diff_highlighter delta --paging=never --width=20
+    end
+
+    if functions --query preview && not set --query fzf_preview_file_cmd
+        set -g fzf_preview_file_cmd preview
+    end
+
+    set fzf_directory_opts --bind "ctrl-o:execute($EDITOR {} &> /dev/tty)"
+
+    if command --query fdfind fd
+        set -g fzf_fd_opts --hidden
+    end
+
+    if not set --query FZF_DEFAULT_OPTS
+        set --local colors \
+            fg:#f8f8f2,bg:#282a36,hl:#bd93f9 \
+            fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 \
+            info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 \
+            marker:#ff79c6,spinner:#ffb86c,header:#6272a4
+
+        set --export FZF_DEFAULT_OPTS --color=(string join , $colors)
+    end
+
+    set --export --append FZF_DEFAULT_OPTS --bind ctrl-h:toggle-preview
 end
 
 if status is-interactive
@@ -97,76 +133,7 @@ if status is-interactive
         rtx activate fish | source
     end
 
-    if command --query fzf
-        function fp --description 'Search your $PATH'
-            set -l loc (echo $PATH | tr ' ' '\n' | eval "fzf $FZF_DEFAULT_OPTS --header='[find:path]'")
-
-            if test (count $loc) = 1
-                set -l cmd (rg --files -L $loc | rev | cut -d'/' -f1 | rev | tr ' ' '\n' | eval "fzf $FZF_DEFAULT_OPTS --header='[find:exe] => $loc'")
-                if test (count $cmd) = 1
-                    echo $cmd
-                else
-                    fp
-                end
-            end
-        end
-
-        function kp --description "Kill processes"
-            set -l __kp__pid ''
-
-            if contains -- --tcp $argv
-                set __kp__pid (lsof -Pwni tcp | sed 1d | eval "fzf $FZF_DEFAULT_OPTS -m --header='[kill:tcp]'" | awk '{print $2}')
-            else
-                set __kp__pid (ps -ef | sed 1d | eval "fzf $FZF_DEFAULT_OPTS -m --header='[kill:process]'" | awk '{print $2}')
-            end
-
-            if test "x$__kp__pid" != x
-                if test "x$argv[1]" != x
-                    echo $__kp__pid | xargs kill $argv[1]
-                else
-                    echo $__kp__pid | xargs kill -9
-                end
-                kp
-            end
-        end
-
-        function ks --description "Kill http server processes"
-            set -l __ks__pid (lsof -Pwni tcp | sed 1d | eval "fzf $FZF_DEFAULT_OPTS -m --header='[kill:tcp]'" | awk '{print $2}')
-            set -l __ks__kc $argv[1]
-
-            if test "x$__ks__pid" != x
-                if test "x$argv[1]" != x
-                    echo $__ks__pid | xargs kill $argv[1]
-                else
-                    echo $__ks__pid | xargs kill -9
-                end
-                ks
-            end
-        end
-
-        if command --query rg
-            set -gx FZF_DEFAULT_COMMAND 'rg --files --no-ignore-vcs --hidden'
-        end
-
-        function gcb --description "delete git branches"
-            set delete_mode -d
-
-            if contains -- --force $argv
-                set force_label ':force'
-                set delete_mode -D
-            end
-
-            set -l branches_to_delete (git branch | sed -E 's/^[* ] //g' | fzf -m --header="[git:branch:delete$force_label]")
-
-            if test -n "$branches_to_delete"
-                git branch $delete_mode $branches_to_delete
-            end
-        end
-    end
-
-    function restoredb
-        # pg_restore --verbose --clean -Fc -x --if-exists -d $database $filename
-        # pg_restore --verbose --clean --create -Fc -x --if-exists $filename
+    function restorepg
         pg_restore --verbose --clean -Fc -x --if-exists -j4 --no-acl --no-owner $argv[1]
     end
 
@@ -174,17 +141,13 @@ if status is-interactive
         mysql -u root <$argv[1]
     end
 
-    if set --query MAGIC_ENTER_GIT_COMMAND && test $MAGIC_ENTER_GIT_COMMAND = 'git status -u .'
-        set --erase MAGIC_ENTER_GIT_COMMAND
-    end
-
     if not set --query MAGIC_ENTER_GIT_COMMAND
-        set --universal MAGIC_ENTER_GIT_COMMAND 'git status .'
+        set --universal MAGIC_ENTER_GIT_COMMAND git status
     end
 
     if not set --query MAGIC_ENTER_LIST_COMMAND
         if command --query eza
-            set --universal MAGIC_ENTER_LIST_COMMAND eza' -l .'
+            set --universal MAGIC_ENTER_LIST_COMMAND eza -l .
         else
             set --universal MAGIC_ENTER_LIST_COMMAND ls -lh .
         end
@@ -302,16 +265,6 @@ end
 
 if command --query vim && not set --query PSQL_EDITOR
     set --global --export PSQL_EDITOR (command --search vim) -c ':set ft=sql'
-end
-
-if not set --query FZF_DEFAULT_OPTS
-    set --local colors \
-        fg:#f8f8f2,bg:#282a36,hl:#bd93f9 \
-        fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 \
-        info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 \
-        marker:#ff79c6,spinner:#ffb86c,header:#6272a4
-
-    set --export FZF_DEFAULT_OPTS --color=(string join , $colors)
 end
 
 function in_ssh
