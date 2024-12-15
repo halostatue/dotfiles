@@ -5,8 +5,10 @@
 {{- $name := promptStringOnce . "name" "Name" -}}
 {{- $github_username := promptStringOnce . "github.user" "Github Username" -}}
 {{- $personal_1password_account := promptStringOnce . "onepassword.personal" "1Password Personal Account" -}}
-{{- $ssh_agent := promptChoiceOnce . "ssh.agent" "Which SSH agent to use" $ssh_agents -}}
+{{- $ssh_agent_type := promptChoiceOnce . "ssh.agent" "Which SSH agent to use" $ssh_agents -}}
 {{- $role := promptChoiceOnce . "role" "How will this computer be used" $roles -}}
+{{- $roles_aws := . | dig "roles" "aws" (list) }}
+{{- $roles_git := . | dig "roles" "git" (list) }}
 
 [scriptEnv]
 DEBUG_SCRIPTS = "false"
@@ -24,6 +26,10 @@ debug_scripts = false
 gnupg_default_key = {{ get . "gnupg_default_key" | toToml }}
 role = {{ $role | toToml }}
 
+[data.roles]
+aws = {{ $roles_aws | toToml }}
+git = {{ $roles_git | toToml }}
+
 [data.onepassword]
 personal = {{ $personal_1password_account | toToml }}
 
@@ -37,4 +43,4 @@ email = {{ $email | toToml }}
 user = {{ $email | toToml }}
 
 [data.ssh]
-agent = {{ $ssh_agent | toToml }}
+agent = {{ $ssh_agent_type | toToml }}
