@@ -41,6 +41,12 @@
 {{/* Google Apps Script "clasp" */}}
 .clasprc.json
 
+{{ if not (stat "/Applications/Alfred 5.app") -}}
+.config/Alfred/*
+{{ else }}
+.config/Alfred/Alfred.alfredpreferences/clipboard
+.config/Alfred/Alfred.alfredpreferences/clipboard/*
+{{- end }}
 .config/Amazon/**
 .config/cheat/cheatsheets/**
 .config/chezmoi

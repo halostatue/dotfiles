@@ -48,3 +48,4 @@
 # --map-syntax ".ignore:Git Ignore"
 --map-syntax "vimrc:VimL"
 --map-syntax "zshrc:Bourne Again Shell (bash)"
+--map-syntax "*Brewfile:Ruby"

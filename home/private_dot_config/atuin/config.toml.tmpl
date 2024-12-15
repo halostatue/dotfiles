@@ -1,6 +1,8 @@
 dialect = "uk"
 
 auto_sync = false
+secrets_filter = true
+enter_accept = false
 
 update_check = true
 
@@ -38,11 +40,14 @@ show_help = false
 
 common_subcommands = [
   "cargo",
-  "go",
   "git",
-  "npm",
-  "yarn",
-  "pnpm",
+  "go",
+  "kubectl",
   "mix",
+  "npm",
+  "pnpm",
   "port",
+  "yarn",
 ]
+
+common_prefix = ["sudo", "sudo port"]

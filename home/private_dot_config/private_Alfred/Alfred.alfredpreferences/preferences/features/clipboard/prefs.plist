@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>autoExpandRestoreClipboard</key>
+	<false/>
+	<key>autoExpandSnippetPlaySound</key>
+	<false/>
+	<key>autoExpandSnippetTriggerPlaySound</key>
+	<false/>
+	<key>autoPaste</key>
+	<false/>
+	<key>clearKeywordEnabled</key>
+	<false/>
+	<key>hotkey</key>
+	<dict>
+		<key>key</key>
+		<integer>0</integer>
+		<key>mod</key>
+		<integer>0</integer>
+		<key>string</key>
+		<string></string>
+	</dict>
+	<key>ignoreRemoteClipboardFileLists</key>
+	<false/>
+	<key>limit</key>
+	<integer>1</integer>
+	<key>moveToTopOnUse</key>
+	<false/>
+	<key>persistFor</key>
+	<integer>3</integer>
+	<key>snippetKeywordEnabled</key>
+	<false/>
+	<key>snippetKeywordInResult</key>
+	<false/>
+	<key>snippetMatchWordBased</key>
+	<false/>
+	<key>snippetsAtTop</key>
+	<false/>
+	<key>snippetsWhenSearching</key>
+	<false/>
+	<key>viewerKeywordEnabled</key>
+	<false/>
+</dict>
+</plist>
