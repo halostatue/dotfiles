@@ -28,12 +28,11 @@
 #
 # More examples can be found here:
 #  https://developer.1password.com/docs/ssh/agent/config
-
 {{- $identities := includeTemplate "1password_git_identities.tmpl" . | fromJson -}}
 {{- $vaults := dict -}}
 {{- range $_account, $configs := $identities -}}
 {{-   range $_config_name, $config := $configs -}}
-{{-     $vaults = merge (dict $config.data.vault true) -}}
+{{-     $vaults = mergeOverwrite $vaults (dict $config.data.vault true) -}}
 {{-   end -}}
 {{- end -}}
 {{ range $vault, $_present := $vaults }}

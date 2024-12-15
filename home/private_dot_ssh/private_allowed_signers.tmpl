@@ -5,10 +5,10 @@
 {{-     range $_identity_name, $identity := $config.data.identities -}}
 {{-       $key := or (get $identity "key") $config.data.key -}}
 {{-       if not (hasKey $keys $key) -}}
-{{-         $keys = merge (dict $key list) -}}
+{{-         $keys = mergeOverwrite (dict $key list) -}}
 {{-       end -}}
 {{-       $list := append (get $keys $key) $identity.email -}}
-{{-       $keys = merge $keys (dict $key $list) -}}
+{{-       $keys = mergeOverwrite $keys (dict $key $list) -}}
 {{-     end -}}
 {{-   end -}}
 {{- end -}}
