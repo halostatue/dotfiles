@@ -167,8 +167,11 @@ install pipx +python312
 {{ if not (regexMatch "^15\\." (output "sw_vers" "-productVersion")) -}}
 install pkl
 {{- end }}
+{{ if $personal -}}
+# Using Postgresql.app at work
 install postgresql16
 install postgresql16-server
+{{- end }}
 install procs
 install prql
 install prr
@@ -253,7 +256,9 @@ install zoxide
 select --set awscli py312-awscli2
 select --set pip pip312
 select --set pip3 pip312
+{{ if $personal -}}
 select --set postgresql postgresql16
+{{- end }}
 select --set python python312
 select --set python3 python312
 {{/* Things to consider
