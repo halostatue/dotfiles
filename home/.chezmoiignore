@@ -262,4 +262,5 @@ Library/Application Scripts
 {{/* !Library/Application Support/gh-dash/** */}}
 {{/* !Library/Application Support/lazy-git/** */}}
 {{/* !Library/Application Support/tealdeer/** */}}
+Library/LaunchAgents/macports.colima.plist
 {{- end }}

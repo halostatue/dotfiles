@@ -96,6 +96,10 @@ update-port() {
   port[public]=true
 
   case "$1" in
+  chezmoi)
+    port[category]=sysutils
+    port_test=(chezmoi doctor)
+    ;;
   mise)
     port[category]=sysutils
     port_test=(mise ls)

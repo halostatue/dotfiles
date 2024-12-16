@@ -278,45 +278,41 @@ if "${merge_upstream}"; then
 
     [[ -z "${origin}" ]] && origin=origin
 
-    if origin_repo="$(get-repo-from-url "${origin}")}"; then
-      origin_host="$(get-host-from-url "${origin}")"
-      origin_url="${origin}"
-    elif origin_repo="$(parse-repo-path "${origin}")"; then
-      :
-    else
+    if ((${#remote_urls["${origin}"]})); then
       origin_url="${remote_urls["${origin}"]}"
-
-      if [[ -z "${origin_url}" ]]; then
-        halt-error "origin remote '${origin}' does not exist in git repo"
-      fi
 
       if ! origin_repo="$(get-repo-from-url "${origin_url}")"; then
         halt-error "origin remote: ${origin_repo}"
       fi
 
       origin_host="$(get-host-from-url "${origin_url}")"
+    elif origin_repo="$(get-repo-from-url "${origin}" 2>/dev/null)"; then
+      origin_host="$(get-host-from-url "${origin}")"
+      origin_url="${origin}"
+    elif origin_repo="$(parse-repo-path "${origin}" 2>/dev/null)"; then
+      :
+    else
+      halt-error "origin remote '${origin}' does not exist in git repo"
     fi
 
     if [[ -z "${branch}" ]]; then
       [[ -z "${upstream}" ]] && upstream=upstream
 
-      if upstream_repo="$(get-repo-from-url "${upstream}")"; then
-        upstream_host="$(get-host-from-url "${upstream}")"
-        upstream_url="${upstream}"
-      elif upstream_repo="$(parse-repo-path "${upstream}")"; then
-        :
-      else
+      if ((${#remote_urls["${upstream}"]})); then
         upstream_url="${remote_urls["${upstream}"]}"
-
-        if [[ -z "${upstream_url}" ]]; then
-          halt-error "upstream remote '${upstream}' does not exist in git repo"
-        fi
 
         if ! upstream_repo="$(get-repo-from-url "${upstream_url}")"; then
           halt-error "upstream remote: ${upstream_repo}"
         fi
 
         upstream_host="$(get-host-from-url "${upstream_url}")"
+      elif upstream_repo="$(get-repo-from-url "${upstream}" 2>/dev/null)"; then
+        upstream_host="$(get-host-from-url "${upstream}")"
+        upstream_url="${upstream}"
+      elif upstream_repo="$(parse-repo-path "${upstream}" 2>/dev/null)"; then
+        :
+      else
+        halt-error "upstream remote '${upstream}' does not exist in git repo"
       fi
 
       args=()

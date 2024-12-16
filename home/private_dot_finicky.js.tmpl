@@ -1,19 +1,15 @@
 const role = '{{ get . "role" }}' || 'personal'
+const isWork = role == 'work'
 
 const Openers = {
   Browsers:
-    '{{ get (stat "/Applications/Browsers.app") "name" }}' &&
-    '/Applications/Browsers.app',
+    '{{ if stat "/Applications/Browsers.app"}}/Applications/Browsers.app{{ end }}',
   Browserosaurus:
-    '{{ get (stat "/Applications/Browserosaurus.app") "name" }}' &&
-    '/Applications/Browserosaurus.app',
+    '{{ if stat "/Applications/Browserosaurus.app" }}/Applications/Browserosaurus.app{{ end }}',
   BrowserFairy:
-    '{{ get (stat "/Applications/BrowserFairy.app") "name" }}' &&
-    '/Applications/BrowserFairy.app',
-  OpenIn: '{{ get (stat "/Applications/OpenIn.app") "name" }}'
-    ? '/Applications/OpenIn.app'
-    : '{{ get (stat "/Applications/Setapp/OpenIn.app") "name" }}' &&
-      '/Applications/Setapp/OpenIn.app',
+    '{{ if stat "/Applications/BrowserFairy.app" }}/Applications/BrowserFairy.app{{ end }}',
+  OpenIn:
+    '{{ if stat "/Applications/OpenIn.app" }}/Applications/OpenIn.app{{ else if stat "/Applications/Setapp/OpenIn.app" }}/Applications/Setapp/OpenIn.app{{ end }}',
 }
 
 const Browsers = {
@@ -30,7 +26,7 @@ const Browsers = {
     'Safari',
 }
 
-if (role === 'work') {
+if (isWork) {
   // The Northern Labs Chrome profile is in the Default folder
   Browsers.NorthernLabs = { name: 'Google Chrome', profile: 'Default' }
   // The Forte Chrome profile is in the Profile 1 folder
@@ -557,30 +553,30 @@ module.exports = {
         (finicky.getKeys().command && finicky.getKeys().option),
       browser: Browsers.Opener,
     },
-    {
+    isWork && {
       match: ({ url }) =>
         url.host.endsWith('github.com') && url.pathname.match(/\/northernlabs\//i),
       browser: Browsers.NorthernLabs,
     },
-    {
+    isWork && {
       match: ({ url }) =>
         url.host.endsWith('github.com') && url.pathname.match(/\/fortelabsinc\//i),
       browser: Browsers.Forte,
     },
-    {
+    isWork && {
       match: ({ url }) =>
         url.host === 'northernlabs.atlassian.net' ||
         url.host === 'northern-labs.slack.com',
       browser: Browsers.NorthernLabs,
     },
-    {
+    isWork && {
       match: ({ url }) =>
         url.host === 'forteio.atlassian.net' || url.host === 'forte-io.slack.com',
       browser: Browsers.Forte,
     },
     {
       match: ({ url }) => url.host === 'meet.google.com',
-      browser: Browsers.NorthernLabs,
+      browser: Browsers.NorthernLabs || Browsers.Chrome,
     },
     {
       match: ({ url }) => url.host === 'script.google.com',
@@ -603,5 +599,5 @@ module.exports = {
       match: ({ opener }) => !opener.path && !opener.name && !opener.bundleId,
       browser: Browsers.Opener,
     },
-  ],
+  ].filter((e) => e),
 }
