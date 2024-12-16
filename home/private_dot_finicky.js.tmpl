@@ -33,10 +33,6 @@ if (isWork) {
   Browsers.Forte = { name: 'Google Chrome', profile: 'Profile 1' }
 }
 
-function isArray(val) {
-  return !!val && '[object Array]' === Object.prototype.toString.call(val)
-}
-
 function _hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop)
 }
@@ -96,8 +92,8 @@ class UrlSearchParams {
     for (const key of Object.keys(this.#internal)) {
       const name = this.#encode(key)
       for (const value of this.#internal[key]) {
-        if (value[i]) {
-          query.push(`${name}=${this.#encode(value[i])}`)
+        if (value) {
+          query.push(`${name}=${this.#encode(value)}`)
         } else {
           query.push(name)
         }
@@ -194,10 +190,9 @@ class UrlSearchParams {
 
     if (typeof search === 'object') {
       // if `search` is an array, treat it as a sequence
-      if (isArray(search)) {
-        for (let i = 0; i < search.length; i++) {
-          const item = search[i]
-          if (isArray(item) && item.length === 2) {
+      if (Array.isArray(search)) {
+        for (const item of search) {
+          if (Array.isArray(item) && item.length === 2) {
             this.#appendTo(dict, item[0], item[1])
           } else {
             throw new TypeError(
