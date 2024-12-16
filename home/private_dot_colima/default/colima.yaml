@@ -6,7 +6,7 @@ cpu: 2
 # NOTE: value can only be increased after virtual machine has been created.
 #
 # Default: 100
-disk: 60
+disk: 100
 
 # Size of the memory in GiB to be allocated to the virtual machine.
 # Default: 2
@@ -27,7 +27,7 @@ runtime: docker
 # Set custom hostname for the virtual machine.
 # Default: colima
 #          colima-profile_name for other profiles
-hostname: colima
+hostname: ""
 
 # Kubernetes configuration for the virtual machine.
 kubernetes:
@@ -38,7 +38,7 @@ kubernetes:
   # Kubernetes version to use.
   # This needs to exactly match a k3s version https://github.com/k3s-io/k3s/releases
   # Default: latest stable release
-  version: v1.28.3+k3s2
+  version: v1.31.2+k3s1
 
   # Additional args to pass to k3s https://docs.k3s.io/cli/server
   # Default: traefik is disabled
@@ -196,6 +196,14 @@ sshPort: 0
 # Colima default behaviour: $HOME and /tmp/colima are mounted as writable.
 # Default: []
 mounts: []
+
+# Specify a custom disk image for the virtual machine.
+# When not specified, Colima downloads an appropriate disk image from Github at
+# https://github.com/abiosoft/colima-core/releases.
+# The file path to a custom disk image can be specified to override the behaviour.
+#
+# Default: ""
+diskImage: ""
 
 # Environment variables for the virtual machine.
 #
