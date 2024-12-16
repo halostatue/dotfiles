@@ -118,3 +118,7 @@ language
 Nunjucks
 arity
 NOVAPAY
+CODEOWNER
+hexpm
+erlang
+debian

@@ -240,6 +240,10 @@ if status is-interactive
     end
 end
 
+if not command -q psql && test -d /Applications/Postgres.app/Contents/Versions/latest/bin
+    fish_add_path --path --prepend /Applications/Postgres.app/Contents/Versions/latest/bin
+end
+
 if test -x $HOME/.bun/bin/bun
     if ! set --global --query BUN_INSTALL
         set --global --export BUN_INSTALL $HOME/.bun
