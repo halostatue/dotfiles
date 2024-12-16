@@ -46,7 +46,7 @@ Darwin)
 esac
 
 if verbose; then
-  cargo liner ship -v
+  cargo liner ship --no-fail-fast --verbose
 else
-  cargo liner ship -q
+  cargo liner ship --no-fail-fast --quiet
 fi
