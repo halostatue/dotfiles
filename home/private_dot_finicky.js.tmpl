@@ -39,6 +39,16 @@ function _hasOwnProperty(obj, prop) {
 
 // url-search-params-polyfill by Jerry Bendy (https://github.com/jerrybendy) - MIT license
 // Adapted for Finicky as a _ponyfill_ even if Finicky later adds `URLSearchParams`.
+const UriEncodingMap = Object.freeze({
+  '!': '%21',
+  "'": '%27',
+  '(': '%28',
+  ')': '%29',
+  '~': '%7E',
+  '%20': '+',
+  '%00': '\x00',
+})
+
 class UrlSearchParams {
   #internal
 
@@ -160,16 +170,6 @@ class UrlSearchParams {
     } else {
       dict[name] = [val]
     }
-  }
-
-  static UriEncodingMap = {
-    '!': '%21',
-    "'": '%27',
-    '(': '%28',
-    ')': '%29',
-    '~': '%7E',
-    '%20': '+',
-    '%00': '\x00',
   }
 
   #encode(str) {
