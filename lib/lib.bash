@@ -8,6 +8,11 @@ setup() {
     info "$*"
   fi
 
+  if [[ ",${CHEZMOI_SKIP_SCRIPT:-}," =~ ,${script_skip:-${script_name}}, ]]; then
+    echo "Skipping ${script_name} as complete by request."
+    exit 0
+  fi
+
   if verbose && [[ "${DEBUG_SCRIPTS:-}" = true ]]; then
     set -x
   fi

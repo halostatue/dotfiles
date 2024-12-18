@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 readonly script_name=run_onchange_after-07-configure-apps.sh.tmpl
+readonly script_skip=07
 readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'
 # shellcheck source=lib/lib.bash
 source "${lib_bash}"
@@ -59,10 +60,11 @@ Darwin)
 
     # Auto hide the dock
     defaults write com.apple.dock autohide -bool true
-    # Speed up the dock auto-hide animation.
-    defaults write com.apple.dock autohide-time-modifier -float 0.1
-    # Reduce the dock auto-hide delay.
-    defaults write com.apple.dock autohide-delay -float 0.1
+    # Speed up the dock auto-hide animation a little.
+    defaults write com.apple.dock autohide-time-modifier -float 0.4
+    # Slow down the dock auto-hide delay so it doens't interfere with accidental edge
+    # bumps.
+    defaults write com.apple.dock autohide-delay -float 1.0
 
     # Don't show recent apps in the dock.
     defaults write com.apple.dock show-recents -bool false
