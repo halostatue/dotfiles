@@ -58,6 +58,9 @@ cask "google-chrome" # Web browser
 {{ if $personal -}}
 cask "hazel" # Automated organisation
 {{- end }}
+{{ if $work -}}
+cask "headlamp" # UI for Kubernetes
+{{- end }}
 cask "hex-fiend" # Hex editor focussing on speed
 cask "httpie" # Testing client for REST, GraphQL, and HTTP APIs
 {{ if $personal -}}
