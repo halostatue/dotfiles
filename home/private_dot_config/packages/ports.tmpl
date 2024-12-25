@@ -23,7 +23,7 @@ install changie
 install checkmake
 {{ if $work -}}
 install chezmoi
-{{- end }}
+{{ end -}}
 install cloc
 install cocogitto
 install colima
@@ -129,6 +129,7 @@ install jqp
 install jujutsu
 install julia +gcc14
 install just
+install jwt-cli
 install kondo
 install lazydocker
 install lazygit
@@ -144,6 +145,7 @@ install micro
 install miller
 install minisign
 install mise
+install mkcert
 install monolith
 install moreutils +doc
 install mpstats
@@ -161,17 +163,18 @@ install osv-scanner
 install ouch
 install oxipng
 install oxker
+install p7zip
 install pandoc
 install passage
 install pipx +python312
 {{ if not (regexMatch "^15\\." (output "sw_vers" "-productVersion")) -}}
 install pkl
-{{- end }}
+{{ end -}}
 {{ if $personal -}}
 # Using Postgresql.app at work
 install postgresql16
 install postgresql16-server
-{{- end }}
+{{ end -}}
 install procs
 install prql
 install prr
@@ -183,10 +186,10 @@ install qsv
 install rage
 {{ if $personal -}}
 install rebels-in-the-sky
-{{- end }}
+{{ end -}}
 {{ if $work -}}
 install redis
-{{- end }}
+{{ end -}}
 install revive
 install ripgrep
 install rlwrap
@@ -219,7 +222,7 @@ install taplo
 install tealdeer
 {{ if stat "/Applications/Xcode.app" -}}
 install terminal-notifier
-{{- end }}
+{{ end -}}
 install terraform-docs
 install terraformer
 install terramaid
@@ -258,7 +261,7 @@ select --set pip pip312
 select --set pip3 pip312
 {{ if $personal -}}
 select --set postgresql postgresql16
-{{- end }}
+{{ end -}}
 select --set python python312
 select --set python3 python312
 {{/* Things to consider
