@@ -1,6 +1,6 @@
-# chezmoi:template:left-delimiter="# (:" right-delimiter=":)"
-# (:/* vim: ft=yaml */:)
-# (:- $programs := includeTemplate "programs.tmpl" . | fromJson -:)
+# chezmoi:template:left-delimiter="# [[" right-delimiter="]]"
+# [[/* vim: ft=yaml.chezmoitmpl */]]
+# [[- $programs := includeTemplate "programs.tmpl" . | fromJson -]]
 
 .vim/pack/plugins/opt/chezmoi.vim:
   pull:
@@ -8,26 +8,22 @@
       - --ff-only
   refreshPeriod: 168h
   type: git-repo
-  url: https://github.com/alker0/chezmoi.vim
+  url: https://github.com/alker0/chezmoi.vim.git
 
-# (: if $programs.lf -:)
-.config/fish/completions/lf.fish:
-  type: archive-file
-  url: https://github.com/gokcehan/lf/archive/master.tar.gz
-  refreshPeriod: 744h
-  path: lf-master/etc/lf.fish
-
-.config/fish/functions/lfcd.fish:
-  type: archive-file
-  url: https://github.com/gokcehan/lf/archive/master.tar.gz
-  refreshPeriod: 744h
-  path: lf-master/etc/lfcd.fish
-# (:- end :)
+# [[ if or $programs.ghostty (stat "/Applications/Ghostty.app") -]]
+.config/ghostty/shaders:
+  pull:
+    args:
+      - --ff-only
+  refreshPeriod: 168h
+  type: git-repo
+  url: https://github.com/m-ahdal/ghostty-shaders.git
+# [[- end ]]
 
 ports:
   pull:
     args:
       - --ff-only
-  refreshPeriod: 368h # two weeks
+  refreshPeriod: 240h # ten days
   type: git-repo
   url: git+ssh://github.com/halostatue/ports.git

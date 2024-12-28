@@ -104,6 +104,10 @@ update-port() {
     port[category]=sysutils
     port_test=(mise ls)
     ;;
+  viu)
+    port[category]=graphics
+    port_test=(viu ~/Pictures/garden.jpg)
+    ;;
   ruby-build)
     port[category]=ruby
     port_test=(ruby-build --list)
@@ -244,7 +248,7 @@ update-port() {
   fi
 
   if [[ -n "${port[needs_crates]:-}" ]]; then
-    sed '/^cargo.crates/,$d' "${port[clip]}" >"${port[file]}"
+    sed '/^cargo.crates/,/^$/d' "${port[clip]}" >"${port[file]}"
 
     if [[ "${port[cargo_lock]:-crates}" == github ]] && [[ -n "${port[tag_url]:-}" ]]; then
       curl -sSL "${port[tag_url]}/Cargo.lock" -o "${port[clip]}.Cargo.lock"

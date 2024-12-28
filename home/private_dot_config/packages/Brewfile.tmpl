@@ -24,7 +24,6 @@ brew "terracognita" # Reads from existing Cloud Providers and generates Terrafor
 brew "tflint" # Linter for Terraform files
 brew "tz" # CLI time zone visualizer
 
-cask "alacritty" # GPU-accelerated terminal emulator
 {{ if $personal -}}
 cask "alfred" # Application launcher and productivity software
 cask "anki" # Memory training application
@@ -40,6 +39,7 @@ cask "charles" # Web debugging Proxy application
 cask "cleanupbuddy" # Clean keyboard and trackpad
 {{ if $personal -}}
 cask "cog" # Audio player
+cask "contour" # Terminal emulator
 cask "deskpad" # Virtual monitor for screen sharing
 cask "dosbox" # Emulator for x86 with DOS
 cask "dosbox-x" # Fork of the DOSBox project
@@ -54,6 +54,7 @@ cask "firefox" # Web browser
 cask "fluid" # Tool to turn a website into a desktop app
 cask "gargoyle" # IO layer for interactive fiction players
 {{ end -}}
+cask "ghostty" # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "google-chrome" # Web browser
 {{ if $personal -}}
 cask "hazel" # Automated organisation
@@ -134,8 +135,8 @@ cask "setapp" # Collection of apps available by subscription
 {{ if $work -}}
 cask "slack" # Team communication and collaboration software
 {{ end -}}
-cask "spatterlight" # Play most kinds of interactive fiction game files
 {{ if $personal -}}
+cask "spatterlight" # Play most kinds of interactive fiction game files
 cask "tableflip" # Edit plain text tables in place: Markdown, CSV, JSON. LaTeX and HTML export
 {{ end -}}
 {{ if $work -}}
@@ -146,7 +147,7 @@ cask "viscosity" # OpenVPN client with AppleScript support
 {{ end -}}
 cask "visual-studio-code" # Open-source code editor
 cask "webpquicklook" # Quick Look plugin for webp files
-{{ if $personal -}}
+{{ if false -}}
 cask "xcodes" # Install and switch between multiple versions of Xcode
 {{ end -}}
 cask "xprocheck" # Anti-malware scan logging tool
@@ -155,50 +156,22 @@ cask "zed" # Multiplayer code editor
 ## Fonts
 # This cask is currently broken.
 # cask "font-0xproto"
-cask "font-b612-mono"
 cask "font-cascadia-code"
-cask "font-cascadia-code-pl"
 cask "font-cascadia-mono"
-cask "font-cascadia-mono-pl"
-cask "font-charis-sil"
-cask "font-commit-mono"
-cask "font-cormorant-garamond"
-cask "font-courier-prime"
-cask "font-courier-prime-code"
-cask "font-courier-prime-medium-and-semi-bold"
-cask "font-courier-prime-sans"
-cask "font-dm-mono"
-cask "font-dm-sans"
-cask "font-dm-serif-display"
-cask "font-dm-serif-text"
 cask "font-eb-garamond"
 cask "font-fantasque-sans-mono"
 cask "font-fira-code"
-cask "font-fira-mono"
-cask "font-geist-mono"
 cask "font-hack"
-cask "font-hack-nerd-font"
 cask "font-ia-writer-duo"
 cask "font-ia-writer-mono"
 cask "font-ia-writer-quattro"
-cask "font-ibm-plex-mono"
-cask "font-input"
 cask "font-jetbrains-mono"
 cask "font-juliamono"
 cask "font-maple-mono"
 cask "font-monaspace"
-cask "font-mononoki"
-cask "font-noto-mono"
-cask "font-pt-mono"
-cask "font-pt-serif"
-cask "font-recursive"
-cask "font-recursive-code"
-cask "font-recursive-desktop"
 cask "font-sf-mono"
 cask "font-source-code-pro"
 cask "font-space-mono"
-cask "font-symbols-only-nerd-font"
-cask "font-zed-mono"
 
 {{ if $personal -}}
 mas "1Blocker", id: 1365531024
@@ -208,7 +181,6 @@ mas "1Password for Safari", id: 1569813296
 mas "AdGuard for Safari", id: 1440147259
 {{ end -}}
 {{ if $personal -}}
-mas "Acorn", id: 1547371478
 mas "Actions", id: 1586435171
 mas "Baking Soda", id: 1601151613
 mas "Balatro+", id: 6502451661
@@ -271,12 +243,7 @@ mas "Waterlogue Pro", id: 1425568219
 {{- if $work}}
 mas "WireGuard", id: 1451685025
 {{ end -}}
-{{ if $personal -}}
-mas "WorldWideWeb", id: 1621370168
-{{ end -}}
-{{- if $work}}
 mas "Xcode", id: 497799835
-{{ end -}}
 mas "iMovie", id: 408981434
 {{ if $personal -}}
 mas "junkworld", id: 6448185316

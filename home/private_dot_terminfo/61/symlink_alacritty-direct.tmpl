@@ -1,9 +1,0 @@
-{{- $version :=
-      output "brew" "info" "alacritty" "--json=v2"
-      | fromJson
-      | jq ".casks[0].installed"
-      | first
--}}
-{{- if $version -}}
-/opt/homebrew/Caskroom/alacritty/{{ $version }}/Alacritty.app/Contents/Resources/61/alacritty-direct
-{{- end -}}

@@ -21,15 +21,14 @@
 !.cargo/env
 !.cargo/liner.toml
 
-{{ if not (lookPath "alacritty") -}}
-.terminfo/61/alacritty
-.terminfo/61/alacritty-direct
-{{- end }}
-
 {{ if not (stat "/Applications/WezTerm.app") -}}
 .terminfo/77/wezterm
 .local/bin/wezterm
 {{- end }}
+
+.terminfo/63
+.terminfo/67
+.terminfo/78
 
 {{ if eq .chezmoi.os "darwin" -}}
 .colima/*
@@ -54,9 +53,7 @@
 .config/configstore
 
 
-.config/fish/completions/*
-!.config/fish/completions/aws_completer.fish
-!.config/fish/completions/lf.fish
+.config/fish/completions
 
 .config/fish/conf.d/*
 !.config/fish/conf.d/__abbr.fish
@@ -66,9 +63,7 @@
 .config/fish/fish_variables
 
 .config/fish/functions/*
-!.config/fish/functions/compare_deploy_tags.fish
 !.config/fish/functions/gobin-sources.fish
-!.config/fish/functions/lfcd.fish
 !.config/fish/functions/set-docker-host.fish
 
 .config/fish/hosts
@@ -83,8 +78,7 @@
 .config/hcp/**
 .config/htop/**
 
-.config/iTerm2
-.config/iTerm2/**
+.config/iterm2
 
 .config/jgit/**
 
@@ -104,6 +98,8 @@
 
 .config/massren
 .config/massren/*
+
+.config/micro/buffers
 
 .config/nvim
 .config/nvim.old/.git
@@ -136,9 +132,10 @@
 
 .envrc
 
-.fly/*
+.fly
 
-.gem/specs/*
+.gem/ruby/
+.gem/specs/
 {{/* git-extras ignore cache file */}}
 .gi_list
 .gitlater
@@ -154,6 +151,9 @@
 .k8slens
 .kube
 .kindle
+
+{{/* This is managed by colima. */}}
+.lima
 
 .local/bin/chezmoi
 
@@ -216,14 +216,10 @@
 .local/bin/terraform
 .local/bin/tfvm
 
-{{ if not (lookPath "alacritty") -}}
-.config/fish/alacritty.fish
-.config/alacritty/alacritty.yml
-{{- end }}
-
 .local/pipx
 .local/share/*
 !.local/share/vim-lsp-settings
+.local/share/vim-lsp-settings/*
 !.local/share/vim-lsp-settings/settings.json
 .local/state
 
@@ -237,7 +233,8 @@
 .nb
 .net
 .node_repl_history
-.npm
+.npm/
+.npmrc
 
 .ollama
 
@@ -282,17 +279,37 @@ Library
 .config/lazygit
 .config/lazygit/*
 
-Library/.dash_yard
-Library/Accessibility
-Library/Accounts
-Library/AppleMediaServices
-Library/Application Scripts
-{{/* Library/Application Support */}}
-{{/* !Library/Application Support/BBEdit/** */}}
-{{/* !Library/Application Support/Code/** */}}
-{{/* !Library/Application Support/fm/** */}}
-{{/* !Library/Application Support/gh-dash/** */}}
-{{/* !Library/Application Support/lazy-git/** */}}
-{{/* !Library/Application Support/tealdeer/** */}}
-Library/LaunchAgents/macports.colima.plist
+Applications/
+Desktop/
+Documents/
+Downloads/
+Dropbox/
+
+Library/*
+!Library/Application Support
+Library/Application Support/*
+!Library/Application Support/BBEdit
+Library/Application Support/BBEdit/*
+!Library/Application Support/BBEdit/Language Modules
+!Library/Application Support/Code
+Library/Application Support/Code/*
+!Library/Application Support/Code/User
+Library/Application Support/Code/User/*
+!Library/Application Support/Code/User/settings.json
+!Library/Application Support/fm
+!Library/Application Support/gh-dash
+!Library/Application Support/lazygit
+Library/Application Support/lazygit/*
+!Library/Application Support/lazygit/config.yml
+!Library/Application Support/tealdeer
+
+# Library/LaunchAgents/macports.colima.plist
+
+Movies/
+Music/
+Pictures/
+Public/
+personal/
+oss/
+work/
 {{- end }}

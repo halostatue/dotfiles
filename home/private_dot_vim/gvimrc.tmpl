@@ -9,9 +9,9 @@ vim9script
 # gets y height
 # osascript -e 'tell application \"Finder\" to get bounds of window of desktop' | cut -d ',' -f 4 | xargs
 {{ if eq (or (get . "role") "personal") "personal" -}}
-&guifont = "RecMonoCasual-Regular:h16"
+&guifont = "Hack-Regular:h13"
 {{- else -}}
-&guifont = "RecMonoCasual-Regular:h13"
+&guifont = "Hack-Regular:h13"
 {{- end }}
 
 # Keep the system clipboard and the vim pasteboard separate. If this behaviour is not

@@ -1,0 +1,13 @@
+{
+    "colorscheme": "abyss",
+    "diffgutter": true,
+    "hlsearch": true,
+    "mkparents": true,
+    "parsecursor": true,
+    "relativeruler": true,
+    "rmtrailingws": true,
+    "savecursor": true,
+    "saveundo": true,
+    "tabmovement": true,
+    "tabsize": 2
+}

@@ -1,0 +1,5 @@
+.header on
+.mode markdown
+-- .nullvalue [NULL]
+.timer off
+.echo off

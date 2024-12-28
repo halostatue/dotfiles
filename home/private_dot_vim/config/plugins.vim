@@ -58,7 +58,13 @@ elseif fzf_bin == '/usr/local/bin/fzf' && isdirectory('/usr/local/opt/fzf')
   set rtp+=/usr/local/opt/fzf
 endif
 
-## 3. Use vim-packix to define
+## 4. Add Ghostty vim integration if present
+
+if isdirectory('/Applications/Ghostty.app/Contents/Resources/vim/vimfiles')
+  set rtp+=/Applications/Ghostty.app/Contents/Resources/vim/vimfiles
+endif
+
+## 5. Use vim-packix to define
 
 packadd vim-packix
 
