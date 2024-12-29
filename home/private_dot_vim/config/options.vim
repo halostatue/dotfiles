@@ -324,6 +324,10 @@ set cursorlineopt=line,number
 # If opening buffer, search first in opened windows. Ignore open tabs.
 set switchbuf=useopen,split,uselast
 
+if !has('gui_running') && $TERM ==# 'xterm-ghostty' && &keyprotocol !~# 'ghostty:kitty'
+  set keyprotocol^=ghostty:kitty
+endif
+
 # Load platform-specific configuration.
 execute printf('runtime config/options/%s.vim', hz#Platform())
 
