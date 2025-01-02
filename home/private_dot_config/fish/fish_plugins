@@ -8,7 +8,6 @@ lilyball/nix-env.fish
 oh-my-fish/plugin-tab
 halostatue/sponge@fix-init-failures
 nickeb96/puffer-fish
-halostatue/gitlater@v1.0.0
 kpbaks/autols.fish
 adamchristiansen/vertical-fish
 kidonng/preview.fish
