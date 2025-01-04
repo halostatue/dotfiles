@@ -246,9 +246,6 @@
 [url {{ $url.use | quote }}]
   insteadOf = {{ $url.match }}{{ end }}{{ end }}{{ end }}
 
-# Repos should be configured individually for the user,
-# at least until I have time to figure out how to better handle
-# automatic configuration with `includeIf`.
 [user]
   useConfigOnly = true
 
