@@ -4,7 +4,6 @@ patrickf1/colored_man_pages.fish
 patrickf1/fzf.fish@v10.3
 jorgebucaran/autopair.fish
 jorgebucaran/fishtape
-lilyball/nix-env.fish
 oh-my-fish/plugin-tab
 halostatue/sponge@fix-init-failures
 nickeb96/puffer-fish
@@ -12,7 +11,6 @@ kpbaks/autols.fish
 adamchristiansen/vertical-fish
 kidonng/preview.fish
 halostatue/fish-haskell@v2
-halostatue/fish-elixir@v2
 halostatue/fish-go@v2
 halostatue/fish-machine-config@v1
 halostatue/fish-macos@v6
@@ -23,3 +21,4 @@ halostatue/fish-macports@v1
 halostatue/fish-rake@v1
 halostatue/fish-rust@v2
 halostatue/fish-vendor-completions@v1
+halostatue/fish-elixir@v2

@@ -125,6 +125,10 @@ if command --query fzf
 end
 
 if status is-interactive
+    if test (uname -s) = Darwin
+        set -g fish_escape_delay_ms 125
+    end
+
     if command --query mise
         # mise activate --status fish | source
         mise activate fish | source
