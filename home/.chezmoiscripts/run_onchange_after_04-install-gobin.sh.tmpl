@@ -23,28 +23,3 @@ fi
 
 readonly conf='{{ joinPath .chezmoi.homeDir ".config/gup/gup.conf" }}'
 gup import --input "${conf}"
-
-# Installations that require manual installation
-(
-  declare tmp
-  tmp="$(mktemp -d)"
-
-  cd "${tmp}" || exit 1
-
-  if verbose; then
-    git clone https://github.com/minamijoyo/tfschema
-  else
-    git clone https://github.com/minamijoyo/tfschema >/dev/null 2>/dev/null
-  fi
-
-  cd tfschema || exit 1
-
-  if verbose; then
-    go install .
-  else
-    go install . >/dev/null 2>/dev/null
-  fi
-
-  cd - || exit 1
-  rm -rf "${tmp}"
-)

@@ -129,6 +129,9 @@ if status is-interactive
         set -g fish_escape_delay_ms 125
     end
 
+    set -g fish_prompt_pwd_dir_length 0
+    set -g fish_prompt_pwd_full_dirs 1
+
     if command --query mise
         # mise activate --status fish | source
         mise activate fish | source
