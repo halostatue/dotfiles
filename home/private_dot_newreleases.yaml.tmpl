@@ -1,0 +1,4 @@
+# chezmoi:template:left-delimiter="# (:" right-delimiter=":)"
+# (: if eq (get . "role") "work" -:)
+auth-key: # (: onepasswordRead "op://Northern Labs/newreleases.io-northernlabs/credential" :)
+# (:- end :)
