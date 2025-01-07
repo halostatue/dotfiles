@@ -212,12 +212,6 @@ if status is-interactive
         zoxide init fish | source
     end
 
-    # tabtab source for packages
-    # uninstall by removing these lines
-    if test -f ~/.config/tabtab/fish/__tabtab.fish
-        source ~/.config/tabtab/fish/__tabtab.fish
-    end
-
     if functions --query tide
         # IlanCosman/tide@v5 configuration
     else if functions --query _hydro_prompt
