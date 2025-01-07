@@ -26,7 +26,7 @@ format:
       home/private_dot_local/bin/executable_nato
 
 # Update all package files
-update-packages: ports homebrew go rust code ruby python
+update-packages: ports homebrew go rust code ruby python ghext
 
 # Update MacPorts packages
 ports:
@@ -40,9 +40,19 @@ homebrew:
 go:
     @lib/update.sh go
 
+# Update GitHub Extensions
+ghext:
+    #!/bin/sh
+
+    tmp=`mktemp`
+    printf "#!/bin/sh\n\n" >"$tmp"
+    gh extension list | awk '{ print "gh extension install", $3; }' |
+      sort -iu >>"$tmp"
+    vimdiff "$tmp" home/private_dot_config/gh-extensions.tmpl
+
 # Update Rust binaries (using 'cargo-liner')
 rust:
-    @cargo liner import --force --compatible --keep-self --keep-local -qq
+    @cargo liner import --force -qq
     @sed -E -e 's/= "([^"]+)"/= { version = "\1", locked = true }/g' \
       -e 's/\^//g' \
       ~/.cargo/liner.toml | sponge ~/.cargo/liner.toml
