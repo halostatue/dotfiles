@@ -3,6 +3,7 @@
 {{- if $work -}}
 {{-   $vivo_hex_api_key = onepasswordRead "op://Northern Labs/rlvbids4mm46mozbxeplzfphem/credential" -}}
 {{- end -}}
+min_version = "2024.12.23"
 
 [settings]
 always_keep_download = false
@@ -37,6 +38,7 @@ gleam = "latest"
 "go:golang.org/x/tools/cmd/goimports" = "latest"
 "go:mvdan.cc/gofumpt" = "latest"
 {{ if $work -}}
+"go:newreleases.io/cmd/newreleases" = "latest"
 kubectl = "1.31"
 {{- end }}
 node = "20"
