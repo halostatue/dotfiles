@@ -27,3 +27,9 @@ ports:
   refreshPeriod: 240h # ten days
   type: git-repo
   url: git+ssh://github.com/halostatue/ports.git
+
+.local/bin/battstat:
+  refreshPeriod: 168h
+  type: file
+  executable: true
+  url: https://raw.githubusercontent.com/imwally/battstat/refs/heads/master/battstat
