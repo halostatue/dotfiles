@@ -1,0 +1,54 @@
+# Do nothing if not interactive.
+[[ $- = *i* ]] || return
+
+# Load system config first
+for init in /etc/bash.bashrc /etc/bashrc; do
+  # shellcheck source=/dev/null
+  [[ -r "${init}" ]] && source "${init}"
+done
+
+shopt -s checkwinsize
+shopt -s cmdhist
+shopt -s globstar
+shopt -s histappend
+
+if command -v lesspipe >/dev/null 2>/dev/null; then
+  eval "$(SHELL=/bin/sh lesspipe)"
+fi
+
+# shellcheck source=/dev/null
+[[ -r ~/.config/bash/aliases ]] && source ~/.config/bash/aliases
+
+if ! shopt -oq posix; then
+  case "$(command -v bash)" in
+  /opt/local/bin/bash)
+    completion=/opt/local/share/bash-completion/bash_completion
+    ;;
+  /opt/homebrew/bin/bash)
+    completion=/opt/homebrew/share/bash-completion/bash_completion
+    ;;
+  /usr/local/bin/bash)
+    completion=/opt/homebrew/share/bash-completion/bash_completion
+    ;;
+  esac
+
+  if [[ -n "${completion}" ]] && [[ -r "${completion}" ]]; then
+    # shellcheck source=/dev/null
+    source "${completion}"
+  fi
+fi
+
+# shellcheck source=/dev/null
+[[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
+# shellcheck source=/dev/null
+[[ -f ~/.cargo/env ]] && source ~/.cargo/env
+
+PROMPT_COMMAND='history -a'
+HISTSIZE=9000
+HISTFILESIZE=9000
+HISTCONTROL="erasedups:ignoreboth"
+HISTIGNORE="[ ]*"
+HISTTIMEFORMAT='%F %T '
+
+# <$PWD in blue> <Prompt Sign in Yellow> <Rest in default light white>
+PS1='\[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] '

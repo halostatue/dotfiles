@@ -11,8 +11,21 @@ pager:
 # Aliases allow you to create nicknames for gh commands
 aliases:
   co: pr checkout
-  whoami-gh-config: config get user -h github.com
-  whoami: api user --jq '"\(.login) (\(.name))"'
+  # Fork a repo into my own ownership, and set the default (so the delete in unfork will work).
+  fork: |
+      !f() {
+        gh repo fork --remote;
+        gh repo set-default $(git remote -v | sed -n -E -e '/origin/s@.*github.com/(.*)\.git .*@\1@p' | head -1);
+      }; f
+  # Remove a fork, and restore the remotes to as they were.
+  unfork: |
+      !f() {
+        gh repo delete;
+        git remote remove origin;
+        git remote rename upstream origin;
+      }; f
   transfer: >-
     !gh api repos/$1/transfer -f new_owner=$2 | jq -r ".full_name == \"$1\""
+  whoami-gh-config: config get user -h github.com
+  whoami: api user --jq '"\(.login) (\(.name))"'
 

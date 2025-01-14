@@ -65,6 +65,9 @@
   changed = yellow bold
   untracked = white bold
 
+[column]
+  ui = auto
+
 [commit]
 {{- if $commitTemplate }}
   #  template = {{ $commitTemplate | quote }}
@@ -280,6 +283,8 @@
   path = ~/.config/git/aliases
 [include]
   path = ~/.config/git/diff-merge
+[include]
+  path = /opt/local/share/git-delta/themes.gitconfig
 
 {{  range $account_name, $configs := $identities -}}
 {{-   range $config_name, $config := $configs -}}

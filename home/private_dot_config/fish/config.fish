@@ -1,3 +1,5 @@
+set fish_greeting ''
+
 # Set up local machine configuration files
 if functions --query __machine_config
     __machine_config platform host user
@@ -161,7 +163,7 @@ if status is-interactive
     end
 
     function magic_enter
-        if test -z (string join0 -- (commandline))
+        if test -z (commandline)
             if __fish_is_git_repository
                 eval $MAGIC_ENTER_GIT_COMMAND
             else
@@ -183,7 +185,6 @@ if status is-interactive
 
     bind \cq magic_enter
     bind \r magic_enter
-    bind \n magic_enter
 
     if functions --query fzf_configure_bindings
         set --local __setup_fzf_bindings \
