@@ -1,10 +1,10 @@
 # chezmoi:template:left-delimiter="#[[" right-delimiter="]]"
 #[[- $programs := includeTemplate "programs.tmpl" . | fromJson -]]
 #[[- $diffPager := "" -]]
-#[[- if $programs.diff_so_fancy -]]
+#[[- if $programs.delta -]]
+#[[-   $diffPager = printf "%s --dark --paging=never --side-by-side" $programs.delta -]]
+#[[- else if $programs.diff_so_fancy -]]
 #[[-   $diffPager = $programs.diff_so_fancy -]]
-#[[- else if $programs.delta -]]
-#[[-   $diffPager = printf "%s --dark --paging=never" $programs.delta -]]
 #[[- else if $programs.ydiff -]]
 #[[-   $diffPager = printf "%s -p cat -s --wrap --width {{ columnWidth }}" $programs.ydiff -]]
 #[[- end -]]
@@ -19,6 +19,25 @@ gui:
   expandFocusedSidePanel: true
   timeFormat: '2006-01-02 15:04 -07'
   shortTimeFormat: '15:04'
+  theme:
+    lightTheme: false
+    activeBorderColor:
+      - "#a6e3a1" # Green
+      - bold
+    inactiveBorderColor:
+      - "#cdd6f4" # Text
+    optionsTextColor:
+      - "#89b4fa" # Blue
+    selectedLineBgColor:
+      - "#313244" # Surface0
+    selectedRangeBgColor:
+      - "#313244" # Surface0
+    cherryPickedCommitBgColor:
+      - "#94e2d5" # Teal
+    cherryPickedCommitFgColor:
+      - "#89b4fa" # Blue
+    unstagedChangesColor:
+      - red # Red
 
 git:
   paging:
@@ -27,7 +46,7 @@ git:
     pager: '#[[ $diffPager ]]'
 #[[- else ]]
     # Use one of the following:
-    #   pager: delta --dark --paging=never
+    #   pager: delta --dark --paging=never --side-by-side
     #   pager: diff-so-fancy
     #   pager: ydiff -p cat -s --wrap --width={{ columnWidth }}
 #[[- end ]]

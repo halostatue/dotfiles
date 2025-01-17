@@ -163,7 +163,7 @@ if status is-interactive
     end
 
     function magic_enter
-        if test -z (commandline)
+        if test -z (string join0 -- (commandline))
             if __fish_is_git_repository
                 eval $MAGIC_ENTER_GIT_COMMAND
             else
@@ -211,34 +211,6 @@ if status is-interactive
 
     if command --query zoxide
         zoxide init fish | source
-    end
-
-    if functions --query tide
-        # IlanCosman/tide@v5 configuration
-    else if functions --query _hydro_prompt
-        # jorgebucaran/hydo configuration
-        if ! set --query --universal hydro_multiline
-            set --universal hydro_multiline true
-        end
-    else if command --query starship
-        function starship_transient_prompt_func
-            starship module character
-            # starship module character --status $status
-        end
-        starship init fish | source
-        enable_transience
-
-        set --global --export STARSHIP_LOG error
-    end
-
-    if functions --query transient_execute
-        function __transient_prompt_func
-            set --local color 6d6f83
-            if test $transient_pipestatus[-1] -ne 0
-                set color red
-            end
-            printf (set_color $color)"❯ "(set_color normal)
-        end
     end
 end
 

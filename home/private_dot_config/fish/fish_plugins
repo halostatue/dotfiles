@@ -6,9 +6,7 @@ jorgebucaran/autopair.fish
 jorgebucaran/fishtape
 oh-my-fish/plugin-tab
 halostatue/sponge@fix-init-failures
-nickeb96/puffer-fish
 kpbaks/autols.fish
-adamchristiansen/vertical-fish
 kidonng/preview.fish
 halostatue/fish-haskell@v2
 halostatue/fish-go@v2
@@ -23,3 +21,6 @@ halostatue/fish-rust@v2
 halostatue/fish-elixir@v2
 halostatue/fish-vendor-completions@v1
 lilyball/alt-q.fish
+halostatue/fish-ruby-bundler@v2
+halostatue/fish-utils-net@v2
+ilancosman/tide@v6
