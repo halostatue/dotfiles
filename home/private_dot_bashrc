@@ -16,6 +16,14 @@ if command -v lesspipe >/dev/null 2>/dev/null; then
   eval "$(SHELL=/bin/sh lesspipe)"
 fi
 
+function has() {
+  if command -v $1 >/dev/null; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 # shellcheck source=/dev/null
 [[ -r ~/.config/bash/aliases ]] && source ~/.config/bash/aliases
 
@@ -45,7 +53,7 @@ fi
 
 PROMPT_COMMAND='history -a'
 HISTSIZE=9000
-HISTFILESIZE=9000
+HISTFILESIZE=$HISTSIZE
 HISTCONTROL="erasedups:ignoreboth"
 HISTIGNORE="[ ]*"
 HISTTIMEFORMAT='%F %T '

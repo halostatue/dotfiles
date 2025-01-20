@@ -1,35 +1,41 @@
-# chezmoi:template:left-delimiter="# [[" right-delimiter="]]"
-# [[/* vim: ft=yaml.chezmoitmpl */]]
-# [[- $programs := includeTemplate "programs.tmpl" . | fromJson -]]
+# chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
+# {{/* vim: ft=yaml.chezmoitmpl */}}
+# {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
+# {{- $sevenDays := printf "%dh" (mul 7 24) -}}
 
 .vim/pack/plugins/opt/chezmoi.vim:
   pull:
     args:
       - --ff-only
-  refreshPeriod: 168h
+  refreshPeriod: # {{ $sevenDays }}
   type: git-repo
   url: https://github.com/alker0/chezmoi.vim.git
 
-# [[ if or $programs.ghostty (stat "/Applications/Ghostty.app") -]]
+# {{ if or $programs.ghostty (stat "/Applications/Ghostty.app") -}}
 .config/ghostty/shaders:
   pull:
     args:
       - --ff-only
-  refreshPeriod: 168h
+  refreshPeriod: # {{ $sevenDays }}
   type: git-repo
   url: https://github.com/m-ahdal/ghostty-shaders.git
-# [[- end ]]
+# {{- end }}
 
 ports:
   pull:
     args:
       - --ff-only
-  refreshPeriod: 240h # ten days
+  refreshPeriod: # {{ $sevenDays }}
   type: git-repo
   url: git+ssh://github.com/halostatue/ports.git
 
 .local/bin/battstat:
-  refreshPeriod: 168h
+  refreshPeriod: # {{ $sevenDays }}
   type: file
   executable: true
   url: https://raw.githubusercontent.com/imwally/battstat/refs/heads/master/battstat
+
+.local/share/zim/zimfw.zsh:
+  refreshPeriod: # {{ $sevenDays }}
+  type: file
+  url: # {{ gitHubLatestReleaseAssetURL "zimfw/zimfw" "zimfw.zsh" }}

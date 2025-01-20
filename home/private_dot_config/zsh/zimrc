@@ -1,0 +1,24 @@
+# vim: set ft=zsh
+
+zmodule joke/zim-mise
+
+zmodule environment
+zmodule input
+zmodule utility
+zmodule exa
+zmodule fzf
+zmodule k # kubectl
+zmodule magic-enter
+zmodule kiesman99/zoxide
+
+zmodule git-info
+zmodule duration-info
+zmodule prompt-pwd
+zmodule gitster
+
+zmodule zsh-users/zsh-completions --fpath src
+zmodule completion
+
+zmodule zsh-users/zsh-syntax-highlighting
+zmodule zsh-users/zsh-history-substring-search
+zmodule zsh-users/zsh-autosuggestions
