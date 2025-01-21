@@ -19,8 +19,9 @@ halostatue/fish-macports@v1
 halostatue/fish-rake@v1
 halostatue/fish-rust@v2
 halostatue/fish-elixir@v2
-halostatue/fish-vendor-completions@v1
 lilyball/alt-q.fish
 halostatue/fish-ruby-bundler@v2
 halostatue/fish-utils-net@v2
 ilancosman/tide@v6
+halostatue/fish-mise@v1
+halostatue/fish-vendor-completions@v2-beta

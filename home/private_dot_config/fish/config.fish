@@ -134,14 +134,6 @@ if status is-interactive
     set -g fish_prompt_pwd_dir_length 0
     set -g fish_prompt_pwd_full_dirs 1
 
-    if command --query mise
-        # mise activate --status fish | source
-        mise activate fish | source
-    else if command --query rtx
-        # rtx activate --status fish | source
-        rtx activate fish | source
-    end
-
     function restorepg
         pg_restore --verbose --clean -Fc -x --if-exists -j4 --no-acl --no-owner $argv[1]
     end
