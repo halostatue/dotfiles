@@ -22,9 +22,9 @@
 \pset border 2
 
 -- Use best available output format
-\x auto
+-- \x auto
 
-\set VERBOSITY verbose
+-- \set VERBOSITY verbose
 \set HISTFILE ~/.cache/psql_history- :DBNAME
 \set HISTCONTROL ignoredups
 \set COMP_KEYWORD_CASE upper

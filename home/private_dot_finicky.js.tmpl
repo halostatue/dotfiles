@@ -541,6 +541,14 @@ module.exports = {
         url.host === 'forteio.atlassian.net' || url.host === 'forte-io.slack.com',
       browser: Browsers.Forte,
     },
+    isWork && {
+      match: ({ url }) => url.host === 'identity.getpostman.com',
+      browser: Browsers.Forte,
+    },
+    isWork && {
+      match: ({ url }) => url.host === 'newreleases.io',
+      browser: Browsers.NorthernLabs,
+    },
     {
       match: ({ url }) => url.host === 'meet.google.com',
       browser: Browsers.NorthernLabs || Browsers.Chrome,
