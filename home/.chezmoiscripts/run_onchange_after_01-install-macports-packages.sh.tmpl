@@ -2,7 +2,7 @@
 
 # Macports packages should be rerun when the ports file is updated.
 #
-# Source: {{ includeTemplate "private_dot_config/packages/ports.tmpl" | sha256sum }}
+# Source: {{ includeTemplate "private_dot_config/packages/ports.tmpl" . | sha256sum }}
 
 readonly script_name=run_onchange_after-01-install-macports-packages.sh.tmpl
 readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'

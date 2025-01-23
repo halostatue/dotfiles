@@ -189,10 +189,6 @@ update-port() {
     port[crate]=rebels
     port_test=(rebels --version)
     ;;
-  *)
-    echo >&2 "${fn}: port $1: No update procedure"
-    return 1
-    ;;
   esac
 
   if "${port[unstable]:-false}" && ! [[ "${2:-}" == --force ]]; then
@@ -204,6 +200,26 @@ update-port() {
     port[root]="$(zoxide query macports-ports)"
   else
     port[root]="${HOME}/ports"
+  fi
+
+  if [[ -z "${port[category]:-}" ]]; then
+    local candidate
+    candidate="$(shopt -sq nullglob && echo "${port[root]}"/*/"$1"/Portfile)"
+
+    if [[ -n "${candidate}" ]]; then
+      candidate="${candidate%/*/*}"
+      port[category]="${candidate##*/}"
+
+      echo >&2 "${fn}: port $1: No update procedure."
+      echo >&2 "${fn}: port $1: Guessed root category is ${port[category]}."
+
+      read -ra port_test -p "Enter test procedure for port $1 to continue: "
+
+      if ((${#port_test} < 1)); then
+        echo >&2 "${fn}: No test procedure provided. Halting."
+        return 1
+      fi
+    fi
   fi
 
   port[name]="$1"

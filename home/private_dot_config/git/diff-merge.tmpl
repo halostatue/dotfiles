@@ -1,7 +1,9 @@
 {{- /* Initialize variables for use in this file */ -}}
 {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
 {{- $colorMoved := "zebra" -}}
-{{- if $programs.delta -}}{{- $colorMoved = "default" -}}{{- end -}}
+{{- if $programs.delta -}}
+{{-   $colorMoved = "default" -}}
+{{- end -}}
 
 [diff]
   algorithm = histogram
@@ -57,23 +59,20 @@
 [mergetool "ksdiff"]
   cmd = {{ $programs.ksdiff }} --merge --output "${MERGED}" --base "${BASE}" -- "${LOCAL}" --snapshot "${REMOTE}" --snapshot
   trustExitCode = true
+{{- end }}
 
-{{ end -}}
-
-{{- if $tool := or $programs.difftastic $programs.delta $programs.icdiff -}}
+{{ if $tool := or $programs.difftastic $programs.delta $programs.icdiff -}}
 [diff]
   tool = {{ quote $tool }}
-
-{{ end -}}
+{{- end }}
 
 {{ if $programs.exiftool -}}
 [diff "exif"]
   binary = true
   textconv = {{ $programs.exiftool }}
+{{- end }}
 
-{{ end -}}
-
-{{- if $tool := or $programs.pdftotext $programs.pdfinfo -}}
+{{ if $tool := or $programs.pdftotext $programs.pdfinfo -}}
 {{-  if eq $tool $programs.pdftotext -}}
 {{-    $tool = printf "sh -c '%q -layout %q -enc UTF-8 -nopgbrk -q -'" $tool "$programs.0" -}}
 {{-  else -}}
@@ -83,16 +82,14 @@
   binary = true
   cachetextconv = true
   textconv = {{ $tool }}
-
-{{ end -}}
+{{- end }}
 
 {{ if $tool := or $programs.djvutxt $programs.pdfinfo -}}
 [diff "djvu"]
   binary = true
   cachetextconv = true
   textconv = {{ $tool }}
-
-{{ end -}}
+{{- end }}
 
 {{ if $tool := or $programs.odt2txt $programs.pandoc -}}
 {{-  if eq $tool $programs.pandoc -}}
@@ -104,8 +101,7 @@
   binary = true
   cachetextconv = true
   textconv = {{ $tool }}
-
-{{ end -}}
+{{- end }}
 
 {{ if $tool := or $programs.wvText $programs.antiword $programs.catdoc -}}
 {{-  if eq $tool $programs.antiword -}}
@@ -117,8 +113,7 @@
   binary = true
   cachetextconv = true
   textconv = {{ $tool }}
-
-{{ end -}}
+{{- end }}
 
 {{ if $tool := or $programs.in2csv $programs.xlscat $programs.soffice -}}
 {{-  if eq $tool $programs.xlscat -}}
@@ -132,8 +127,7 @@
   binary = true
   cachetextconv = true
   textconv = {{ $tool }}
-
-{{ end -}}
+{{- end }}
 
 {{ if $tool := or $programs.docx2txt $programs.pandoc -}}
 {{-  if eq $tool $programs.pandoc -}}
@@ -145,8 +139,7 @@
   binary = true
   cachetextconv = true
   textconv = {{ $tool }}
-
-{{ end -}}
+{{- end }}
 
 {{ if $tool := or $programs.in2csv $programs.soffice $programs.xlsx2csv $programs.xlsx2csvPy -}}
 {{-  if eq $tool $programs.soffice }}
@@ -158,8 +151,7 @@
   binary = true
   cachetextconv = true
   textconv = {{ $tool }}
-
-{{ end -}}
+{{- end }}
 
 {{ if $programs.pptx2md -}}
 {{- $cache := "~/.cache/git/presentation.md" }}
@@ -171,24 +163,21 @@
   binary = true
   cachetextconv = true
   textconv = {{ $tool }}
-
-{{ end -}}
+{{- end }}
 
 {{ if $programs.unrtf -}}
 [diff "rtf"]
   binary = true
   cachetextconv = true
   textconv = {{ $programs.unrtf }} --text
-
-{{ end -}}
+{{- end }}
 
 {{ if $programs.pandoc -}}
 [diff "epub"]
   binary = true
   cachetextconv = true
   textconv = {{ $programs.pandoc }} --standalone --from=epub --to=plain
-
-{{ end -}}
+{{- end }}
 
 {{ if $programs.tika -}}
 # [Tika](https://tika.apache.org/download.html)
@@ -196,24 +185,21 @@
   binary = true
   cachetextconv = true
   textconv = {{ $programs.tika }} --text
-
-{{ end -}}
+{{- end }}
 
 {{ if $programs.soffice -}}
 [diff "libreoffice"]
   binary = true
   cachetextconv = true
   textconv = {{ $programs.soffice }} --cat
-
-{{ end -}}
+{{- end }}
 
 {{ if $programs.catppt -}}
 [diff "ppt"]
   binary = true
   cachetextconv = true
   textconv = {{ $programs.catppt }}
-
-{{ end -}}
+{{- end }}
 
 {{ if $programs.delta -}}
 [delta]
@@ -252,20 +238,17 @@
 
 [difftool "delta"]
   cmd = {{ $programs.delta }} "${LOCAL}" "${REMOTE}" "${MERGED}"
-
-{{ end -}}
+{{- end }}
 
 {{ if $programs.difftastic -}}
 [difftool "difftastic"]
   cmd = {{ $programs.difftastic }} "${LOCAL}" "${REMOTE}"
-
-{{ end -}}
+{{- end }}
 
 {{ if $programs.icdiff -}}
 [difftool "icdiff"]
   cmd = {{ $programs.icdiff }} --line-numbers "${LOCAL}" "${REMOTE}"
-
-{{ end -}}
+{{- end }}
 
 {{ if $tool := or $programs.gvim $programs.mvim -}}
 [mergetool "gvim"]
@@ -276,8 +259,7 @@
 # [mergetool "splice"]
 #   cmd = {{ quote $tool }} --nofork "${BASE}" "${LOCAL}" "${REMOTE}" "${MERGED}" -c Splice9Init
 #   trustExitCode = true
-
-{{ end -}}
+{{- end }}
 
 {{ if $programs.vim -}}
 [mergetool "vimdiff"]
@@ -290,7 +272,6 @@
 
 [merge]
   tool = vimdiff
-
-{{ end -}}
+{{- end }}
 
 # vim: ft=gitconfig

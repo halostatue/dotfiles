@@ -60,7 +60,7 @@ Host {{ $ssh_name }}
   User {{ $ssh_config.user }}
   IdentityFile ~/.ssh/{{ $account_name }}-{{ $config_name }}-{{ $ssh_config.identity }}.pub
   IdentitiesOnly yes
-{{-     end }}{{ end -}}
+{{-     end }}{{- end }}
 {{-   end -}}
 {{- end }}
 

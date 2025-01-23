@@ -3,7 +3,7 @@
 # Go package updates should be run whenever the gup package file is updated or once
 # a week.
 #
-# Source: {{ includeTemplate "private_dot_config/gup/gup.conf.tmpl" | sha256sum }}
+# Source: {{ includeTemplate "private_dot_config/gup/gup.conf.tmpl" . | sha256sum }}
 # Weekly: {{ output "date" "+%V" | trim }}
 
 readonly script_name=run_onchange_after-04-install-gobin.sh.tmpl

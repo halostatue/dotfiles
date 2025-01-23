@@ -2,7 +2,7 @@
 
 # VS Code Extensions package updates should be run whenever the package file is updated.
 #
-# Source: {{ includeTemplate "private_dot_config/packages/vscode.tmpl" | sha256sum }}
+# Source: {{ includeTemplate "private_dot_config/packages/vscode.tmpl" . | sha256sum }}
 # Weekly: {{ output "date" "+%V" | trim }}
 readonly script_name=run_onchange_after-05-install-code-extensions.sh.tmpl
 readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'

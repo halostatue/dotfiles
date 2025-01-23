@@ -2,7 +2,7 @@
 {{- $vivo_hex_api_key := "" -}}
 {{- if $work -}}
 {{-   $vivo_hex_api_key = onepasswordRead "op://Northern Labs/rlvbids4mm46mozbxeplzfphem/credential" -}}
-{{- end -}}
+{{- end }}
 min_version = "2024.12.23"
 
 [settings]
@@ -16,7 +16,7 @@ paranoid = true
 [env]
 ERL_AFLAGS = "-kernel shell_history enabled shell_history_file_bytes 5242880"
 RIPGREP_CONFIG_PATH = {{ joinPath .chezmoi.homeDir ".ripgreprc" | quote }}
-{{- if $vivo_hex_api_key }}
+{{ if $vivo_hex_api_key -}}
 VIVO_HEX_API_KEY = {{ $vivo_hex_api_key | quote }}
 {{- end }}
 
@@ -26,6 +26,9 @@ aws-vault = "7"
 {{- end }}
 elixir = "1.17.3-otp-27"
 erlang = "27.1.2"
+{{ if not (findExecutable "eza" (list "/opt/local/bin")) -}}
+eza = "latest"
+{{- end }}
 gleam = "latest"
 "go:github.com/aarzilli/gdlv" = "latest"
 "go:github.com/cooperspencer/gickup" = "latest"
@@ -42,11 +45,17 @@ gleam = "latest"
 kubectl = "1.31"
 {{- end }}
 node = "20"
+{{ if not (findExecutable "pandoc" (list "/opt/local/bin")) -}}
+pandoc = "latest"
+{{- end }}
 ruby = "3.3"
+{{ if not (findExecutable "shellcheck" (list "/opt/local/bin")) -}}
+shellcheck = "latest"
+{{- end }}
 "ubi:suzuki-shunsuke/pinact" = "latest"
 {{ if $work -}}
 "ubi:telia-oss/aws-env" = "latest"
-{{ end -}}
+{{- end }}
 usage = "latest"
 zig = "0.13"
 

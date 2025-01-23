@@ -3,7 +3,7 @@
 # Rust package updates should be run whenever the cargo-liner package file is updated or
 # once a week.
 #
-# Source: {{ includeTemplate "private_dot_cargo/liner.toml.tmpl" | sha256sum }}
+# Source: {{ includeTemplate "private_dot_cargo/liner.toml.tmpl" . | sha256sum }}
 # Weekly: {{ output "date" "+%V" | trim }}
 
 readonly script_name=run_onchange_after_03-install-rust-packages.sh.tmpl

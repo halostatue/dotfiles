@@ -38,4 +38,4 @@
 {{ range $vault, $_present := $vaults }}
 [[ssh-keys]]
 vault = {{ $vault | quote }}
-{{ end -}}
+{{- end }}

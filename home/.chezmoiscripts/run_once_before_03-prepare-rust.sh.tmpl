@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# {{- $env := (joinPath .chezmoi.homeDir ".config/env") -}}
+# {{- $env := (joinPath .chezmoi.homeDir ".cargo/env") -}}
 # {{- if stat $env -}}
 # env: {{ include $env | sha256sum }}
 # {{- end -}}
