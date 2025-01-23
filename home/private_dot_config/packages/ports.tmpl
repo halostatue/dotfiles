@@ -224,7 +224,7 @@ install seaport
 install selene
 install sfm
 install shadowenv
-{{ if $opts.broken.pandoc -}}
+{{ if not (hasKey $opts.broken "pandoc") -}}
 install shellcheck
 {{- end }}
 install shellharden
