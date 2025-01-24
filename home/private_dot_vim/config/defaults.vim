@@ -174,4 +174,3 @@ g:ayucolor = 'dark'                   # Values: 'dark', 'light', 'mirage'
 g:nofrils_strbackgrounds = true       # Highlight string backgrounds
 g:nofrils_heavycomments = true        # High-contrast comments
 g:nofrils_heavylinenumbers = true     # Brighter line numbers
-

@@ -4,6 +4,8 @@ if mapcheck('<Plug>(vsnip-expand)') ==# ''
   finish
 endif
 
+g:vsnip_snippet_dir = hz#MkXdgVimPath('config', 'vsnip')
+
 imap <expr> <C-j> vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<C-j>'
 smap <expr> <C-j> vsnip#expandable() ? '<Plug>(vsnip-expand)' : '<C-j>'
 

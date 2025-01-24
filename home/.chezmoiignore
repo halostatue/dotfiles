@@ -26,6 +26,7 @@
 .local/bin/wezterm
 {{- end }}
 
+.terminfo/61
 .terminfo/63
 .terminfo/67
 .terminfo/78
@@ -79,7 +80,7 @@
 .config/hcp/**
 .config/htop/**
 
-.config/iterm2
+.config/iTerm2
 
 .config/jgit/**
 
@@ -155,6 +156,8 @@
 
 {{/* This is managed by colima. */}}
 .lima
+
+.lesshst
 
 .local/bin/chezmoi
 
@@ -306,9 +309,13 @@ Library/Application Support/lazygit/*
 
 # Library/LaunchAgents/macports.colima.plist
 
+go/
+mess/
+
 Movies/
 Music/
 Pictures/
+Postman/
 Public/
 personal/
 oss/

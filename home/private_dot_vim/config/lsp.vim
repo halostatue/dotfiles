@@ -27,20 +27,25 @@ def WithVim9Lsp()
   if !packix#IsPluginInstalled('girishji/vimcomplete') | return | endif
 
   var vim_complete_options = {
+    triggerWordLen: 1,
+    abbreviations: { enable: false },
     buffer: {
-      dup: false,
+      enable: true,
+      completionMatcher: 'fuzzy',
       envComplete: true,
-      urlComplete: true,
+      maxCount: 5,
+      urlComplete: true
     },
+    dictionary: { enable: false },
     lsp: { enable: true, priority: 20 },
-    path: { showPathSeparatorAtEnd: true },
+    omnifunc: { enable: false },
+    path: { enable: true, showPathSeparatorAtEnd: true },
+    vsnip: { enable: true, priority: 15 },
     vimscript: {
-      dup: false,
       enable: true,
       filetypes: ['vim'],
       priority: 30,
     },
-    vsnip: { enable: true, priority: 15 },
   }
 
   if !packix#IsPluginInstalled('hrsh7th/vim-vnsip')
