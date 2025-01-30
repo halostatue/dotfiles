@@ -3,7 +3,7 @@
       "work"     (eq (get . "role") "work")
       "macos"    (and (eq $.chezmoi.os "darwin") (output "sw_vers" "-productVersion"))
       "broken"   (dict
-          "pandoc"      true
+          "pandoc"      false
           "openjdk11"   true
           "openjdk17"   true
           "ftgl"        true

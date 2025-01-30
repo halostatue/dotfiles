@@ -109,4 +109,6 @@ erl_crash.dump
 *.part
 # }}}
 
+.vim-lsp-settings/
+
 # vim: ft=gitignore

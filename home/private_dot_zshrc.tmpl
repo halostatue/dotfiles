@@ -2,6 +2,8 @@
 
 ## zsh configuration
 setopt HIST_IGNORE_ALL_DUPS
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
 bindkey -e
 setopt CORRECT # Prompt for spelling correction
 # Remove / from WORDCHARS to jump between path components
@@ -48,3 +50,9 @@ for key ('j') bindkey -M vicmd ${key} history-substring-search-down
 unset key
 
 zstyle ':zim:prompt-pwd' git-root yes
+
+# # Include hidden files in autocomplete:
+# _comp_options+=(globdots)
+
+# # Automatic rehash
+# zstyle ':completion:*' rehash true

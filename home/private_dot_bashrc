@@ -12,6 +12,9 @@ shopt -s cmdhist
 shopt -s globstar
 shopt -s histappend
 
+# Disable ctrl-s and ctrl-q
+stty -ixon
+
 if command -v lesspipe >/dev/null 2>/dev/null; then
   eval "$(SHELL=/bin/sh lesspipe)"
 fi

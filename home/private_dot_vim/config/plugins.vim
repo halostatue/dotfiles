@@ -259,9 +259,9 @@ packix.Setup((px: packix.Packix) => {
   px.Add('lambdalisue/vim-fern-mapping-git')
 
   # File Picker:
-  # # USING THIS: https://github.com/srstevenson/vim-picker
+  # # https://github.com/srstevenson/vim-picker
   # px.Add('srstevenson/vim-picker')
-  # https://github.com/girishji/scope.vim
+  # https://github.com/girishji/scope.vim # REVISIT
   # px.Add('girishji/scope.vim')
   # https://github.com/Donaldttt/fuzzyy
   px.Add('Donaldttt/fuzzyy')
@@ -489,6 +489,29 @@ packix.Setup((px: packix.Packix) => {
   # LSP, Autocomplete, & Snippets
   # With Vim, LSP clients and autocomplete plugins tend to be relatively tightly tied
   # together.
+
+  # tied to vim-lsp, not yegappan/lsp
+  # https://github.com/basyura/vim-lsp-popup-diagnostics
+
+  # https://github.com/neoclide/coc.nvim
+  # This requires substantial work to use. See `coc.vim`. See also
+  # https://github.com/neoclide/coc.nvim/wiki/Completion-with-sources
+  # https://github.com/neoclide/coc.nvim/wiki/Using-the-configuration-file
+  # https://github.com/neoclide/coc.nvim/wiki/Using-coc-extensions
+  # https://github.com/neoclide/coc.nvim/wiki/Language-servers
+  # https://github.com/neoclide/coc.nvim/wiki/F.A.Q
+  # https://github.com/neoclide/coc.nvim/wiki/Multiple-cursors-support
+  # https://github.com/neoclide/coc.nvim/wiki/Statusline-integration
+  # https://github.com/neoclide/coc.nvim/wiki/Using-coc-list
+  # https://github.com/neoclide/coc.nvim/wiki/Using-snippets
+  # https://github.com/neoclide/coc.nvim/wiki/Using-workspaceFolders
+  #
+  # px.Add('neoclide/coc.nvim', { branch: 'release' })
+
+  # https://github.com/dense-analysis/ale
+  # https://github.com/dense-analysis/ale/blob/master/supported-tools.md
+  #
+  # px.Add('dense-analysis/ale')
 
   if g:->get('hz_lsp_client', 'yegappan/lsp') == 'yegappan/lsp'
     # https://github.com/yegappan/lsp
@@ -736,5 +759,11 @@ packix.Setup((px: packix.Packix) => {
   #
   # https://github.com/farmergreg/vim-lastplace
   # https://github.com/chaoren/vim-wordmotion
-  # suy/vim-context-commentstring
+  # https://github.com/suy/vim-context-commentstring
+  #
+  # https://github.com/thinca/vim-quickrun
+  # https://github.com/liuchengxu/vim-which-key
+  # https://github.com/girishji/bufline.vim
+  # https://github.com/girishji/vimsuggest
+  # https://github.com/girishji/devdocs.vim
 })

@@ -38,13 +38,16 @@ cask "cleanupbuddy" # Clean keyboard and trackpad
 {{ if $personal -}}
 cask "cog" # Audio player
 cask "contour" # Terminal emulator
+{{ if $work -}}
+cask "dehesselle-meld" # Visual diff and merge tool
+{{- end }}
 cask "deskpad" # Virtual monitor for screen sharing
 cask "dosbox" # Emulator for x86 with DOS
 cask "dosbox-x" # Fork of the DOSBox project
-cask "eaglefiler" # Organise files, archive e-mails, save Web pages and notes, search everything
-{{- end }}
 {{ if $work -}}
 cask "drovio" # Remote pair programming and team collaboration tool
+{{- end }}
+cask "eaglefiler" # Organise files, archive e-mails, save Web pages and notes, search everything
 {{- end }}
 cask "finicky" # Utility for customizing which browser to start
 cask "firefox" # Web browser
@@ -162,6 +165,7 @@ cask "font-hack"
 cask "font-ia-writer-duo"
 cask "font-ia-writer-mono"
 cask "font-ia-writer-quattro"
+cask "font-ibm-plex-mono"
 cask "font-jetbrains-mono"
 cask "font-juliamono"
 cask "font-maple-mono"
@@ -169,6 +173,7 @@ cask "font-monaspace"
 cask "font-sf-mono"
 cask "font-source-code-pro"
 cask "font-space-mono"
+cask "font-zed-mono"
 
 {{ if $personal -}}
 mas "1Blocker", id: 1365531024
@@ -229,6 +234,9 @@ mas "Pixelmator Pro", id: 1289583905
 mas "Play", id: 1596506190
 mas "Ridiculous Fishing", id: 1610164691
 mas "Shareful", id: 1522267256
+{{- end }}
+mas "Sim Daltonism", id: 693112260
+{{ if $personal -}}
 mas "StopTheMadness Pro", id: 6471380298
 mas "Svgsus", id: 1106867065
 mas "TestFlight", id: 899247664

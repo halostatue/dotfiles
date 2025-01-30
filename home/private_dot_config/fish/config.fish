@@ -5,11 +5,15 @@ if functions --query __machine_config
     __machine_config platform host user
 end
 
-if not set --query --global EDITOR
+if not set --query LESSHISTFILE
+    set --global --export LESSHISTFILE -
+end
+
+if not set --query EDITOR
     set --global --export EDITOR (which vim)
 end
 
-if not set --query --global VISUAL
+if not set --query VISUAL
     set --global --export VISUAL $EDITOR
 end
 
