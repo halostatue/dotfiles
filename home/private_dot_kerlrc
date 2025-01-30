@@ -1,3 +1,0 @@
-export KERL_DEFAULT_INSTALL_DIR=${KERL_BASE_DIR}/installs
-export KERL_BUILD_BACKEND=git
-export KERL_BUILD_DOCS=yes
