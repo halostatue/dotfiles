@@ -3,7 +3,6 @@
       "work"     (eq (get . "role") "work")
       "macos"    (and (eq $.chezmoi.os "darwin") (output "sw_vers" "-productVersion"))
       "broken"   (dict
-          "pandoc"      false
           "openjdk11"   true
           "openjdk17"   true
           "ftgl"        true
@@ -28,9 +27,7 @@ install certstrap
 install chafa
 install chainloop
 install changie
-{{ if not (hasKey $opts.broken "pandoc") -}}
 install checkmake
-{{- end }}
 {{ if $opts.work -}}
 install chezmoi
 {{- end }}
@@ -75,9 +72,7 @@ install efm-langserver
 install epubcheck
 {{- end }}
 install eva
-{{ if not (hasKey $opts.broken "pandoc") -}}
 install eza +doc+git
-{{- end }}
 install fastmod
 install fclones
 install fd
@@ -146,6 +141,9 @@ install jujutsu
 install julia +gcc14
 install just
 install jwt-cli
+{{ if $opts.work -}}
+install k9s
+{{- end }}
 install kondo
 install lazydocker
 install lazygit
@@ -180,9 +178,7 @@ install ouch
 install oxipng
 install oxker
 install p7zip
-{{ if not (hasKey $opts.broken "pandoc") -}}
 install pandoc
-{{- end }}
 install passage
 install pipx +python312
 {{ if not (hasKey $opts.broken "openjdk17") -}}
@@ -224,9 +220,7 @@ install seaport
 install selene
 install sfm
 install shadowenv
-{{ if not (hasKey $opts.broken "pandoc") -}}
 install shellcheck
-{{- end }}
 install shellharden
 install shfmt
 install sol
@@ -272,6 +266,7 @@ install xh
 install xmlstarlet
 install xq
 install xsv
+install yaegi
 install yajl
 install yank
 install yq
