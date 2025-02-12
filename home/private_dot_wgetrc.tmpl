@@ -1,5 +1,5 @@
-# chezmoi:template:left-delimiter="# [[" right-delimiter="]]"
-# [[- $programs := includeTemplate "programs.tmpl" . | fromJson -]]
+{{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
+{{ if $programs.wget -}}
 # Use the server-provided last modification date, if available
 timestamping = on
 
@@ -26,10 +26,10 @@ follow_ftp = on
 # lack one, or a `.css` extension to `text/css` files that lack one
 adjust_extension = on
 
-# [[ if and $programs.wget (output "wget" "--version" | contains "+iri") -]]
+# {{ if (output "wget" "--version" | contains "+iri") -}}
 # Use UTF-8 as the default system encoding
 local_encoding = UTF-8
-# [[- end ]]
+# {{- end }}
 
 # Ignore `robots.txt` and `<meta name=robots content=nofollow>`
 robots = off
@@ -41,3 +41,4 @@ server_response = on
 user_agent = Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)
 
 dot_style = giga
+{{- end }}
