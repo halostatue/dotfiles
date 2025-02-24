@@ -1,15 +1,15 @@
 {{- $work := eq (get . "role") "work" -}}
 {{- $vivo_hex_api_key := "" -}}
 {{- if $work -}}
-{{-   $vivo_hex_api_key = onepasswordRead "op://Northern Labs/rlvbids4mm46mozbxeplzfphem/credential" -}}
+{{-   $vivo_hex_api_key = onepasswordRead "op://xlol453p46nfdqodyw62qzk63m/rlvbids4mm46mozbxeplzfphem/credential" -}}
 {{- end }}
 min_version = "2024.12.23"
 
 [settings]
 always_keep_download = false
 always_keep_install = false
-asdf_compat = false
 experimental = true
+idiomatic_version_file = false
 legacy_version_file = false
 paranoid = true
 
