@@ -571,6 +571,11 @@ module.exports = {
       browser: Browsers.Music,
     },
     {
+      match: ({ url }) =>
+        url.host.endsWith('github.com') || url.host.endsWith('github.io'),
+      browser: Browsers.Safari,
+    },
+    {
       match: ({ opener }) => !opener.path && !opener.name && !opener.bundleId,
       browser: Browsers.Opener,
     },
