@@ -7,8 +7,8 @@
 {{- $personal_1password_account := promptStringOnce . "onepassword.personal" "1Password Personal Account" -}}
 {{- $ssh_agent_type := promptChoiceOnce . "ssh.agent" "Which SSH agent to use" $ssh_agents -}}
 {{- $role := promptChoiceOnce . "role" "How will this computer be used" $roles -}}
-{{- $roles_aws := . | dig "roles" "aws" (list) }}
-{{- $roles_git := . | dig "roles" "git" (list) }}
+{{- $roles_aws := . | dig "roles" "aws" (list) -}}
+{{- $roles_git := . | dig "roles" "git" (list) -}}
 
 [scriptEnv]
 DEBUG_SCRIPTS = "false"
