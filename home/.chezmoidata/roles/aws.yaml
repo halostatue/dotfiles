@@ -1,0 +1,13 @@
+# role: aws
+#
+# AWS-related tooling.
+---
+defrole:
+  aws:
+    ports:
+      install:
+        py312-awscli2:
+      select:
+        aws-cli: py312-awscli2
+
+# vim: ft=yaml

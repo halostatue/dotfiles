@@ -1,0 +1,16 @@
+# role: graphics
+#
+# Graphics and design tools.
+---
+defrole:
+  graphics:
+    cond:
+      - if-role: personal
+        casks:
+          acorn: Image editor focused on simplicity
+          affinity-designer: Professional graphic design software
+          affinity-photo: Professional image editing software
+          affinity-publisher: Professional desktop publishing software
+
+        mas:
+          1289583905: Pixelmator Pro

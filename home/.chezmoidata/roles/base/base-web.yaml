@@ -1,0 +1,30 @@
+# role: base-web
+#
+# Web browsers and extensions.
+#
+# The base-web role is applied to all systems. It does not need to be included in the
+# roles list.
+---
+defrole:
+  base-web:
+    casks:
+      browsers: Open the right browser at the right time
+      finicky: Utility for customizing which browser to start
+      firefox: Web browser
+      safari-technology-preview: Web browser
+
+    mas:
+      1440147259: AdGuard for Safari
+
+    cond:
+      - if-role: personal
+        mas:
+          1601151613: Baking Soda
+          1619241039: History Book
+          1544743900: Hush
+          1507396839: Later
+          1554029832: MarkDownload - Markdown Web Clipper
+          1160374471: PiPifier
+          1522267256: Shareful
+          6471380298: StopTheMadness Pro
+          1591303229: Vinegar

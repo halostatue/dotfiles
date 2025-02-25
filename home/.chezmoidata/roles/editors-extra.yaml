@@ -1,0 +1,16 @@
+# role: editors-extra
+#
+# Extra tools for code editing, etc.
+---
+defrole:
+  editors-extra:
+    casks:
+      visual-studio-code: Open-source code editor
+      zed: Multiplayer code editor
+
+    cond:
+      - if-role: personal
+        casks:
+          bbedit: Text, code, and markup editor
+          scrivener: Word processing software with a typewriter style
+

@@ -1,0 +1,21 @@
+{{ if and . (typeIsLike "map[string]interface {}" .) }}
+{{   if $taps := get . "taps" }}{{ range $_, $tap := $taps }}
+tap {{ quote $tap }}
+{{   end }}{{ end }}
+
+{{   if $formulae := get . "formulae" }}{{ range $_, $formula := $formulae }}
+brew {{ quote $formula }}
+{{   end }}{{ end }}
+
+{{   if $casks := get . "casks" }}{{ range $_, $cask := $casks }}
+cask {{ quote $cask }}
+{{   end }}{{ end }}
+
+{{   if $fonts := get . "fonts" }}{{ range $_, $font := $fonts }}
+cask {{ quote $font }}
+{{   end }}{{ end }}
+
+{{   if $apps := get . "apps" }}{{ range $_, $app := $apps }}
+mas {{ quote $app.name }}, id: {{ $app.id }}
+{{   end }}{{ end }}
+{{ end }}

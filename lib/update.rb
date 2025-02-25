@@ -71,10 +71,21 @@ def homebrew_bundle
     }
 end
 
+MAS_EXCLUSIONS = [
+  682658836, # GarageBand
+  409183694, # Keynote
+  409203825, # Numbers
+  409201541, # Pages
+  408981434 # iMovie
+].join("|")
+
 def update_homebrew
+  data = homebrew_bundle.tap { _1.delete("vscode") }
+  data["mas"]&.delete_if { _1 =~ /id: (?:#{MAS_EXCLUSIONS})$/o }
+
   {
     target: "home/private_dot_config/packages/Brewfile.tmpl",
-    data: homebrew_bundle.tap { _1.delete("vscode") },
+    data: data,
     transform: ->(data) {
       data.keys.flat_map { data[_1].sort << "\n" }
     }

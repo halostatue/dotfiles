@@ -1,0 +1,14 @@
+# role: macports
+#
+# MacPorts-related tooling.
+---
+defrole:
+  macports:
+    ports:
+      install:
+        cargo2port:
+        go2port:
+        mpstats:
+        seaport:
+
+# vim: ft=yaml

@@ -1,0 +1,40 @@
+# role: dev-extra
+#
+# Extra dev tools.
+---
+defrole:
+  dev-extra:
+    # TODO: These tools should be available in MacPorts, either through a mainline port or
+    #       a "private" port that I maintain at halostatue/ports.
+    formulae:
+      csvtk: Cross-platform, efficient and practical CSV/TSV toolkit in Golang
+      flarectl: CLI application for interacting with a Cloudflare account
+      syft: CLI for generating a Software Bill of Materials from container images
+
+    casks:
+      livebook: Code notebooks for Elixir developers
+      visual-studio-code: Open-source code editor
+      zed: Multiplayer code editor
+
+    ports:
+      install:
+        act:
+        actionlint:
+        cloc:
+        prr:
+        rust-script:
+        git-branchless:
+        git-mediate:
+        git-some-extras:
+        git-tools:
+        scc:
+
+    cond:
+      - if-has-port: ftgl
+        ports:
+          install:
+            gource:
+      - if-has-port: openjdk17
+        ports:
+          install:
+            pkl:

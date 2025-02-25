@@ -1,10 +1,7 @@
+{{- if lookPath "pipx" -}}
 #!/usr/bin/env bash
 
-# {{ $personal := eq (get . "role") "personal" }}
-# {{ if $personal }}
-# {{/* HTTPie: modern, user-friendly command-line HTTP client for the API era. */}}
-pipx install httpie &&
-  pipx inject httpie httpie-http2 httpie-oauth
-# {{ end }}
-# {{/* Generic Coloriser */}}
-pipx install strec --include-deps
+# {{/* Description of package */}}
+# pipx install PACKAGE
+# pipx inject PACKAGE EXTRA...
+{{- end -}}

@@ -1,0 +1,16 @@
+# role: terraform
+# Terraform-related tooling.
+---
+defrole:
+  terraform:
+    ports:
+      install:
+        pug:
+        terraform-docs:
+        terraformer:
+        terramaid:
+        tfmigrate:
+        tfsec:
+        tfupdate:
+
+# vim: ft=yaml

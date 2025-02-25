@@ -1,0 +1,509 @@
+{{- $opts := dict
+      "personal" (eq (get . "role") "personal")
+      "work"     (eq (get . "role") "work")
+      "macos"    (and (eq $.chezmoi.os "darwin") (output "sw_vers" "-productVersion"))
+      "broken"   (dict
+          "openjdk11"   true
+          "openjdk17"   true
+          "ftgl"        true
+      )
+-}}
+
+<<<<<<< HEAD
+install 1password-cli
+install act
+install actionlint
+install age
+install amazon-ecr-credential-helper
+install ansifilter
+install antiword
+install atuin
+install bat
+install bat-extras
+install cargo
+install cargo2port
+install certstrap
+install chainloop
+install chezmoi
+install cloc
+install colima
+install container-diff
+install cosign
+install csvlens
+install ctpv
+install deno
+install diffoci
+install diffoscope
+install difftastic
+install dive
+install docker
+install docker-base-plugin
+install docker-buildx-plugin
+install docker-compose-plugin
+install docker-credential-helper-osxkeychain
+install docker-index-plugin
+install dos2unix
+install dotenv-linter
+install duf
+install dust
+install editorconfig-checker
+{{ if not (hasKey $opts.broken "openjdk11") -}}
+install epubcheck
+{{- end }}
+install eza +doc+git
+install fastmod
+install fd
+install fish
+install flyctl
+install fswatch
+install gawk
+install gh
+install git +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
+install git-absorb
+install git-branchless
+install git-delta
+install git-interactive-rebase-tool
+install git-mediate
+install git-some-extras
+install git-stack
+install git-tools
+install gitleaks
+install glow
+install gmake
+install go
+install go-mmv
+install go2port
+install goawk
+install gojq
+{{ if not (hasKey $opts.broken "ftgl") -}}
+install gource
+{{- end }}
+install grype
+install gum
+install htmd-cli
+install hwatch
+install hyperfine
+install ijq
+install jaq
+install jnv
+install jq
+install jqfmt
+install jqp
+install jujutsu
+install just
+{{ if $opts.work -}}
+install k9s
+{{- end }}
+install kondo
+install lazydocker
+install lazygit
+install lemmeknow
+install lychee
+install mani
+install manifest-tool
+install mas
+install massren
+install mdcat
+install micro
+install miller
+install minisign
+install mise
+install mkcert
+install moreutils +doc
+install mpstats
+install mquery
+install murex
+install mved
+install navi
+install nomino
+install oath-toolkit
+install oauth2c
+install oha
+install oxipng
+install pam-reattach
+install pandoc
+{{ if not (hasKey $opts.broken "openjdk17") -}}
+install pkl
+{{- end }}
+install prr
+install pug
+install pv
+install py312-awscli2
+install py312-pip
+install rage
+install ranger
+{{ if $opts.work -}}
+install redis
+{{- end }}
+install ripgrep
+install ruby-build
+install ruby-install
+install rust
+install rust-script
+install scc
+install seaport
+install sfm
+install shellcheck
+install shellharden
+install shfmt
+install step-cli
+install stgit
+install tag
+install taplo
+{{ if stat "/Applications/Xcode.app" -}}
+install terminal-notifier
+{{- end }}
+install tig +doc
+install tnef
+install tokei
+install trivy
+install typos
+install universal-ctags +iconv+libxml2+link_to_ctags+manpages
+install uv
+install viddy
+install vifm
+install viu
+install vv
+install watch
+install watchexec
+install xmlstarlet
+install xq
+install xsv
+install zoxide
+||||||| parent of 183bfca3f44b (WIP)
+install 1password-cli
+install act
+install actionlint
+install age
+install amazon-ecr-credential-helper
+install angle-grinder
+install ansifilter
+install antiword
+install ast-grep
+install atuin
+install bat
+install bat-extras
+install cargo
+install cargo2port
+install certstrap
+install chafa
+install chainloop
+install changie
+install checkmake
+install chezmoi
+install cloc
+install cocogitto
+install colima
+install comet-git
+install committed
+install container-diff
+install cosign
+install crystal
+install csvlens
+install csvquote
+install ctpv
+install dasel
+install dateutils
+install delve
+install deno
+install dict
+install diff-so-fancy
+install diffoci
+install diffoscope
+install difftastic
+install direnv
+install dive
+install docker
+install docker-base-plugin
+install docker-buildx-plugin
+install docker-compose-plugin
+install docker-credential-helper-osxkeychain
+install docker-index-plugin
+install dos2unix
+install dotenv-linter
+install dsq
+install dua-cli
+install duf
+install dust
+install duti
+install editorconfig-checker
+install efm-langserver
+{{ if not (hasKey $opts.broken "openjdk11") -}}
+install epubcheck
+{{- end }}
+install eva
+install eza +doc+git
+install fastmod
+install fclones
+install fd
+install fend
+install fish
+install flyctl
+install fop
+install fping
+install fswatch
+install fx
+install fzy
+install g-ls
+install gawk
+install gdu
+install gh
+install git +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
+install git-absorb
+install git-branch-stash
+install git-branchless
+install git-bug
+install git-cc
+install git-ce
+install git-chglog
+install git-delta
+install git-interactive-rebase-tool
+install git-mediate
+install git-sizer
+install git-some-extras
+install git-stack
+install git-switch-user
+install git-task
+install git-tools
+install gitleaks
+install gitoxide
+install gitql
+install gitui
+install glow
+install gmake
+install go
+install go-mmv
+install go2port
+install goaccess
+install goawk
+install gojq
+install golangci-lint
+install gopls
+install gore
+install goreleaser
+install got
+{{ if not (hasKey $opts.broken "ftgl") -}}
+install gource
+{{- end }}
+install grex
+install grype
+install hexyl
+install htmd-cli
+install htmlq
+install hwatch
+install hyperfine
+install jd
+install jless
+install jq
+install jqfmt
+install jqp
+install jujutsu
+install julia +gcc14
+install just
+install jwt-cli
+{{ if $opts.work -}}
+install k9s
+{{- end }}
+install kondo
+install lazydocker
+install lazygit
+install lemmeknow
+install licensure
+install lima
+install lnav
+install mani
+install manifest-tool
+install massren
+install mdcat
+install micro
+install miller
+install minisign
+install mise
+install mkcert
+install monolith
+install moreutils +doc
+install mpstats
+install mquery
+install mrml
+install murex
+install mved
+install navi
+install nim
+install nomino
+install oath-toolkit
+install oauth2c
+install oha
+install osv-scanner
+install ouch
+install oxipng
+install oxker
+install p7zip
+install pandoc
+install passage
+install pipx +python312
+{{ if not (hasKey $opts.broken "openjdk17") -}}
+install pkl
+{{- end }}
+{{ if $opts.personal -}}
+# Using Postgresql.app at work
+install postgresql16
+install postgresql16-server
+{{- end }}
+install procs
+install prql
+install prr
+install pug
+install pv
+install py312-awscli2
+install py312-pip
+install qsv
+install rage
+install ranger
+{{ if $opts.personal -}}
+install rebels-in-the-sky
+{{- end }}
+{{ if $opts.work -}}
+install redis
+{{- end }}
+install revive
+install ripgrep
+install rlwrap
+install ruby-build
+install ruby-install
+install ruby33 +yjit
+install rust
+install rust-script
+install scc
+install scryer-prolog
+install sd
+install seaport
+install selene
+install sfm
+install shadowenv
+install shellcheck
+install shellharden
+install shfmt
+install sol
+install spacer
+install srgn
+install staticcheck
+install step-cli
+install stgit
+install sttr
+install stylua
+install svu
+install tag
+install taplo
+install tealdeer
+{{ if stat "/Applications/Xcode.app" -}}
+install terminal-notifier
+{{- end }}
+install terraform-docs
+install terraformer
+install terramaid
+install tfmigrate
+install tfsec
+install tfupdate
+install the_silver_searcher
+install tig +doc
+install titlecase
+install tnef
+install tokei
+install topfew
+install trivy
+install trurl
+install typos
+install universal-ctags +iconv+libxml2+link_to_ctags+manpages
+install uv
+install viddy
+install vifm
+install viu
+install vv
+install watch
+install watchexec
+install wxWidgets-3.2 +compat30
+install xh
+install xmlstarlet
+install xq
+install xsv
+install yaegi
+install yajl
+install yank
+install yq
+install zola
+install zoxide
+=======
+        bomber-scan # security
+        certstrap  # security
+        chainloop # security
+        cosign # security
+        gitleaks # security
+        lemmeknow # security
+        minisign # security
+        mkcert # security
+        ctpv # display
+        flyctl # fly
+        fping
+        glow
+        go-mmv
+        goawk
+        gojq
+        grype # security
+        htmd-cli # dev
+        hwatch
+        hyperfine # dev
+        jujutsu # scm
+        massren
+        mdcat # data
+        micro # editor
+        miller # data
+        mved
+        navi
+        nomino
+        oha # web load
+        oxipng # graphics
+        pandoc # pandoc
+        rage # security
+        ranger
+        redis # redis
+        sfm
+        step-cli # security
+        stgit # alt-git
+        tag # macos
+        taplo # toml
+        tealdeer
+        tnef # odd-data-formats
+        trivy # security
+        viddy # watch
+        vifm # file-manager
+        viu
+        vv
+        watch # watch
+        watchexec # watch
+        xmlstarlet # data-manipulation
+>>>>>>> 183bfca3f44b (WIP)
+
+<<<<<<< HEAD
+select --set awscli py312-awscli2
+select --set pip pip312
+select --set pip3 pip312
+select --set python python312
+select --set python3 python312
+||||||| parent of 183bfca3f44b (WIP)
+select --set awscli py312-awscli2
+select --set pip pip312
+select --set pip3 pip312
+{{ if $opts.personal -}}
+select --set postgresql postgresql16
+{{- end }}
+select --set python python312
+select --set python3 python312
+=======
+>>>>>>> 183bfca3f44b (WIP)
+{{- /* Things to consider
+    - asciinema
+    - agg
+    - slides
+    - tflint
+# add a zizmore port
+*/ -}}

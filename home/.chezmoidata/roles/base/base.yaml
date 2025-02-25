@@ -1,0 +1,60 @@
+# role: base
+#
+# The base role is applied to all systems. It does not need to be included in the roles
+# list.
+---
+defrole:
+  base:
+    taps:
+      homebrew/bundle:
+      homebrew/services:
+
+    casks:
+      cleanupbuddy: Clean keyboard and trackpad
+      itsycal: Menu bar calendar
+      jordanbaird-ice: Menu bar manager (Bartender alternative)
+      leader-key: Application launcher
+      loop: Window manager (Moom alternative)
+      maccy: Clipboard manager (Paste alternative)
+      meetingbar: Shows the next meeting in the menu bar
+      obsidian: Knowledge base that works on top of a local folder of plain text Markdown files
+      qlcolorcode: Quick Look plug-in that renders source code with syntax highlighting
+      qlmarkdown: Quick Look generator for Markdown files
+      qlstephen: Quick Look plugin for plaintext files without an extension
+      qlvideo: Thumbnails, static previews, cover art and metadata for video files
+      quicklook-json: Quick Look plugin for JSON files
+      startupfolder: Run anything at startup by simply placing it in a special folder
+      trex: Easy to use text extraction tool (TextSniper alternative)
+      webpquicklook: Quick Look plugin for webp files
+      xprocheck: Anti-malware scan logging tool
+
+    fonts:
+      0xproto:
+      cascadia-code:
+      cascadia-mono:
+      eb-garamond:
+      fantasque-sans-mono:
+      fira-code:
+      hack:
+      ia-writer-duo:
+      ia-writer-mono:
+      ia-writer-quattro:
+      ibm-plex-mono:
+      jetbrains-mono:
+      juliamono:
+      maple-mono:
+      monaspace:
+      sf-mono:
+      source-code-pro:
+      space-mono:
+      zed-mono:
+
+    mas:
+      1569813296: 1Password for Safari
+
+    ports:
+      install:
+        1password-cli:
+        chezmoi:
+
+# vim: ft=yaml

@@ -1,0 +1,78 @@
+# role: dev-base
+#
+# Developer tools and extensions.
+#
+# The base-web role is applied to all systems. It does not need to be included in the
+# roles list.
+---
+defrole:
+  dev-base:
+    casks:
+      ghostty: Terminal emulator that uses platform-native UI and GPU acceleration
+      hex-fiend: Hex editor focussing on speed
+      imhex: Hex editor for reverse engineers
+      macvim: Text editor
+
+    mas:
+      497799835: Xcode
+
+    ports:
+      install:
+        age:
+        ansifilter:
+        antiword:
+        atuin:
+        bat-extras:
+        bat:
+        cargo:
+        deno:
+        dos2unix:
+        duf:
+        dust:
+        editorconfig-checker:
+        eza: +doc+git
+        fastmod:
+        fd:
+        fish:
+        fswatch:
+        gawk:
+        gh:
+        git-absorb:
+        git-delta:
+        git-interactive-rebase-tool:
+        git: +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
+        gmake:
+        go:
+        jq:
+        jqfmt:
+        jqp:
+        just:
+        lazygit:
+        mani:
+        mise:
+        moreutils: +doc
+        pv:
+        ripgrep:
+        rust:
+        shellcheck:
+        shellharden:
+        shfmt:
+        tig: +doc
+        tokei:
+        typos:
+        universal-ctags: +iconv+libxml2+link_to_ctags+manpages
+        uv:
+        zoxide:
+
+      setunrequested:
+        lima:
+        rebels-in-the-sky:
+        rlwrap:
+        ruby-build:
+        ruby-install:
+
+    cond:
+      - if-stat: /Applications/Xcode.app
+        ports:
+          install:
+            terminal-notifier:

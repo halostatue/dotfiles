@@ -1,0 +1,29 @@
+# role: docker
+# Docker-related tooling.
+---
+defrole:
+  docker:
+    ports:
+      install:
+        container-diff:
+        colima:
+        diffoci:
+        diffoscope:
+        dive:
+        docker:
+        docker-base-plugin:
+        docker-buildx-plugin:
+        docker-compose-plugin:
+        docker-credential-helper-osxkeychain:
+        docker-index-plugin:
+        lazydocker:
+        manifest-tool:
+        mquery:
+
+    cond:
+      - if-role: aws
+        ports:
+          install:
+            amazon-ecr-credential-helper:
+
+# vim: ft=yaml

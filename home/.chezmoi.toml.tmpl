@@ -1,4 +1,10 @@
-{{- $programs := includeTemplate "programs.tmpl" | fromJson -}}
+{{- $availableRoles := list -}}
+{{- range $_, $path := joinPath .chezmoi.sourceDir ".chezmoidata/roles/*.yaml" | glob -}}
+{{-   $path = base $path | replaceAllRegex "\\.yaml$" "" -}}
+{{-   if eq $path "base" -}}{{ continue }}{{ end -}}
+{{-   if hasPrefix "base-" $path -}}{{ continue }}{{ end -}}
+{{-   $availableRoles = append $availableRoles $path -}}
+{{- end -}}
 {{- $ssh_agents := list "1Password" "ssh-agent" -}}
 {{- $roles := list "personal" "work" -}}
 {{- $email := promptStringOnce . "email" "Email" -}}
@@ -9,6 +15,8 @@
 {{- $role := promptChoiceOnce . "role" "How will this computer be used" $roles -}}
 {{- $roles_aws := . | dig "roles" "aws" (list) -}}
 {{- $roles_git := . | dig "roles" "git" (list) -}}
+
+# new_roles : {{ $availableRoles | join ", " }}
 
 [scriptEnv]
 DEBUG_SCRIPTS = "false"
