@@ -1,14 +1,59 @@
-{{- $programs := includeTemplate "programs.tmpl" | fromJson -}}
-{{- $ssh_agents := list "1Password" "ssh-agent" -}}
-{{- $roles := list "personal" "work" -}}
+{{- $opts := list "None" "Skip" -}}
+{{- $computerRoles := includeTemplate "roles/list" . | fromJson -}}
+
+{{- $basicRoles := list "personal" "work" -}}
+
 {{- $email := promptStringOnce . "email" "Email" -}}
 {{- $name := promptStringOnce . "name" "Name" -}}
-{{- $github_username := promptStringOnce . "github.user" "Github Username" -}}
-{{- $personal_1password_account := promptStringOnce . "onepassword.personal" "1Password Personal Account" -}}
-{{- $ssh_agent_type := promptChoiceOnce . "ssh.agent" "Which SSH agent to use" $ssh_agents -}}
-{{- $role := promptChoiceOnce . "role" "How will this computer be used" $roles -}}
-{{- $roles_aws := . | dig "roles" "aws" (list) -}}
-{{- $roles_git := . | dig "roles" "git" (list) -}}
+{{- $githubUsername := promptStringOnce . "github.user" "Github Username" -}}
+
+{{- /* $op := includeTemplate "init/1p/accounts" . | fromJson */ -}}
+{{-
+  $opAccounts := includeTemplate "1p/accounts/list" .
+  | fromJson | jq "map(.url)" | first
+-}}
+{{- $op := get . "op" -}}
+{{- $excluded := get $op "_excluded" | default list -}}
+{{- $included := omit $op "_excluded" | values }}
+{{- range $_, $url := $opAccounts -}}
+{{-   if or (has $url $excluded) (has $url $included) }}{{ continue }}{{ end -}}
+{{-   $choice := promptChoice (printf "Configure %s" $url) (list "alias" "exclude" "skip") -}}
+{{-   if eq $choice "alias" -}}
+{{-     $alias := promptString (printf "Alias for %s" $url) -}}
+{{-     if hasKey $op $alias -}}
+{{-       warnf "Alias %s already is linked to %s; skipping" $alias (get $op $alias) -}}
+{{-     else -}}
+{{-       $op = set $op $alias $url -}}
+{{-     end -}}
+{{-   else if eq $choice "Exclude"  -}}
+{{-     $excluded = append $excluded $url -}}
+{{-   end -}}
+{{- end -}}
+{{- if gt (len $excluded) 0 -}}
+{{-   $op = set $op "_excluded" $excluded -}}
+{{- end -}}
+
+{{- $sshAgentTypes := includeTemplate "init/ssh/agent-types" . | fromJson -}}
+{{- $sshAgentTypes = concat $sshAgentTypes $opts -}}
+{{- $sshAgent := promptChoiceOnce . "ssh.agent" "SSH agent" $sshAgentTypes -}}
+{{- if eq $sshAgent "Skip" }}{{ $sshAgent = "" }}{{ end -}}
+
+{{- $computerRoles = concat $computerRoles $opts -}}
+{{- $roles := promptMultichoiceOnce . "roles" "What roles does this computer serve" $computerRoles -}}
+{{- if has "Skip" $roles }}{{ $roles = "" -}}
+{{- else if has "None" $roles }}{{ $roles = list }}{{ end -}}
+
+{{- $awsConfigTags := includeTemplate "init/1p/aws-config-tags" . | fromJson -}}
+{{- $awsConfigTags = concat $awsConfigTags $opts -}}
+{{- $awsTags := promptMultichoiceOnce . "aws_tags" "AWS roles" $awsConfigTags -}}
+{{- if has "Skip" $awsTags }}{{ $awsTags = "" -}}
+{{- else if has "None" $awsTags }}{{ $awsTags = list }}{{ end -}}
+
+{{- $gitIdentityTags := includeTemplate "init/1p/git-identity-tags" . | fromJson -}}
+{{- $gitIdentityTags = concat $gitIdentityTags $opts -}}
+{{- $gitIdentities := promptMultichoiceOnce . "git_identities" "Git identities" $gitIdentityTags -}}
+{{- if has "Skip" $gitIdentities }}{{ $awsTags = "" -}}
+{{- else if has "None" $gitIdentities }}{{ $awsTags = list }}{{ end -}}
 
 [scriptEnv]
 DEBUG_SCRIPTS = "false"
@@ -20,27 +65,31 @@ secrets = "error"
 exclude = ["scripts"]
 
 [data]
-email = {{ $email | toToml }}
-name = {{ $name | toToml }}
+email = {{ $email | quote }}
+name = {{ $name | quote }}
 debug_scripts = false
-gnupg_default_key = {{ get . "gnupg_default_key" | toToml }}
-role = {{ $role | toToml }}
+gnupg_default_key = {{ get . "gnupg_default_key" | quote }}
+role = {{ get . "role" | quote }}
+{{ if $awsTags }}aws_tags = {{ $awsTags | toToml }}{{ end }}
+{{ if $gitIdentities }}git_identities = {{ $gitIdentities | toToml }}{{ end }}
+{{ if $roles }}roles = {{ $roles | toToml }}{{ end }}
 
-[data.roles]
-aws = {{ $roles_aws | toToml }}
-git = {{ $roles_git | toToml }}
+{{ if gt (len $op) 0 -}}
+[data.op]
+{{ range $k, $v := $op }}{{ $k }} = {{ $v | quote }}{{ end }}{{ end }}
 
 [data.onepassword]
-personal = {{ $personal_1password_account | toToml }}
+personal = {{ promptStringOnce . "onepassword.personal" "1Password Personal Account" | toToml }}
 
 [data.github]
-user = {{ $github_username | toToml }}
+user = {{ $githubUsername | quote }}
 
 [data.ruby.hoe]
-email = {{ $email | toToml }}
+email = {{ $email | quote }}
 
 [data.ruby.rubygems]
-user = {{ $email | toToml }}
+user = {{ $email | quote }}
 
+{{ if $sshAgent -}}
 [data.ssh]
-agent = {{ $ssh_agent_type | toToml }}
+agent = {{ $sshAgent | quote }}{{ end }}
