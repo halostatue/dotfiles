@@ -4,9 +4,6 @@
 ---
 defrole:
   editors-extra:
-    casks:
-      visual-studio-code: Open-source code editor
-      zed: Multiplayer code editor
 
     cond:
       - if-role: personal
@@ -14,3 +11,6 @@ defrole:
           bbedit: Text, code, and markup editor
           scrivener: Word processing software with a typewriter style
 
+        mas:
+          420212497: Byword
+          635758264: Calca

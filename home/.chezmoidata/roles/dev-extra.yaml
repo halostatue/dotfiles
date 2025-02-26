@@ -1,5 +1,3 @@
-# role: dev-extra
-#
 # Extra dev tools.
 ---
 defrole:
@@ -30,11 +28,21 @@ defrole:
         scc:
 
     cond:
-      - if-has-port: ftgl
+      - if-port: ftgl
         ports:
           install:
             gource:
-      - if-has-port: openjdk17
+      - if-port: openjdk17
         ports:
           install:
             pkl:
+
+      - if-role: personal
+        mas:
+          1622145140: Codelime
+          640199958: Developer
+          439697913: Icon Slate
+          992115977: Image2icon
+          889428659: xScope
+
+# vim: ft=yaml

@@ -1,9 +1,9 @@
-# role: dev-base
+# role: base/dev
 #
 # Developer tools and extensions.
 #
-# The base-web role is applied to all systems. It does not need to be included in the
-# roles list.
+# The base role is applied to all systems. It does not need to be included in the roles
+# list.
 ---
 defrole:
   base:

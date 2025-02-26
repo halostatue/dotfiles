@@ -10,6 +10,7 @@ defrole:
       homebrew/services:
 
     casks:
+      alfred: Application launcher and productivity software
       cleanupbuddy: Clean keyboard and trackpad
       itsycal: Menu bar calendar
       jordanbaird-ice: Menu bar manager (Bartender alternative)

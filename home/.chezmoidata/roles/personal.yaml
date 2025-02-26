@@ -8,7 +8,6 @@
 defrole:
   personal:
     casks:
-      alfred: Application launcher and productivity software
       anki: Memory training application
       anydesk: Allows connection to a computer remotely
       eaglefiler: Organise files, archive e-mails, save Web pages and notes, search everything
@@ -18,31 +17,22 @@ defrole:
       macwhisper: LLM-powered speech transcription tool
       monitorcontrol: Tool to control external monitor brightness & volume
       monodraw: Tool to create text-based art
-      moom: Utility to move and zoom windows—on one display
-      resolutionator: Use any of your display's available resolutions
       setapp: Collection of apps available by subscription
 
     mas:
-      420212497: Byword
+      1586435171: Actions
       993487541: CARROT Weather
-      635758264: Calca
-      1622145140: Codelime
-      640199958: Developer
-      1474335294: GoodLinks
       1502839586: Hand Mirror
-      6444915884: Ice Cubes
-      439697913: Icon Slate
-      992115977: Image2icon
       302584613: Kindle
-      1575588022: MenubarX
       403504866: PCalc
       1303222628: Paprika Recipe Manager 3
-      1106867065: Svgsus
       899247664: TestFlight
       889428659: xScope
 
     cond:
-      - if-has-port: openjdk11
+      - if-port: openjdk11
         ports:
           install:
             epubcheck:
+
+# vim: ft=yaml
