@@ -96,6 +96,11 @@ update-port() {
   port[public]=true
 
   case "$1" in
+  jaq)
+    port[category]=textproc
+    port[cargo_lock]=github
+    port_test=(jaq --help)
+    ;;
   chezmoi)
     port[category]=sysutils
     port_test=(chezmoi doctor)
@@ -123,6 +128,11 @@ update-port() {
   passage)
     port[category]=security
     port_test=(test-port-passage)
+    ;;
+  lychee)
+    port[category]=devel
+    port[cargo_lock]=github
+    port_test=(lychee --help)
     ;;
   changie | cocogitto | git-branch-stash | git-bug | git-mediate)
     port[category]=devel
@@ -183,6 +193,11 @@ update-port() {
   csvquote | htmd-cli | spacer | taplo | titlecase)
     port[category]=textproc
     port[public]=false
+    ;;
+  vv)
+    port[category]=graphics
+    port[public]=false
+    port_test=(vv ~/Pictures/garden.jpg)
     ;;
   rebels-in-the-sky)
     port[category]=games

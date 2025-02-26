@@ -38,7 +38,13 @@ homebrew:
 
 # Update Go binaries (using 'gup')
 go:
-    @lib/update.sh go
+    #!/bin/sh
+
+    if command -v gup >/dev/null 2>/dev/null; then
+      lib/update.sh go
+    else
+      true
+    fi
 
 # Update GitHub Extensions
 ghext:
@@ -69,10 +75,22 @@ ruby: _ruby_gems
 python: _python_pipx _python_uv
 
 _python_pipx:
-    @ruby lib/update.rb python_pipx
+    #!/bin/sh
+
+    if command -v pipx >/dev/null 2>/dev/null; then
+      ruby lib/update.rb python_pipx
+    else
+      true
+    fi
 
 _python_uv:
-    @ruby lib/update.rb python_uv
+    #!/bin/sh
+
+    if command -v uv >/dev/null 2>/dev/null; then
+      ruby lib/update.rb python_uv
+    else
+      true
+    fi
 
 _ruby_gems:
     @ruby lib/update.rb ruby_gems

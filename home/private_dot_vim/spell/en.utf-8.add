@@ -13,15 +13,18 @@ backend
 backends
 Base64
 behaviours
+Bitwarden
 blog
 CAS
 chezmoi
+chezmoi's
 Clippy
 Clojure
 CNAME
 CODEOWNER
 codepoint
 codepoints
+composability
 composable
 config
 CORS
@@ -43,6 +46,7 @@ erlang
 ESLint
 Everything
 exfiltrate
+falsy
 Fiant
 Gemfile
 GhosTTY
@@ -55,6 +59,7 @@ halogenmobile
 halostatue
 hexpm
 Homebrew
+initialisable
 JIRA
 JMeter
 jq
@@ -117,6 +122,7 @@ shellcheck
 shfmt
 Sqitch
 SQLite
+submodules
 SSO
 SVG
 TBD
@@ -124,6 +130,7 @@ Tidelift
 timestamp
 toc
 TOML
+truthy
 Twilio
 Typescript
 ULID

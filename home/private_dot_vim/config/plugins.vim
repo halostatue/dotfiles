@@ -73,8 +73,8 @@ import autoload 'packix.vim'
 packix.Setup((px: packix.Packix) => {
   # Packix package manager (self-manage the bootstrapped install)
   # https://github.com/halostatue/vim-packix
-  if isdirectory(expand('~/personal/vim-packix'))
-    px.Local('~/personal/vim-packix', { type: 'opt' })
+  if isdirectory(expand('~/oss/vim/vim-packix'))
+    px.Local('~/oss/vim/vim-packix', { type: 'opt' })
   else
     px.Add('halostatue/vim-packix', { type: 'opt' })
   endif
@@ -134,15 +134,15 @@ packix.Setup((px: packix.Packix) => {
   # https://github.com/tpope/vim-surround
   # px.Add('tpope/vim-surround')
   # My port. There are definitely bugs, especially around visual use.
-  # px.Local('~/personal/forks/vim/vim-surround')
+  # px.Local('~/oss/vim/vim-surround')
   # Alternative: https://github.com/machakann/vim-sandwich
   px.Add('machakann/vim-sandwich')
 
   # Paired mappings
   # # https://github.com/tpope/vim-unimpaired
   # px.Add('tpope/vim-unimpaired', { type: 'opt' })
-  if isdirectory(expand('~/personal/vim-pairs'))
-    px.Local('~/personal/vim-pairs')
+  if isdirectory(expand('~/oss/vim/vim-pairs'))
+    px.Local('~/oss/vim/vim-pairs')
   else
     px.Add('halostatue/vim-pairs')
   endif
@@ -667,8 +667,8 @@ packix.Setup((px: packix.Packix) => {
 
   # https://github.com/rhysd/vim-healthcheck
   # px.Add('rhysd/vim-healthcheck')
-  if isdirectory(expand('~/personal/forks/vim/vim-healthcheck'))
-    px.Local('~/personal/forks/vim/vim-healthcheck')
+  if isdirectory(expand('~/oss/vim/vim-healthcheck'))
+    px.Local('~/oss/vim/vim-healthcheck')
   else
     px.Add('halostatue/vim-healthcheck')
   endif

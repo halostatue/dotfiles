@@ -12,14 +12,16 @@ readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'
 source "${lib_bash}"
 setup '04: Install Go Binaries'
 
-if ! has go; then
-  warn "go is not installed"
-  exit 0
-fi
+exit 0
 
-if ! has gup; then
-  go install github.com/nao1215/gup@latest
-fi
+# if ! has go; then
+#   warn "go is not installed"
+#   exit 0
+# fi
 
-readonly conf='{{ joinPath .chezmoi.homeDir ".config/gup/gup.conf" }}'
-gup import --input "${conf}"
+# if ! has gup; then
+#   go install github.com/nao1215/gup@latest
+# fi
+
+# readonly conf='{{ joinPath .chezmoi.homeDir ".config/gup/gup.conf" }}'
+# gup import --input "${conf}"

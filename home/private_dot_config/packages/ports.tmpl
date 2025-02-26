@@ -14,42 +14,26 @@ install act
 install actionlint
 install age
 install amazon-ecr-credential-helper
-install angle-grinder
 install ansifilter
 install antiword
-install ast-grep
 install atuin
 install bat
 install bat-extras
 install cargo
 install cargo2port
 install certstrap
-install chafa
 install chainloop
-install changie
-install checkmake
 install chezmoi
 install cloc
-install cocogitto
 install colima
-install comet-git
-install committed
 install container-diff
 install cosign
-install crystal
 install csvlens
-install csvquote
 install ctpv
-install dasel
-install dateutils
-install delve
 install deno
-install dict
-install diff-so-fancy
 install diffoci
 install diffoscope
 install difftastic
-install direnv
 install dive
 install docker
 install docker-base-plugin
@@ -59,86 +43,53 @@ install docker-credential-helper-osxkeychain
 install docker-index-plugin
 install dos2unix
 install dotenv-linter
-install dsq
-install dua-cli
 install duf
 install dust
-install duti
 install editorconfig-checker
-install efm-langserver
 {{ if not (hasKey $opts.broken "openjdk11") -}}
 install epubcheck
 {{- end }}
-install eva
 install eza +doc+git
 install fastmod
-install fclones
 install fd
-install fend
 install fish
 install flyctl
-install fop
-install fping
 install fswatch
-install fx
-install fzy
-install g-ls
 install gawk
-install gdu
 install gh
 install git +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
 install git-absorb
-install git-branch-stash
 install git-branchless
-install git-bug
-install git-cc
-install git-ce
-install git-chglog
 install git-delta
 install git-interactive-rebase-tool
 install git-mediate
-install git-sizer
 install git-some-extras
 install git-stack
-install git-switch-user
-install git-task
 install git-tools
 install gitleaks
-install gitoxide
-install gitql
-install gitui
 install glow
 install gmake
 install go
 install go-mmv
 install go2port
-install goaccess
 install goawk
 install gojq
-install golangci-lint
-install gopls
-install gore
-install goreleaser
-install got
 {{ if not (hasKey $opts.broken "ftgl") -}}
 install gource
 {{- end }}
-install grex
 install grype
-install hexyl
+install gum
 install htmd-cli
-install htmlq
 install hwatch
 install hyperfine
-install jd
-install jless
+install ijq
+install jaq
+install jnv
 install jq
 install jqfmt
 install jqp
 install jujutsu
-install julia +gcc14
 install just
-install jwt-cli
 {{ if $opts.work -}}
 install k9s
 {{- end }}
@@ -146,11 +97,10 @@ install kondo
 install lazydocker
 install lazygit
 install lemmeknow
-install licensure
-install lima
-install lnav
+install lychee
 install mani
 install manifest-tool
+install mas
 install massren
 install mdcat
 install micro
@@ -158,98 +108,54 @@ install miller
 install minisign
 install mise
 install mkcert
-install monolith
 install moreutils +doc
 install mpstats
 install mquery
-install mrml
 install murex
 install mved
 install navi
-install nim
 install nomino
 install oath-toolkit
 install oauth2c
 install oha
-install osv-scanner
-install ouch
 install oxipng
-install oxker
-install p7zip
+install pam-reattach
 install pandoc
-install passage
-install pipx +python312
 {{ if not (hasKey $opts.broken "openjdk17") -}}
 install pkl
 {{- end }}
-{{ if $opts.personal -}}
-# Using Postgresql.app at work
-install postgresql16
-install postgresql16-server
-{{- end }}
-install procs
-install prql
 install prr
 install pug
 install pv
 install py312-awscli2
 install py312-pip
-install qsv
 install rage
 install ranger
-{{ if $opts.personal -}}
-install rebels-in-the-sky
-{{- end }}
 {{ if $opts.work -}}
 install redis
 {{- end }}
-install revive
 install ripgrep
-install rlwrap
 install ruby-build
 install ruby-install
-install ruby33 +yjit
 install rust
 install rust-script
 install scc
-install scryer-prolog
-install sd
 install seaport
-install selene
 install sfm
-install shadowenv
 install shellcheck
 install shellharden
 install shfmt
-install sol
-install spacer
-install srgn
-install staticcheck
 install step-cli
 install stgit
-install sttr
-install stylua
-install svu
 install tag
 install taplo
-install tealdeer
 {{ if stat "/Applications/Xcode.app" -}}
 install terminal-notifier
 {{- end }}
-install terraform-docs
-install terraformer
-install terramaid
-install tfmigrate
-install tfsec
-install tfupdate
-install the_silver_searcher
 install tig +doc
-install titlecase
 install tnef
 install tokei
-install topfew
 install trivy
-install trurl
 install typos
 install universal-ctags +iconv+libxml2+link_to_ctags+manpages
 install uv
@@ -259,24 +165,14 @@ install viu
 install vv
 install watch
 install watchexec
-install wxWidgets-3.2 +compat30
-install xh
 install xmlstarlet
 install xq
 install xsv
-install yaegi
-install yajl
-install yank
-install yq
-install zola
 install zoxide
 
 select --set awscli py312-awscli2
 select --set pip pip312
 select --set pip3 pip312
-{{ if $opts.personal -}}
-select --set postgresql postgresql16
-{{- end }}
 select --set python python312
 select --set python3 python312
 {{- /* Things to consider

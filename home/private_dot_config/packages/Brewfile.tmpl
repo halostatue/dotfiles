@@ -1,52 +1,38 @@
 {{- $personal := eq (get . "role") "personal" -}}
 {{- $work := eq (get . "role") "work" -}}
 
-{{ if $work -}}
 tap "browsers-software/tap"
-{{- end }}
 tap "homebrew/bundle"
 tap "homebrew/services"
-tap "reviewdog/tap"
 
 brew "bomber" # Scans Software Bill of Materials for security vulnerabilities
-brew "cliam" # Cloud agnostic IAM permissions enumerator
-brew "cloc" # Statistics utility to count lines of code
-brew "comby" # Tool for changing code across many languages
 brew "csvtk" # Cross-platform, efficient and practical CSV/TSV toolkit in Golang
-brew "docker-slim" # Minify and secure Docker images
 brew "flarectl" # CLI application for interacting with a Cloudflare account
-brew "gitbatch" # Manage your git repositories in one place
-brew "mas" # Mac App Store command-line interface
-brew "pam-reattach" # PAM module for reattaching to the user's GUI (Aqua) session
-brew "reviewdog/tap/reviewdog" # Automated code review tool integrated with any code analysis tools regardless of programming language.
 brew "syft" # CLI for generating a Software Bill of Materials from container images
-brew "terracognita" # Reads from existing Cloud Providers and generates Terraform code
-brew "tflint" # Linter for Terraform files
-brew "tz" # CLI time zone visualizer
 
 {{ if $personal -}}
+cask "acorn" # Image editor focused on simplicity
+cask "affinity-designer" # Professional graphic design software
+cask "affinity-photo" # Professional image editing software
+cask "affinity-publisher" # Professional desktop publishing software
 cask "alfred" # Application launcher and productivity software
 cask "anki" # Memory training application
 cask "anydesk" # Allows connection to a computer remotely
 cask "bbedit" # Text, code, and markup editor
 {{- end }}
-{{ if $work -}}
 cask "browsers" # Open the right browser at the right time
-{{- end }}
-cask "charles" # Web debugging Proxy application
 cask "cleanupbuddy" # Clean keyboard and trackpad
-{{ if $personal -}}
-cask "cog" # Audio player
-cask "contour" # Terminal emulator
 {{ if $work -}}
 cask "dehesselle-meld" # Visual diff and merge tool
 {{- end }}
-cask "deskpad" # Virtual monitor for screen sharing
+{{ if $personal -}}
 cask "dosbox" # Emulator for x86 with DOS
 cask "dosbox-x" # Fork of the DOSBox project
+{{- end }}
 {{ if $work -}}
 cask "drovio" # Remote pair programming and team collaboration tool
 {{- end }}
+{{ if $personal -}}
 cask "eaglefiler" # Organise files, archive e-mails, save Web pages and notes, search everything
 {{- end }}
 cask "finicky" # Utility for customizing which browser to start
@@ -64,15 +50,8 @@ cask "hazel" # Automated organisation
 cask "headlamp" # UI for Kubernetes
 {{- end }}
 cask "hex-fiend" # Hex editor focussing on speed
-{{ if $personal -}}
-cask "iina" # Free and open-source media player
-{{- end }}
 cask "imhex" # Hex editor for reverse engineers
-cask "iterm2" # Terminal emulator as alternative to Apple's Terminal app
 cask "itsycal" # Menu bar calendar
-{{ if $personal -}}
-cask "jan" # Offline AI chat tool
-{{- end }}
 {{ if $work -}}
 cask "jordanbaird-ice" # Menu bar manager
 {{- end }}
@@ -80,10 +59,8 @@ cask "jordanbaird-ice" # Menu bar manager
 cask "kindle-previewer" # Preview and audit Kindle eBooks
 cask "koodo-reader" # Open-source epub reader
 {{- end }}
+cask "leader-key" # Application launcher
 cask "livebook" # Code notebooks for Elixir developers
-{{ if $personal -}}
-cask "lm-studio" # Discover, download, and run local LLMs
-{{- end }}
 {{ if $work -}}
 cask "loop" # Window manager
 cask "maccy" # Clipboard manager
@@ -98,22 +75,14 @@ cask "microsoft-edge" # Multi-platform web browser
 cask "monitorcontrol" # Tool to control external monitor brightness & volume
 cask "monodraw" # Tool to create text-based art
 cask "moom" # Utility to move and zoom windows—on one display
-cask "msty" # Run LLMs locally
 {{- end }}
 cask "obsidian" # Knowledge base that works on top of a local folder of plain text Markdown files
-{{ if $personal -}}
-cask "ollamac" # Interact with Ollama models
-{{- end }}
 {{ if $work -}}
 cask "openlens" # Open source build of Lens Kubernetes IDE
 {{- end }}
 cask "orion" # WebKit based web browser
-{{ if $personal -}}
-cask "pieces" # Code snippets, screenshots and workflow context
-cask "pieces-os" # Local datastore, server, and ML engine powering the Pieces for Developers Suite
-{{- end }}
-{{ if $work -}}
 cask "postgres-unofficial" # App wrapper for Postgres
+{{ if $work -}}
 cask "postman" # Collaboration platform for API development
 {{- end }}
 cask "qlcolorcode" # Quick Look plug-in that renders source code with syntax highlighting
@@ -124,6 +93,7 @@ cask "quicklook-json" # Quick Look plugin for JSON files
 {{ if $work -}}
 cask "quicksilver" # Productivity application
 {{- end }}
+cask "raycast" # Control your tools with a few keystrokes
 {{ if $personal -}}
 cask "resolutionator" # Use any of your display's available resolutions
 {{- end }}
@@ -137,24 +107,15 @@ cask "slack" # Team communication and collaboration software
 {{- end }}
 {{ if $personal -}}
 cask "spatterlight" # Play most kinds of interactive fiction game files
-cask "tableflip" # Edit plain text tables in place: Markdown, CSV, JSON. LaTeX and HTML export
 {{- end }}
-{{ if $work -}}
+cask "startupfolder" # Run anything at startup by simply placing it in a special folder
 cask "trex" # Easy to use text extraction tool
-{{- end }}
-{{ if $personal -}}
-cask "viscosity" # OpenVPN client with AppleScript support
-{{- end }}
 cask "visual-studio-code" # Open-source code editor
 cask "webpquicklook" # Quick Look plugin for webp files
-{{ if false -}}
-cask "xcodes" # Install and switch between multiple versions of Xcode
-{{- end }}
 cask "xprocheck" # Anti-malware scan logging tool
 cask "zed" # Multiplayer code editor
 
 ## Fonts
-# This cask is currently broken.
 cask "font-0xproto"
 cask "font-cascadia-code"
 cask "font-cascadia-mono"
@@ -175,63 +136,38 @@ cask "font-source-code-pro"
 cask "font-space-mono"
 cask "font-zed-mono"
 
-{{ if $personal -}}
-mas "1Blocker", id: 1365531024
-{{- end }}
 mas "1Password for Safari", id: 1569813296
-{{ if $work -}}
 mas "AdGuard for Safari", id: 1440147259
-{{- end }}
 {{ if $personal -}}
 mas "Actions", id: 1586435171
 mas "Baking Soda", id: 1601151613
-mas "Balatro+", id: 6502451661
+mas "Big Wallet", id: 6478607925
 mas "Byword", id: 420212497
 mas "CARROT Weather", id: 993487541
 mas "Calca", id: 635758264
 mas "Codelime", id: 1622145140
-mas "Craft", id: 1487937127
-mas "Data Jar", id: 1453273600
 mas "Developer", id: 640199958
-mas "Esse", id: 1438921989
-mas "Exporter", id: 1099120373
 mas "Flighty", id: 1358823008
 mas "GRIS+", id: 1617349089
 {{- end }}
-mas "GarageBand", id: 682658836
 {{ if $personal -}}
 mas "GoodLinks", id: 1474335294
 mas "Grim Fandango", id: 1022841309
-mas "Grocery", id: 1195676848
 mas "Hand Mirror", id: 1502839586
 mas "History Book", id: 1619241039
 mas "Hush", id: 1544743900
 mas "Ice Cubes", id: 6444915884
 mas "Icon Slate", id: 439697913
 mas "Image2icon", id: 992115977
-{{- end }}
-mas "Keynote", id: 409183694
-{{ if $personal -}}
 mas "Kindle", id: 302584613
 mas "Kingdoms: Merge & Build", id: 1636872154
 mas "Later", id: 1507396839
-mas "Mactracker", id: 430255202
 mas "MarkDownload - Markdown Web Clipper", id: 1554029832
 mas "MenubarX", id: 1575588022
-mas "Mimeo Photos", id: 1282504627
-mas "Muse", id: 1501563902
-mas "MusicBox", id: 1614730313
-{{- end }}
-mas "Numbers", id: 409203825
-{{ if $personal -}}
 mas "PCalc", id: 403504866
-{{- end }}
-mas "Pages", id: 409201541
-{{ if $personal -}}
 mas "Paprika Recipe Manager 3", id: 1303222628
 mas "PiPifier", id: 1160374471
 mas "Pixelmator Pro", id: 1289583905
-mas "Play", id: 1596506190
 mas "Ridiculous Fishing", id: 1610164691
 mas "Shareful", id: 1522267256
 {{- end }}
@@ -240,16 +176,12 @@ mas "Sim Daltonism", id: 693112260
 mas "StopTheMadness Pro", id: 6471380298
 mas "Svgsus", id: 1106867065
 mas "TestFlight", id: 899247664
-mas "Tokenary", id: 1375542355
-mas "Userscripts-Mac-App", id: 1463298887
 mas "Vinegar", id: 1591303229
-mas "Waterlogue Pro", id: 1425568219
 {{- end }}
 {{- if $work}}
 mas "WireGuard", id: 1451685025
 {{- end }}
 mas "Xcode", id: 497799835
-mas "iMovie", id: 408981434
 {{ if $personal -}}
 mas "junkworld", id: 6448185316
 mas "xScope", id: 889428659
