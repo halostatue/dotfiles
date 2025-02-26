@@ -90,6 +90,7 @@
 {{- if $excludesFile }}
   excludesFile = {{ $excludesFile | quote }}
 {{- end }}
+  fsmonitor = true
   # hooksPath = ""
 {{- if $corePager }}
   pager = {{ $corePager }}
@@ -117,8 +118,10 @@
   manyFiles = true
 
 [fetch]
+  all = true
   fsckobjects = true
   prune = true
+  pruneTags = true
   recurseSubmodules = on-demand
 
 {{ if $skiplistFile -}}
@@ -154,7 +157,7 @@
   lineNumber = true
 
 [help]
-  autocorrect = 7
+  autocorrect = prompt
 
 [index]
   # This can be removed as a default configuration after libgit2 1.7.3 or later.
@@ -185,7 +188,7 @@
   simple-oneline = "%C(yellow)%h%C(auto)%d %s <%C(green)%aN%C(reset)> (%C(blue)%ar%C(reset))"
 
 [pull]
-  ff = only
+  rebase = true
 
 [push]
   autoSetupRemote = true
@@ -195,6 +198,7 @@
 
 [rebase]
   autostash = true
+  # autosquash = true
   missingCommitsCheck = error
 
 [receive]
@@ -262,6 +266,7 @@
 
 [rerere]
   enabled = true
+  autoupdate = true
 
 [sendemail]
   annotate = true

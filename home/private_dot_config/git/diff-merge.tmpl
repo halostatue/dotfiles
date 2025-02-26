@@ -1,13 +1,9 @@
 {{- /* Initialize variables for use in this file */ -}}
 {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
-{{- $colorMoved := "zebra" -}}
-{{- if $programs.delta -}}
-{{-   $colorMoved = "default" -}}
-{{- end -}}
 
 [diff]
   algorithm = histogram
-  colorMoved = {{ $colorMoved }}
+  colorMoved = plain
   colorMovedWS = allow-indentation-change
   context = 5
   compactionHeuristic = true
@@ -274,4 +270,4 @@
   tool = vimdiff
 {{- end }}
 
-# vim: ft=gitconfig
+{{/* vim: set filetype=gitconfig */}}
