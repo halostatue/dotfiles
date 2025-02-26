@@ -6,7 +6,10 @@
 # roles list.
 ---
 defrole:
-  base-web:
+  base:
+    taps:
+      browsers-software/tap:
+
     casks:
       browsers: Open the right browser at the right time
       finicky: Utility for customizing which browser to start
@@ -28,3 +31,5 @@ defrole:
           1522267256: Shareful
           6471380298: StopTheMadness Pro
           1591303229: Vinegar
+
+# vim: ft=yaml

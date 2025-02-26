@@ -6,7 +6,7 @@
 # roles list.
 ---
 defrole:
-  dev-base:
+  base:
     casks:
       ghostty: Terminal emulator that uses platform-native UI and GPU acceleration
       hex-fiend: Hex editor focussing on speed
@@ -76,3 +76,5 @@ defrole:
         ports:
           install:
             terminal-notifier:
+
+# vim: ft=yaml
