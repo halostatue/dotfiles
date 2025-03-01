@@ -1,5 +1,5 @@
 # chezmoi:template:left-delimiter="#[[" right-delimiter="]]"
-#[[- $programs := includeTemplate "programs.tmpl" . | fromJson -]]
+#[[- $programs := includeTemplate "programs" . | fromJson -]]
 #[[- $diffPager := "" -]]
 #[[- if $programs.delta -]]
 #[[-   $diffPager = printf "%s --dark --paging=never --side-by-side" $programs.delta -]]

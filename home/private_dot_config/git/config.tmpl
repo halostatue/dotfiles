@@ -1,5 +1,5 @@
 {{- /* Initialize variables for use in this file */ -}}
-{{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
+{{- $programs := includeTemplate "programs" . | fromJson -}}
 {{- /* $commitTemplate := joinPath .chezmoi.homeDir ".config/git/commit-message" */ -}}
 {{- $commitTemplate := "" -}}
 {{- $coreAttributesFile := joinPath .chezmoi.homeDir ".config/git/attributes" -}}

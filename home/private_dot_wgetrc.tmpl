@@ -1,4 +1,4 @@
-{{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
+{{- $programs := includeTemplate "programs" . | fromJson -}}
 {{ if $programs.wget -}}
 # Use the server-provided last modification date, if available
 timestamping = on

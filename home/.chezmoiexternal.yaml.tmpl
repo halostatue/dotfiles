@@ -1,6 +1,6 @@
 # chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
 # {{/* vim: ft=yaml.chezmoitmpl */}}
-# {{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
+# {{- $programs := includeTemplate "programs" . | fromJson -}}
 # {{- $sevenDays := printf "%dh" (mul 7 24) -}}
 
 .vim/pack/plugins/opt/chezmoi.vim:

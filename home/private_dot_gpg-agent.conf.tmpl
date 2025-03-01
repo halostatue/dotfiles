@@ -1,4 +1,4 @@
-{{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
+{{- $programs := includeTemplate "programs" . | fromJson -}}
 # Configure gpg-agent
 
 default-cache-ttl 86400

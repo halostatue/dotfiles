@@ -1,4 +1,4 @@
-{{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
+{{- $programs := includeTemplate "programs" . | fromJson -}}
 # Auto detect text files and perform LF normalization. This prevents issues when
 # working with multiple platforms as developers. For more useful information see
 # this great article:

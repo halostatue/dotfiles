@@ -1,4 +1,4 @@
-{{- $programs := includeTemplate "programs.tmpl" . | fromJson -}}
+{{- $programs := includeTemplate "programs" . | fromJson -}}
 {{- $ssh := joinPath $.chezmoi.homeDir ".ssh" -}}
 {{- $updatable_hosts :=
       concat (list "github.com" "bitbucket.org" "gitlab.com")
