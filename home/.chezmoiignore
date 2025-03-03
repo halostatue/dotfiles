@@ -279,10 +279,6 @@ Library
 {{ else if eq .chezmoi.os "darwin" -}}
 **/.localized
 
-{{/* LazyGit is configured in Library/Application Support/lazygit on macOS */}}
-.config/lazygit
-.config/lazygit/*
-
 Applications/
 Desktop/
 Documents/

@@ -1,1 +1,200 @@
-{{- includeTemplate "lazygit_config.yml.tmpl" . -}}
+# chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
+# {{ if lookPath "lazygit" -}}
+# {{- $programs := includeTemplate "programs" . | fromJson -}}
+# {{- $diffPager := "" -}}
+# {{- if $programs.delta -}}
+# {{-   $diffPager = printf "%s --dark --paging=never --side-by-side" $programs.delta -}}
+# {{- else if $programs.diff_so_fancy -}}
+# {{-   $diffPager = $programs.diff_so_fancy -}}
+# {{- else if $programs.ydiff -}}
+# {{-   $diffPager = printf "%s -p cat -s --wrap --width {{ columnWidth }}" $programs.ydiff -}}
+# {{- end -}}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
+
+gui:
+  skipDiscardChangeWarning: false
+  skipStashWarning: false
+  skipNoStagedFilesWarning: false
+  skipRewordInEditorWarning: false
+  sidePanelWidth: 0.2
+  expandFocusedSidePanel: true
+  timeFormat: '2006-01-02 15:04 -07'
+  shortTimeFormat: '15:04'
+
+  # nerd fonts version to use ("2" or "3"); empty means don't show nerd font icons
+  nerdFontsVersion: "3"
+  filterMode: "fuzzy"
+
+  theme:
+    activeBorderColor:
+      - green # a6da95
+      - bold
+    inactiveBorderColor:
+      - default # cad3f5
+    optionsTextColor:
+      - blue # 8aadf4
+    selectedLineBgColor:
+      - blue # #363a4f
+    inactiveViewSelectedLineBgColor:
+      - bold
+    cherryPickedCommitFgColor:
+      - blue # #8aadf4
+    cherryPickedCommitBgColor:
+      - cyan # #8bd5ca
+    markedBaseCommitFgColor:
+      - blue
+    unstagedChangesColor:
+      - red # Red
+    defaultFgColor:
+      - default
+    searchingActiveBorderColor:
+      - cyan
+      - bold
+
+git:
+  paging:
+    useConfig: false
+# {{- if $diffPager }}
+    pager: '# {{ $diffPager }}'
+# {{- else }}
+    # Use one of the following:
+    #   pager: delta --dark --paging=never --side-by-side
+    #   pager: diff-so-fancy
+    #   pager: ydiff -p cat -s --wrap --width={{ columnWidth }}
+# {{- end }}
+
+  commit:
+    signOff: true
+
+  merging:
+    manualCommit: false
+
+  overrideGpg: true
+  disableForcePushing: false
+  parseEmoji: true
+
+confirmOnQuit: false
+quitOnTopLevelReturn: false
+promptToReturnFromSubprocess: true
+
+os:
+  editPreset: vim
+
+keybinding:
+  branches:
+    viewGitFlowOptions: '<disabled>'
+  commits:
+    markCommitAsBaseForRebase: '<c-b>'
+
+customCommands:
+  - key: b
+    command: gh browse
+    context: files
+    description: Browse the current repo
+
+  - key: B
+    description: Browse the selected remote of the current repo
+    context: files
+    prompts:
+      - type: menuFromCommand
+        key: Remote
+        title: 'Browse remote?'
+        command: >
+          bash -c "git remote --verbose | grep '/.* (push)'"
+        filter: '(?P<remote>.*)\s+(?P<url>.*) \(push\)'
+        valueFormat: '{{ .remote }}'
+        labelFormat: '{{ .remote | bold | cyan }} {{ .url }}'
+    command: gh browse -R "{{ .Form.Remote }}"
+
+  - key: b
+    command: gh browse "{{ .SelectedLocalCommit.Sha }}"
+    context: commits
+    description: Browse the current repo at the selected ref
+
+  - key: B
+    description: Browse the selected remote of the current repo at the selected ref
+    context: files
+    prompts:
+      - type: menuFromCommand
+        key: Remote
+        title: 'Browse remote?'
+        command: >
+          bash -c "git remote --verbose | grep '/.* (push)'"
+        filter: '(?P<remote>.*)\s+(?P<url>.*) \(push\)'
+        valueFormat: '{{ .remote }}'
+        labelFormat: '{{ .remote | bold | cyan }} {{ .url }}'
+    command: gh browse -R "{{ .Form.Remote }}" "{{ .SelectedLocalCommit.Sha }}"
+
+  - key: f
+    command: git difftool -y "{{ .SelectedLocalCommit.Sha }} -- {{ .SelectedCommitFile.Name }}"
+    context: commitFiles
+    description: Compare with local copy using difftool
+    subprocess: true
+
+  - key: F
+    command: git difftool -yg "{{ .SelectedLocalCommit.Sha }} -- {{ .SelectedCommitFile.Name }}"
+    context: commitFiles
+    description: Compare with local copy using the GUI difftool
+
+  - key: <c-P>
+    command: gh pr checkout "{{ .Form.PrNumber }}"
+    context: localBranches
+    loadingText: Checkout out PR {{ .Form.PrNumber }}
+    prompts:
+      - type: menuFromCommand
+        title: 'Pull Request'
+        key: PrNumber
+        command: gh pr list
+        filter: '^(?P<pr>\d+)\t(?P<title>[^\t]+)\t(?P<branch>[^\t]+)\t.+$'
+        valueFormat: '{{ .pr }}'
+        labelFormat: '{{ .pr | bold | cyan }} {{ .title }} {{ .branch }}'
+    description: Check out PR branch
+
+  - key: <c-b>
+    command: tig blame -- "{{ .SelectedFile.Name }}"
+    context: files
+    subprocess: true
+    description: Blame file at tree
+
+  - key: <c-b>
+    command: tig blame "{{ .SelectedSubCommit.Sha }}" -- "{{ .SelectedCommitFile.Name }}"
+    context: commitFiles
+    subprocess: true
+    description: Blame file at revision
+
+  - key: <c-B>
+    command: tig blame -- "{{ .SelectedCommitFile.Name }}"
+    context: commitFiles
+    subprocess: true
+    description: Blame file at tree
+
+  - key: t
+    command: tig show {{ .SelectedSubCommit.Sha }}
+    context: subCommits
+    subprocess: true
+    description: tig commit (`t` again to browse files at revision)
+
+  - key: t
+    command: tig show "{{ .SelectedLocalBranch.Name }}"
+    context: localBranches
+    subprocess: true
+    description: tig branch (`t` again to browse files at revision)
+
+  - key: t
+    command: tig show "{{ .SelectedRemoteBranch.RemoteName }}/{{ .SelectedRemoteBranch.Name }}"
+    context: remoteBranches
+    subprocess: true
+    description: tig branch (`t` again to browse files at revision)
+
+  - key: t
+    command: tig {{ .SelectedSubCommit.Sha }} -- "{{ .SelectedCommitFile.Name }}"
+    context: commitFiles
+    subprocess: true
+    description: tig file (history of commits affecting file)
+
+  - key: t
+    command: tig -- "{{ .SelectedFile.Name }}"
+    context: files
+    subprocess: true
+    description: tig file (history of commits affecting file)
+# {{- end }}
