@@ -7,11 +7,11 @@ cli_history = enabled
 */}}
 {{/* Add all '^aws-config: ' documents from all 1Password accounts. */}}
 {{- $mise := or (lookPath "mise") "mise" }}
-{{- $account_vaults := includeTemplate "1password_vaults.tmpl" . | fromJson -}}
+{{- $account_vaults := includeTemplate "1p/vaults" . | fromJson -}}
 {{- range $account_name, $account := $account_vaults -}}
 {{-   $vaults := $account.vaults -}}
-{{-   $params := dict "account" $account.url "startswith" "aws-config: " "tags" $.roles.aws -}}
-{{-   $documents := includeTemplate "1password_documents.tmpl" $params | fromJson -}}
+{{-   $params := dict "account" $account.url "startswith" "aws-config: " "tags" $.aws_tags -}}
+{{-   $documents := includeTemplate "1p/documents" $params | fromJson -}}
 {{-   range $document := $documents -}}
 {{-     $vault_name := (get $vaults $document.vault.id).name }}
 {{      printf "# '%v/%v' (from %v)" $vault_name $document.title $account.url }}
