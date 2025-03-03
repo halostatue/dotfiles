@@ -1,5 +1,3 @@
-{{- $personal := eq (get . "role") "personal" -}}
-{{- $work := eq (get . "role") "work" -}}
 {
   "[ansible]": {
     "editor.tabSize": 2
@@ -53,40 +51,6 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
-  "atlascode.bitbucket.enabled": false,
-  "atlascode.bitbucket.issues.createJiraEnabled": false,
-  "atlascode.bitbucket.pipelines.explorerEnabled": false,
-  "atlascode.bitbucket.preferredRemotes": [
-    "origin",
-    "upstream"
-  ],
-  "atlascode.bitbucket.statusbar.enabled": false,
-  "atlascode.bitbucket.statusbar.showLogin": true,
-  "atlascode.bitbucket.statusbar.showUser": true,
-  "atlascode.jira.enabled": {{ $work }},
-  "atlascode.jira.jqlList": [
-    {{ if $work -}}
-    {
-      "id": "f0e39a1c-de13-4c6d-a467-6905fe4510ab",
-      "enabled": true,
-      "name": "My forteio Issues",
-      "query": "assignee = currentUser() AND resolution = Unresolved ORDER BY lastViewed DESC",
-      "siteId": "5b7be463-fc32-493a-aac0-d8b0a1ea4eb0",
-      "monitor": true
-    },
-    {
-      "id": "a54e9a06-5e2a-46b0-954a-f01d29670d22",
-      "enabled": true,
-      "name": "My northernlabs Issues",
-      "query": "assignee = currentUser() AND resolution = Unresolved ORDER BY lastViewed DESC",
-      "siteId": "2253b768-7e6c-4574-890d-c8ed9b613ff4",
-      "monitor": true
-    }
-    {{- end }}
-  ],
-  "atlascode.jira.statusbar.enabled": {{ $work }},
-  "aws.profile": "profile:kc-dev",
-  "aws.telemetry": false,
   "breadcrumbs.enabled": true,
   "breadcrumbs.filePath": "off",
   "cSpell.enableFiletypes": [
@@ -358,9 +322,6 @@
     "!Split",
     "!Split sequence"
   ],
-  "yaml.schemas": {
-    "file:///Users/austin/.vscode/extensions/atlassian.atlascode-3.2.1/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml"
-  },
   "zeplin.enableTelemetry": false,
   "[xslt]": {
     "editor.semanticHighlighting.enabled": true
@@ -368,6 +329,6 @@
   "XSLT.tasks.saxonJar": "~/.local/share/SaxonHE10-8J/saxon-he-10.8.jar",
   "workbench.editor.empty.hint": "hidden",
   "workbench.editor.tabActionLocation": "left",
-  "extensiontotal.apiKeySetting": "{{ onepasswordRead "op://Personal/VS Code ExtensionTotal/credential" .onepassword.personal }}",
+  "extensiontotal.apiKeySetting": "{{ onepasswordRead "op://p3tdvhvmmhy4p2mlyyrlvdv3tu/yg2ov2pdezkdqflwvto3mk5aya/credential" .op.personal }}",
   "zig.zls.enabled": "on"
 }
