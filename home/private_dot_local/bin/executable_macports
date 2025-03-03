@@ -93,7 +93,8 @@ update-port() {
   local -a port_test
   port_test=()
 
-  port[public]=true
+  port[private]=false
+  port[stable]=false
 
   case "$1" in
   jaq)
@@ -102,10 +103,12 @@ update-port() {
     port_test=(jaq --help)
     ;;
   chezmoi)
+    port[stable]=true
     port[category]=sysutils
     port_test=(chezmoi doctor)
     ;;
   mise)
+    port[stable]=true
     port[category]=sysutils
     port_test=(mise ls)
     ;;
@@ -114,14 +117,17 @@ update-port() {
     port_test=(viu ~/Pictures/garden.jpg)
     ;;
   ruby-build)
+    port[stable]=true
     port[category]=ruby
     port_test=(ruby-build --list)
     ;;
   colima)
+    port[stable]=true
     port[category]=sysutils
     port_test=(colima status)
     ;;
   lima)
+    port[stable]=true
     port[category]=sysutils
     port_test=(test-port-lima)
     ;;
@@ -136,67 +142,67 @@ update-port() {
     ;;
   changie | cocogitto | git-branch-stash | git-bug | git-mediate)
     port[category]=devel
-    port[public]=false
+    port[private]=true
     ;;
   git-ce)
     port[category]=devel
-    port[public]=false
+    port[private]=true
     port[cargo_lock]=github
     ;;
   git-some-extras | git-stack | git-switch-user | git-task | gitql | jqfmt | licensure)
     port[category]=devel
-    port[public]=false
+    port[private]=true
     ;;
   mrml | prr | sol)
     port[category]=devel
-    port[public]=false
+    port[private]=true
     ;;
   prql)
     port[category]=devel
-    port[public]=false
+    port[private]=true
     port[cargo_lock]=github
     ;;
   typos)
     port[category]=devel
-    port[public]=false
+    port[private]=true
     port[cargo_lock]=github
     ;;
   scryer-prolog)
     port[category]=lang
-    port[public]=false
+    port[private]=true
     ;;
   selene)
     port[category]=lua
-    port[public]=false
+    port[private]=true
     ;;
   chainloop | osv-scanner)
     port[category]=security
-    port[public]=false
+    port[private]=true
     ;;
   dunesh)
     port[category]=shells
-    port[public]=false
+    port[private]=true
     ;;
   actions-usage | diffoci | dotenv-linter | fish-paket | manifest-tool | massren)
     port[category]=sysutils
-    port[public]=false
+    port[private]=true
     ;;
   mquery | pug | terramaid)
     port[category]=sysutils
-    port[public]=false
+    port[private]=true
     ;;
   shadowenv)
     port[category]=sysutils
-    port[public]=false
+    port[private]=true
     port[cargo_lock]=github
     ;;
   csvquote | htmd-cli | spacer | taplo | titlecase)
     port[category]=textproc
-    port[public]=false
+    port[private]=true
     ;;
   vv)
     port[category]=graphics
-    port[public]=false
+    port[private]=true
     port_test=(vv ~/Pictures/garden.jpg)
     ;;
   rebels-in-the-sky)
@@ -204,6 +210,11 @@ update-port() {
     port[crate]=rebels
     port_test=(rebels --version)
     ;;
+  zizmor)
+    port[category]=security
+    port_test=(zizmor -h)
+    ;;
+  *) : ;;
   esac
 
   if "${port[unstable]:-false}" && ! [[ "${2:-}" == --force ]]; then
@@ -211,10 +222,10 @@ update-port() {
     return 1
   fi
 
-  if "${port[public]:-false}"; then
-    port[root]="$(zoxide query macports-ports)"
-  else
+  if "${port[private]:-false}"; then
     port[root]="${HOME}/ports"
+  else
+    port[root]="$(zoxide query macports-ports)"
   fi
 
   if [[ -z "${port[category]:-}" ]]; then
@@ -274,8 +285,9 @@ update-port() {
 
   cd "${port[path]}"
 
-  if "${port[public]}"; then
-    git switch --create "${port[name]}-${port[version]}" "${branch}"
+  pr_branch="${port[name]}-${port[version]}"
+  if ! "${port[private]:-false}"; then
+    git switch --create "${pr_branch}" "${branch}"
   fi
 
   if [[ -n "${port[needs_crates]:-}" ]]; then
@@ -293,7 +305,7 @@ update-port() {
 
   git add "${port[file]}"
 
-  if ! "${port[public]}"; then
+  if "${port[private]:-false}"; then
     (
       cd "${port[root]}"
       portindex
@@ -306,13 +318,19 @@ update-port() {
   port[pr]="$(mktemp)"
   prepare-pr "${port[name]}"
 
-  if "${port[public]}"; then
+  if "${port[private]:-false}"; then
+    git push
+  else
     if ! [[ -s "${port[pr]}" ]]; then
       echo >&2 "${fn}: port ${port[name]}: Error generating pull request body"
       return 1
     fi
 
-    confirm gh pr create --dry-run --fill --body-file "${port[pr]}"
+    if "${port[stable]:-false}"; then
+      git push origin "${pr_branch}" --set-upstream
+    else
+      confirm gh pr create --dry-run --fill --body-file "${port[pr]}"
+    fi
 
     gh pr create --fill --body-file "${port[pr]}"
 
@@ -323,21 +341,23 @@ update-port() {
 }
 
 confirm() {
-  "$@"
-  read -r -p " Press Ctrl-C to cancel or ENTER to continue"
+  if ! "${port[stable]:-false}"; then
+    "$@"
+    read -r -p " Press Ctrl-C to cancel or ENTER to continue"
+  fi
 }
 
 prepare-pr() (
   port lint
   sudo port install
 
+  "${port[private]:-false}" && return 0
+
   if (("${#port_test[@]}")); then
     "${port_test[@]}"
-  elif "${port[public]}"; then
+  else
     echo >&2 "Cannot prepare public PR without running a port test."
     return 1
-  else
-    return 0
   fi
 
   local description tested_on
