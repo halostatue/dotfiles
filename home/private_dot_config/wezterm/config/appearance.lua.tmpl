@@ -11,7 +11,7 @@ return function(config, wezterm)
   if platform.is_mac then
     -- prevent lagging on "Mission Control" zoom out
     -- https://github.com/wez/wezterm/issues/2669
-    {{ if eq (get . "role") "work" -}}
+    {{ if has "work" (get . "roles" | default list) -}}
     config.window_decorations = "INTEGRATED_BUTTONS|RESIZE|MACOS_FORCE_DISABLE_SHADOW"
     {{- else -}}
     config.window_decorations = "RESIZE|MACOS_FORCE_DISABLE_SHADOW"
