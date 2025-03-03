@@ -8,11 +8,7 @@ vim9script
 # &guifont = "IBMPlexMono:h10"
 # gets y height
 # osascript -e 'tell application \"Finder\" to get bounds of window of desktop' | cut -d ',' -f 4 | xargs
-{{ if eq (or (get . "role") "personal") "personal" -}}
-&guifont = "Hack-Regular:h13"
-{{- else -}}
-&guifont = "Hack-Regular:h13"
-{{- end }}
+&guifont = "Hack-Regular:h12"
 
 # Keep the system clipboard and the vim pasteboard separate. If this behaviour is not
 # desired, set g:unify_clipboards to true.
