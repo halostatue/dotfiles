@@ -1,29 +1,26 @@
-const role = '{{ get . "role" }}' || 'personal'
-const isWork = role == 'work'
+// {{- $roles := get . "roles" | default list -}}
+// {{- $work := has "work" $roles -}}
+// This file is generated from home/private_dot_finicky.js.tmpl
+const isWork = 'true' == '{{ $work }}'
 
-const Openers = {
-  Browsers:
-    '{{ if stat "/Applications/Browsers.app"}}/Applications/Browsers.app{{ end }}',
-  Browserosaurus:
-    '{{ if stat "/Applications/Browserosaurus.app" }}/Applications/Browserosaurus.app{{ end }}',
-  BrowserFairy:
-    '{{ if stat "/Applications/BrowserFairy.app" }}/Applications/BrowserFairy.app{{ end }}',
-  OpenIn:
-    '{{ if stat "/Applications/OpenIn.app" }}/Applications/OpenIn.app{{ else if stat "/Applications/Setapp/OpenIn.app" }}/Applications/Setapp/OpenIn.app{{ end }}',
-}
+const Opener =
+  // {{- range $_, $opener := list "Browsers" "Browserosaurus" "BrowserFairy" "OpenIn" -}}
+  // {{-   $path := printf "/Applications/%s.app" $opener -}}
+  // {{-   if not (stat $path) }}{{ $path = printf "/Applications/Setapp/%s.app" $opener }}{{ end -}}
+  // {{-   if not (stat $path) }}{{ $path = "" }}{{ end }}
+  '{{ $path }}' ||
+  // {{- end }}
+  'Safari'
 
 const Browsers = {
   Safari: 'Safari',
-  Firefox: 'Firefox',
+  // {{- range $_, $browser := list "Firefox" "Microsoft Edge" "Google Chrome" -}}
+  // {{-   $path := printf "/Applications/%s.app" $browser -}}
+  // {{-   if not (stat $path) -}}{{ $path = "" }}{{ end }}
+  '{{ $browser | splitList " " | last }}': '{{ $path }}',
+  // {{- end }}
   Music: 'Music',
-  Edge: 'Microsoft Edge',
-  Chrome: 'Google Chrome',
-  Opener:
-    Openers.OpenIn ||
-    Openers.Browsers ||
-    Openers.Browserosaurus ||
-    Openers.BrowserFairy ||
-    'Safari',
+  Opener,
 }
 
 if (isWork) {
