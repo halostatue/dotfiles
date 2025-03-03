@@ -9,7 +9,7 @@ format:
     @npx @biomejs/biome check --config-path=biome.json --fix \
       --stdin-file-path=finicky.js <home/private_dot_finicky.js.tmpl | \
       sponge home/private_dot_finicky.js.tmpl
-    @shfmt -w home/.chezmoiscripts/* lib/lib.bash lib/update.sh
+    @shfmt -w home/.chezmoiscripts/* lib/lib.bash
     @ruff check --fix \
       home/private_dot_local/bin/executable_git-blame-colored \
       home/private_dot_local/bin/executable_git-show-branch-activity \
@@ -26,35 +26,19 @@ format:
       home/private_dot_local/bin/executable_nato
 
 # Update all package files
-update-packages: ports homebrew go rust code ruby python ghext
+update-packages: ports homebrew rust code ruby python gh-extensions
 
 # Update MacPorts packages
 ports:
-    @lib/update.sh ports
+    @ruby lib/update.rb ports
 
 # Update Homebrew packages
 homebrew:
     @ruby lib/update.rb homebrew
 
-# Update Go binaries (using 'gup')
-go:
-    #!/bin/sh
-
-    if command -v gup >/dev/null 2>/dev/null; then
-      lib/update.sh go
-    else
-      true
-    fi
-
 # Update GitHub Extensions
-ghext:
-    #!/bin/sh
-
-    tmp=`mktemp`
-    printf "#!/bin/sh\n\n" >"$tmp"
-    gh extension list | awk '{ print "gh extension install", $3; }' |
-      sort -iu >>"$tmp"
-    vimdiff "$tmp" home/private_dot_config/gh-extensions.tmpl
+gh-extensions:
+    @ruby lib/update.rb gh_extensions
 
 # Update Rust binaries (using 'cargo-liner')
 rust:
@@ -72,25 +56,10 @@ code:
 ruby: _ruby_gems
 
 # Update Python-based dependencies
-python: _python_pipx _python_uv
-
-_python_pipx:
-    #!/bin/sh
-
-    if command -v pipx >/dev/null 2>/dev/null; then
-      ruby lib/update.rb python_pipx
-    else
-      true
-    fi
+python: _python_uv
 
 _python_uv:
-    #!/bin/sh
-
-    if command -v uv >/dev/null 2>/dev/null; then
-      ruby lib/update.rb python_uv
-    else
-      true
-    fi
+    @ruby lib/update.rb python_uv
 
 _ruby_gems:
     @ruby lib/update.rb ruby_gems
