@@ -1,0 +1,15 @@
+# role: editors-extra
+#
+# Extra tools for code editing, etc.
+---
+defrole:
+  editors-extra:
+    cond:
+      - if-role: personal
+        casks:
+          bbedit: Text, code, and markup editor
+          scrivener: Word processing software with a typewriter style
+
+        mas:
+          420212497: Byword
+          635758264: Calca

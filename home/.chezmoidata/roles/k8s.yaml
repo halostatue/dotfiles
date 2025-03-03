@@ -1,0 +1,14 @@
+# role: k8s
+#
+# Kubernetes-related tools
+---
+defrole:
+  k8s:
+    casks:
+      headlamp: UI for Kubernetes
+      openlens: Open source build of Lens Kubernetes IDE
+
+    ports:
+      install:
+        dotenv-linter:
+        k9s:

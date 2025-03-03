@@ -1,0 +1,31 @@
+# role: graphics
+#
+# Graphics and design tools.
+---
+defrole:
+  graphics:
+    ports:
+      install:
+        oxipng:
+        viu:
+        vv:
+
+    cond:
+      - if-role: personal
+        casks:
+          acorn: Image editor focused on simplicity
+          affinity-designer: Professional graphic design software
+          affinity-photo: Professional image editing software
+          affinity-publisher: Professional desktop publishing software
+
+        mas:
+          1289583905: Pixelmator Pro
+          1106867065: Svgsus
+
+        uv:
+          # Export photos from Apple's macOS Photos app and query the Photos library
+          # database to access metadata about images.
+          osxphotos:
+
+
+# vim: ft=yaml

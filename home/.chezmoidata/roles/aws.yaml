@@ -1,0 +1,23 @@
+# role: aws
+#
+# AWS-related tooling.
+---
+defrole:
+  aws:
+    ports:
+      install:
+        py312-awscli2:
+      select:
+        awscli: py312-awscli2
+
+    cond:
+      - if-role: personal
+        uv:
+          # Least privilege AWS IAM Terraformer
+          airiam:
+          # AWS IAM Security Assessment tool that identifies violations of least
+          # privilege and generates a risk-prioritized HTML report.
+          cloudsplaining:
+          # A Python script and library for analyzing an AWS account's use of IAM.
+          principalmapper:
+# vim: ft=yaml

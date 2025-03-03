@@ -1,0 +1,14 @@
+# role: postgres
+#
+# Tooling for PostgreSQL
+---
+defole:
+  postgres:
+    casks:
+      postgres-unofficial: App wrapper for Postgres
+
+    ports:
+      install:
+        postgresql17:
+      select:
+        postgresql: postgresql17

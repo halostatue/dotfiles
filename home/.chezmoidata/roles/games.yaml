@@ -1,0 +1,19 @@
+# role: games
+#
+# The games role.
+---
+defrole:
+  games:
+    casks:
+      dosbox: Emulator for x86 with DOS
+      dosbox-x: Fork of the DOSBox project
+      gargoyle: IO layer for interactive fiction players
+      spatterlight: Play most kinds of interactive fiction game files
+
+    mas:
+      6502451661: Balatro+
+      1617349089: GRIS+
+      1022841309: Grim Fandango
+      1636872154: 'Kingdoms: Merge & Build'
+      1610164691: Ridiculous Fishing
+      6448185316: junkworld

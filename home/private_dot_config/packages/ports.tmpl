@@ -1,184 +1,28 @@
-{{- $opts := dict
-      "personal" (eq (get . "role") "personal")
-      "work"     (eq (get . "role") "work")
-      "macos"    (and (eq $.chezmoi.os "darwin") (output "sw_vers" "-productVersion"))
-      "broken"   (dict
-          "openjdk11"   true
-          "openjdk17"   true
-          "ftgl"        true
-      )
+{{- if lookPath "port" -}}
+{{- $roles := includeTemplate "roles/selected" . | fromJson -}}
+{{- $ports := or (get $roles "ports") (dict) }}
+{{-
+  $requested := output "port" "echo" "requested"
+    | trim
+    | replaceAllRegex "\\s+@.+" ""
+    | splitList "\n"
 -}}
+{{- range $port, $var := or (get $ports "install") (dict) -}}
+{{-   $prefix := or (and (has $port $requested) "# ") "" -}}
+{{ printf "%sinstall %s %s" $prefix $port (or $var "") }}
+{{ end }}
 
-install 1password-cli
-install act
-install actionlint
-install age
-install amazon-ecr-credential-helper
-install ansifilter
-install antiword
-install atuin
-install bat
-install bat-extras
-install cargo
-install cargo2port
-install certstrap
-install chainloop
-install chezmoi
-install cloc
-install colima
-install container-diff
-install cosign
-install csvlens
-install ctpv
-install deno
-install diffoci
-install diffoscope
-install difftastic
-install dive
-install docker
-install docker-base-plugin
-install docker-buildx-plugin
-install docker-compose-plugin
-install docker-credential-helper-osxkeychain
-install docker-index-plugin
-install dos2unix
-install dotenv-linter
-install duf
-install dust
-install editorconfig-checker
-{{ if not (hasKey $opts.broken "openjdk11") -}}
-install epubcheck
-{{- end }}
-install eza +doc+git
-install fastmod
-install fd
-install fish
-install flyctl
-install fswatch
-install gawk
-install gh
-install git +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
-install git-absorb
-install git-branchless
-install git-delta
-install git-interactive-rebase-tool
-install git-mediate
-install git-some-extras
-install git-stack
-install git-tools
-install gitleaks
-install glow
-install gmake
-install go
-install go-mmv
-install go2port
-install goawk
-install gojq
-{{ if not (hasKey $opts.broken "ftgl") -}}
-install gource
-{{- end }}
-install grype
-install gum
-install htmd-cli
-install hwatch
-install hyperfine
-install ijq
-install jaq
-install jnv
-install jq
-install jqfmt
-install jqp
-install jujutsu
-install just
-{{ if $opts.work -}}
-install k9s
-{{- end }}
-install kondo
-install lazydocker
-install lazygit
-install lemmeknow
-install lychee
-install mani
-install manifest-tool
-install mas
-install massren
-install mdcat
-install micro
-install miller
-install minisign
-install mise
-install mkcert
-install moreutils +doc
-install mpstats
-install mquery
-install murex
-install mved
-install navi
-install nomino
-install oath-toolkit
-install oauth2c
-install oha
-install oxipng
-install pam-reattach
-install pandoc
-{{ if not (hasKey $opts.broken "openjdk17") -}}
-install pkl
-{{- end }}
-install prr
-install pug
-install pv
-install py312-awscli2
-install py312-pip
-install rage
-install ranger
-{{ if $opts.work -}}
-install redis
-{{- end }}
-install ripgrep
-install ruby-build
-install ruby-install
-install rust
-install rust-script
-install scc
-install seaport
-install sfm
-install shellcheck
-install shellharden
-install shfmt
-install step-cli
-install stgit
-install tag
-install taplo
-{{ if stat "/Applications/Xcode.app" -}}
-install terminal-notifier
-{{- end }}
-install tig +doc
-install tnef
-install tokei
-install trivy
-install typos
-install universal-ctags +iconv+libxml2+link_to_ctags+manpages
-install uv
-install viddy
-install vifm
-install viu
-install vv
-install watch
-install watchexec
-install xmlstarlet
-install xq
-install xsv
-install zoxide
+{{ range $select, $port := or (get $ports "select") (dict) -}}
+{{-   if has $port $requested -}}
+select --set {{ $select }} {{ $port }}
+{{    end }}
+{{ end }}
 
-select --set awscli py312-awscli2
-select --set pip pip312
-select --set pip3 pip312
-select --set python python312
-select --set python3 python312
-{{- /* Things to consider
-install asciinema
-install agg
-install slides
-install tflint
-# add a zizmore port
-*/ -}}
+{{ range $port, $_ := or (get $ports "setunrequested") (dict) -}}
+{{-   if has $port $requested -}}
+setunrequested {{ $port }}
+{{-   else -}}
+# setunrequested {{ $port }}
+{{-    end }}
+{{ end -}}
+{{- end -}}

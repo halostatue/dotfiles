@@ -1,0 +1,13 @@
+# role: llm
+#
+# The LLM role includes local or remote LLM-related software.
+---
+defrole:
+  llm:
+    casks:
+      jan: Offline AI chat tool
+      lm-studio: Discover, download, and run local LLMs
+      msty: Run LLMs locally
+      ollamac: Interact with Ollama models
+      pieces: Code snippets, screenshots and workflow context
+      pieces-os: Local datastore, server, and ML engine powering the Pieces for Developers Suite

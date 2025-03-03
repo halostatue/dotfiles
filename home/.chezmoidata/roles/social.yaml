@@ -1,0 +1,8 @@
+# role: social
+#
+# The social role includes software for social media.
+---
+defrole:
+  social:
+    mas:
+      6444915884: Ice Cubes

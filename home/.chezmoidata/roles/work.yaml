@@ -1,0 +1,21 @@
+# role: personal
+#
+# The work role includes software applicable to my work machines.
+---
+defrole:
+  work:
+    casks:
+      dehesselle-meld: Visual diff and merge tool
+      drovio: Remote pair programming and team collaboration tool
+      postman: Collaboration platform for API development
+      slack: Team communication and collaboration software
+
+    mas:
+      1451685025: WireGuard
+
+    ports:
+      install:
+        jwt-cli:
+        oath-toolkit:
+        oauth2c:
+        redis:

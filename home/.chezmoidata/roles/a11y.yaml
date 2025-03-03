@@ -1,0 +1,10 @@
+# role: a11y
+#
+# Accessibility tooling.
+---
+defrole:
+  a11y:
+    mas:
+      693112260: Sim Daltonism
+
+# vim: ft=yaml

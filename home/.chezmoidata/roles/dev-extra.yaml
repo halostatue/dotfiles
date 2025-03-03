@@ -1,0 +1,115 @@
+# Extra dev tools.
+---
+defrole:
+  dev-extra:
+    # TODO: These tools should be available in MacPorts, either through a mainline port or
+    #       a "private" port that I maintain at halostatue/ports.
+    formulae:
+      csvtk: Cross-platform, efficient and practical CSV/TSV toolkit in Golang
+      flarectl: CLI application for interacting with a Cloudflare account
+      syft: CLI for generating a Software Bill of Materials from container images
+
+    casks:
+      livebook: Code notebooks for Elixir developers
+      visual-studio-code: Open-source code editor
+      zed: Multiplayer code editor
+
+    ports:
+      install:
+        act:
+        actionlint:
+        cloc:
+        prr:
+        rust-script:
+        flyctl:
+        git-branchless:
+        git-mediate:
+        git-some-extras:
+        git-tools:
+        scc:
+        viddy:
+
+    uv:
+      # Quickly rewrite git repository history
+      git-filter-repo:
+      # Probably the sharpest git repository organizer & rebase/merge workflow
+      # automation tool you've ever seen
+      git-machete:
+      # Generate static HTML documentation from JSON schemas
+      json-schema-for-humans:
+      # command line jinja2 template (yet another j2cli)
+      kamidana:
+      # reuse is a tool for compliance with the REUSE recommendations.
+      reuse:
+
+    vscode:
+      amazonwebservices.aws-toolkit-vscode:
+      arr.marksman:
+      biomejs.biome:
+      bpruitt-goddard.mermaid-markdown-syntax-highlighting:
+      castwide.solargraph:
+      chrislajoie.vscode-modelines:
+      codezombiech.gitignore:
+      deltaxml.xslt-xpath:
+      eamodio.gitlens:
+      editorconfig.editorconfig:
+      eliverlara.andromeda:
+      elixir-tools.elixir-tools:
+      erlang-ls.erlang-ls:
+      extensiontotal.extensiontotal-vscode:
+      florinpatrascu.vscode-elixir-snippets:
+      foxundermoon.shell-format:
+      github.vscode-github-actions:
+      github.vscode-pull-request-github:
+      golang.go:
+      graphql.vscode-graphql:
+      graphql.vscode-graphql-syntax:
+      ianic.zig-language-extras:
+      jakebecker.elixir-ls:
+      jq-syntax-highlighting.jq-syntax-highlighting:
+      lexical-lsp.lexical:
+      mikestead.dotenv:
+      ms-azuretools.vscode-docker:
+      ms-python.debugpy:
+      ms-python.python:
+      ms-python.vscode-pylance:
+      ms-vscode.cpptools:
+      pgourlain.erlang:
+      redhat.vscode-xml:
+      redhat.vscode-yaml:
+      rust-lang.rust-analyzer:
+      shopify.ruby-lsp:
+      skyapps.fish-vscode:
+      sztheory.hex-lens:
+      tamasfe.even-better-toml:
+      tekumara.typos-vscode:
+      testdouble.vscode-standard-ruby:
+      timonwong.shellcheck:
+      vadimcn.vscode-lldb:
+      vitest.explorer:
+      vscodevim.vim:
+      webfreak.debug:
+      xavbergeron.vim-leave-insertmode:
+      yzhang.markdown-all-in-one:
+      ziglang.vscode-zig:
+
+    cond:
+      - if-port: ftgl
+        ports:
+          install:
+            gource:
+
+      - if-port: openjdk17
+        ports:
+          install:
+            pkl:
+
+      - if-role: personal
+        mas:
+          1622145140: Codelime
+          640199958: Developer
+          439697913: Icon Slate
+          992115977: Image2icon
+          889428659: xScope
+
+# vim: ft=yaml

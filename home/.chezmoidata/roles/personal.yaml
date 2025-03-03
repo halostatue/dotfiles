@@ -1,0 +1,38 @@
+# role: personal
+#
+# The personal role includes software applicable to my personal machines. This includes:
+#
+# - software for which I have a licence
+# - experimental software not suitable for work
+---
+defrole:
+  personal:
+    casks:
+      anki: Memory training application
+      anydesk: Allows connection to a computer remotely
+      eaglefiler: Organise files, archive e-mails, save Web pages and notes, search everything
+      hazel: Automated organisation
+      kindle-previewer: Preview and audit Kindle eBooks
+      koodo-reader: Open-source epub reader
+      macwhisper: LLM-powered speech transcription tool
+      monitorcontrol: Tool to control external monitor brightness & volume
+      monodraw: Tool to create text-based art
+      setapp: Collection of apps available by subscription
+
+    mas:
+      1586435171: Actions
+      993487541: CARROT Weather
+      1502839586: Hand Mirror
+      302584613: Kindle
+      403504866: PCalc
+      1303222628: Paprika Recipe Manager 3
+      899247664: TestFlight
+      889428659: xScope
+
+    cond:
+      - if-port: openjdk11
+        ports:
+          install:
+            epubcheck:
+
+# vim: ft=yaml
