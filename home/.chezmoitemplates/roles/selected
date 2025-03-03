@@ -1,0 +1,25 @@
+{{/* Resolve the role details from `.defrole` based on selected roles.*/}}
+{{- $selected := prepend .roles "base" -}}
+{{- $macports := and (eq .chezmoi.os "darwin") (lookPath "port") -}}
+{{- $result := dict -}}
+{{- range $_, $name := $selected -}}
+{{-   $def := get $.defrole $name -}}
+{{-   if not $def }}{{ continue }}{{ end -}}
+{{-   $result = mergeOverwrite $result (omit $def "cond") -}}
+{{-   range $_, $cond := or (get $def "cond") (list) -}}
+{{-     if $wanted := get $cond "if-role" -}}
+{{-       if has $wanted $.roles -}}
+{{-         $result = mergeOverwrite $result (omit $cond "if-role") -}}
+{{-       end -}}
+{{-     else if $wanted := get $cond "if-stat" -}}
+{{-       if stat $wanted -}}
+{{-         $result = mergeOverwrite $result (omit $cond "if-stat") -}}
+{{-       end -}}
+{{-     else if $wanted := get $cond "if-port" -}}
+{{-       if and $macports (output "port" "-q" "installed" $wanted | trim) -}}
+{{-         $result = mergeOverwrite $result (omit $cond "if-port") -}}
+{{-       end -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+{{- toJson $result -}}

@@ -1,0 +1,10 @@
+{{- /* Return the tags for git-identities files in all selected accounts. */ -}}
+{{- $tags := list -}}
+{{- range $alias, $account := get . "op" | default dict -}}
+{{-   if eq $alias "_excluded" }}{{ continue }}{{ end -}}
+{{-   $params := dict "account" $account "startswith" "git-identities: " -}}
+{{-   range $_, $doc := includeTemplate "1p/documents" $params | fromJson -}}
+{{-     $tags = append $tags ($doc.tags | default list) -}}
+{{-   end -}}
+{{- end -}}
+{{- $tags | jq "flatten | sort | unique" | first | toJson -}}

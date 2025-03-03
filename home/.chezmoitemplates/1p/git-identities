@@ -1,9 +1,9 @@
-{{- $account_vaults := includeTemplate "1password_vaults.tmpl" . | fromJson -}}
+{{- $account_vaults := includeTemplate "1p/vaults" . | fromJson -}}
 {{- $identities := dict }}
 {{- range $account_name, $account := $account_vaults -}}
 {{-   $vaults := $account.vaults -}}
-{{-   $params := dict "account" $account.url "startswith" "git-identities: " "tags" $.roles.git -}}
-{{-   $documents := includeTemplate "1password_documents.tmpl" $params | fromJson -}}
+{{-   $params := dict "account" $account.url "startswith" "git-identities: " "tags" $.git_identities -}}
+{{-   $documents := includeTemplate "1p/documents" $params | fromJson -}}
 {{-   $a_ids := dict }}
 {{-   range $document := $documents -}}
 {{-     $name := $document.title | trimPrefix "git-identities: " | trimSuffix ".yml" -}}

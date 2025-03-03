@@ -1,0 +1,35 @@
+{{- /*
+     * Look for document objects in 1Password and filter them based on various options.
+     *
+     * Required parameter:
+     *
+     * - account: The 1Password account URL (`$account.url`).
+     *
+     * Optional parameters:
+     *
+     * - startswith: The string to match against for filtering.
+     * - tags: The list of tags to use for filtering as an intersection.
+     */ -}}
+{{- $account := .account -}}
+{{- $name_filter := get . "startswith" -}}
+{{- if $name_filter -}}
+{{-   $name_filter = printf "map(select(.title | startswith(\"%s\")))" $name_filter -}}
+{{- end -}}
+{{- $tag_filter := get . "tags" -}}
+{{- if $tag_filter -}}
+{{-   if kindIs "string" $tag_filter }}
+{{-     $tag_filter = list $tag_filter }}
+{{-   end -}}
+{{-   if kindIs "slice" $tag_filter -}}
+{{-     $tag_filter = toJson $tag_filter -}}
+{{-   end -}}
+{{- end -}}
+{{- $documents := output "op" "document" "list" "--account" $account "--format" "json" | fromJson -}}
+{{- if $name_filter -}}
+{{-   $documents = $documents | jq $name_filter | first -}}
+{{- end -}}
+{{- if $tag_filter -}}
+{{-   $tag_filter = printf "map(select((.tags // []) as $tags | $tags - ($tags - %s) | length > 0))" $tag_filter -}}
+{{-   $documents = $documents | jq $tag_filter | first -}}
+{{- end -}}
+{{- $documents | jq "sort_by(.title)" | first | toJson -}}

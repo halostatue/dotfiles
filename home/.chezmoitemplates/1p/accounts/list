@@ -1,0 +1,2 @@
+{{- /* Return 1Password accounts as a list. */ -}}
+{{- output "op" "account" "list" "--format" "json" -}}

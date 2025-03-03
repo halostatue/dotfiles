@@ -1,0 +1,12 @@
+{{- /* Return the tags for aws-config and aws-credentials files in all selected accounts. */ -}}
+{{- $tags := list -}}
+{{- range $alias, $account := get . "op" | default dict -}}
+{{-   if eq $alias "_excluded" }}{{ continue }}{{ end -}}
+{{-   range $_, $prefix := list "config" "credentials" -}}
+{{-     $params := dict "account" $account "startswith" (printf "aws-%s: " $prefix) -}}
+{{-     range $_, $doc := includeTemplate "1p/documents" $params | fromJson -}}
+{{-       $tags = append $tags ($doc.tags | default list) -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+{{- $tags | jq "flatten | sort | unique" | first | toJson -}}

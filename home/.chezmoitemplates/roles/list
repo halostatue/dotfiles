@@ -1,0 +1,7 @@
+{{- $roles := list -}}
+{{- range $_, $path := joinPath .chezmoi.sourceDir ".chezmoidata/roles/*.yaml" | glob -}}
+{{-   $path = $path | base | replaceAllRegex "\\.yaml$" "" -}}
+{{-   if eq $path "base" -}}{{ continue }}{{ end -}}{{- /* Exclude base.yaml */ -}}
+{{-   $roles = append $roles $path -}}
+{{- end -}}
+{{- toJson $roles -}}

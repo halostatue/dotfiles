@@ -1,0 +1,30 @@
+{{- /* **Requires https://github.com/twpayne/chezmoi/issues/4314.**
+     * Configure 1Password accounts. This is more complex than the previous promptString
+     * mechanism used previously, because we want to force an alias when a new account is
+     * added.
+{{-
+    $opAccounts := includeTemplate "1p/accounts/list" .
+      | fromJson | jq "map(.url)" | first
+-}}
+{{- $op := get . "op" -}}
+{{- $excluded := get $op "_excluded" | default list -}}
+{{- $included := omit $op "_excluded" | values }}
+{{- range $_, $url := $opAccounts -}}
+{{-   if or (has $url $excluded) (has $url $included) }}{{ continue }}{{ end -}}
+{{-   $choice := promptChoice (printf "Configure %s" $url) (list "alias" "exclude" "skip") -}}
+{{-   if eq $choice "alias" -}}
+{{-     $alias := promptString (printf "Alias for %s" $url) -}}
+{{-     if hasKey $op $alias -}}
+{{-       warnf "Alias %s already is linked to %s; skipping" $alias (get $op $alias) -}}
+{{-     else -}}
+{{-       $op = set $op $alias $url -}}
+{{-     end -}}
+{{-   else if eq $choice "Exclude"  -}}
+{{-     $excluded = append $excluded $url -}}
+{{-   end -}}
+{{- end -}}
+{{- if gt (len $excluded) 0 -}}
+{{-   $op = set $op "_excluded" $excluded -}}
+{{- end -}}
+{{- toJson $op -}}
+     */ -}}

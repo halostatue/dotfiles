@@ -1,0 +1,8 @@
+{{- $agents := list "ssh-agent" -}}
+{{- if stat "/Applications/Secretive.app" -}}
+{{-   $agents = prepend $agents "secretive" }}
+{{- end -}}
+{{- if or (stat "/Applications/1Password.app") (lookPath "1password") -}}
+{{-   $agents = prepend $agents "1password" }}
+{{- end -}}
+{{- toJson $agents -}}
