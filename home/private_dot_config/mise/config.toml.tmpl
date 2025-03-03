@@ -1,7 +1,7 @@
-{{- $work := eq (get . "role") "work" -}}
-{{- $vivo_hex_api_key := "" -}}
+{{- $work := has "work" (get . "roles" | default list) -}}
+{{- $hex_api_keys := dict -}}
 {{- if $work -}}
-{{-   $vivo_hex_api_key = onepasswordRead "op://xlol453p46nfdqodyw62qzk63m/rlvbids4mm46mozbxeplzfphem/credential" -}}
+{{-   $_ := set $hex_api_keys "vivo" (onepasswordRead "op://xlol453p46nfdqodyw62qzk63m/rlvbids4mm46mozbxeplzfphem/credential") .op.personal -}}
 {{- end }}
 min_version = "2024.12.23"
 
@@ -13,62 +13,44 @@ idiomatic_version_file = false
 legacy_version_file = false
 paranoid = true
 
+[settings.ruby]
+default_packages_file = {{ joinPath .chezmoi.homeDir ".config/packages/default_gems" | quote }}
+
 [env]
 ERL_AFLAGS = "-kernel shell_history enabled shell_history_file_bytes 5242880"
 RIPGREP_CONFIG_PATH = {{ joinPath .chezmoi.homeDir ".ripgreprc" | quote }}
-{{ if $vivo_hex_api_key -}}
-VIVO_HEX_API_KEY = {{ $vivo_hex_api_key | quote }}
-{{- end }}
+{{ range $name, $value := $hex_api_keys -}}
+{{ printf "%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) }} = {{ $value | quote }}{{ end }}
 
 [tools]
-{{ if $work -}}
-aws-vault = "7"
-{{- end }}
+{{ if $work }}aws-vault = "7"{{ end }}
 elixir = "1.17.3-otp-27"
 erlang = "27.1.2"
-{{ if not (findExecutable "eza" (list "/opt/local/bin")) -}}
-eza = "latest"
-{{- end }}
 gleam = "latest"
-# "go:github.com/aarzilli/gdlv" = "latest"
-# "go:github.com/cooperspencer/gickup" = "latest"
-# "go:github.com/fatih/gomodifytags" = "latest"
-# "go:github.com/go-delve/delve/cmd/dlv" = "latest"
-# "go:github.com/kisielk/errcheck" = "latest"
-# "go:github.com/onsi/ginkgo/v2/ginkgo" = "latest"
-# "go:github.com/shurcooL/git-branches" = "latest"
-# "go:github.com/stefanlogue/meteor" = "latest"
-# "go:golang.org/x/tools/cmd/goimports" = "latest"
-# "go:mvdan.cc/gofumpt" = "latest"
 {{ if $work -}}
 "go:newreleases.io/cmd/newreleases" = "latest"
+k9s = "latet"
 kubectl = "1.31"
 {{- end }}
 node = "20"
-{{ if not (findExecutable "pandoc" (list "/opt/local/bin")) -}}
-pandoc = "latest"
-{{- end }}
 ruby = "3.3"
-{{ if not (findExecutable "shellcheck" (list "/opt/local/bin")) -}}
-shellcheck = "latest"
-{{- end }}
 "ubi:suzuki-shunsuke/pinact" = "latest"
-{{ if $work -}}
-"ubi:telia-oss/aws-env" = "latest"
-{{- end }}
+{{ if $work }}"ubi:telia-oss/aws-env" = "latest"{{ end }}
 usage = "latest"
 zig = "0.13"
+
+{{- if gt (len $hex_api_keys) 0 }}
 
 [tasks.hex-auth]
 description = "Authenticate Private hex.pm Organizations"
 run = [
   "echo Authenticating Private hex.pm Organizations",
-{{- if $vivo_hex_api_key }}
-  "mix hex.organization auth vivo --key $VIVO_HEX_API_KEY",
+{{- range $_, $name := keys $hex_api_keys -}}
+  "mix hex.organizations auth {{ $name }} --key {{ printf "$%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) }}",
 {{- end }}
 ]
 
 [tasks.hex-auth.env]
-{{- if $vivo_hex_api_key }}
-VIVO_HEX_API_KEY = {{ $vivo_hex_api_key | quote }}
-{{- end }}
+{{ range $name, $value := $hex_api_keys -}}
+{{ printf "%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) }} = {{ $value | quote }}{{ end }}
+{{ end -}}
