@@ -7,6 +7,15 @@
       | toStrings
       | join " "
 -}}
+{{- $agents := dict -}}
+{{- if eq .chezmoi.os "darwin" -}}
+{{-   $agents = dict
+        "1password" "Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+        "secretive" "Library/Containers/com.maxgoedjen.agent.SecretAgent/Data/socket.ssh"
+-}}
+{{- else if eq .chezmoi.os "linux" -}}
+{{-   $agents = dict "1password" ".1password/agent.sock" -}}
+{{- end -}}
 
 # General SSH configuration
 IgnoreUnknown UseKeychain
@@ -16,16 +25,11 @@ ServerAliveCountMax 6
 ServerAliveInterval 15
 VerifyHostKeyDNS yes
 
-{{ $agent := "" -}}
-{{- if eq .ssh.agent "1password" -}}
-{{-   $agent = joinPath $.chezmoi.homeDir "Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" -}}
-{{- else if eq .ssh.agent "secretive" -}}
-{{-   $agent = joinPath $.chezmoi.homeDir "Library/Containers/com.maxgoedjen.agent.SecretAgent/Data/socket.ssh" -}}
-{{- end -}}
-{{ if and ($agent) (stat $agent) -}}
+{{ $agent := get $agents (dig "ssh" "agent" "" .) -}}
+{{- if $agent }}{{ $agent = joinPath $.chezmoi.homeDir $agent }}{{ end -}}
+{{- if and ($agent) (stat $agent) -}}
 Host *
-  IdentityAgent {{ $agent | quote }}
-{{- end }}
+  IdentityAgent {{ $agent | quote }}{{ end }}
 
 Host *
   UseKeychain yes
@@ -38,11 +42,11 @@ Host {{ $updatable_hosts }}
 Host *^*
   ProxyCommand {{ $programs.ssh_chain | quote }} %h %p
 {{- end }}
-{{- $account_vaults := includeTemplate "1password_vaults.tmpl" . | fromJson -}}
+{{- $account_vaults := includeTemplate "1p/vaults" . | fromJson -}}
 {{- range $account_name, $account := $account_vaults -}}
 {{-   $vaults := $account.vaults -}}
 {{-   $params := dict "account" $account.url "startswith" "ssh-host: " -}}
-{{-   $documents := includeTemplate "1password_documents.tmpl" $params | fromJson -}}
+{{-   $documents := includeTemplate "1p/documents" $params | fromJson -}}
 {{-   range $document := $documents -}}
 {{-     $vault_name := (get $vaults $document.vault.id).name }}
 {{      printf "# '%v/%v' (from %v)" $vault_name $document.title $account.url }}
@@ -51,7 +55,7 @@ Host *^*
 {{-  end -}}
 {{- end -}}
 
-{{- $identities := includeTemplate "1password_git_identities.tmpl" . | fromJson -}}
+{{- $identities := includeTemplate "1p/git-identities" . | fromJson -}}
 {{- range $account_name, $configs := $identities -}}
 {{-   range $config_name, $config := $configs -}}
 {{-     if hasKey $config.data "ssh" -}}{{- range $ssh_name, $ssh_config := $config.data.ssh }}
