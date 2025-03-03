@@ -1,4 +1,4 @@
-{{- $identities := includeTemplate "1password_git_identities.tmpl" . | fromJson -}}
+{{- $identities := includeTemplate "1p/git-identities" . | fromJson -}}
 {{- $keys := dict -}}
 {{- range $_account, $configs := $identities -}}
 {{-   range $_config_name, $config := $configs -}}

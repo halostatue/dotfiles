@@ -5,7 +5,7 @@
 {{- $coreAttributesFile := joinPath .chezmoi.homeDir ".config/git/attributes" -}}
 {{- $excludesFile := joinPath .chezmoi.homeDir ".config/git/ignore" -}}
 {{- $skiplistFile := joinPath .chezmoi.homeDir ".config/git/commit-skiplist" -}}
-{{- $identities := includeTemplate "1password_git_identities.tmpl" . | fromJson -}}
+{{- $identities := includeTemplate "1p/git-identities" . | fromJson -}}
 {{- $corePager := "" -}}
 {{- $credentialsHelper := "" -}}
 {{- $githubUser := "" -}}

@@ -3,7 +3,7 @@
 # shellcheck disable=SC2154,SC2250
 
 # Identities should be updated whenever any of the identity documents change.
-# {{ $identities := includeTemplate "1password_git_identities.tmpl" . | fromJson }}
+# {{ $identities := includeTemplate "1p/git-identities" . | fromJson }}
 # {{ range $account_name, $configs := $identities }}
 # {{   range $config_name, $config := $configs }}
 

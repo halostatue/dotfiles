@@ -28,7 +28,7 @@
 #
 # More examples can be found here:
 #  https://developer.1password.com/docs/ssh/agent/config
-{{- $identities := includeTemplate "1password_git_identities.tmpl" . | fromJson -}}
+{{- $identities := includeTemplate "1p/git-identities" . | fromJson -}}
 {{- $vaults := dict -}}
 {{- range $_account, $configs := $identities -}}
 {{-   range $_config_name, $config := $configs -}}
