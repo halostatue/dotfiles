@@ -1,7 +1,7 @@
 {{- $work := has "work" (get . "roles" | default list) -}}
 {{- $hex_api_keys := dict -}}
 {{- if $work -}}
-{{-   $_ := set $hex_api_keys "vivo" (onepasswordRead "op://xlol453p46nfdqodyw62qzk63m/rlvbids4mm46mozbxeplzfphem/credential") .op.personal -}}
+{{-   $_ := set $hex_api_keys "vivo" (onepasswordRead "op://xlol453p46nfdqodyw62qzk63m/rlvbids4mm46mozbxeplzfphem/credential" .op.personal) -}}
 {{- end }}
 min_version = "2024.12.23"
 
@@ -47,7 +47,7 @@ run = [
   "echo Authenticating Private hex.pm Organizations",
 {{- range $_, $name := keys $hex_api_keys -}}
   "mix hex.organizations auth {{ $name }} --key {{ printf "$%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) }}",
-{{- end }}
+{{ end }}
 ]
 
 [tasks.hex-auth.env]

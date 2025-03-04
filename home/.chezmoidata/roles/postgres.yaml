@@ -2,7 +2,7 @@
 #
 # Tooling for PostgreSQL
 ---
-defole:
+defrole:
   postgres:
     casks:
       postgres-unofficial: App wrapper for Postgres

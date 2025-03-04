@@ -12,7 +12,7 @@
   $opAccounts := includeTemplate "1p/accounts/list" .
   | fromJson | jq "map(.url)" | first
 -}}
-{{- $op := get . "op" -}}
+{{- $op := get . "op" | default dict -}}
 {{- $excluded := get $op "_excluded" | default list -}}
 {{- $included := omit $op "_excluded" | values }}
 {{- range $_, $url := $opAccounts -}}
@@ -52,8 +52,8 @@
 {{- $gitIdentityTags := includeTemplate "init/1p/git-identity-tags" . | fromJson -}}
 {{- $gitIdentityTags = concat $gitIdentityTags $opts -}}
 {{- $gitIdentities := promptMultichoiceOnce . "git_identities" "Git identities" $gitIdentityTags -}}
-{{- if has "Skip" $gitIdentities }}{{ $awsTags = "" -}}
-{{- else if has "None" $gitIdentities }}{{ $awsTags = list }}{{ end -}}
+{{- if has "Skip" $gitIdentities }}{{ $gitIdentities = "" -}}
+{{- else if has "None" $gitIdentities }}{{ $gitIdentities = list }}{{ end -}}
 
 [scriptEnv]
 DEBUG_SCRIPTS = "false"
