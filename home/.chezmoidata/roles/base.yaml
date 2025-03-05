@@ -120,6 +120,7 @@ defrole:
         lychee:
         mani:
         moreutils: +doc
+        ov:
         pv:
         shellcheck:
         shellharden:

@@ -1,5 +1,5 @@
 {{- /* Initialize variables for use in this file */ -}}
-{{- $programs := includeTemplate "programs" . | fromJson -}}
+{{- $has := includeTemplate "programs" . | fromJson -}}
 
 [diff]
   algorithm = histogram
@@ -45,32 +45,32 @@
   # from http://git.savannah.gnu.org/gitweb/?p=coreutils.git;a=blob;f=.gitattributes;h=c3b2926c78c939d94358cc63d051a70d38cfea5d;hb=HEAD
   xfuncname = "^@node[ \t][ \t]*\\([^,][^,]*\\)"
 
-{{ if $programs.ksdiff -}}
+{{ if $has.ksdiff -}}
 [diff]
-  guitool = {{ $programs.ksdiff }}
+  guitool = {{ $has.ksdiff }}
 
 [difftool "ksdiff"]
-  cmd = {{ $programs.ksdiff }} --partial-changeset --relative-path "${MERGED}" -- "${LOCAL}" "${REMOTE}"
+  cmd = {{ $has.ksdiff }} --partial-changeset --relative-path "${MERGED}" -- "${LOCAL}" "${REMOTE}"
 
 [mergetool "ksdiff"]
-  cmd = {{ $programs.ksdiff }} --merge --output "${MERGED}" --base "${BASE}" -- "${LOCAL}" --snapshot "${REMOTE}" --snapshot
+  cmd = {{ $has.ksdiff }} --merge --output "${MERGED}" --base "${BASE}" -- "${LOCAL}" --snapshot "${REMOTE}" --snapshot
   trustExitCode = true
 {{- end }}
 
-{{ if $tool := or $programs.difftastic $programs.delta $programs.icdiff -}}
+{{ if $tool := or $has.difft $has.delta $has.icdiff -}}
 [diff]
   tool = {{ quote $tool }}
 {{- end }}
 
-{{ if $programs.exiftool -}}
+{{ if $has.exiftool -}}
 [diff "exif"]
   binary = true
-  textconv = {{ $programs.exiftool }}
+  textconv = {{ $has.exiftool }}
 {{- end }}
 
-{{ if $tool := or $programs.pdftotext $programs.pdfinfo -}}
-{{-  if eq $tool $programs.pdftotext -}}
-{{-    $tool = printf "sh -c '%q -layout %q -enc UTF-8 -nopgbrk -q -'" $tool "$programs.0" -}}
+{{ if $tool := or $has.pdftotext $has.pdfinfo -}}
+{{-  if eq $tool $has.pdftotext -}}
+{{-    $tool = printf "sh -c '%q -layout %q -enc UTF-8 -nopgbrk -q -'" $tool "$has.0" -}}
 {{-  else -}}
 {{-    $tool = quote $tool -}}
 {{-  end -}}
@@ -80,15 +80,15 @@
   textconv = {{ $tool }}
 {{- end }}
 
-{{ if $tool := or $programs.djvutxt $programs.pdfinfo -}}
+{{ if $tool := or $has.djvutxt $has.pdfinfo -}}
 [diff "djvu"]
   binary = true
   cachetextconv = true
   textconv = {{ $tool }}
 {{- end }}
 
-{{ if $tool := or $programs.odt2txt $programs.pandoc -}}
-{{-  if eq $tool $programs.pandoc -}}
+{{ if $tool := or $has.odt2txt $has.pandoc -}}
+{{-  if eq $tool $has.pandoc -}}
 {{-    $tool = printf "%q --standalone --from=odt --to=plain" $tool -}}
 {{-  else -}}
 {{-    $tool = quote $tool -}}
@@ -99,8 +99,8 @@
   textconv = {{ $tool }}
 {{- end }}
 
-{{ if $tool := or $programs.wvText $programs.antiword $programs.catdoc -}}
-{{-  if eq $tool $programs.antiword -}}
+{{ if $tool := or $has.wvText $has.antiword $has.catdoc -}}
+{{-  if eq $tool $has.antiword -}}
 {{-    $tool = printf "%q -" $tool -}}
 {{-  else -}}
 {{-    $tool = quote $tool -}}
@@ -111,10 +111,10 @@
   textconv = {{ $tool }}
 {{- end }}
 
-{{ if $tool := or $programs.in2csv $programs.xlscat $programs.soffice -}}
-{{-  if eq $tool $programs.xlscat -}}
+{{ if $tool := or $has.in2csv $has.xlscat $has.soffice -}}
+{{-  if eq $tool $has.xlscat -}}
 {{-    $tool = printf "%q a UTF-8" $tool -}}
-{{-  else if eq $tool $programs.soffice -}}
+{{-  else if eq $tool $has.soffice -}}
 {{-    $tool = printf "%q --headless --convert-to csv" $tool -}}
 {{-  else -}}
 {{-    $tool = quote $tool -}}
@@ -125,8 +125,8 @@
   textconv = {{ $tool }}
 {{- end }}
 
-{{ if $tool := or $programs.docx2txt $programs.pandoc -}}
-{{-  if eq $tool $programs.pandoc -}}
+{{ if $tool := or $has.docx2txt_pl $has.pandoc -}}
+{{-  if eq $tool $has.pandoc -}}
 {{-    $tool = printf "%q --standalone --from=docx --to=plain" $tool }}
 {{-  else -}}{{/* doc2txt */}}
 {{-    $tool = printf "sh -c '%q %q -" $tool "$0" -}}
@@ -137,8 +137,8 @@
   textconv = {{ $tool }}
 {{- end }}
 
-{{ if $tool := or $programs.in2csv $programs.soffice $programs.xlsx2csv $programs.xlsx2csvPy -}}
-{{-  if eq $tool $programs.soffice }}
+{{ if $tool := or $has.in2csv $has.soffice $has.xlsx2csv $has.xlsx2csv_py -}}
+{{-  if eq $tool $has.soffice }}
 {{-    $tool = printf "%q --headless --convert-to csv" $tool -}}
 {{-  else -}}
 {{-    $tool = quote $tool -}}
@@ -149,11 +149,11 @@
   textconv = {{ $tool }}
 {{- end }}
 
-{{ if $programs.pptx2md -}}
+{{ if $has.pptx2md -}}
 {{- $cache := "~/.cache/git/presentation.md" }}
 {{- $tool :=
   printf "sh -c '%s --disable_image --disable_wmf -i %s -o %s >/dev/null && cat %s"
-    $programs.pptx2md "$0" $cache $cache
+    $has.pptx2md "$0" $cache $cache
 -}}
 [diff "pptx"]
   binary = true
@@ -161,92 +161,59 @@
   textconv = {{ $tool }}
 {{- end }}
 
-{{ if $programs.unrtf -}}
+{{ if $has.unrtf -}}
 [diff "rtf"]
   binary = true
   cachetextconv = true
-  textconv = {{ $programs.unrtf }} --text
+  textconv = {{ $has.unrtf }} --text
 {{- end }}
 
-{{ if $programs.pandoc -}}
+{{ if $has.pandoc -}}
 [diff "epub"]
   binary = true
   cachetextconv = true
-  textconv = {{ $programs.pandoc }} --standalone --from=epub --to=plain
+  textconv = {{ $has.pandoc }} --standalone --from=epub --to=plain
 {{- end }}
 
-{{ if $programs.tika -}}
+{{ if $has.tika -}}
 # [Tika](https://tika.apache.org/download.html)
 [diff "tika"]
   binary = true
   cachetextconv = true
-  textconv = {{ $programs.tika }} --text
+  textconv = {{ $has.tika }} --text
 {{- end }}
 
-{{ if $programs.soffice -}}
+{{ if $has.soffice -}}
 [diff "libreoffice"]
   binary = true
   cachetextconv = true
-  textconv = {{ $programs.soffice }} --cat
+  textconv = {{ $has.soffice }} --cat
 {{- end }}
 
-{{ if $programs.catppt -}}
+{{ if $has.catppt -}}
 [diff "ppt"]
   binary = true
   cachetextconv = true
-  textconv = {{ $programs.catppt }}
+  textconv = {{ $has.catppt }}
 {{- end }}
 
-{{ if $programs.delta -}}
-[delta]
-  dark = true
-  syntax-theme = OneHalfDark
-  features = side-by-side unobtrusive-line-numbers decorations woolly-mammoth
-  # woolly-mammoth mantis-shrimp
-  navigate = true # use n and N to move between diff sections
-  line-numbers = true
-  zero-style = dim syntax
-
-[delta "side-by-side"]
-  side-by-side = true
-
-[delta "interactive"]
-  keep-plus-minus-markers = false
-
-[delta "unobtrusive-line-numbers"]
-  line-numbers = true
-  line-numbers-minus-style = "#444444"
-  line-numbers-zero-style = "#444444"
-  line-numbers-plus-style = "#444444"
-  line-numbers-left-format = "{nm:>4}┊"
-  line-numbers-right-format = "{np:>4}│"
-  line-numbers-left-style = blue
-  line-numbers-right-style = blue
-
-[delta "decorations"]
-  commit-decoration-style = bold yellow box ul
-  file-style = bold yellow ul
-  file-decoration-style = none
-  hunk-header-decoration-style = yellow box
-
-[interactive]
-  diffFilter = {{ $programs.delta }} --color-only --features=interactive
+{{ if $has.delta -}}
 
 [difftool "delta"]
-  cmd = {{ $programs.delta }} "${LOCAL}" "${REMOTE}" "${MERGED}"
+  cmd = {{ $has.delta }} "${LOCAL}" "${REMOTE}" "${MERGED}"
 {{- end }}
 
-{{ if $programs.difftastic -}}
-[difftool "difftastic"]
-  cmd = {{ $programs.difftastic }} "${LOCAL}" "${REMOTE}"
+{{ if $has.difft -}}
+[difftool "difft"]
+  cmd = {{ $has.difft }} "${LOCAL}" "${REMOTE}"
 {{- end }}
 
-{{ if $programs.icdiff -}}
+{{ if $has.icdiff -}}
 [difftool "icdiff"]
-  cmd = {{ $programs.icdiff }} --line-numbers "${LOCAL}" "${REMOTE}"
+  cmd = {{ $has.icdiff }} --line-numbers "${LOCAL}" "${REMOTE}"
 {{- end }}
 
-{{ if $tool := or $programs.gvim $programs.mvim -}}
+{{ if $tool := or $has.gvim $has.mvim -}}
 [mergetool "gvim"]
   cmd = {{ quote $tool }} -d --nofork "${LOCAL}" "${MERGED}" "${REMOTE}"
   trustExitCode = true
@@ -257,17 +224,17 @@
 #   trustExitCode = true
 {{- end }}
 
-{{ if $programs.vim -}}
+{{ if $has.vim -}}
 [mergetool "vimdiff"]
-  cmd = {{ $programs.vim }} -d "${LOCAL}" "${MERGED}" "${REMOTE}"
+  cmd = {{ $has.vim }} -d "${LOCAL}" "${MERGED}" "${REMOTE}"
   trustExitCode = true
 
 [mergetool "conflicted"]
-  cmd = {{ $programs.vim }} +Conflicted
+  cmd = {{ $has.vim }} +Conflicted
   trustExitCode = true
 
 [merge]
   tool = vimdiff
 {{- end }}
 
-{{/* vim: set filetype=gitconfig */}}
+{{/* vim: set filetype=gitconfig.chezmoitmpl */}}

@@ -1,45 +1,55 @@
-{{- dict
-       "antiword" (and ($p := lookPath "antiword") (base $p))
-       "bat" (and ($p := lookPath "bat") (base $p))
-       "catdoc" (and ($p := lookPath "catdoc") (base $p))
-       "catppt" (and ($p := lookPath "catppt") (base $p))
-       "delta" (and ($p := lookPath "delta") (base $p))
-       "diff_so_fancy" (and ($p := lookPath "diff-so-fancy") (base $p))
-       "difftastic" (and ($p := lookPath "difft") (base $p))
-       "djvutxt" (and ($p := lookPath "djvutxt") (base $p))
-       "docx2txt" (and ($p := lookPath "docx2txt.pl") (base $p))
-       "exa" (and ($p := lookPath "exa") (base $p))
-       "eza" (and ($p := lookPath "eza") (base $p))
-       "exiftool" (and ($p := lookPath "exiftool") (base $p))
-       "fzf" (and ($p := lookPath "fzf") (base $p))
-       "gh" (and ($p := lookPath "gh") (base $p))
-       "ghostty" (and ($p := lookPath "ghostty") (base $p))
-       "git_trim" (and ($p := lookPath "git-trim") (base $p))
-       "git_absorb" (and ($p := lookPath "git-absorb") (base $p))
-       "gvim" (and ($p := lookPath "gvim") (base $p))
-       "interactive_rebase_tool" (and ($p := lookPath "interactive-rebase-tool") (base $p))
-       "icdiff" (and ($p := lookPath "icdiff") (base $p))
-       "in2csv" (and ($p := lookPath "in2csv") (base $p))
-       "ksdiff" (and ($p := lookPath "ksdiff") (base $p))
-       "mvim" (and ($p := lookPath "mvim") (base $p))
-       "macos_open" (and ($p := lookPath "open") (base $p))
-       "odt2txt" (and ($p := lookPath "odt2txt") (base $p))
-       "pandoc" (and ($p := lookPath "pandoc") (base $p))
-       "pdfinfo" (and ($p := lookPath "pdfinfo") (base $p))
-       "pdftotext" (and ($p := lookPath "pdftotext") (base $p))
-       "pinentry_mac" (and ($p := lookPath "pinentry-mac") (base $p))
-       "pptx2md" (and ($p := lookPath "pptx2md") (base $p))
-       "ssh_chain" (and ($p := lookPath "ssh-chain") (base $p))
-       "soffice" (and ($p := lookPath "soffice") (base $p))
-       "tika" (and ($p := lookPath "tika") (base $p))
-       "unrtf" (and ($p := lookPath "unrtf") (base $p))
-       "vim" (and ($p := lookPath "vim") (base $p))
-       "wget" (and ($p := lookPath "wget") (base $p))
-       "wvText" (and ($p := lookPath "wvText") (base $p))
-       "xdg_open" (and ($p := lookPath "xdg-open") (base $p))
-       "xlscat" (and ($p := lookPath "xlscat") (base $p))
-       "xlsx2csv" (and ($p := lookPath "xlsx2csv") (base $p))
-       "xlsx2csvPy" (and ($p := lookPath "xlsx2csv.py") (base $p))
-       "ydiff" (and ($p := lookPath "ydiff") (base $p))
-       "zoxide" (and ($p := lookPath "zoxide") (base $p))
-  | toJson -}}
+{{-
+  $candidates := list
+    "antiword"
+    "bat"
+    "catdoc"
+    "catppt"
+    "delta"
+    "diff-so-fancy"
+    "difft"
+    "djvutxt"
+    "docx2txt.pl"
+    "exa"
+    "eza"
+    "exiftool"
+    "fzf"
+    "gh"
+    "ghostty"
+    "git-trim"
+    "git-absorb"
+    "gvim"
+    "interactive-rebase-tool"
+    "icdiff"
+    "in2csv"
+    "ksdiff"
+    "mvim"
+    "open"
+    "odt2txt"
+    "ov"
+    "pandoc"
+    "pdfinfo"
+    "pdftotext"
+    "pinentry-mac"
+    "pptx2md"
+    "ssh-chain"
+    "soffice"
+    "tika"
+    "unrtf"
+    "vim"
+    "wget"
+    "wvText"
+    "xdg-open"
+    "xlscat"
+    "xlsx2csv"
+    "xlsx2csv.py"
+    "ydiff"
+    "zoxide"
+-}}
+{{- $programs := dict "macos_open" (and (eq .chezmoi.os "darwin") "open") -}}
+{{- range $_, $candidate := $candidates -}}
+{{-   $key := $candidate | replaceAllRegex "[^a-z0-9A-Z_]+" "_" -}}
+{{-   $found := "" -}}
+{{-   if lookPath $candidate }}{{ $found = $candidate }}{{ end -}}
+{{-   $_ := set $programs $key $found -}}
+{{- end -}}
+{{- $programs | toJson -}}

@@ -1,5 +1,5 @@
 {{- /* Initialize variables for use in this file */ -}}
-{{- $programs := includeTemplate "programs" . | fromJson -}}
+{{- $has := includeTemplate "programs" . | fromJson -}}
 {{- /* $commitTemplate := joinPath .chezmoi.homeDir ".config/git/commit-message" */ -}}
 {{- $commitTemplate := "" -}}
 {{- $coreAttributesFile := joinPath .chezmoi.homeDir ".config/git/attributes" -}}
@@ -7,30 +7,37 @@
 {{- $skiplistFile := joinPath .chezmoi.homeDir ".config/git/commit-skiplist" -}}
 {{- $identities := includeTemplate "1p/git-identities" . | fromJson -}}
 {{- $corePager := "" -}}
+{{- $showPager := "" -}}
 {{- $credentialsHelper := "" -}}
 {{- $githubUser := "" -}}
 {{- $githubToken := "" -}}
 {{- $sequenceEditor := "" -}}
 {{- $webBrowser := "" -}}
 
-{{- if $programs.delta -}}
-{{-   $corePager = $programs.delta -}}
-{{- else if $programs.diff_so_fancy -}}
-{{-   $corePager = printf "%s | less --tabs=4 -RFX" $programs.diff_so_fancy -}}
+{{- if and $has.delta $has.ov -}}
+{{-   $corePager = printf "%s --pager='%s -F'" $has.delta $has.ov -}}
+{{-   $showPager = printf "%s --pager='%s -F --header 3 --jump-target section'" $has.delta $has.ov -}}
+{{- else if $has.ov -}}
+{{-   $corePager = printf "%s -F" $has.ov -}}
+{{-   $showPager = printf "%s -F --header 3 --jump-target section" $has.ov -}}
+{{- else if $has.delta -}}
+{{-   $corePager = $has.delta -}}
+{{- else if $has.diff_so_fancy -}}
+{{-   $corePager = printf "%s | less --tabs=4 -RFX" $has.diff_so_fancy -}}
 {{- end -}}
 
 {{- $githubUser = .github.user -}}
 {{- $githubToken = onepasswordRead "op://Personal/github-cli-tools/credential" .onepassword.personal -}}
 
-{{- if $programs.interactive_rebase_tool -}}
-{{-   $sequenceEditor = $programs.interactive_rebase_tool }}
+{{- if $has.interactive_rebase_tool -}}
+{{-   $sequenceEditor = $has.interactive_rebase_tool }}
 {{- end -}}
 
-{{- if or $programs.xdg_open $programs.macos_open -}}
-{{-   $webBrowser = or $programs.xdg_open $programs.macos_open -}}
+{{- if or $has.xdg_open $has.macos_open -}}
+{{-   $webBrowser = or $has.xdg_open $has.macos_open -}}
 {{- end -}}
 
-{{- if $programs.git_absorb -}}
+{{- if $has.git_absorb -}}
 [absorb]
   autoStageIfNothingStaged = true
 {{- end }}
@@ -105,13 +112,64 @@
 {{ else }}
   helper = cache --timeout=3600
 {{- end }}
-{{- if $programs.gh }}
+{{- if $has.gh }}
 
 [credential "https://github.com"]
-  helper = !{{ $programs.gh }} auth git-credential
+  helper = !{{ $has.gh }} auth git-credential
 
 [credential "https://gist.github.com"]
-  helper = !{{ $programs.gh }} auth git-credential
+  helper = !{{ $has.gh }} auth git-credential
+{{- end }}
+
+{{- if $has.delta }}
+
+[delta]
+  dark = true
+  features = side-by-side unobtrusive-line-numbers decorations woolly-mammoth
+  file-style = yellow
+  line-numbers = true
+  navigate = true # use n and N to move between diff sections
+  syntax-theme = OneHalfDark
+  zero-style = dim syntax
+
+[delta "side-by-side"]
+  side-by-side = true
+
+[delta "interactive"]
+  keep-plus-minus-markers = false
+
+[delta "unobtrusive-line-numbers"]
+  line-numbers = true
+  line-numbers-minus-style = "#444444"
+  line-numbers-zero-style = "#444444"
+  line-numbers-plus-style = "#444444"
+  line-numbers-left-format = "{nm:>4}┊"
+  line-numbers-right-format = "{np:>4}│"
+  line-numbers-left-style = blue
+  line-numbers-right-style = blue
+
+[delta "decorations"]
+  commit-decoration-style = bold yellow box ul
+  file-style = bold yellow ul
+  file-decoration-style = none
+  hunk-header-decoration-style = yellow box
+
+{{- if $has.ov }}
+
+[pager]
+  diff = delta --features ov-diff
+  log  = delta --features ov-log
+
+[delta "ov-diff"]
+  pager= {{ $has.ov }} -F --section-delimiter '^(commit|added:|removed:|renamed:|Δ)' --section-header --pattern '•' --jump-target section
+
+[delta "ov-log"]
+  pager= {{ $has.ov }} -F --section-delimiter '^commit' --section-header-num 3 --jump-target section
+
+{{- end }}
+
+[interactive]
+  diffFilter = {{ $has.delta }} --color-only --features=interactive
 {{- end }}
 
 [feature]
@@ -183,6 +241,9 @@
 [pager]
   branch = false
   grep = false
+{{- if $showPager }}
+  show = {{ $showPager }}
+{{- end }}
 
 [pretty]
   simple-oneline = "%C(yellow)%h%C(auto)%d %s <%C(green)%aN%C(reset)> (%C(blue)%ar%C(reset))"
@@ -232,7 +293,7 @@
 [transfer]
   fsckobjects = true
 
-{{ if $programs.git_trim -}}
+{{ if $has.git_trim -}}
 # https://github.com/foriequal0/git-trim
 [trim]
   bases = master,main,gh-pages

@@ -27,7 +27,7 @@
 {{ if or $programs.antiword $programs.catdoc $programs.wvText -}}
 *.doc                         diff=doc
 {{ end -}}
-{{ if or $programs.docx2txt $programs.pandoc -}}
+{{ if or $programs.docx2txt_pl $programs.pandoc -}}
 *.docx                        diff=docx
 {{ end -}}
 {{ if or $programs.pdfinfo $programs.pdftotext -}}
@@ -48,7 +48,7 @@
 {{ if $programs.catppt -}}
 *.ppt                         diff=ppt
 {{ end -}}
-{{ if or $programs.in2csv $programs.soffice $programs.xlsx2csv $programs.xlsx2csvPy -}}
+{{ if or $programs.in2csv $programs.soffice $programs.xlsx2csv $programs.xlsx2csv_py -}}
 *.xlsx                        diff=xlsx
 {{ end -}}
 {{ if $programs.pptx2md -}}
