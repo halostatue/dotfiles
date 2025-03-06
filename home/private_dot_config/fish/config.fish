@@ -131,9 +131,11 @@ if command --query fzf
 end
 
 if status is-interactive
-    if test (uname -s) = Darwin
-        set -g fish_escape_delay_ms 125
-    end
+    set -qg fish_escape_delay_ms
+    and set -ge fish_escape_delay_ms
+
+    set -qU fish_escape_delay_ms
+    or set -U fish_escape_delay_ms 125
 
     set -g fish_prompt_pwd_dir_length 0
     set -g fish_prompt_pwd_full_dirs 1
