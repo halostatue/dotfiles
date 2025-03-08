@@ -10,6 +10,9 @@ defrole:
         viu:
         vv:
 
+    casks:
+      pika: Colour picker for colours onscreen
+
     cond:
       - if-role: personal
         casks:

@@ -3,24 +3,27 @@
 // This file is generated from home/private_dot_finicky.js.tmpl
 const isWork = 'true' == '{{ $work }}'
 
-const Opener =
-  // {{- range $_, $opener := list "Browsers" "Browserosaurus" "BrowserFairy" "OpenIn" -}}
-  // {{-   $path := printf "/Applications/%s.app" $opener -}}
-  // {{-   if not (stat $path) }}{{ $path = printf "/Applications/Setapp/%s.app" $opener }}{{ end -}}
-  // {{-   if not (stat $path) }}{{ $path = "" }}{{ end }}
-  '{{ $path }}' ||
-  // {{- end }}
-  'Safari'
+// {{- $fallbacks := list "Browsers" "Browserosaurus" "BrowserFairy" "OpenIn" -}}
+// Set fallback from {{ $fallbacks | join ", " }}, Safari
+// {{- $fallback := "Safari" -}}
+// {{- range $_, $candidate := $fallbacks -}}
+// {{-   $path := printf "/Applications/%s.app" $candidate -}}
+// {{-   if stat $path }}{{ $fallback = $candidate }}{{ break }}{{ end -}}
+// {{-   $path := printf "/Applications/Setapp/%s.app" $candidate -}}
+// {{-   if stat $path }}{{ $fallback = $candidate }}{{ break }}{{ end -}}
+// {{- end -}}
+// Fallback is: {{ $fallback }}
+const Fallback = '{{ $fallback }}'
 
 const Browsers = {
   Safari: 'Safari',
   // {{- range $_, $browser := list "Firefox" "Microsoft Edge" "Google Chrome" -}}
   // {{-   $path := printf "/Applications/%s.app" $browser -}}
   // {{-   if not (stat $path) -}}{{ $path = "" }}{{ end }}
-  '{{ $browser | splitList " " | last }}': '{{ $path }}',
+  '{{ $browser | splitList " " | last }}': '{{ $browser }}',
   // {{- end }}
   Music: 'Music',
-  Opener,
+  Fallback,
 }
 
 if (isWork) {
@@ -515,7 +518,7 @@ module.exports = {
         finicky.getKeys().option ||
         finicky.getKeys().command ||
         (finicky.getKeys().command && finicky.getKeys().option),
-      browser: Browsers.Opener,
+      browser: Browsers.Fallback,
     },
     isWork && {
       match: ({ url }) =>
@@ -574,7 +577,7 @@ module.exports = {
     },
     {
       match: ({ opener }) => !opener.path && !opener.name && !opener.bundleId,
-      browser: Browsers.Opener,
+      browser: Browsers.Fallback,
     },
   ].filter((e) => e),
 }

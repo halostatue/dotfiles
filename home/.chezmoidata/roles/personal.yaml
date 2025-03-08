@@ -17,6 +17,7 @@ defrole:
       macwhisper: LLM-powered speech transcription tool
       monitorcontrol: Tool to control external monitor brightness & volume
       monodraw: Tool to create text-based art
+      sync: Store, share and access files from anywhere
       setapp: Collection of apps available by subscription
 
     mas:

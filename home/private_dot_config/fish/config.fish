@@ -131,11 +131,37 @@ if command --query fzf
 end
 
 if status is-interactive
-    set -qg fish_escape_delay_ms
-    and set -ge fish_escape_delay_ms
+    if test (uname -s) = Darwin
+        switch "$TERM_PROGRAM"
+            case ghostty
+                # GhosTTY doesn't send \e for escape, but CSI u.
+                bind escape,y yank-pop
+                bind escape,. history-token-search-backward
+                bind escape,l __fish_list_current_token
+                bind escape,o __fish_preview_current_file
+                bind escape,w __fish_whatis_current_token
+                bind escape,d 'if test "$(commandline; printf .)" = \\n.; __fish_echo dirh; else; commandline -f kill-word; end'
+                bind escape,s 'for cmd in sudo doas please; if command -q $cmd; fish_commandline_prepend $cmd; break; end; end'
+                bind escape,h __fish_man_page
+                bind escape,p __fish_paginate
+                bind escape,\# __fish_toggle_comment_commandline
+                bind escape,e edit_command_buffer
+                bind escape,v edit_command_buffer
+                bind escape,enter 'commandline -i \\n' expand-abbr
+                bind escape,/ redo
+                bind escape,t transpose-words
+                bind escape,u upcase-word
+                bind escape,c capitalize-word
+                bind escape,backspace backward-kill-word
+                bind escape,b prevd-or-backward-word
+                bind escape,f nextd-or-forward-word
+                bind escape,\< beginning-of-buffer
+                bind escape,\> end-of-buffer
 
-    set -qU fish_escape_delay_ms
-    or set -U fish_escape_delay_ms 125
+            case '*'
+                set -g fish_escape_delay_ms 125
+        end
+    end
 
     set -g fish_prompt_pwd_dir_length 0
     set -g fish_prompt_pwd_full_dirs 1

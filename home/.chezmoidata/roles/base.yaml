@@ -140,6 +140,7 @@ defrole:
         bat:
         csvlens:
         ctpv:
+        czkawka:
         dos2unix:
         glow:
         gum:
@@ -164,6 +165,7 @@ defrole:
         rlwrap:
         ruby-build:
         ruby-install:
+        rust:
 
     cond:
       # base/dev
