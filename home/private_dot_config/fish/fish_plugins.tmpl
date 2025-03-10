@@ -1,0 +1,6 @@
+{{- $roles := includeTemplate "roles/selected" . | fromJson -}}
+{{- $plugs := or (get $roles "fish") (dict) -}}
+{{- range $plug, $tag := $plugs -}}
+{{-   if $tag }}{{ $plug = printf "%s@%s" $plug $tag }}{{ end -}}
+{{ $plug }}
+{{ end }}

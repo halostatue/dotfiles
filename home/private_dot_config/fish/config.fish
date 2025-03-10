@@ -236,6 +236,12 @@ if status is-interactive
     if command --query zoxide
         zoxide init fish | source
     end
+
+    if functions -q _tide_print_item
+        # Do nothing. Tide should already be configured.
+    else if command -q starship
+        starship init fish | source
+    end
 end
 
 if not command -q psql && test -d /Applications/Postgres.app/Contents/Versions/latest/bin

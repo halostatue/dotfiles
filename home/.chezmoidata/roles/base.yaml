@@ -6,15 +6,12 @@
 defrole:
   base:
     taps:
-      # base/core
       homebrew/bundle:
       homebrew/services:
 
-      # base/web
       browsers-software/tap:
 
     casks:
-      # base/core
       alfred: Application launcher and productivity software
       cleanupbuddy: Clean keyboard and trackpad
       itsycal: Menu bar calendar
@@ -34,20 +31,17 @@ defrole:
       webpquicklook: Quick Look plugin for webp files
       xprocheck: Anti-malware scan logging tool
 
-      # base/dev
       ghostty: Terminal emulator that uses platform-native UI and GPU acceleration
       hex-fiend: Hex editor focussing on speed
       imhex: Hex editor for reverse engineers
       macvim: Text editor
 
-      # base/web
       browsers: Open the right browser at the right time
       finicky: Utility for customizing which browser to start
       firefox: Web browser
       safari-technology-preview: Web browser
 
     fonts:
-      # base/core
       0xproto:
       cascadia-code:
       cascadia-mono:
@@ -69,18 +63,14 @@ defrole:
       zed-mono:
 
     mas:
-      # base/core
       1569813296: 1Password for Safari
 
-      # base/dev
       497799835: Xcode
 
-      # base/web
       1440147259: AdGuard for Safari
 
     ports:
       install:
-        # base/core
         1password-cli:
         atuin:
         chezmoi:
@@ -90,7 +80,6 @@ defrole:
         git: +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
         pam-reattach:
 
-        # base/dev
         age:
         cargo:
         deno:
@@ -133,7 +122,6 @@ defrole:
         zizmor:
         zoxide:
 
-        # base/text
         ansifilter:
         antiword:
         bat-extras:
@@ -156,7 +144,6 @@ defrole:
         taplo:
 
       setunrequested:
-        # base/core
         ftgl:
         lima:
         openjdk11:
@@ -167,14 +154,40 @@ defrole:
         ruby-install:
         rust:
 
+    fish:
+      halostatue/fish-brew: v3
+      halostatue/fish-chezmoi: v1
+      halostatue/fish-elixir: v2
+      halostatue/fish-go: v2
+      halostatue/fish-haskell: v2
+      halostatue/fish-machine-config: v1
+      halostatue/fish-macos: v7
+      halostatue/fish-macports: v1
+      halostatue/fish-mise: v1
+      halostatue/fish-rake: v1
+      halostatue/fish-ruby-bundler: v2
+      halostatue/fish-rust: v2
+      halostatue/fish-utils-core: v3
+      halostatue/fish-utils-net: v2
+      halostatue/fish-utils: v4
+      halostatue/sponge: fix-init-failures
+      ilancosman/clownfish:
+      jorgebucaran/autopair.fish:
+      jorgebucaran/fisher:
+      jorgebucaran/fishtape:
+      kidonng/preview.fish:
+      kpbaks/autols.fish:
+      lilyball/alt-q.fish:
+      oh-my-fish/plugin-tab:
+      patrickf1/colored_man_pages.fish:
+      patrickf1/fzf.fish: v10.3
+
     cond:
-      # base/dev
       - if-stat: /Applications/Xcode.app
         ports:
           install:
             terminal-notifier:
 
-      # base/web
       - if-role: personal
         mas:
           1601151613: Baking Soda
@@ -188,10 +201,12 @@ defrole:
           6471380298: StopTheMadness Pro
           1591303229: Vinegar
 
+        ports:
+          install:
+            czkawka:
+
     uv:
-      # base/text
-      # Convert between CBOR, JSON, MessagePack, TOML, and YAML
-      remarshal:
+      remarshal: Convert between CBOR, JSON, MessagePack, TOML, and YAML
 
 # vim: ft=yaml
 

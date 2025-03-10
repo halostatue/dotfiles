@@ -1,6 +1,6 @@
 {{- if lookPath "port" -}}
 {{- $roles := includeTemplate "roles/selected" . | fromJson -}}
-{{- $ports := or (get $roles "ports") (dict) }}
+{{- $ports := or (get $roles "ports") (dict) -}}
 {{-
   $requested := output "port" "echo" "requested"
     | trim

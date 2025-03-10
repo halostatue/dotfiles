@@ -19,3 +19,4 @@ defrole:
         oath-toolkit:
         oauth2c:
         redis:
+        starship:
