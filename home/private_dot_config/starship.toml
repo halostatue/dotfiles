@@ -1,7 +1,7 @@
 '$schema' = 'https://starship.rs/config-schema.json'
 
 add_newline = true
-continuation_prompt = "[▸▹ ](dimmed white)"
+continuation_prompt = '[▸▹ ](dimmed white)'
 
 right_format = ''
 
@@ -12,23 +12,104 @@ follow_symlinks = true
 
 # put $cmd_duration *after* $line_break, before $character
 
-format = "$all"
+format = """
+$hostname\
+$localip\
+$shlvl\
+$directory\
+$singularity\
+\
+$vcsh\
+$fossil_branch\
+$fossil_metrics\
+$git_branch\
+$git_commit\
+$git_state\
+$git_metrics\
+$git_status\
+$hg_branch\
+$pijul_channel\
+\
+$kubernetes\
+$docker_context\
+$package\
+$c\
+$cmake\
+$cobol\
+$daml\
+$dart\
+$deno\
+$dotnet\
+$elixir\
+$elm\
+$erlang\
+$fennel\
+$gleam\
+$golang\
+$nix_shell\
+$guix_shell\
+$haskell\
+$haxe\
+$helm\
+$java\
+$julia\
+$kotlin\
+$gradle\
+$lua\
+$nim\
+$nodejs\
+$ocaml\
+$opa\
+$perl\
+$php\
+$pulumi\
+$purescript\
+$python\
+$quarto\
+$raku\
+$rlang\
+$red\
+$ruby\
+$rust\
+$scala\
+$solidity\
+$swift\
+$terraform\
+$typst\
+$vlang\
+$zig\
+$buf\
+$conda\
+$meson\
+$spack\
+$memory_usage\
+$aws\
+$gcloud\
+$openstack\
+$nats\
+$direnv\
+$env_var\
+$crystal\
+$custom\
+$sudo\
+$cmd_duration\
+$line_break\
+$jobs\
+$time\
+$status\
+$os\
+$container\
+$shell\
+$character
+"""
+
+battery.disabled = true
+username.disabled = true
+vagrant.disabled = true
 
 [aws]
 format = '(\[[$symbol($profile)(\($region\))(\[$duration\])]($style)\])'
 
-[azure]
-disabled = true
-format = '(\[[$symbol($subscription)]($style)\])'
-symbol = '󰠅 '
-
-[battery]
-disabled = true
-full_symbol = '• '
-charging_symbol = '⇡ '
-discharging_symbol = '⇣ '
-unknown_symbol = '❓ '
-empty_symbol = '❗ '
 
 [buf]
 format = '(\[[$symbol$version]($style)\])'
@@ -40,13 +121,7 @@ format = '(\[[$symbol($version)]($style)\])'
 format = '(\[[$symbol($version(-$name))]($style)\])'
 
 [character]
-format = "$symbol "
-error_symbol = "[✖](italic red)"
-vimcmd_symbol = "[■](italic dimmed green)"
-# not supported in zsh
-vimcmd_replace_one_symbol = "◌"
-vimcmd_replace_symbol = "□"
-vimcmd_visual_symbol = "▼"
+error_symbol = '[✖](red)'
 
 [cmake]
 format = '(\[[$symbol($version)]($style)\])'
@@ -75,9 +150,8 @@ format = '(\[[$symbol($version)]($style)\])'
 [deno]
 format = '(\[[$symbol($version)]($style)\])'
 
-[docker_context]
-# disabled = true
-format = '(\[[$symbol$context]($style)\])'
+[directory]
+truncation_symbol = '…/'
 
 [dotnet]
 format = '(\[[$symbol($version)(🎯 $tfm)]($style)\])'
@@ -94,6 +168,9 @@ symbol = 'ⓔ '
 
 [fennel]
 format = '(\[[$symbol($version)]($style)\])'
+
+[fill]
+symbol = ' '
 
 [fossil_branch]
 format = '(\[[$symbol$branch]($style)\])'
@@ -113,6 +190,7 @@ commit_hash_length = 9
 
 [git_metrics]
 disabled = false
+format = '([+$added]($added_style))([-$deleted]($deleted_style))'
 
 [git_status]
 format = '(([\[$all_status$ahead_behind\]]($style)))'
@@ -139,6 +217,7 @@ format = '(\[[$symbol($version)]($style)\])'
 format = '(\[[$symbol($version)]($style)\])'
 
 [hg_branch]
+disabled = false
 format = '(\[[$symbol$branch]($style)\])'
 
 [java]
@@ -182,13 +261,6 @@ format = '(\[[$symbol($version)]($style)\])'
 [openstack]
 format = '(\[[$symbol$cloud(\($project\))]($style)\])'
 
-[os]
-format = '(\[[$symbol]($style)\])'
-
-[package]
-disabled = true
-format = '(\[[$symbol$version]($style)\])'
-
 [perl]
 format = '(\[[$symbol($version)]($style)\])'
 
@@ -204,6 +276,7 @@ format = '(\[[$symbol$stack]($style)\])'
 symbol = '🧊 '
 
 [purescript]
+symbol = '⪋ '
 format = '(\[[$symbol($version)]($style)\])'
 
 [python]
@@ -239,33 +312,15 @@ format = '(\[[$symbol($version)]($style)\])'
 [spack]
 format = '(\[[$symbol$environment]($style)\])'
 
-[sudo]
-format = '([$symbol]($style))'
-style = 'bold italic bright-purple'
-symbol = '⋈┈'
-
-[status]
-format = '(([$symbol$status ]($style)))'
-
 [swift]
 format = '(\[[$symbol($version)]($style)\])'
 
 [terraform]
 format = '(\[[$symbol$workspace]($style)\])'
 
-[time]
-format = '(\[[$time]($style)\])'
-
 [typst]
 format = '(([$symbol($version )]($style)))'
 symbol = 't '
-
-[username]
-format = '(\[[$user]($style)\])'
-
-[vagrant]
-disabled = true
-format = '(\[[$symbol($version)]($style)\])'
 
 [vlang]
 format = '(\[[$symbol($version)]($style)\])'
