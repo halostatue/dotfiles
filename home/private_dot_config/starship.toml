@@ -104,6 +104,8 @@ $character
 """
 
 battery.disabled = true
+docker_context.disabled = true
+package.disabled = true
 username.disabled = true
 vagrant.disabled = true
 
