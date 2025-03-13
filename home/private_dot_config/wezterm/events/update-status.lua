@@ -53,7 +53,7 @@ return function(_config, wezterm)
   }
 
   local _set_date = function(cells)
-    local date = wezterm.strftime("%a %H:%M")
+    local date = wezterm.strftime(" %a %H:%M")
     cells:push({
       {
         date,

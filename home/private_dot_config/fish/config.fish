@@ -25,6 +25,10 @@ if not set --query --global DOCKER_BUILDKIT
     set --global --export DOCKER_BUILDKIT 1
 end
 
+if not set --query --global FORGIT_NO_ALIASES
+    set --global --export FORGIT_NO_ALIASES 1
+end
+
 # # This should be an external, maybe (`halostatue/fish-tealdeer`?)
 # if command --query tldr && test (command --search tldr) = (path resolve $HOME/.cargo/bin/tldr)
 #     set --local completion

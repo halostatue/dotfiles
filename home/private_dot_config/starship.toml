@@ -104,6 +104,7 @@ $character
 """
 
 battery.disabled = true
+direnv.disabled = true
 docker_context.disabled = true
 package.disabled = true
 username.disabled = true

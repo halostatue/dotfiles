@@ -2,7 +2,7 @@ return function(_config, wezterm)
   local nf = wezterm.nerdfonts
 
   wezterm.on("new-tab-button-click", function(window, pane, button, default_action)
-    wezterm.log_info("new-tab", window, pane, button, default_action)
+    -- wezterm.log_info("new-tab", window, pane, button, default_action)
 
     if default_action and button == "Left" then
       window:perform_action(default_action, pane)
