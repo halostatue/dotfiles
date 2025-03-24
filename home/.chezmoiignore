@@ -176,6 +176,8 @@
 .local/bin/aws
 .local/bin/aws-cli-session-manager
 .local/bin/aws_completer
+.local/bin/aws-rotate-iam-keys
+.local/bin/aws-running-instances
 {{ end }}
 
 {{ if lookPath "pipx" -}}
