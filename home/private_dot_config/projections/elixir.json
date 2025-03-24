@@ -1,0 +1,60 @@
+{
+  "*": {
+    "console": "iex -S mix",
+    "dispatch": "mix",
+    "make": "mix",
+    "start": "iex -S mix"
+  },
+  "*.ex": {
+    "makery": {
+      "build": {
+        "compiler": "mix"
+      },
+      "lint": {
+        "compiler": "credo"
+      },
+      "test": {
+        "compiler": "exunit"
+      }
+    }
+  },
+  "apps/*/mix.exs": {
+    "type": "app"
+  },
+  "config/*.exs": {
+    "type": "config"
+  },
+  "lib/*.ex": {
+    "alternate": "test/{}_test.exs",
+    "template": [
+      "defmodule {camelcase|capitalize|dot} do",
+      "",
+      "end"
+    ],
+    "type": "lib"
+  },
+  "mix.exs": {
+    "type": "mix"
+  },
+  "test/*_test.exs": {
+    "alternate": "lib/{}.ex",
+    "dispatch": "mix test {file}",
+    "make": "mix test {file}",
+    "template": [
+      "defmodule {camelcase|capitalize|dot}Test do",
+      "  use ExUnit.Case, async: true",
+      "",
+      "  alias {camelcase|capitalize|dot}",
+      "",
+      "  doctest {camelcase|capitalize|dot}",
+      "",
+      "  describe \"#run/1\" do",
+      "    test \"description\" do",
+      "      assert false",
+      "    end",
+      "  end",
+      "end"
+    ],
+    "type": "test"
+  }
+}

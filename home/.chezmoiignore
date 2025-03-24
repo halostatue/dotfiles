@@ -21,6 +21,8 @@
 !.cargo/env
 !.cargo/liner.toml
 
+.codemod
+
 {{ if not (stat "/Applications/WezTerm.app") -}}
 .terminfo/77/wezterm
 .local/bin/wezterm
@@ -80,6 +82,7 @@
 .config/hcp/**
 .config/htop/**
 
+.config/iterm2
 .config/iTerm2
 
 .config/jgit/**
@@ -102,6 +105,7 @@
 .config/massren/*
 
 .config/micro/buffers
+.config/micro/**/log.txt
 
 .config/nvim
 .config/nvim.old/.git
@@ -141,6 +145,7 @@
 {{/* git-extras ignore cache file */}}
 .gi_list
 .gitlater
+.gk/
 .gnupg
 
 {{/* Go REPL */}}
@@ -255,6 +260,7 @@
 !.ssh/authorized_keys
 !.ssh/config
 .strec
+.swiftpm/
 
 .tclsh_history
 .terraform.d
@@ -307,12 +313,14 @@ Library/Application Support/lazygit/*
 
 go/
 mess/
+perl5/
 
 Movies/
 Music/
 Pictures/
 Postman/
 Public/
+Sync/
 personal/
 oss/
 work/

@@ -1,0 +1,148 @@
+{
+  "*": {
+    "console": "iex -S mix phx.server",
+    "dispatch": "mix",
+    "make": "mix",
+    "start": "mix phx.server"
+  },
+  "*.ex": {
+    "makery": {
+      "build": {
+        "compiler": "mix"
+      },
+      "lint": {
+        "compiler": "credo"
+      },
+      "test": {
+        "compiler": "exunit"
+      }
+    }
+  },
+  "apps/*/mix.exs": {
+    "type": "app"
+  },
+  "config/*.exs": {
+    "type": "config"
+  },
+  "priv/repo/migrations/*.exs": {
+    "type": "migration"
+  },
+  "test/*_test.exs": {
+    "alternate": "lib/{}.ex",
+    "dispatch": "mix test {file}",
+    "make": "mix test {file}",
+    "template": [
+      "defmodule {camelcase|capitalize|dot}Test do",
+      "  use ExUnit.Case, async: true",
+      "",
+      "  alias {camelcase|capitalize|dot}",
+      "",
+      "  doctest {camelcase|capitalize|dot}",
+      "",
+      "  describe \"#run/1\" do",
+      "    test \"description\" do",
+      "      assert false",
+      "    end",
+      "  end",
+      "end"
+    ],
+    "type": "test"
+  },
+  "test/controllers/*_test.exs": {
+    "alternate": "web/controllers/{}.ex",
+    "template": [
+      "defmodule AppName.{camelcase}Test",
+      "  use AppName.ConnCase",
+      "end"
+    ]
+  },
+  "test/models/*_test.exs": {
+    "alternate": "web/models/{}.ex",
+    "template": [
+      "defmodule AppName.{camelcase}Test",
+      "  use AppName.ConnCase",
+      "end"
+    ]
+  },
+  "test/support/factories.ex": {
+    "command": "factories"
+  },
+  "web/channels/*_channel.ex": {
+    "alternate": "test/channels/{}_test.exs",
+    "template": [
+      "defmodule AppName.Channels.{camelcase}Channel",
+      "  use Phoenix.Channel",
+      "",
+      "  def join(_topic, _params, socket) do",
+      "    {open}:ok, socket{close}",
+      "  end",
+      "end"
+    ],
+    "type": "channel"
+  },
+  "web/controllers/*_controller.ex": {
+    "alternate": "test/controllers/{}_controller_test.exs",
+    "template": [
+      "defmodule AppName.{camelcase}Controller",
+      "  use AppName.Web, :controller",
+      "end"
+    ],
+    "type": "controller"
+  },
+  "web/encoders/*.ex": {
+    "alternate": "test/encoders/{}_test.exs",
+    "type": "encoder"
+  },
+  "web/models/*.ex": {
+    "alternate": "test/models/{}_test.exs",
+    "type": "model"
+  },
+  "web/plugs/*.ex": {
+    "alternate": "test/plug/{}_test.exs",
+    "template": [
+      "defmodule AppName.Plugs.{camelcase}",
+      "  import Plug.Conn",
+      "",
+      "  def init(opts), do: opts",
+      "",
+      "  def call(conn, _opts) do",
+      "    conn",
+      "  end",
+      "end"
+    ],
+    "type": "plug"
+  },
+  "web/router.ex": {
+    "type": "router"
+  },
+  "web/services/*.ex": {
+    "alternate": "test/services/{}_test.exs",
+    "template": [
+      "defmodule AppName.{camelcase} do",
+      "",
+      "end"
+    ],
+    "type": "service"
+  },
+  "web/static/css/*": {
+    "type": "css"
+  },
+  "web/static/js/*": {
+    "type": "js"
+  },
+  "web/templates/*.html.eex": {
+    "type": "template"
+  },
+  "web/templates/layout/*.html.eex": {
+    "type": "layout"
+  },
+  "web/views/*.ex": {
+    "alternate": "test/views/{}_test.exs",
+    "template": [
+      "defmodule AppName.{camelcase}View",
+      "  use AppName.Web, :view",
+      "end"
+    ],
+    "type": "view"
+  }
+}

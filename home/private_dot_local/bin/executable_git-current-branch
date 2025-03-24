@@ -1,10 +1,54 @@
 #!/bin/sh
 
-case :"${1}": in
-:--copy: | :-C:)
-  git rev-parse --abbrev-ref HEAD | tr -d '\n ' | pbcopy
-  ;;
-*)
+copy=false
+
+while ( ($#)); do
+  case "$1" in
+  --copy | -C) copy=true ;;
+  esac
+  shift
+done
+
+has() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+to_clipboard() {
+  if has copy; then
+    copy
+  elif has pbcopy; then
+    pbcopy
+  elif has cb; then
+    cb --copy
+  elif has xclip; then
+    xclip -sel clip
+  elif has xsel; then
+    xsel --clipboard --input
+  elif has clipboard; then
+    clipboard --stdin
+  elif has clip; then
+    clip
+  elif has wl-copy; then
+    wl-copy
+  fi
+}
+
+name() {
   git rev-parse --abbrev-ref HEAD
-  ;;
-esac
+}
+
+trim() {
+  tr -d '\n '
+}
+
+if [ -t 1 ]; then
+  if "${copy}"; then
+    name | tee /dev/stdout | trim | to_clipboard
+  else
+    name
+  fi
+elif "${to_clipboard}"; then
+  name | trim | tee /dev/stdout | to_clipboard
+else
+  name | trim
+fi

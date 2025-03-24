@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Based in part on megalithic/bits-and-bobs/blob/master/bin/git-conflicts by Seth Messer
+
 set -o pipefail
 
 declare config_type=global mode wanted_editor
@@ -34,7 +36,8 @@ fail-if-mode-set() {
 }
 
 show-conflicts() {
-  git ls-files -u | awk '{print $4}' | sort -u
+  # git ls-files -u | awk '{print $4}' | sort -u
+  git diff --name-only --diff-filter=U
 }
 
 show-editor() {

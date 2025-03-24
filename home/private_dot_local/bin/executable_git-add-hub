@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#
+# Original source: https://github.com/rtomayko/dotfiles/blob/rtomayko/bin/git-grab
+# source: https://github.com/unixorn/git-extra-commands
+
+fail() {
+  printf >&2 '%s\n' "$1"
+  exit "${2-1}"
+}
+
+if (($# != 1)); then
+  fail "usage: git add-hub USERNAME[/REPO]"
+fi
+
+run() {
+  [[ -n $DEBUG ]] && echo "$*"
+  "$@" || fail "error: $*" $?
+}
+
+username="$(echo "$1" | cut -f1 -d/)"
+
+if git remote get-url "${username}" >/dev/null 2>&1; then
+  fail "Remote ${username} already exists." 3
+fi
+
+repo="$(echo "$1" | cut -f2 -d/)"
+
+if [[ -z "${repo}" ]]; then
+  if origin="$(git remote get-url origin 2>/dev/null)"; then
+    repo="$(basename "${origin}" .git)"
+  else
+    repo=$(basename "${PWD}")
+  fi
+fi
+
+run "git remote add '${username}' 'https://github.com/${username}/${repo}.git'"
+run "git fetch '${username}'"

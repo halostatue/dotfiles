@@ -1,0 +1,22 @@
+#! /usr/bin/swift
+import Cocoa
+var findPoint: NSPoint?
+if CommandLine.arguments.count > 1 {
+    findPoint = NSPointFromString(CommandLine.arguments[1])
+}
+var output = [[String:Any]]()
+for (index, screen) in NSScreen.screens.enumerated() {
+    if let p = findPoint {
+        if (!screen.frame.contains(p)) {
+            continue;
+        }
+    }
+    output.append(["frame": try JSONSerialization.jsonObject(with: JSONEncoder().encode(screen.frame)),
+                   "main": NSScreen.main == screen,
+                   "refreshRate": screen.maximumFramesPerSecond,
+                   "scaleFactor": screen.backingScaleFactor,
+                   "index": index,
+                   "name": screen.localizedName])
+}
+let jsonData = try JSONSerialization.data(withJSONObject: output)
+print(String(data: jsonData, encoding: String.Encoding.utf8)!)

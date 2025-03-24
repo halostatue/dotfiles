@@ -1,0 +1,303 @@
+# Quit if the file size is smaller than the terminal size.
+QuitSmall: true
+
+# Case sensitive search if the search string contains uppercase characters.
+SmartCaseSensitive: true
+# Incremental search.
+Incsearch: true
+
+# ViewMode: markdown # Default view mode.
+Prompt:
+  Normal:
+#    ShowFilename: true # Show the filename.
+#    InvertColor: true # Invert the color of the prompt.
+#    ProcessOfCount: true # Show the process of count.
+
+# ShrinkChar: '…' # Characters displayed when the column is shrinking.
+
+General:
+  TabWidth: 8
+  Header: 0
+  AlternateRows: false
+  ColumnMode: false
+  LineNumMode: false
+  WrapMode: true
+  ColumnDelimiter: ","
+  MarkStyleWidth: 1
+#  SectionDelimiter: "^#"
+
+# Style
+# String of the color name: Foreground, Background, UnderlineColor
+# Boolean: Bold, Blink, Dim, Italic, Underline
+# Number: UnderlineStyle
+StyleAlternate:
+  Background: "gray"
+StyleHeader:
+  Bold: true
+StyleBody:
+  # Add appropriate styles here
+StyleOverStrike:
+  Bold: true
+StyleOverLine:
+  Underline: true
+StyleLineNumber:
+  Bold: true
+StyleSearchHighlight:
+  Reverse: true
+StyleColumnHighlight:
+  Reverse: true
+StyleMarkLine:
+  Background: "darkgoldenrod"
+StyleSectionLine:
+  Background: "slateblue"
+StyleVerticalHeader:
+  # Add appropriate styles here
+StyleRuler:
+  Background: "#333333"
+  Foreground: "#CCCCCC"
+  Bold: true
+StyleHeaderBorder:
+  # Add appropriate styles here
+  # UnderlineStyle: 2
+StyleSectionHeaderBorder:
+  # Add appropriate styles here
+  # Underline: true
+  # UnderlineColor: "red"
+StyleVerticalHeaderBorder:
+  Background: "#c0c0c0"
+StyleMultiColorHighlight:
+  - Foreground: "red"
+  - Foreground: "aqua"
+  - Foreground: "yellow"
+  - Foreground: "fuchsia"
+  - Foreground: "lime"
+  - Foreground: "blue"
+  - Foreground: "grey"
+StyleColumnRainbow:
+  - Foreground: "white"
+  - Foreground: "crimson"
+  - Foreground: "aqua"
+  - Foreground: "lightsalmon"
+  - Foreground: "lime"
+  - Foreground: "blue"
+  - Foreground: "yellowgreen"
+StyleJumpTargetLine:
+  Underline: true
+
+# Keybind
+# Special key
+#   "Enter","Backspace","Tab","Backtab","Esc",
+#   "Delete", "Insert",
+#   "Up", "Down", "Left", "Right", "Home", "End",
+#   "F1...F64"
+# Modifier key
+#   "ctrl", "alt", "meta", "shift"
+# Connect with modifier key + key
+#   "ctrl+c"
+KeyBind:
+    exit:
+        - "Escape"
+        - "q"
+    cancel:
+        - "ctrl+c"
+    write_exit:
+        - "Q"
+    set_write_exit:
+        - "ctrl+q"
+    suspend:
+        - "ctrl+z"
+    sync:
+        - "ctrl+l"
+    reload:
+        - "ctrl+alt+l"
+        - "F5"
+    watch:
+        - "ctrl+alt+w"
+        - "F4"
+    watch_interval:
+        - "ctrl+w"
+    follow_mode:
+        - "ctrl+f"
+    follow_all:
+        - "ctrl+a"
+    follow_section:
+        - "F2"
+    help:
+        - "h"
+        - "ctrl+alt+c"
+        - "ctrl+f1"
+    logdoc:
+        - "ctrl+f2"
+        - "ctrl+alt+e"
+    down:
+        - "Enter"
+        - "Down"
+        - "ctrl+N"
+    up:
+        - "Up"
+        - "ctrl+p"
+    top:
+        - "Home"
+    bottom:
+        - "End"
+    left:
+        - "left"
+    right:
+        - "right"
+    half_left:
+        - "ctrl+left"
+    half_right:
+        - "ctrl+right"
+    page_up:
+        - "PageUp"
+        - "ctrl+b"
+    page_down:
+        - "PageDown"
+        - "ctrl+v"
+    page_half_up:
+        - "ctrl+u"
+    page_half_down:
+        - "ctrl+d"
+    section_delimiter:
+        - "alt+d"
+    section_start:
+        - "ctrl+F3"
+        - "alt+s"
+    section_header_num:
+        - "F7"
+    hide_other:
+        - "alt+-"
+    next_section:
+        - "space"
+    last_section:
+        - "9"
+    previous_section:
+        - "^"
+    mark:
+        - "m"
+    remove_mark:
+        - "M"
+    remove_all_mark:
+        - "ctrl+delete"
+    next_mark:
+        - ">"
+    previous_mark:
+        - "<"
+    set_view_mode:
+        - "p"
+        - "P"
+    alter_rows_mode:
+        - "C"
+    line_number_mode:
+        - "G"
+    search:
+        - "/"
+    wrap_mode:
+        - "w"
+        - "W"
+    column_mode:
+        - "c"
+    backsearch:
+        - "?"
+    delimiter:
+        - "d"
+    header:
+        - "H"
+    skip_lines:
+        - "ctrl+s"
+    tabwidth:
+        - "t"
+    goto:
+        - "g"
+    next_search:
+        - "n"
+    next_backsearch:
+        - "N"
+    next_doc:
+        - "]"
+    previous_doc:
+        - "["
+    toggle_mouse:
+        - "ctrl+f3"
+        - "ctrl+alt+r"
+    multi_color:
+        - "."
+    jump_target:
+        - "j"
+    plain_mode:
+        - "ctrl+e"
+    rainbow_mode:
+        - "ctrl+r"
+    close_file:
+        - "ctrl+F9"
+        - "ctrl+alt+s"
+    width_left:
+        - "ctrl+shift+left"
+    width_right:
+        - "ctrl+shift+right"
+    begin_left:
+        - "shift+Home"
+    end_right:
+        - "shift+End"
+    column_width:
+        - "alt+o"
+    filter:
+        - "&"
+    close_doc:
+        - "ctrl+k"
+    close_all_filter:
+        - "K"
+    convert_type:
+        - "alt+t"
+    align_format:
+        - "alt+F"
+    raw_format:
+        - "alt+R"
+    vertical_header:
+        - "y"
+    header_column:
+        - "Y"
+    fixed_column:
+        - "F"
+    shrink_column:
+        - "s"
+    toggle_ruler:
+        - "alt+shift+F9"
+
+    input_casesensitive:
+        - "alt+c"
+    input_smart_casesensitive:
+        - "alt+s"
+    input_incsearch:
+        - "alt+i"
+    input_regexp_search:
+        - "alt+r"
+    input_non_match:
+        - "!"
+    input_previous:
+        - "Up"
+    input_next:
+        - "Down"
+    input_copy:
+        - "ctrl+c"
+    input_paste:
+        - "ctrl+v"
+
+Mode:
+  markdown:
+    SectionDelimiter: "^#"
+    WrapMode: true
+  psql:
+    Header: 2
+    AlternateRows: true
+    ColumnMode: true
+    LineNumMode: false
+    WrapMode: true
+    ColumnDelimiter: "|"
+  mysql:
+    Header: 3
+    AlternateRows: true
+    ColumnMode: true
+    LineNumMode: false
+    WrapMode: true
+    ColumnDelimiter: "|"

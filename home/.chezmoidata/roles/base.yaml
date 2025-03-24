@@ -6,19 +6,25 @@
 defrole:
   base:
     taps:
+      browsers-software/tap:
       homebrew/bundle:
       homebrew/services:
 
-      browsers-software/tap:
-
     casks:
       alfred: Application launcher and productivity software
+      browsers: Open the right browser at the right time
       cleanupbuddy: Clean keyboard and trackpad
+      finicky: Utility for customizing which browser to start
+      firefox: Web browser
+      ghostty: Terminal emulator that uses platform-native UI and GPU acceleration
+      hex-fiend: Hex editor focussing on speed
+      imhex: Hex editor for reverse engineers
       itsycal: Menu bar calendar
-      jordanbaird-ice: Menu bar manager (Bartender alternative)
+      jordanbaird-ice: Menu bar manager
       leader-key: Application launcher
-      loop: Window manager (Moom alternative)
-      maccy: Clipboard manager (Paste alternative)
+      loop: Window manager
+      maccy: Clipboard manager
+      macvim: Text editor
       meetingbar: Shows the next meeting in the menu bar
       obsidian: Knowledge base that works on top of a local folder of plain text Markdown files
       qlcolorcode: Quick Look plug-in that renders source code with syntax highlighting
@@ -26,20 +32,11 @@ defrole:
       qlstephen: Quick Look plugin for plaintext files without an extension
       qlvideo: Thumbnails, static previews, cover art and metadata for video files
       quicklook-json: Quick Look plugin for JSON files
+      safari-technology-preview: Web browser
       startupfolder: Run anything at startup by simply placing it in a special folder
-      trex: Easy to use text extraction tool (TextSniper alternative)
+      trex: Easy to use text extraction tool
       webpquicklook: Quick Look plugin for webp files
       xprocheck: Anti-malware scan logging tool
-
-      ghostty: Terminal emulator that uses platform-native UI and GPU acceleration
-      hex-fiend: Hex editor focussing on speed
-      imhex: Hex editor for reverse engineers
-      macvim: Text editor
-
-      browsers: Open the right browser at the right time
-      finicky: Utility for customizing which browser to start
-      firefox: Web browser
-      safari-technology-preview: Web browser
 
     fonts:
       0xproto:
@@ -63,57 +60,75 @@ defrole:
       zed-mono:
 
     mas:
-      1569813296: 1Password for Safari
-
-      497799835: Xcode
-
       1440147259: AdGuard for Safari
+      1569813296: 1Password for Safari
+      497799835: Xcode
 
     ports:
       install:
         1password-cli:
-        atuin:
-        chezmoi:
-        fish:
-        mas:
-        mise:
-        git: +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
-        pam-reattach:
-
         age:
+        ansifilter:
+        antiword:
+        atuin:
+        bat-extras:
+        bat:
         cargo:
+        chezmoi:
+        csvlens:
+        ctpv:
+        czkawka:
         deno:
         difftastic:
+        dos2unix:
         duf:
         dust:
         editorconfig-checker:
         eza: +doc+git
         fastmod:
         fd:
+        fish:
         fswatch:
         gawk:
-        goawk:
-        gojq:
         gh:
         git-absorb:
         git-delta:
         git-interactive-rebase-tool:
+        git: +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
+        glow:
         gmake:
         go:
+        goawk:
+        gojq:
+        gum:
+        htmd-cli:
         hwatch:
         hyperfine:
+        ijq:
+        jaq:
+        jnv:
+        jq:
+        jqfmt:
+        jqp:
         jujutsu:
         just:
         lazygit:
         lemmeknow:
         lychee:
         mani:
+        mas:
+        mdcat:
+        miller:
+        mise:
         moreutils: +doc
         ov:
+        pam-reattach:
         pv:
+        ripgrep:
         shellcheck:
         shellharden:
         shfmt:
+        taplo:
         tig: +doc
         tokei:
         typos:
@@ -121,27 +136,6 @@ defrole:
         uv:
         zizmor:
         zoxide:
-
-        ansifilter:
-        antiword:
-        bat-extras:
-        bat:
-        csvlens:
-        ctpv:
-        czkawka:
-        dos2unix:
-        glow:
-        gum:
-        htmd-cli:
-        ijq:
-        jaq:
-        jnv:
-        jq:
-        jqfmt:
-        jqp:
-        mdcat:
-        ripgrep:
-        taplo:
 
       setunrequested:
         ftgl:
@@ -209,4 +203,3 @@ defrole:
       remarshal: Convert between CBOR, JSON, MessagePack, TOML, and YAML
 
 # vim: ft=yaml
-

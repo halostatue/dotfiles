@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#
+# git files
+#
+# Based on https://blog.jez.io/cli-code-review/
+
+set -o pipefail
+if [[ -n "$DEBUG" ]]; then
+  set -x
+fi
+
+if [[ -z "$REVIEW_BASE" ]]; then
+  REVIEW_BASE="$(git remote show origin | grep 'HEAD branch' | cut -d ' ' -f5)"
+fi
+
+exec git diff --name-only "$(git merge-base HEAD "$REVIEW_BASE")"

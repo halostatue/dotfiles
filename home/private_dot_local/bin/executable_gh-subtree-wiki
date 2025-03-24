@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+origin="$(git remote get-url origin)"
+wiki="${origin/.git/.wiki}"
+
+git remote add -f wiki "${wiki}"
+git merge -s ours --no-commit --allow-unrelated wiki/master
+git read-tree --prefix=wiki/ -u wiki/master
+git commit -m "Github wiki subtree merged in wiki/"
