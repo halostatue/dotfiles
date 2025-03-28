@@ -1,0 +1,8 @@
+# role: streaming
+#
+# Streaming-related tools
+---
+defrole:
+  streaming:
+    casks:
+      obs: Open-source software for live streaming and screen recording

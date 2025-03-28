@@ -12,4 +12,5 @@ defrole:
       install:
         dotenv-linter:
         k9s:
+        kubie:
         havener:

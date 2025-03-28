@@ -94,6 +94,7 @@ defrole:
         git-absorb:
         git-delta:
         git-interactive-rebase-tool:
+        git-who:
         git: +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
         glow:
         gmake:
