@@ -27,6 +27,7 @@ defrole:
         git-mediate:
         git-some-extras:
         git-tools:
+        pinact:
         scc:
         viddy:
 

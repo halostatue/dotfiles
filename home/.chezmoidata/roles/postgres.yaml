@@ -6,6 +6,9 @@ defrole:
   postgres:
     casks:
       postgres-unofficial: App wrapper for Postgres
+      beekeeper-studio: Cross platform SQL editor and database management app
+      db-browser-for-sqlite: Browser for SQLite databases
+      pgadmin4: Administration and development platform for PostgreSQL
 
     ports:
       install:
