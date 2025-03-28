@@ -97,6 +97,10 @@ update-port() {
   port[stable]=false
 
   case "$1" in
+  pinact)
+    port[category]=security
+    port_test=(pinact --help)
+    ;;
   jaq)
     port[category]=textproc
     port[cargo_lock]=github
@@ -259,7 +263,12 @@ update-port() {
 
   set-port-type
 
-  seaport clip "${port[name]}"
+  if [[ -n "${2:-}" ]]; then
+    seaport clip "${port[name]}" --bump "${2}"
+  else
+    seaport clip "${port[name]}"
+  fi
+
   port[clip]="$(mktemp)"
   pbpaste >"${port[clip]}"
 
