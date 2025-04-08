@@ -245,7 +245,7 @@
 .net
 .node_repl_history
 .npm/
-.npmrc
+# .npmrc
 
 .ollama
 

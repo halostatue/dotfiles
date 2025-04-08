@@ -1,4 +1,9 @@
 {{- $work := has "work" (get . "roles" | default list) -}}
+{{- $npm_tokens := dict -}}
+{{- if $work -}}
+{{-   $_ := set $npm_tokens "NPM_PACKAGE_TOKEN" (output "gh" "auth" "token" "--user"
+    .github.work) -}}
+{{- end -}}
 {{- $hex_api_keys := dict -}}
 {{- if $work -}}
 {{-   $_ := set $hex_api_keys "vivo" (onepasswordRead "op://xlol453p46nfdqodyw62qzk63m/rlvbids4mm46mozbxeplzfphem/credential" .op.personal) -}}
@@ -21,6 +26,8 @@ ERL_AFLAGS = "-kernel shell_history enabled shell_history_file_bytes 5242880"
 RIPGREP_CONFIG_PATH = {{ joinPath .chezmoi.homeDir ".ripgreprc" | quote }}
 {{ range $name, $value := $hex_api_keys -}}
 {{ printf "%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) }} = {{ $value | quote }}{{ end }}
+{{ range $name, $value := $npm_tokens -}}
+{{ printf "%s" ($name | jq "ascii_upcase" | first) }} = {{ $value | quote }}{{ end }}
 
 [tools]
 {{ if $work }}aws-vault = "7"{{ end }}
@@ -34,7 +41,6 @@ kubectl = "1.31"
 {{- end }}
 node = "20"
 ruby = "3.3"
-"ubi:suzuki-shunsuke/pinact" = "latest"
 {{ if $work }}"ubi:telia-oss/aws-env" = "latest"{{ end }}
 usage = "latest"
 zig = "0.13"

@@ -6,6 +6,7 @@
 {{- $email := promptStringOnce . "email" "Email" -}}
 {{- $name := promptStringOnce . "name" "Name" -}}
 {{- $githubUsername := promptStringOnce . "github.user" "Github Username" -}}
+{{- $workGithubUsername := promptStringOnce . "github.work" "Github Username (Work)" -}}
 
 {{- /* $op := includeTemplate "init/1p/accounts" . | fromJson */ -}}
 {{-
@@ -83,6 +84,7 @@ personal = {{ promptStringOnce . "onepassword.personal" "1Password Personal Acco
 
 [data.github]
 user = {{ $githubUsername | quote }}
+work = {{ $workGithubUsername | quote }}
 
 [data.ruby.hoe]
 email = {{ $email | quote }}

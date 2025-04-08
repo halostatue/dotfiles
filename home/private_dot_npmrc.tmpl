@@ -1,0 +1,6 @@
+{{- if has "work" (get . "roles" | default list) -}}
+@fortelabsinc:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NPM_PACKAGE_TOKEN}
+//registry.npmjs.org/:_authToken={{ onepasswordRead "op://xlol453p46nfdqodyw62qzk63m/vuugozo7bii2dmlzxjcx2gxnji/access-token" .op.personal }}
+always-auth=true
+{{ end -}}

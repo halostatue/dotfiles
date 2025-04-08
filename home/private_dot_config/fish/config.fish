@@ -54,6 +54,10 @@ end
 
 set CDPATH . ~/.links/ ~/personal ~
 
+if command --query kubie
+    set -gx KUBIE_PROMPT_DISABLE 1
+end
+
 if command --query pngcrush
     function crush -d pngcrush
         pngcrush -e _sm.png -rem alla -brute -reduce $argv
