@@ -97,6 +97,11 @@ update-port() {
   port[stable]=false
 
   case "$1" in
+  uv)
+    port[cargo_lock]=github
+    port[category]=devel
+    port_test=(uv tool list)
+    ;;
   pinact)
     port[category]=security
     port_test=(pinact --help)
