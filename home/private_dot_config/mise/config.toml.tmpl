@@ -1,8 +1,8 @@
 {{- $work := has "work" (get . "roles" | default list) -}}
 {{- $npm_tokens := dict -}}
 {{- if $work -}}
-{{-   $_ := set $npm_tokens "NPM_PACKAGE_TOKEN" (output "gh" "auth" "token" "--user"
-    .github.work) -}}
+{{-   $_ := set $npm_tokens "NPM_PACKAGE_TOKEN" ((output "gh" "auth" "token" "--user"
+    .github.work) | trim) -}}
 {{- end -}}
 {{- $hex_api_keys := dict -}}
 {{- if $work -}}

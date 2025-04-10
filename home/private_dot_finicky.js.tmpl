@@ -549,6 +549,10 @@ module.exports = {
       match: ({ url }) => url.host === 'newreleases.io',
       browser: Browsers.NorthernLabs,
     },
+    isWork && {
+      match: ({ url }) => url.host.match(/flux\.\w+-dev\.cloud/),
+      browser: Browsers.NorthernLabs,
+    },
     {
       match: ({ url }) => url.host === 'meet.google.com',
       browser: Browsers.NorthernLabs || Browsers.Chrome,
