@@ -40,6 +40,9 @@ defrole:
 
     fonts:
       0xproto:
+      atkinson-hyperlegible-mono:
+      atkinson-hyperlegible-next:
+      atkinson-hyperlegible:
       cascadia-code:
       cascadia-mono:
       eb-garamond:
