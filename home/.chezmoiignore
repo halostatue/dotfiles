@@ -107,6 +107,8 @@
 .config/micro/buffers
 .config/micro/**/log.txt
 
+.config/nnn
+
 .config/nvim
 .config/nvim.old/.git
 
@@ -119,6 +121,8 @@
 .config/packer/**
 
 .config/tabtab/**
+
+.config/vifm/vifminfo.json
 
 .config/yarn/**
 
@@ -147,6 +151,8 @@
 .gitlater
 .gk/
 .gnupg
+
+.goful
 
 {{/* Go REPL */}}
 .gore/**
