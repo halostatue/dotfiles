@@ -179,6 +179,7 @@ defrole:
       oh-my-fish/plugin-tab:
       patrickf1/colored_man_pages.fish:
       patrickf1/fzf.fish: v10.3
+      mattmc3/magic-enter.fish:
 
     cond:
       - if-stat: /Applications/Xcode.app

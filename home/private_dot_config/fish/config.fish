@@ -182,41 +182,9 @@ if status is-interactive
         mysql -u root <$argv[1]
     end
 
-    if not set --query MAGIC_ENTER_GIT_COMMAND
-        set --universal MAGIC_ENTER_GIT_COMMAND git status
+    if functions --query magic-enter
+        bind \cq magic-inter
     end
-
-    if not set --query MAGIC_ENTER_LIST_COMMAND
-        if command --query eza
-            set --universal MAGIC_ENTER_LIST_COMMAND eza -l .
-        else
-            set --universal MAGIC_ENTER_LIST_COMMAND ls -lh .
-        end
-    end
-
-    function magic_enter
-        if test -z (string join0 -- (commandline))
-            if __fish_is_git_repository
-                eval $MAGIC_ENTER_GIT_COMMAND
-            else
-                printf "\n"
-                eval $MAGIC_ENTER_LIST_COMMAND
-            end
-
-            printf "\n\n"
-
-            commandline --function repaint
-        else
-            commandline --function execute
-        end
-    end
-
-    if contains enter (bind --key-names)
-        bind --key enter magic_enter
-    end
-
-    bind \cq magic_enter
-    bind \r magic_enter
 
     if functions --query fzf_configure_bindings
         set --local __setup_fzf_bindings \
