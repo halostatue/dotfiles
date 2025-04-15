@@ -181,6 +181,9 @@ defrole:
       patrickf1/fzf.fish: v10.3
       mattmc3/magic-enter.fish:
 
+    uv:
+      remarshal: Convert between CBOR, JSON, MessagePack, TOML, and YAML
+
     cond:
       - if-stat: /Applications/Xcode.app
         ports:
@@ -203,8 +206,5 @@ defrole:
         ports:
           install:
             czkawka:
-
-    uv:
-      remarshal: Convert between CBOR, JSON, MessagePack, TOML, and YAML
 
 # vim: ft=yaml
