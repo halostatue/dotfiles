@@ -183,7 +183,7 @@ if status is-interactive
     end
 
     if functions --query magic-enter
-        bind \cq magic-inter
+        bind \cq magic-enter
     end
 
     if functions --query fzf_configure_bindings
