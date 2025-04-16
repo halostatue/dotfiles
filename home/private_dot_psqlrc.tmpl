@@ -1,3 +1,10 @@
+{{- $has := includeTemplate "programs" . | fromJson -}}
+{{- $pager := "less -SX" -}}
+{{- $watch_pager := $pager -}}
+{{- if $has.ov -}}
+{{-   $pager = printf "%s -F -C -d \"|\" -H1 --column-rainbow --align" $has.ov -}}
+{{-   $watch_pager = printf "%s --follow-section --section-delimiter \"^$\"" $has.ov -}}
+{{- end -}}
 -- vim: ft=sql
 -- Official docs: http://www.postgresql.org/docs/9.3/static/app-psql.html
 -- http://robots.thoughtbot.com/improving-the-command-line-postgres-experience/
@@ -14,8 +21,8 @@
 -- Show how long each query takes to execute
 \timing on
 
--- pager with less -SX
-\setenv PAGER 'less -SX'
+\setenv PAGER '{{ $pager }}'
+\setenv WATCH_PAGER '{{ $watch_pager}}'
 
 \pset format wrapped
 \pset linestyle unicode
