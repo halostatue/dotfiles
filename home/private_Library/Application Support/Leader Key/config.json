@@ -1,0 +1,30 @@
+{
+  "actions": [
+    {
+      "key": "t",
+      "type": "application",
+      "value": "/Applications/Ghostty.app"
+    },
+    {
+      "key": "s",
+      "type": "application",
+      "value": "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app"
+    },
+    {
+      "key": "e",
+      "type": "application",
+      "value": "/System/Applications/Mail.app"
+    },
+    {
+      "key": "i",
+      "type": "application",
+      "value": "/System/Applications/Music.app"
+    },
+    {
+      "key": "m",
+      "type": "application",
+      "value": "/System/Applications/Messages.app"
+    }
+  ],
+  "type": "group"
+}

@@ -300,21 +300,31 @@ Downloads/
 Dropbox/
 
 Library/*
+
 !Library/Application Support
 Library/Application Support/*
+
 !Library/Application Support/BBEdit
 Library/Application Support/BBEdit/*
 !Library/Application Support/BBEdit/Language Modules
+
 !Library/Application Support/Code
 Library/Application Support/Code/*
 !Library/Application Support/Code/User
 Library/Application Support/Code/User/*
 !Library/Application Support/Code/User/settings.json
+
 !Library/Application Support/fm
 !Library/Application Support/gh-dash
+
 !Library/Application Support/lazygit
 Library/Application Support/lazygit/*
 !Library/Application Support/lazygit/config.yml
+
+!Library/Application Support/Leader Key
+Library/Application Support/Leader Key/*
+!Library/Application Support/Leader Key/config.json
+
 !Library/Application Support/tealdeer
 
 # Library/LaunchAgents/macports.colima.plist
