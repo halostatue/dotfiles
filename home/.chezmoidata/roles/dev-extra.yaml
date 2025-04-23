@@ -53,6 +53,8 @@ defrole:
       chrislajoie.vscode-modelines:
       codezombiech.gitignore:
       deltaxml.xslt-xpath:
+      denoland.vscode-deno:
+      docker.docker:
       eamodio.gitlens:
       editorconfig.editorconfig:
       eliverlara.andromeda:

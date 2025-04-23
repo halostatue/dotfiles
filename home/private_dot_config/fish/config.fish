@@ -182,6 +182,8 @@ if status is-interactive
         mysql -u root <$argv[1]
     end
 
+    # TODO: Override the predefined magic-enter function to use eza if available and
+    #       perhaps a better git status command.
     if functions --query magic-enter
         bind \cq magic-enter
     end

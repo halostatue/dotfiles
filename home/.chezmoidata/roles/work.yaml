@@ -5,7 +5,7 @@
 defrole:
   work:
     casks:
-      dehesselle-meld: Visual diff and merge tool
+      meld: Visual diff and merge tool
       drovio: Remote pair programming and team collaboration tool
       postman: Collaboration platform for API development
       slack: Team communication and collaboration software
@@ -20,3 +20,6 @@ defrole:
         oauth2c:
         redis:
         starship:
+
+    vscode:
+      42crunch.vscode-openapi:
