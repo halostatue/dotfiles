@@ -53,7 +53,8 @@ set-port-type() {
 
   grep -Eq '^PortGroup\s+golang\s+1\.0' "${port[file]}" && port[golang]=true
   grep -Eq '^PortGroup\s+github\s+1\.0' "${port[file]}" && port[github]=true
-  grep -Eq '^cargo.crates' "${port[file]}" && port[needs_crates]=true
+  grep -Eq '^cargo.crates' "${port[file]}" && port[needs_cargo_crates]=true
+  grep -Eq '^go.vendors' "${port[file]}" && port[needs_go_vendors]=true
 
   true
 }
@@ -304,7 +305,7 @@ update-port() {
     git switch --create "${pr_branch}" "${branch}"
   fi
 
-  if [[ -n "${port[needs_crates]:-}" ]]; then
+  if [[ -n "${port[needs_cargo_crates]:-}" ]]; then
     sed '/^cargo.crates/,/^$/d' "${port[clip]}" >"${port[file]}"
 
     if [[ "${port[cargo_lock]:-crates}" == github ]] && [[ -n "${port[tag_url]:-}" ]]; then
@@ -313,6 +314,14 @@ update-port() {
     else
       crate2port "${port[crate]:-${port[name]}}@${port[version]}" >>"${port[file]}"
     fi
+  elif [[ -n "${port[needs_go_vendors]:-}" ]]; then
+    sed '/^go.vendors/, /^$/d' "${port[clip]}" >"${port[file]}"
+
+    go_package="$(awk '/^go.setup/ { print $2 }' "${port[clip]}")"
+
+    echo >>"${port[file]}"
+    go2port get "${go_package}" "v${port[version]}" |
+      sed -n '/^go.vendors/,/^$/p' >>"${port[file]}"
   else
     cp "${port[clip]}" "${port[file]}"
   fi

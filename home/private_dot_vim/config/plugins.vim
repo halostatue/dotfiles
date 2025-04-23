@@ -701,6 +701,17 @@ packix.Setup((px: packix.Packix) => {
     px.Add('wolandark/vimdict')
   endif
 
+  # status line
+  # https://github.com/Eliot00/statusnine
+  px.Add('Eliot00/statusnine')
+  # Also considering:
+  # https://github.com:bluz71/vim-mistfly-statusline
+  # https://github.com:rbong/vim-crystalline
+  # https://github.com/Bakudankun/qline.vim
+  # https://github.com/ShayHill/vim9-focalpoint
+  # https://github.com/ourigen/skyline.vim
+  # https://github.com/pablopunk/statusline.vim
+
   # https://github.com/lifepillar/vim-colortemplate
   px.Add('lifepillar/vim-colortemplate', { type: 'opt', branch: 'v3',
       requires: [ 'lifepillar/vim-devel' ] })
