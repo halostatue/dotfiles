@@ -7,9 +7,9 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
-  "theme": "Atelier Cave Dark",
+  "theme": "Ayu Dark",
   "features": {
-    "inline_completion_provider": "none",
+    "edit_prediction_provider": "none",
     "copilot": false
   },
   "ui_font_size": 14,
