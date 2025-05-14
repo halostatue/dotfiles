@@ -1,3 +1,4 @@
+// {{- $work := has "work" (get . "roles" | default list) }}
 {
   "[ansible]": {
     "editor.tabSize": 2
@@ -47,12 +48,28 @@
   "[xml]": {
     "editor.defaultFormatter": "DotJoshJohnson.xml"
   },
+  "[xslt]": {
+    "editor.semanticHighlighting.enabled": true
+  },
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.tabSize": 2
   },
+  "accessibility.verbosity.inlineChat": false,
+  "accessibility.verbosity.panelChat": false,
   "breadcrumbs.enabled": true,
   "breadcrumbs.filePath": "off",
+  "chat.commandCenter.enabled": false,
+  "chat.extensionTools.enabled": false,
+  "chat.focusWindowOnConfirmation": false,
+  "chat.detectParticipant.enabled": false,
+  "chat.editing.confirmEditRequestRemoval": false,
+  "chat.editing.confirmEditRequestRetry": false,
+  "chat.edits2.enabled": false,
+  "chat.mcp.enabled": false,
+  "chat.promptFiles": false,
+  "chat.unifiedChatView": false,
+  "chat.useFileStorage": false,
   "cSpell.enableFiletypes": [
     "liquid"
   ],
@@ -175,6 +192,7 @@
   "extensions.experimental.affinity": {
     "asvetliakov.vscode-neovim": 1
   },
+  "extensiontotal.apiKeySetting": "{{ onepasswordRead "op://p3tdvhvmmhy4p2mlyyrlvdv3tu/yg2ov2pdezkdqflwvto3mk5aya/credential" .op.personal }}",
   "files.associations": {
     "*.env": "properties"
   },
@@ -190,6 +208,7 @@
   "git.confirmForcePush": false,
   "git.detectSubmodulesLimit": 20,
   "git.fetchOnPull": true,
+  "git.openRepositoryInParentFolders": "never",
   "git.path": "/opt/local/bin/git",
   "git.pruneOnFetch": true,
   "git.rebaseWhenSync": true,
@@ -214,13 +233,16 @@
   "go.useLanguageServer": true,
   "importSorter.generalConfiguration.sortOnBeforeSave": true,
   "importSorter.importStringConfiguration.quoteMark": "single",
+  "inlineChat.holdToSpeech": false,
   "javascript.format.enable": false,
   "javascript.updateImportsOnFileMove.enabled": "always",
   "json.schemas": [],
   "liveshare.authenticationProvider": "GitHub",
+  "lldb.suppressUpdateNotifications": true,
   "markdown.extension.toc.levels": "2..2",
   "markdown.extension.toc.updateOnSave": false,
   "openInGitHub.defaultBranch": "main",
+  "notebook.experimental.generate": false,
   "pgFormatter.formatType": true,
   "pgFormatter.wrapLimit": 90,
   "prettier.requireConfig": true,
@@ -252,6 +274,7 @@
   "shellcheck.executablePath": "/opt/local/bin/shellcheck",
   "telemetry.enableCrashReporter": false,
   "telemetry.enableTelemetry": false,
+  "telemetry.feedback.enabled": false,
   "telemetry.telemetryLevel": "off",
   "terminal.integrated.defaultProfile.osx": "fish",
   "typescript.format.enable": false,
@@ -323,15 +346,11 @@
     "!Split sequence"
   ],
   "zeplin.enableTelemetry": false,
-  "[xslt]": {
-    "editor.semanticHighlighting.enabled": true
-  },
   "XSLT.tasks.saxonJar": "~/.local/share/SaxonHE10-8J/saxon-he-10.8.jar",
   "workbench.editor.empty.hint": "hidden",
   "workbench.editor.tabActionLocation": "left",
-  "extensiontotal.apiKeySetting": "{{ onepasswordRead "op://p3tdvhvmmhy4p2mlyyrlvdv3tu/yg2ov2pdezkdqflwvto3mk5aya/credential" .op.personal }}",
   "zig.zls.enabled": "on",
-  "lldb.suppressUpdateNotifications": true,
+{{ if $work }}
   "openapi.platformUrl": "https://platform.42crunch.com",
   "openapi.platformAuthType": "anond-token",
   "openapi.securityAuditToken": "{{ onepasswordRead "op://xlol453p46nfdqodyw62qzk63m/jd6yf6nuqtmhrz63i7gabqdm2i/credential" .op.personal }}",
@@ -359,21 +378,5 @@
   "openapi.internalFeatures": false,
   "openapi.internalUseDevEndpoints": false,
   "openapi.approvedHostnames": [],
-  "git.openRepositoryInParentFolders": "never",
-  "telemetry.feedback.enabled": false,
-  "chat.commandCenter.enabled": false,
-  "chat.extensionTools.enabled": false,
-  "chat.focusWindowOnConfirmation": false,
-  "chat.detectParticipant.enabled": false,
-  "chat.editing.confirmEditRequestRemoval": false,
-  "chat.editing.confirmEditRequestRetry": false,
-  "chat.edits2.enabled": false,
-  "chat.mcp.enabled": false,
-  "chat.promptFiles": false,
-  "chat.unifiedChatView": false,
-  "accessibility.verbosity.inlineChat": false,
-  "accessibility.verbosity.panelChat": false,
-  "notebook.experimental.generate": false,
-  "chat.useFileStorage": false,
-  "inlineChat.holdToSpeech": false
+{{ end }}
 }

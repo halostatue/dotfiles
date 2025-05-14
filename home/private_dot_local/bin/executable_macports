@@ -163,7 +163,12 @@ update-port() {
     port[category]=devel
     port[private]=true
     ;;
-  mrml | prr | sol)
+  mrml)
+    port[category]=devel
+    port[cargo_lock]=github
+    port[private]=true
+    ;;
+  prr | sol)
     port[category]=devel
     port[private]=true
     ;;
@@ -223,6 +228,7 @@ update-port() {
   zizmor)
     port[category]=security
     port_test=(zizmor -h)
+    port[cargo_lock]=github
     ;;
   *) : ;;
   esac
@@ -298,6 +304,8 @@ update-port() {
     return 1
   fi
 
+  port[requested]="$(port echo requested and name:"${port[name]:-}")"
+
   cd "${port[path]}"
 
   pr_branch="${port[name]}-${port[version]}"
@@ -358,6 +366,10 @@ update-port() {
     gh pr create --fill --body-file "${port[pr]}"
 
     git switch "${branch}"
+  fi
+
+  if [[ -z "${port[requested]}" ]]; then
+    sudo port uninstall "${port[name]}"
   fi
 
   rm -f "${port[clip]}"* "${port[pr]}"
