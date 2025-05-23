@@ -528,7 +528,7 @@ module.exports = {
     isWork && {
       match: ({ url }) =>
         url.host.endsWith('github.com') && url.pathname.match(/\/fortelabsinc\//i),
-      browser: Browsers.Forte,
+      browser: Browsers.NorthernLabs,
     },
     isWork && {
       match: ({ url }) =>
@@ -543,7 +543,11 @@ module.exports = {
     },
     isWork && {
       match: ({ url }) => url.host === 'identity.getpostman.com',
-      browser: Browsers.Forte,
+      browser: Browsers.NorthernLabs,
+    },
+    isWork && {
+      match: ({ url }) => url.host === 'forte-io.postman.co',
+      browser: Browsers.NorthernLabs,
     },
     isWork && {
       match: ({ url }) => url.host === 'newreleases.io',
