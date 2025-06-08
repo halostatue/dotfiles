@@ -91,8 +91,9 @@ update-port() {
   local fn branch
   fn="macports update-port"
   local -A port
-  local -a port_test
+  local -a port_test port_variants
   port_test=()
+  port_variants=()
 
   port[private]=false
   port[stable]=false
@@ -137,9 +138,10 @@ update-port() {
     port_test=(colima status)
     ;;
   lima)
-    port[stable]=true
+    # port[stable]=true
     port[category]=sysutils
     port_test=(test-port-lima)
+    port_variants=(additional_guestagents)
     ;;
   passage)
     port[category]=security
@@ -264,6 +266,8 @@ update-port() {
     fi
   fi
 
+  sudo port sync
+
   port[name]="$1"
   port[path]="${port[root]}/${port[category]}/$1"
 
@@ -384,7 +388,15 @@ confirm() {
 
 prepare-pr() (
   port lint
-  sudo port install
+
+  sudo port clean
+
+  for variant in "${port_variants[@]}"; do
+    sudo port build "${variant}" -N
+    sudo port clean
+  done
+
+  sudo port install -N
 
   "${port[private]:-false}" && return 0
 

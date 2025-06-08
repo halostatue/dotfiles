@@ -1,35 +1,30 @@
 {
-  "type" : "group",
-  "actions" : [
+  "actions": [
     {
-      "label" : "",
-      "key" : "t",
-      "value" : "/Applications/Ghostty.app",
-      "type" : "application"
+      "key": "t",
+      "type": "application",
+      "value": "/Applications/Ghostty.app"
     },
     {
-      "label" : "",
-      "key" : "s",
-      "value" : "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app",
-      "type" : "application"
+      "key": "s",
+      "type": "application",
+      "value": "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app"
     },
     {
-      "value" : "/System/Applications/Mail.app",
-      "label" : "",
-      "type" : "application",
-      "key" : "e"
+      "key": "e",
+      "type": "application",
+      "value": "/System/Applications/Mail.app"
     },
     {
-      "value" : "/System/Applications/Music.app",
-      "label" : "",
-      "type" : "application",
-      "key" : "i"
+      "key": "i",
+      "type": "application",
+      "value": "/System/Applications/Music.app"
     },
     {
-      "value" : "/System/Applications/Messages.app",
-      "label" : "",
-      "type" : "application",
-      "key" : "m"
+      "key": "m",
+      "type": "application",
+      "value": "/System/Applications/Messages.app"
     }
-  ]
+  ],
+  "type": "group"
 }
