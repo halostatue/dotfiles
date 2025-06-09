@@ -6,9 +6,10 @@ _default:
 # Format various files
 format:
     @npx @biomejs/biome check --config-path=biome.json --write biome.json
+    @npx @biomejs/biome check --config-path=biome.json --write \
+      home/.chezmoitemplates/finicky/finicky.js
     @npx @biomejs/biome check --config-path=biome.json --fix \
-      --stdin-file-path=finicky.js <home/private_dot_finicky.js.tmpl | \
-      sponge home/private_dot_finicky.js.tmpl
+      home/.chezmoitemplates/finicky/finicky.ts
     @shfmt -w home/.chezmoiscripts/* lib/lib.bash
     @ruff check --fix \
       home/private_dot_local/bin/executable_git-blame-colored \

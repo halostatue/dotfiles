@@ -1,0 +1,1 @@
+{{- output "mdls" "-name" "kMDItemVersion" "-r" . -}}

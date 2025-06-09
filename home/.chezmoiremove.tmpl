@@ -3,5 +3,10 @@
 .local/bin/aws-cli-session-manager
 .local/bin/aws_completer
 {{ end }}
-.kerlrc
-.kerlrc.fish
+
+{{ $finickyVersion := includeTemplate "app_version" "/Applications/Finicky.app" }}
+{{ if semverCompare "3.x" $finickyVersion }}
+.finicky.ts
+{{ else if semverCompare "4.x" $finickyVersion }}
+.finicky.js
+{{ end }}
