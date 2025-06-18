@@ -31,8 +31,8 @@ RIPGREP_CONFIG_PATH = {{ joinPath .chezmoi.homeDir ".ripgreprc" | quote }}
 
 [tools]
 {{ if $work }}aws-vault = "7"{{ end }}
-elixir = "1.17.3-otp-27"
-erlang = "27.1.2"
+elixir = "1.18.3-otp-27"
+erlang = "27.3.4"
 gleam = "latest"
 {{ if $work -}}
 "go:newreleases.io/cmd/newreleases" = "latest"
@@ -40,7 +40,7 @@ k9s = "latest"
 kubectl = "1.31"
 {{- end }}
 node = "20"
-ruby = "3.3"
+ruby = "3.4"
 {{ if $work }}"ubi:telia-oss/aws-env" = "latest"{{ end }}
 usage = "latest"
 zig = "0.13"

@@ -32,7 +32,7 @@ iabbrev cisodt <C-R>=strftime("%Y-%m-%dT%H:%M:%S%z")<CR>
 
 iabbrev cdt <C-R>=hz#Isotime()<CR>
 
-iabbrev Lorem Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+iabbrev Llorem Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 iabbrev @(0) ⓪
 iabbrev @(1) ①
@@ -97,7 +97,6 @@ iabbrev (7)@ ❼
 iabbrev (8)@ ❽
 iabbrev (9)@ ❾
 iabbrev (10)@ ❿
-iabbrev (10)@ ➓
 iabbrev (11)@ ⓫
 iabbrev (12)@ ⓬
 iabbrev (13)@ ⓭

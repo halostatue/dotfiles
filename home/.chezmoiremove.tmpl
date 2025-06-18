@@ -4,9 +4,3 @@
 .local/bin/aws_completer
 {{ end }}
 
-{{ $finickyVersion := includeTemplate "app_version" "/Applications/Finicky.app" }}
-{{ if semverCompare "3.x" $finickyVersion }}
-.finicky.ts
-{{ else if semverCompare "4.x" $finickyVersion }}
-.finicky.js
-{{ end }}
