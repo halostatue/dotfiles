@@ -1,4 +1,4 @@
 {{- $version := includeTemplate "app_version" "/Applications/Finicky.app" -}}
 {{- if semverCompare "4.x" $version -}}
-{{- includeTemplate "finicky/finicky.ts" -}}
+{{- includeTemplate "finicky/finicky.ts" . -}}
 {{- end -}}
