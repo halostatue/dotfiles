@@ -42,7 +42,7 @@ def fetch_json(url)
 end
 
 def fetch_gem_json(url)
-  fetch_json(url)["gems"].map { _1["gem"] }
+  fetch_json(url)["gems"].map { it["gem"] }
 end
 
 def local_gems
@@ -59,13 +59,13 @@ end
 
 def macports_info
   requested = `port echo requested`.split($/).map {
-    port = _1.gsub(/@[^+][^+]*/, "").gsub(/\s+/, " ").sub(/\s+$/, "")
+    port = it.gsub(/@[^+][^+]*/, "").gsub(/\s+/, " ").sub(/\s+$/, "")
     "install #{port}"
   }.sort_by(&:downcase).uniq
 
   select =
-    `port select --summary`.split($/).tap { _1.shift(2) }.map {
-      case _1.split
+    `port select --summary`.split($/).tap { it.shift(2) }.map {
+      case it.split
       in [_, "none", *]
         nil
       in [target, port, *]
@@ -108,13 +108,13 @@ MAS_EXCLUSIONS = [
 ].join("|")
 
 def update_homebrew
-  data = homebrew_bundle.tap { _1.delete("vscode") }
-  data["mas"]&.delete_if { _1 =~ /id: (?:#{MAS_EXCLUSIONS})$/o }
+  data = homebrew_bundle.tap { it.delete("vscode") }
+  data["mas"]&.delete_if { it =~ /id: (?:#{MAS_EXCLUSIONS})$/o }
 
   {
     target: "home/private_dot_config/packages/Brewfile.tmpl",
     data: data,
-    transform: ->(data) { data.keys.flat_map { data[_1].sort_by(&:downcase) << "\n" } }
+    transform: ->(data) { data.keys.flat_map { data[it].sort_by(&:downcase) << "\n" } }
   }
 end
 
@@ -124,7 +124,7 @@ def update_vscode
     data: homebrew_bundle["vscode"],
     transform: ->(data) {
       data.sort_by(&:downcase).flat_map {
-        _1.scan(/\Avscode "([^"]+)"(?: (#.+))?\z/).flatten.compact
+        it.scan(/\Avscode "([^"]+)"(?: (#.+))?\z/).flatten.compact
       }
     }
   }
@@ -142,7 +142,7 @@ def update_ruby_gems
   {
     target: "home/private_dot_config/packages/Gemfile.tmpl",
     data: only_local_gems,
-    transform: ->(data) { data.map { %(gem "#{_1}") } }
+    transform: ->(data) { data.map { %(gem "#{it}") } }
   }
 end
 
@@ -195,8 +195,8 @@ end
 def update_gh_extensions
   {
     target: "home/private_dot_config/packages/executable_gh-extensions.tmpl",
-    data: `gh extension list`.split($/).tap { _1.shift }.map {
-      "gh extension install #{_1.split("\t")[1]}"
+    data: `gh extension list`.split($/).tap { it.shift }.map {
+      "gh extension install #{it.split("\t")[1]}"
     }.sort_by(&:downcase),
     transform: ->(data) { ["#!/bin/sh", "\n", *data] }
   }
@@ -205,8 +205,8 @@ end
 def update_python_uv
   tools = `uv tool list --show-paths`
     .split($/)
-    .reject { _1 =~ /^-/ }
-    .flat_map { _1.gsub(/\A([^ ]+) v.+ \(.+\)\z/, 'uv tool install \1') }
+    .reject { it =~ /^-/ }
+    .flat_map { it.gsub(/\A([^ ]+) v.+ \(.+\)\z/, 'uv tool install \1') }
 
   {
     target: "home/private_dot_config/packages/executable_uv.tmpl",

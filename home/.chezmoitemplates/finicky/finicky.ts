@@ -345,7 +345,7 @@ const rewrite: UrlRewriteRule[] = [
   },
 ]
 
-const handlers: BrowserHandler[] = [
+let handlers: BrowserHandler[] = [
   {
     match: () =>
       finicky.getModifierKeys().option ||
@@ -399,8 +399,7 @@ if (isWork) {
   ]
 }
 
-handlers.concat(workHandlers)
-handlers.concat([
+handlers = handlers.concat(workHandlers).concat([
   {
     match: (url) => url.host === 'meet.google.com',
     browser: Browsers.NorthernLabs || Browsers.GoogleChrome,
