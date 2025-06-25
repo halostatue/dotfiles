@@ -8,8 +8,3 @@ defrole:
       google-chrome: Web browser
       microsoft-edge: Multi-platform web browser
       orion: WebKit based web browser
-
-    cond:
-      - if-role: personal
-        casks:
-          fluid: Tool to turn a website into a desktop app

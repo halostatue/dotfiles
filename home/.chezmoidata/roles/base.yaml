@@ -132,6 +132,7 @@ defrole:
         shellcheck:
         shellharden:
         shfmt:
+        starship:
         taplo:
         tig: +doc
         tokei:

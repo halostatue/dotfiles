@@ -1,4 +1,4 @@
-# role: personal
+# role: work
 #
 # The work role includes software applicable to my work machines.
 ---
@@ -19,7 +19,6 @@ defrole:
         oath-toolkit:
         oauth2c:
         redis:
-        starship:
 
     vscode:
       42crunch.vscode-openapi:

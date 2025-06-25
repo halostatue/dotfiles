@@ -5,7 +5,6 @@
 defrole:
   llm:
     casks:
-      jan: Offline AI chat tool
       lm-studio: Discover, download, and run local LLMs
       msty: Run LLMs locally
       ollamac: Interact with Ollama models

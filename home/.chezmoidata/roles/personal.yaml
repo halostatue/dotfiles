@@ -30,8 +30,8 @@ defrole:
       899247664: TestFlight
       889428659: xScope
 
-    fish:
-      ilancosman/tide: v6
+    # fish:
+    #   ilancosman/tide: v6
 
     cond:
       - if-port: openjdk11
