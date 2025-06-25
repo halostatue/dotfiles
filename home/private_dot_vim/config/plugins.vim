@@ -384,6 +384,12 @@ packix.Setup((px: packix.Packix) => {
   # Vue
   # https://github.com/posva/vim-vue
   px.Add('posva/vim-vue')
+  # Leo for Aleo
+  # https://github.com/jules/aleo.vim
+  px.Add('jules/aleo.vim')
+  # Vyper for EVM
+  # https://github.com/vyperlang/vim-vyper
+  px.Add('vyperlang/vim-vyper')
 
   ## Disabled Syntax support
   # # AppleScript
