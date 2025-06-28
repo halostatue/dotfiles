@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Run pinact with GITHUB_TOKEN"
+#MISE dir="{{cwd}}"
+
+GITHUB_TOKEN="$(gh auth token)" pinact run "${@}"

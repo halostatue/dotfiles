@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Run zizmor with GH_TOKEN"
+#MISE dir="{{cwd}}"
+
+(($#)) || set -- .
+
+GH_TOKEN="$(gh auth token)" zizmor "${@}"
