@@ -24,7 +24,7 @@ defrole:
       leader-key: Application launcher
       loop: Window manager
       maccy: Clipboard manager
-      macvim: Text editor
+      macvim-app: Text editor
       meetingbar: Shows the next meeting in the menu bar
       obsidian: Knowledge base that works on top of a local folder of plain text Markdown files
       qlcolorcode: Quick Look plug-in that renders source code with syntax highlighting
@@ -107,6 +107,7 @@ defrole:
         gum:
         htmd-cli:
         hwatch:
+        hurl:
         hyperfine:
         ijq:
         jaq:
@@ -147,6 +148,7 @@ defrole:
         lima:
         openjdk11:
         openjdk17:
+        openjdk21-temurin:
         rebels-in-the-sky:
         rlwrap:
         ruby-build:

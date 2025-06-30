@@ -1,3 +1,4 @@
+{{- $work := has "work" (get . "roles" | default list) }}
 [packages]
 cargo-audit = { version = "*", locked = true }
 cargo-authors = { version = "*", locked = true }
@@ -21,6 +22,7 @@ cargo-release = { version = "*", locked = true }
 cargo-show = { version = "*", locked = true }
 cargo-update = { version = "*", locked = true }
 cargo-watch = { version = "*", locked = true }
+{{ if $work }}leo-lang = { version = "*", locked = true }{{ end }}
 prr = { version = "*", locked = true }
 rage = { version = "*", locked = true }
 rbase64 = { version = "*", locked = true, features = ["cli"] }
