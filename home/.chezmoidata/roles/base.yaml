@@ -144,6 +144,7 @@ defrole:
         zoxide:
 
       setunrequested:
+        direnv:
         ftgl:
         lima:
         openjdk11:
