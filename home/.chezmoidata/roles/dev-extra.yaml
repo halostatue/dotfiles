@@ -7,8 +7,8 @@ defrole:
     formulae:
       csvtk: Cross-platform, efficient and practical CSV/TSV toolkit in Golang
       flarectl: CLI application for interacting with a Cloudflare account
-      syft: CLI for generating a Software Bill of Materials from container images
       git-graph: Command-line tool to show clear git graphs arranged for your branching model
+      syft: CLI for generating a Software Bill of Materials from container images
 
     casks:
       livebook: Code notebooks for Elixir developers
@@ -30,6 +30,7 @@ defrole:
         pinact:
         scc:
         viddy:
+        xan:
 
     uv:
       # Quickly rewrite git repository history

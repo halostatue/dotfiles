@@ -6,7 +6,7 @@ defrole:
   games:
     casks:
       dosbox: Emulator for x86 with DOS
-      dosbox-x: Fork of the DOSBox project
+      dosbox-x-app: Fork of the DOSBox project
       gargoyle: IO layer for interactive fiction players
       spatterlight: Play most kinds of interactive fiction game files
 

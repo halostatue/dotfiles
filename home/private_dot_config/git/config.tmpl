@@ -183,7 +183,7 @@
   recurseSubmodules = on-demand
 
 {{ if $skiplistFile -}}
-[fetch.fsck]
+[fetch "fsck"]
     skipList = {{ $skiplistFile | quote }}
 {{- end }}
 
@@ -266,7 +266,7 @@
   fsckobjects = true
 
 {{ if $skiplistFile -}}
-[receive.fsck]
+[receive "fsck"]
   skipList = {{ $skiplistFile | quote }}
 {{- end }}
 
