@@ -147,6 +147,7 @@ defrole:
         direnv:
         ftgl:
         lima:
+        libyaml:
         openjdk11:
         openjdk17:
         openjdk21-temurin:
