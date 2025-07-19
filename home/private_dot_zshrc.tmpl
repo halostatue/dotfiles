@@ -56,3 +56,13 @@ zstyle ':zim:prompt-pwd' git-root yes
 
 # # Automatic rehash
 # zstyle ':completion:*' rehash true
+
+{{ if stat "/Applications/LM Studio.app" -}}
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/austin/.lmstudio/bin"
+# End of LM Studio CLI section
+
+{{- end }}
+{{ if or (lookPath "kiro") (stat "/Applications/Kiro.app") -}}
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
+{{- end}}

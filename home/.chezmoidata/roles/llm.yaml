@@ -6,6 +6,7 @@ defrole:
   llm:
     casks:
       lm-studio: Discover, download, and run local LLMs
+      kiro: Agent-centric IDE with spec-driven development
       msty: Run LLMs locally
       ollamac: Interact with Ollama models
       pieces: Code snippets, screenshots and workflow context

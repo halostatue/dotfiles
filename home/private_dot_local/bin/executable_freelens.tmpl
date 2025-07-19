@@ -1,0 +1,5 @@
+{{- if stat "/Applications/Freelens.app" -}}
+#!/bin/sh
+
+open -a FreeLens "$@"
+{{- end -}}

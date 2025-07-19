@@ -218,6 +218,9 @@ if status is-interactive
     if functions -q _tide_print_item
         # Do nothing. Tide should already be configured.
     else if command -q starship
+        if not string match -q "$TERM_PROGRAM" vscode kiro
+            starship init fish | source
+        end
         starship init fish | source
     end
 end
@@ -311,3 +314,13 @@ end
 if status is-interactive
     emit fish_postexec
 end
+
+{{ if stat "/Applications/LM Studio.app" -}}
+# Added by LM Studio CLI (lms)
+set -gx PATH $PATH /Users/austin/.lmstudio/bin
+# End of LM Studio CLI section
+
+{{- end }}
+{{ if or (lookPath "kiro") (stat "/Applications/Kiro.app") -}}
+string match -q "$TERM_PROGRAM" kiro && source (kiro --locate-shell-integration-path fish)
+{{- end }}

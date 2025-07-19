@@ -27,6 +27,7 @@ defrole:
         git-mediate:
         git-some-extras:
         git-tools:
+        helix:
         pinact:
         scc:
         viddy:
@@ -74,6 +75,7 @@ defrole:
       jq-syntax-highlighting.jq-syntax-highlighting:
       lexical-lsp.lexical:
       mikestead.dotenv:
+      ms-azuretools.vscode-containers:
       ms-azuretools.vscode-docker:
       ms-python.debugpy:
       ms-python.python:

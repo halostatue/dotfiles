@@ -63,3 +63,13 @@ HISTTIMEFORMAT='%F %T '
 
 # <$PWD in blue> <Prompt Sign in Yellow> <Rest in default light white>
 PS1='\[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] '
+
+{{ if stat "/Applications/LM Studio.app" -}}
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/austin/.lmstudio/bin"
+# End of LM Studio CLI section
+
+{{- end }}
+{{ if or (lookPath "kiro") (stat "/Applications/Kiro.app") -}}
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path bash)"
+{{- end }}
