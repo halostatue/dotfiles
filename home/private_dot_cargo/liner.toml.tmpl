@@ -1,4 +1,4 @@
-{{- $work := has "work" (get . "roles" | default list) }}
+{{- $work := has "work" (get . "roles" | default list) -}}
 [packages]
 {{ if $work }}amareleo-chain = { version = "*", locked = true }{{ end }}
 cargo-audit = { version = "*", locked = true }
