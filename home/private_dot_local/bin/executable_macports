@@ -301,10 +301,13 @@ update-port() {
     return 1
   fi
 
-  if prs="$(gh pr list --search "${port[name]} in:title" -q '(. | length) > 0' --json number)" &&
+  if prs="$(gh pr list --search "(${port[name]} AND ${port[version]}) in:title" -q '(. | length) > 0' --json number)" &&
     [[ "${prs}" == true ]]; then
     echo >&2 "${fn}: port ${port[name]}: ${port[version]} already has an open PR"
-    gh pr list --search ruby-build -q 'map("#\(.number) \(.title)") | .[]' --json number,title >&2
+    gh pr list \
+      --search "${port[name]} in:title" \
+      -q 'map("#\(.number) \(.title)") | .[]' \
+      --json number,title >&2
     return 1
   fi
 

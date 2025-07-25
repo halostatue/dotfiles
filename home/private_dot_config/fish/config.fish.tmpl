@@ -319,7 +319,6 @@ end
 # Added by LM Studio CLI (lms)
 set -gx PATH $PATH /Users/austin/.lmstudio/bin
 # End of LM Studio CLI section
-
 {{- end }}
 {{ if or (lookPath "kiro") (stat "/Applications/Kiro.app") -}}
 string match -q "$TERM_PROGRAM" kiro && source (kiro --locate-shell-integration-path fish)

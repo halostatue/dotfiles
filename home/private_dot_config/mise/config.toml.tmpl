@@ -1,4 +1,5 @@
 {{- $work := has "work" (get . "roles" | default list) -}}
+{{- $llm := has "llm" (get . "roles" | default list) -}}
 {{- $hex_api_keys := dict -}}
 {{- $env := dict
       "ERL_AFLAGS"          "-kernel shell_history enabled shell_history_file_bytes 5242880"
@@ -30,6 +31,11 @@
 {{-   $name = printf "%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) -}}
 {{-   $_ := set $env $name $value -}}
 {{- end -}}
+{{- if $llm -}}
+{{-   $_ := set $tools "go:github.com/meysamhadeli/codai" "1.9.0" -}}
+{{-   $_ := set $tools "ubi:plandex-ai/plandex" "cli/v2.2.1" -}}
+{{- end -}}
+
 
 min_version = "2024.12.23"
 

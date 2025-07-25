@@ -61,7 +61,6 @@ zstyle ':zim:prompt-pwd' git-root yes
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/austin/.lmstudio/bin"
 # End of LM Studio CLI section
-
 {{- end }}
 {{ if or (lookPath "kiro") (stat "/Applications/Kiro.app") -}}
 [[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
