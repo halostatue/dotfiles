@@ -6,14 +6,14 @@
       "RIPGREP_CONFIG_PATH" (joinPath .chezmoi.homeDir ".ripgreprc")
 -}}
 {{- $tools := dict
-      "elixir"  "1.18.3-otp-27"
-      "erlang"  "27.3.4"
+      "elixir"  "1.18.4-otp-27"
+      "erlang"  "27.3.4.2"
       "gleam"   "latest"
       "node"    "20"
       "ruby"    "3.4"
       "usage"   "latest"
       "vacuum"  "latest"
-      "zig"     "0.13"
+      "zig"     "0.14"
 -}}
 {{- if $work -}}
 {{-   $_ := set $tools "aws-vault" "7" -}}
@@ -30,10 +30,6 @@
 {{- range $name, $value := $hex_api_keys -}}
 {{-   $name = printf "%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) -}}
 {{-   $_ := set $env $name $value -}}
-{{- end -}}
-{{- if $llm -}}
-{{-   $_ := set $tools "go:github.com/meysamhadeli/codai" "1.9.0" -}}
-{{-   $_ := set $tools "ubi:plandex-ai/plandex" "cli/v2.2.1" -}}
 {{- end -}}
 
 
