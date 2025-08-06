@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 copy=false
 
-while ( ($#)); do
+while (($#)); do
   case "$1" in
   --copy | -C) copy=true ;;
   esac
@@ -47,7 +47,7 @@ if [ -t 1 ]; then
   else
     name
   fi
-elif "${to_clipboard}"; then
+elif "${copy}"; then
   name | trim | tee /dev/stdout | to_clipboard
 else
   name | trim

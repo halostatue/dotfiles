@@ -217,6 +217,10 @@ fi
 
 while (($#)); do
   case "${1}" in
+  -h | --help)
+    usage
+    exit 0
+    ;;
   -R | --no-rebase) rebase=false ;;
   -r | --rebase) rebase=true ;;
   -m | --merge-upstream) merge_upstream=true ;;
