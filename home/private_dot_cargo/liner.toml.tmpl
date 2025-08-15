@@ -1,6 +1,7 @@
 {{- $work := has "work" (get . "roles" | default list) -}}
 [packages]
 {{ if $work }}amareleo-chain = { version = "*", locked = true }{{ end }}
+basalt-tui = { version = "*", locked = true }
 cargo-audit = { version = "*", locked = true }
 cargo-authors = { version = "*", locked = true }
 cargo-benchcmp = { version = "*", locked = true }
@@ -9,6 +10,7 @@ cargo-bump = { version = "*", locked = true }
 cargo-clone = { version = "*", locked = true }
 cargo-config = { version = "*", locked = true }
 cargo-crates = { version = "*", locked = true }
+cargo-deny = { version = "*", locked = true }
 cargo-dist = { version = "*", locked = true }
 cargo-do = { version = "*", locked = true }
 cargo-edit = { version = "*", locked = true }
@@ -18,15 +20,18 @@ cargo-license = { version = "*", locked = true }
 cargo-lichking = { version = "*", locked = true }
 cargo-modules = { version = "*", locked = true }
 cargo-outdated = { version = "*", locked = true }
+cargo-pants = { version = "*", locked = true }
 cargo-readme = { version = "*", locked = true }
 cargo-release = { version = "*", locked = true }
 cargo-show = { version = "*", locked = true }
+cargo-udeps = { version = "*", locked = true }
 cargo-update = { version = "*", locked = true }
 cargo-watch = { version = "*", locked = true }
 {{ if $work }}leo-lang = { version = "*", locked = true }{{ end }}
 prr = { version = "*", locked = true }
 rage = { version = "*", locked = true }
 rbase64 = { version = "*", locked = true, features = ["cli"] }
+rusty-hook = { version = "*", locked = true }
 scm-diff-editor = { version = "*", locked = true }
 serie = { version = "*", locked = true }
 {{ if $work }}snarkos = { version = "*", locked = true }{{ end  }}
