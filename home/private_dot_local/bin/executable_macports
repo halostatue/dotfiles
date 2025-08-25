@@ -1,485 +1,565 @@
-#! /usr/bin/env bash
+#!/usr/bin/env ruby
+# frozen_string_literal: true
 
-set -uo pipefail
+require "open3"
+require "net/http"
+require "pathname"
+require "shellwords"
+require "tempfile"
+require "uri"
+require "yaml"
 
-tested-on() {
-  local build_tools build_version hardware
-  product_version="$(sw_vers -productVersion)"
-  build_version="$(sw_vers -buildVersion)"
-  hardware="$(uname -m)"
+CONFIG_FILE = File.expand_path("~/.config/macports.yml")
+CONFIG = YAML.load_file(CONFIG_FILE, symbolize_names: true)
 
-  if build_tools="$(xcodebuild -version 2>/dev/null)"; then
-    build_tools="$(echo "${build_tools}" | awk 'NR==1 { x=$0 } END { print x" "$NF }')"
-  elif build_tools="$(pkgutil --pkg-info=com.apple.pkg.CLTools_Executables)"; then
-    build_tools="$(echo "${build_tools}" | awk '/version:/ { print $2 }')"
-    build_tools="Command Line Tools ${build_tools}"
-  fi
+EXPLICIT_VERSION = %r{^version[ \t]+(?<version>\S+)}m
+GO_VERSION = %r{^go\.setup[ \t]+(?<repo>\S+)[ \t]+(?<version>\S+)(?:[ \t](?<prefix>\S+))?}m
+GITHUB_VERSION = %r{^github\.setup[ \t]+(?<owner>\S+)[ \t]+(?<repo>\S+)[ \t]+(?<version>\S+)(?:[ \t]+(?<prefix>\S+))?}m
 
-  echo macOS "${product_version}" "${build_version}" "${hardware}"
-  echo "${build_tools}"
-}
+CARGO_CRATES = %r{
+  ^cargo\.crates[ \t]*\\\r?\n
+  (?:[ \t]*[^\r\n]*\\\r?\n)*
+  [ \t]*[^\r\n]*(?:\r?\n|\z)
+}mx
 
-set-port-version() {
-  set +e
+GO_VENDORS = %r{
+  ^go\.vendors[ \t]*\\\r?\n
+  (?:[ \t]*[^\r\n]*\\\r?\n)*
+  [ \t]*[^\r\n]*(?:\r?\n|\z)
+}mx
 
-  local version
-  awk '/^version / { print $2; }' "${port[clip]}" >"${port[clip]}.version"
-  read -r version <"${port[clip]}.version"
-  port[version]="${version}"
+STACK = []
+VERBOSE = !!(ARGV.delete("--verbose") || ARGV.delete("-v"))
+UNSTABLE = !!(ARGV.delete("--unstable") || ARGV.delete("-U"))
 
-  if [[ -n "${port[golang]:-}" ]]; then
-    local repo version prefix
-    awk '/^go.setup/ { print $2, $3, $4; }' "${port[clip]}" >"${port[clip]}.version"
-    read -r repo version prefix <"${port[clip]}.version"
+def __safe(command) = command.is_a?(Array) ? command : Shellwords.split(command)
 
-    port[version]="${version}"
-    port[tag_url]="https://raw.githubusercontent.com/${repo/github.com\//}/refs/tags/${prefix:-}${version}"
-  fi
+def __run(command, input: nil)
+  Open3.popen3(*__safe(command)) do |stdin, stdout, stderr, wait|
+    stdin.puts input if input
+    stdin.close
 
-  if [[ -n "${port[github]:-}" ]]; then
-    local owner name version prefix
-    awk '/^github.setup/ { print $2, $3, $4, $5; }' "${port[clip]}" >"${port[clip]}.version"
-    read -r owner name version prefix <"${port[clip]}.version"
+    return {stdout: stdout.read.chomp, stderr: stderr.read.chomp, status: wait.value}
+  end
+end
 
-    port[version]="${version}"
-    port[tag_url]="https://raw.githubusercontent.com/${owner}/${name}/refs/tags/${prefix:-}${version}"
-  fi
+def run(command, print: true, required: true, input: nil, verbose: false)
+  command = __safe(command)
+  puts "==> #{command.shelljoin}" if print
 
-  set -e
-}
+  __run(command, input: input) => {stdout:, stderr:, status:}
 
-set-port-type() {
-  port[file]="${port[path]}/Portfile"
+  puts stdout if (VERBOSE || verbose) && !stdout.empty?
 
-  grep -Eq '^PortGroup\s+golang\s+1\.0' "${port[file]}" && port[golang]=true
-  grep -Eq '^PortGroup\s+github\s+1\.0' "${port[file]}" && port[github]=true
-  grep -Eq '^cargo.crates' "${port[file]}" && port[needs_cargo_crates]=true
-  grep -Eq '^go.vendors' "${port[file]}" && port[needs_go_vendors]=true
+  return true if status.success?
 
-  true
-}
+  warn stderr unless stderr.empty?
+  if required
+    halt "Command failed: #{command.shelljoin}", status: status.exitstatus
+  end
 
-test-port-lima() {
-  limactl info | jq .version -r
-}
+  false
+end
 
-test-port-passage() {
-  local id created tmp
-  created=false
-  tmp="$(mktemp)"
-  rm -f "${tmp}"
-  id="$(basename "${tmp}")"
+def sudo(command, print: true)
+  command = __safe(command).unshift("sudo")
+  run(command, required: true, print: print)
+end
 
-  if ! [[ -f ~/.passage/identities ]]; then
-    mkdir -p ~/.passage
-    age-keygen -o ~/.passage/identities
-    created=true
-  fi
+def shell_run(command, ...) = run(%W[sh -c #{__safe(command).shelljoin}], ...)
 
-  (
-    set -x
-    passage generate test."${id}"
-    passage rm -f test."${id}"
+def capture_or(command, message)
+  __run(command) => {stdout:, stderr:, status:}
+
+  return stdout if status.success?
+
+  warn stderr unless stderr.empty?
+  halt message, status: status.exitstatus
+end
+
+def capture!(command) = capture_or(command, "Error capturing #{__safe(command).shelljoin}")
+
+def halt(message, status: 1)
+  warn message
+  exit status
+end
+
+def warn(message) = Kernel.warn "macports #{STACK.last}: #{message}"
+
+def context(name)
+  STACK.push(name.to_s.tr("_", "-"))
+  yield
+ensure
+  STACK.pop
+end
+
+def git_main_branch = File.basename(Dir[".git/refs/heads/{main,master}"].first || "main")
+
+def xcode_version
+  __run(%w[xcodebuild -version]) => {stdout:, status:}
+
+  return nil unless status.success?
+
+  xcode, build_version = stdout.chomp.split($/)
+  "#{xcode} #{build_version.shellsplit.last}"
+end
+
+def clt_version
+  __run(%w[pkgutil --pkg-info=com.apple.pkg.CLTools_Executables]) => {stdout:, status:}
+
+  if stdout =~ /version: (.+)/
+    "Command Line Tools #{$1}"
+  else
+    halt "Cannot resolve Command Line Tools version from: #{stdout.inspect}"
+  end
+end
+
+def tested_on
+  context(__callee__) do
+    product_version = `sw_vers -productVersion`.chomp
+    build_version = `sw_vers -buildVersion`.chomp
+    hardware = `uname -m`.chomp
+    build_tools = xcode_version || clt_version
+
+    halt "Cannot find Xcode or Xcode Command Line Tools." if build_tools.nil?
+
+    <<~TESTED_ON
+      macOS #{product_version} #{build_version} #{hardware}
+      #{build_tools}
+    TESTED_ON
+  end
+end
+
+def run_test_script(port)
+  Tempfile.create(["macports-test-"], binmode: false) do |f|
+    f.write(port[:test_script])
+    f.fsync
+    f.close
+    File.chmod(0o755, f.path)
+    run(f.path)
+  end
+end
+
+def get_trac_patch(url, path = nil)
+  halt "trac-patch URL cannot be empty." unless url
+  halt "trac-patch URL must begin with https://" unless url.start_with?("https://")
+
+  path ||= "."
+  path = File.join(path, File.basename(URI(url).path))
+
+  # Use curl with --fail and --silent --show-error so network failures are surfaced.
+  run %W[curl --fail --location --silent --show-error #{url}?format=raw --create-dirs -o #{path}]
+
+  path
+end
+
+def trac_patch(args)
+  context(__callee__) do
+    patch = []
+
+    while args.first&.start_with?("-")
+      break if args.first == "--"
+      patch << args.shift
+    end
+
+    patch = %w[--strip 0] if patch.empty?
+    patch.unshift("patch")
+    url, dir = *args
+
+    path = get_trac_patch(url, dir)
+
+    run(patch, input: File.read(path))
+  end
+end
+
+def update_port(port_name, force, target_version)
+  context(__callee__) do
+    do_update_port(port_name, force, target_version)
+  end
+end
+
+def set_port_type(port)
+  port[:file] = File.join(port[:path], "Portfile")
+
+  begin
+    portfile = port[:portfile] = File.read(port[:file])
+  rescue Errno::ENOENT
+    halt "Portfile not found at #{port[:file]}"
+  end
+
+  port[:golang] = portfile.match?(%r{^PortGroup\s+golang\s+1\.0})
+  port[:github] = portfile.match?(%r{^PortGroup\s+github\s+1\.0})
+  port[:needs_cargo_crates] = portfile.match?(%r{^cargo\.crates})
+  port[:needs_go_vendors] = portfile.match?(%r{^go\.vendors})
+end
+
+def resolve_port_root(port)
+  port[:root] =
+    if port[:private]
+      File.expand_path("~/ports")
+    else
+      capture_or(
+        %w[zoxide query macports-ports],
+        "Cannot find public macports tree with zoxide for #{port[:name]}."
+      )
+    end
+
+  halt "#{port[:root]} does not exist" unless File.exist?(port[:root])
+end
+
+def handle_unknown_port(port)
+  candidate = Dir[File.join(port[:root], "*", port[:name], "Portfile")].first
+  halt "Unknown port #{port[:name]}." unless candidate
+
+  port[:category] = File.basename(File.dirname(candidate, 2))
+
+  warn "port #{port[:name]}: No update procedure in #{CONFIG_FILE}."
+  warn "port #{port[:name]}: Guessed root category is #{port[:category]}."
+
+  puts "Enter test command for port #{port[:name]} to continue:"
+  port[:test] = gets.to_s.chomp
+  halt "No test procedure for #{port[:name]} provided." if port[:test].empty?
+end
+
+def get_updated_portfile(port, target_version)
+  seaport = %W[seaport clip #{port[:name]}]
+  seaport << "--bump" << target_version if target_version
+  run seaport
+
+  port[:update] = capture_or(
+    %w[pbpaste],
+    "pbpaste failed: ensure the updated Portfile is on the clipboard"
   )
+end
 
-  "${created}" && rm -rf ~/.passage
-}
+def set_port_version(port)
+  update = port[:update]
 
-update-port() {
-  set -euo pipefail
+  case update.match(EXPLICIT_VERSION)
+  in {version: version}
+    port[:version] = version
+  in nil
+  end
 
-  local fn branch
-  fn="macports update-port"
-  local -A port
-  local -a port_test port_variants
-  port_test=()
-  port_variants=()
+  if port[:golang]
+    case update.match(GO_VERSION)
+    in {repo: repo, version: version, prefix: prefix}
+      port[:version] = version
+      port[:go_package] = repo
+      port[:full_version] = "#{prefix}#{version}"
+      repo.gsub!(%r{github.com/}, "")
+      port[:tag_url] = "https://raw.githubusercontent.com/#{repo}/refs/tags/#{port[:full_version]}"
+    in nil
+    end
+  end
 
-  port[private]=false
-  port[stable]=false
+  if port[:github]
+    case update.match(GITHUB_VERSION)
+    in {owner: owner, repo: repo, version: version, prefix: prefix}
+      port[:version] = version
+      port[:full_version] = "#{prefix}#{version}"
+      port[:tag_url] = "https://raw.githubusercontent.com/#{owner}/#{repo}/refs/tags/#{port[:full_version]}"
+    in nil
+    end
+  end
 
-  case "$1" in
-  uv)
-    port[cargo_lock]=github
-    port[category]=devel
-    port_test=(uv tool list)
-    ;;
-  pinact)
-    port[category]=security
-    port_test=(pinact --help)
-    ;;
-  jaq)
-    port[category]=textproc
-    port[cargo_lock]=github
-    port_test=(jaq --help)
-    ;;
-  chezmoi)
-    port[stable]=true
-    port[category]=sysutils
-    port_test=(chezmoi doctor)
-    ;;
-  mise)
-    port[stable]=true
-    port[category]=sysutils
-    port_test=(mise ls)
-    ;;
-  viu)
-    port[category]=graphics
-    port_test=(viu ~/Pictures/garden.jpg)
-    ;;
-  ruby-build)
-    port[stable]=true
-    port[category]=ruby
-    port_test=(ruby-build --list)
-    ;;
-  colima)
-    port[stable]=true
-    port[category]=sysutils
-    port_test=(colima status)
-    ;;
-  lima)
-    # port[stable]=true
-    port[category]=sysutils
-    port_test=(test-port-lima)
-    port_variants=(additional_guestagents)
-    ;;
-  passage)
-    port[category]=security
-    port_test=(test-port-passage)
-    ;;
-  lychee)
-    port[category]=devel
-    port[cargo_lock]=github
-    port_test=(lychee --help)
-    ;;
-  changie | cocogitto | git-branch-stash | git-bug | git-mediate)
-    port[category]=devel
-    port[private]=true
-    ;;
-  git-ce)
-    port[category]=devel
-    port[private]=true
-    port[cargo_lock]=github
-    ;;
-  git-some-extras | git-stack | git-switch-user | git-task | gitql | jqfmt | licensure)
-    port[category]=devel
-    port[private]=true
-    ;;
-  mrml)
-    port[category]=devel
-    port[cargo_lock]=github
-    port[private]=true
-    ;;
-  prr | sol)
-    port[category]=devel
-    port[private]=true
-    ;;
-  prql)
-    port[category]=devel
-    port[private]=true
-    port[cargo_lock]=github
-    ;;
-  typos)
-    port[category]=devel
-    port[private]=true
-    port[cargo_lock]=github
-    ;;
-  scryer-prolog)
-    port[category]=lang
-    port[private]=true
-    ;;
-  selene)
-    port[category]=lua
-    port[private]=true
-    ;;
-  chainloop | osv-scanner)
-    port[category]=security
-    port[private]=true
-    ;;
-  dunesh)
-    port[category]=shells
-    port[private]=true
-    ;;
-  actions-usage | diffoci | dotenv-linter | fish-paket | manifest-tool | massren)
-    port[category]=sysutils
-    port[private]=true
-    ;;
-  mquery | pug | terramaid)
-    port[category]=sysutils
-    port[private]=true
-    ;;
-  shadowenv)
-    port[category]=sysutils
-    port[private]=true
-    port[cargo_lock]=github
-    ;;
-  csvquote | htmd-cli | spacer | taplo | titlecase)
-    port[category]=textproc
-    port[private]=true
-    ;;
-  vv)
-    port[category]=graphics
-    port[private]=true
-    port_test=(vv ~/Pictures/garden.jpg)
-    ;;
-  rebels-in-the-sky)
-    port[category]=games
-    port[crate]=rebels
-    port_test=(rebels --version)
-    ;;
-  zizmor)
-    port[category]=security
-    port_test=(zizmor -h)
-    port[cargo_lock]=github
-    ;;
-  *) : ;;
-  esac
+  halt "Cannot determine next target version for #{port[:name]}" unless port[:version]
+  # Validate port name and version format constraints:
+  unless /\A[-a-z0-9_]+\z/.match?(port[:name])
+    halt "Invalid port name: #{port[:name]} (allowed: [-a-z0-9_])"
+  end
+  unless /\A[0-9A-Za-z.\-+_]+\z/.match?(port[:version])
+    halt "Suspicious version format: #{port[:version]}"
+  end
+end
 
-  if "${port[unstable]:-false}" && ! [[ "${2:-}" == --force ]]; then
-    echo >&2 "${fn}: $1 cannot be updated automatically because of Cargo.lock instability"
-    return 1
-  fi
+def check_merge(port)
+  log = begin
+    capture!(%W[git log --grep \\b#{port[:name]}.\\+#{port[:version]} --since 7.days.ago])
+  rescue
+    ""
+  end
+  unless log.empty?
+    warn "port #{port[:name]}: #{port[:version]} has already been merged"
+    Kernel.warn log
+    exit 1
+  end
+end
 
-  if "${port[private]:-false}"; then
-    port[root]="${HOME}/ports"
+def check_prs(port)
+  search = "(#{port[:name]} AND #{port[:version]}) in:title"
+  jq = "(. | length) > 0"
+
+  result = begin
+    capture!(%W[gh pr list --search #{search} --json number --jq #{jq}])
+  rescue
+    "false"
+  end
+  if result.strip == "true"
+    warn "#{port[:name]}: #{port[:version]} already has an open PR."
+    search2 = "#{port[:name]} in:title"
+    jq2 = 'map("#\(.number) \(.title)") | .[]'
+    run %W[gh pr list --search #{search2} --json number,title --jq #{jq2}]
+    exit 1
+  end
+end
+
+def apply_crate2port(port)
+  return unless port[:needs_cargo_crates]
+
+  port[:update].gsub!(CARGO_CRATES, "")
+
+  if port[:cargo_lock] == "github" && port[:tag_url]
+    uri = URI.join(port[:tag_url], "Cargo.lock")
+    res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", read_timeout: 15, open_timeout: 5) do |http|
+      http.get(uri.request_uri)
+    end
+    unless res.is_a?(Net::HTTPSuccess)
+      halt "Failed to fetch Cargo.lock from #{uri} (#{res.code})"
+    end
+
+    IO.popen(%w[crate2port -], "r+") do |pipe|
+      pipe.puts res.body
+      pipe.close_write
+      port[:update] << "\n" << pipe.read
+    end
   else
-    port[root]="$(zoxide query macports-ports)"
-  fi
+    crate = port[:crate] || port[:name]
+    port[:update] << "\n" << capture!(%W[crate2port #{crate}@#{port[:version]}])
+  end
+end
 
-  if [[ -z "${port[category]:-}" ]]; then
-    local candidate
-    candidate="$(shopt -sq nullglob && echo "${port[root]}"/*/"$1"/Portfile)"
+def apply_go2port(port)
+  return unless port[:needs_go_vendors]
 
-    if [[ -n "${candidate}" ]]; then
-      candidate="${candidate%/*/*}"
-      port[category]="${candidate##*/}"
+  port[:update].gsub!(GO_VENDORS, "")
+  go2port = %W[go2port #{port[:go_package]} #{port[:full_version]}]
+  port[:update] << "\n" << capture!(go2port)
+end
 
-      echo >&2 "${fn}: port $1: No update procedure."
-      echo >&2 "${fn}: port $1: Guessed root category is ${port[category]}."
+def prepare_pr(port, branch)
+  run %W[port lint]
+  sudo %W[port clean]
 
-      read -ra port_test -p "Enter test procedure for port $1 to continue: "
+  Array(port.fetch(:variants, [])).each do |variant|
+    sudo %W[port build -N +#{variant}]
+    sudo %W[port clean]
+  end
 
-      if ((${#port_test} < 1)); then
-        echo >&2 "${fn}: No test procedure provided. Halting."
-        return 1
-      fi
-    fi
-  fi
+  sudo %W[port install -N]
 
-  sudo port sync
-
-  port[name]="$1"
-  port[path]="${port[root]}/${port[category]}/$1"
-
-  cd "${port[root]}"
-
-  branch="$(git main-branch)"
-  git switch "${branch}"
-  git reup
-
-  set-port-type
-
-  if [[ -n "${2:-}" ]]; then
-    seaport clip "${port[name]}" --bump "${2}"
+  if port[:test]
+    # port[:test] is required to be a shell command; allow pipes, so run via shell.
+    shell_run port[:test]
+  elsif port[:test_script]
+    run_test_script(port)
+  elsif port[:private]
+    return
   else
-    seaport clip "${port[name]}"
-  fi
+    halt "#{port[:name]}: Cannot prepare PR for public port without a port test."
+  end
 
-  port[clip]="$(mktemp)"
-  pbpaste >"${port[clip]}"
+  commit_msg = capture!(%W[git log #{branch}.. --format=%B])
 
-  set-port-version
+  port[:pr_body] =
+    CONFIG[:template]
+      .gsub(/\{\{\s*description\s*\}\}/, commit_msg)
+      .gsub(/\{\{\s*tested_on\s*\}\}/, tested_on)
 
-  if [[ -z "${port[version]:-}" ]]; then
-    echo >&2 "${fn}: port ${port[name]} cannot determine next target version"
-    return 1
-  fi
+  if UNSTABLE || !port[:stable]
+    puts port[:commit_message]
+    puts port[:pr_body]
+  end
+end
 
-  if git log --grep="\\b${port[name]}.\\+${port[version]}" --since "7 days ago" | grep -q .; then
-    echo >&2 "${fn}: port ${port[name]}: ${port[version]} has already been merged"
-    git log --grep="\\b${port[name]}.\\+${port[version]}" --since "7 days ago" >&2
-    return 1
-  fi
+def create_pr(port, confirm: false)
+  # Do not auto-skip confirmation for non-stable ports.
+  return if port[:stable] && confirm && !UNSTABLE
 
-  if prs="$(gh pr list --search "(${port[name]} AND ${port[version]}) in:title" -q '(. | length) > 0' --json number)" &&
-    [[ "${prs}" == true ]]; then
-    echo >&2 "${fn}: port ${port[name]}: ${port[version]} already has an open PR"
-    gh pr list \
-      --search "${port[name]} in:title" \
-      -q 'map("#\(.number) \(.title)") | .[]' \
-      --json number,title >&2
-    return 1
-  fi
+  gh_pr_create = %W[gh pr create --fill --body-file -]
+  gh_pr_create << "--dry-run" if confirm
 
-  port[requested]="$(port echo requested and name:"${port[name]:-}")"
+  run(gh_pr_create, input: port[:pr_body], verbose: confirm)
 
-  cd "${port[path]}"
+  if confirm
+    puts "Press Ctrl-C to cancel or ENTER to continue"
+    gets
+  end
+end
 
-  pr_branch="${port[name]}-${port[version]}"
-  if ! "${port[private]:-false}"; then
-    git switch --create "${pr_branch}" "${branch}"
-  fi
+def do_update_port(port_name, force, target_version)
+  port = CONFIG[:ports][port_name.to_sym] || {}
+  port[:name] = port_name
 
-  if [[ -n "${port[needs_cargo_crates]:-}" ]]; then
-    sed '/^cargo.crates/,/^$/d' "${port[clip]}" >"${port[file]}"
+  if port[:cargo_unstable] && !force
+    halt "#{port[:name]} cannot be updated automatically because of Cargo.lock instability."
+  end
 
-    if [[ "${port[cargo_lock]:-crates}" == github ]] && [[ -n "${port[tag_url]:-}" ]]; then
-      curl -sSL "${port[tag_url]}/Cargo.lock" -o "${port[clip]}.Cargo.lock"
-      crate2port "${port[clip]}.Cargo.lock" >>"${port[file]}"
+  resolve_port_root(port)
+  handle_unknown_port(port) if port[:category].nil?
+
+  port[:path] = File.join(port[:root], port[:category], port[:name])
+
+  sudo %W[port sync]
+
+  Dir.chdir(port[:root]) do
+    branch = git_main_branch
+    run %W[git switch #{branch}]
+    run %W[git fetch --all]
+    run %W[git pull --rebase]
+
+    set_port_type(port)
+    get_updated_portfile(port, target_version)
+    set_port_version(port)
+
+    check_merge(port)
+    check_prs(port)
+
+    run(%W[port echo requested and name:#{port[:name]}])
+    port[:requested] = capture!(%W[port echo requested and name:#{port[:name]}])
+
+    Dir.chdir(port[:path]) do
+      pr_branch = "#{port[:name]}-#{port[:version]}"
+      run %W[git switch --create #{pr_branch} #{branch}] unless port[:private]
+
+      apply_crate2port(port)
+      apply_go2port(port)
+
+      File.write(port[:file], port[:update])
+
+      run %W[git add #{port[:file]}]
+
+      if port[:private]
+        Dir.chdir(port[:root]) do
+          run %W[portindex]
+          run %W[git add PortIndex PortIndex.quick]
+        end
+      end
+
+      port[:commit_message] = "#{port[:name]}: Update to #{port[:version]}"
+
+      run %W[git commit -m #{port[:commit_message]}]
+
+      prepare_pr(port, branch)
+
+      if port[:private]
+        run %W[git push]
+      else
+        if !port[:pr_body] || port[:pr_body].empty?
+          halt "port #{port[:name]}: Error generating pull request body"
+        end
+
+        run %W[git push origin #{pr_branch} --set-upstream]
+
+        create_pr(port, confirm: true)
+        create_pr(port)
+
+        run %W[git switch #{branch}]
+      end
+    end
+
+    sudo run %W[port uninstall #{port[:name]}] if port[:requested].nil? || port[:requested].empty?
+  end
+end
+
+def group_ports
+  ports = CONFIG[:ports].group_by { !!_2[:private] }
+  public_ports = ports[false].map { it[0] }
+  private_ports = ports[true].map { it[0] }
+
+  {public_ports:, private_ports:}
+end
+
+def print_livecheck(name)
+  __run(%W[port livecheck #{name}]) => {status:, stderr:, stdout:}
+
+  output =
+    if !status.success?
+      "error on livecheck: #{stderr.chomp}"
+    elsif stdout.chomp.empty?
+      "no updates"
     else
-      crate2port "${port[crate]:-${port[name]}}@${port[version]}" >>"${port[file]}"
-    fi
-  elif [[ -n "${port[needs_go_vendors]:-}" ]]; then
-    sed '/^go.vendors/, /^$/d' "${port[clip]}" >"${port[file]}"
+      stdout.chomp.sub(%r{#{name} seems to have been updated }, "").gsub(%r{[()]}, "")
+    end
 
-    go_package="$(awk '/^go.setup/ { print $2 }' "${port[clip]}")"
+  puts "#{name}: #{output}"
+end
 
-    echo >>"${port[file]}"
-    go2port get "${go_package}" "v${port[version]}" |
-      sed -n '/^go.vendors/,/^$/p' >>"${port[file]}"
+def print_ports(&block)
+  group_ports => {public_ports:, private_ports:}
+
+  puts "==> Public Ports" unless public_ports.empty?
+  public_ports.each(&block)
+
+  puts "\n==> Private Ports" unless private_ports.empty?
+  private_ports.each(&block)
+end
+
+def livecheck = print_ports { print_livecheck(it) }
+
+def check_requested(args)
+  if args.empty?
+    print_ports do
+      __run(%W[port echo requested and name:#{it}]) => {stdout:}
+
+      puts "#{it}: #{stdout.chomp.empty? ? "unrequested" : "requested"}"
+    end
   else
-    cp "${port[clip]}" "${port[file]}"
-  fi
+    args.each do
+      __run(%W[port echo requested and name:#{it}]) => {stdout:}
 
-  git add "${port[file]}"
+      puts "#{it}: #{stdout.chomp.empty? ? "unrequested" : "requested"}"
+    end
+  end
+end
 
-  if "${port[private]:-false}"; then
-    (
-      cd "${port[root]}"
-      portindex
-      git add PortIndex PortIndex.quick
-    )
-  fi
+# CLI parsing (minimal)
+# Remove verbose arg from ARGV first if present
+ARGV.reject! { |a| a == "--verbose" || a == "-v" }
 
-  git commit -m "${port[name]}: Update to ${port[version]}"
+command = ARGV.first
+ARGV.shift
 
-  port[pr]="$(mktemp)"
-  prepare-pr "${port[name]}"
+case command
+when %r{trac[-_]patch}
+  trac_patch(ARGV)
+when %r{xcode(?:[-_]version)?}
+  puts xcode_version
+when %r{clt(?:[-_]version)?}
+  puts clt_version
+when %r{tested[-_]on}
+  puts tested_on
+when "livecheck"
+  livecheck
+when %r{update(?:[-_]port)?}
+  name = nil
+  force = false
+  target_version = nil
 
-  if "${port[private]:-false}"; then
-    git push
-  else
-    if ! [[ -s "${port[pr]}" ]]; then
-      echo >&2 "${fn}: port ${port[name]}: Error generating pull request body"
-      return 1
-    fi
-
-    if "${port[stable]:-false}"; then
-      git push origin "${pr_branch}" --set-upstream
+  while ARGV.first
+    case ARGV.first
+    when "--force", "-F"
+      force = true
+    when "--version"
+      ARGV.shift
+      target_version = ARGV.first
     else
-      confirm gh pr create --dry-run --fill --body-file "${port[pr]}"
-    fi
+      name = ARGV.first
+    end
+    ARGV.shift
+  end
 
-    gh pr create --fill --body-file "${port[pr]}"
+  halt "No port name provided for #{command}." unless name
 
-    git switch "${branch}"
-  fi
+  # Validate port name early
+  unless /\A[-a-zA-Z0-9_.]+\z/.match?(name)
+    halt "Invalid port name: #{name} (allowed: [-a-zA-Z0-9_.])"
+  end
 
-  if [[ -z "${port[requested]}" ]]; then
-    sudo port uninstall "${port[name]}"
-  fi
-
-  rm -f "${port[clip]}"* "${port[pr]}"
-}
-
-confirm() {
-  if ! "${port[stable]:-false}"; then
-    "$@"
-    read -r -p " Press Ctrl-C to cancel or ENTER to continue"
-  fi
-}
-
-prepare-pr() (
-  port lint
-
-  sudo port clean
-
-  for variant in "${port_variants[@]}"; do
-    sudo port build "${variant}" -N
-    sudo port clean
-  done
-
-  sudo port install -N
-
-  "${port[private]:-false}" && return 0
-
-  if (("${#port_test[@]}")); then
-    "${port_test[@]}"
-  else
-    echo >&2 "Cannot prepare public PR without running a port test."
-    return 1
-  fi
-
-  local description tested_on
-  pr_file="${port[pr]:-$(mktemp)}"
-  description="$(git log "${branch:-master}".. --format=%B)"
-  tested_on="$(tested-on)"
-
-  cat >"${pr_file}" <<INFO
-#### Description
-
-${description}
-
-##### Tested on
-
-${tested_on}
-
-##### Verification
-
-Have you
-
-- [x] followed our [Commit Message Guidelines](https://trac.macports.org/wiki/CommitMessages)?
-- [x] squashed and [minimized your commits](https://guide.macports.org/#project.github)?
-- [x] checked that there aren't other open [pull requests](https://github.com/macports/macports-ports/pulls) for the same change?
-- [x] checked your Portfile with \`port lint\`?
-- [x] tried a full install with \`sudo port -vst install\`?
-- [x] tested basic functionality of all binary files?
-INFO
-
-  cat "${pr_file}"
-)
-
-trac-get() {
-  local url="$1" dir="$2"
-
-  [[ -n "${dir}" ]] || dir=.
-
-  curl "${url}?format=raw" --create-dirs -o "${dir}/$(basename "$1")"
-}
-
-trac-patch() {
-  local cmd
-
-  while [[ "$1" == -* ]]; do
-    [[ "$1" == -- ]] && break
-
-    cmd="${cmd} $1"
-    shift
-  done
-
-  [[ -n "${cmd}" ]] || cmd="--strip 0"
-
-  trac-get "$@"
-
-  patch "${cmd}" <"$(basename "$1")"
-}
-
-update() {
-  update-port "$@"
-}
-
-declare -a args
-args=()
-
-while (($#)); do
-  case "$1" in
-  --trace) set -x ;;
-  *) args+=("$1") ;;
-  esac
-
-  shift
-done
-
-set -- "${args[@]}"
-
-"$@"
+  update_port(name, force, target_version)
+when %r{requested}
+  check_requested(ARGV)
+else
+  warn "Unknown or missing command"
+  puts "Usage: #{File.basename($PROGRAM_NAME)} [--verbose] update <portname> [--force] [--version <ver>]"
+end
