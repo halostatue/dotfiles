@@ -1,0 +1,229 @@
+---
+ports:
+  chezmoi:
+    category: sysutils
+    stable: true
+    test: |
+      chezmoi doctor
+  cocogitto:
+    category: devel
+    test: |
+      cocogitto --help
+  colima:
+    category: sysutils
+    stable: true
+    test: |
+      colima status
+  jaq:
+    cargo_lock: github
+    category: textproc
+    test: |
+      jaq --help
+  lima:
+    category: sysutils
+    stable: true
+    test: |
+      limactl info | jq .version -r
+    variants:
+      - additional_guestagents
+  lychee:
+    cargo_lock: github
+    category: devel
+    test: |
+      lychee --help
+  mise:
+    category: sysutils
+    stable: true
+    test: |
+      mise ls
+  passage:
+    category: security
+    test_script: |
+      #!/usr/bin/env bash
+
+      local id created tmp
+      created=false
+      tmp="$(mktemp)"
+      rm -f "${tmp}"
+      id="$(basename "${tmp}")"
+
+      if ! [[ -f ~/.passage/identities ]]; then
+      mkdir -p ~/.passage
+      age-keygen -o ~/.passage/identities
+      created=true
+      fi
+
+      (
+        set -x
+        passage generate test."${id}"
+        passage rm -f test."${id}"
+      )
+
+      "${created}" && rm -rf ~/.passage
+  pinact:
+    category: security
+    stable: true
+    test: |
+      pinact --help
+  rebels-in-the-sky:
+    category: games
+    crate: rebels
+    test: |
+      rebels --version
+  ruby-build:
+    category: ruby
+    stable: true
+    test: |
+      ruby-build --list
+  viu:
+    category: graphics
+    test: |
+      viu ~/Pictures/graden.jpg
+  zizmor:
+    cargo_lock: github
+    category: security
+    stable: true
+    test: |
+      zizmor -h
+
+  actions-usage:
+    category: sysutils
+    private: true
+  chainloop:
+    category: security
+    private: true
+  changie:
+    category: devel
+    private: true
+  csvquote:
+    category: textproc
+    private: true
+  diffoci:
+    category: sysutils
+    private: true
+  dotenv-linter:
+    category: sysutils
+    private: true
+  dunesh:
+    category: shells
+    private: true
+  fish-paket:
+    category: sysutils
+    private: true
+  git-branch-stash:
+    category: devel
+    private: true
+  git-bug:
+    category: devel
+    private: true
+  git-ce:
+    category: devel
+    private: true
+    cargo_lock: github
+  git-mediate:
+    category: devel
+    private: true
+  git-some-extras:
+    category: devel
+    private: true
+  git-stack:
+    category: devel
+    private: true
+  git-switch-user:
+    category: devel
+    private: true
+  git-task:
+    category: devel
+    private: true
+  gitql:
+    category: devel
+    private: true
+  htmd-cli:
+    category: textproc
+    private: true
+  jqfmt:
+    category: devel
+    private: true
+  licensure:
+    category: devel
+    private: true
+  manifest-tool:
+    category: sysutils
+    private: true
+  massren:
+    category: sysutils
+    private: true
+  mquery:
+    category: sysutils
+    private: true
+  mrml:
+    category: devel
+    cargo_lock: github
+    private: true
+  osv-scanner:
+    category: security
+    private: true
+  prql:
+    category: devel
+    private: true
+    cargo_lock: github
+  prr:
+    category: devel
+    private: true
+  pug:
+    category: sysutils
+    private: true
+  scryer-prolog:
+    category: lang
+    private: true
+  selene:
+    category: lua
+    private: true
+  shadowenv:
+    category: sysutils
+    private: true
+    cargo_lock: github
+  sol:
+    category: devel
+    private: true
+  spacer:
+    category: textproc
+    private: true
+  taplo:
+    category: textproc
+    private: true
+  terramaid:
+    category: sysutils
+    private: true
+  titlecase:
+    category: textproc
+    private: true
+  typos:
+    category: devel
+    private: true
+    cargo_lock: github
+  vv:
+    category: graphics
+    private: true
+    test: |
+      vv ~/Pictures/garden.jpg
+
+template: |
+  #### Description
+
+  {{description}}
+
+  ##### Tested on
+
+  {{tested_on}}
+
+  ##### Verification
+
+  Have you
+
+  - [x] followed our [Commit Message Guidelines](https://trac.macports.org/wiki/CommitMessages)?
+  - [x] squashed and [minimized your commits](https://guide.macports.org/#project.github)?
+  - [x] checked that there aren't other open [pull requests](https://github.com/macports/macports-ports/pulls) for the same change?
+  - [x] checked your Portfile with `port lint`?
+  - [x] tried a full install with `sudo port -vst install`?
+  - [x] tested basic functionality of all binary files?
