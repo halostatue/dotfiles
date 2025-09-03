@@ -6,8 +6,6 @@ defrole:
   k8s:
     casks:
       freelens: Kubernetes IDE
-      headlamp: UI for Kubernetes
-      openlens: Open source build of Lens Kubernetes IDE
 
     ports:
       install:

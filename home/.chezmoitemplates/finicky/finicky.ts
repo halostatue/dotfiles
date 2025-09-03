@@ -372,7 +372,8 @@ if (isWork) {
     {
       match: (url) =>
         url.hostname === 'northernlabs.atlassian.net' ||
-        url.hostname === 'northern-labs.slack.com',
+        url.hostname === 'northern-labs.slack.com' ||
+        url.hostname === 'app.scalyr.com',
       browser: Browsers.NorthernLabs,
     },
     {
