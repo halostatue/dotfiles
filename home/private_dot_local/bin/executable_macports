@@ -458,7 +458,7 @@ def do_update_port(port_name, force, target_version)
       end
     end
 
-    sudo run %W[port uninstall #{port[:name]}] if port[:requested].nil? || port[:requested].empty?
+    sudo %W[port uninstall #{port[:name]}] if port[:requested].nil? || port[:requested].empty?
   end
 end
 
