@@ -3,7 +3,7 @@
 # {{- $programs := includeTemplate "programs" . | fromJson -}}
 # {{- $sevenDays := printf "%dh" (mul 7 24) -}}
 
-.vim/pack/plugins/opt/chezmoi.vim:
+.config/vim/pack/plugins/opt/chezmoi.vim:
   pull:
     args:
       - --ff-only
