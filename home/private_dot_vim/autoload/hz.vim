@@ -60,6 +60,22 @@ export def Isotime(time: any = null): string
     printf('%s%s', strftime('%Y-%m-%dT%H:%M:%S', time), zone)
 enddef
 
+export def IsGitDir(): bool
+  var _out = system('git rev-parse --is-inside-work-tree 2>/dev/null')
+  return !v:shell_error
+enddef
+
+export def SignedOffBy(): string
+  if !IsGitDir()
+    return ''
+  endif
+
+  var name = Trim(system('git config --get user.name'))
+  var email = Trim(system('git config --get user.email'))
+
+  return printf('Signed-off-by: %s <%s>', name, email)
+enddef
+
 export def Try(Func: any, options: dict<any> = {}): any
   var dict: dict<any> = get(options, 'dict', null_dict)
   var args: list<any> = get(options, 'args', [])
