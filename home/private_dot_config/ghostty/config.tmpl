@@ -1,22 +1,20 @@
-font-family = Hack
+# font-family = Hack
 # Alternates: Cascadia Code, Cascadia Mono, iA Writer Duo V, IBM Plex Mono, JuliaMono,
 #             Monaspace Argon Var, Monaspace Neon Var, Space Mono, SF Mono
 
-font-feature = zero
+# font-feature = zero
 font-size = 12
 
-theme = Kanagawa Wave
-# Alternates: rebecca, rose-pine, rose-pine-moon, Kanagawa Wave, kanagawabones
+# theme = rebecca
+# theme = rose-pine
+# theme = rose-pine-moon
+# theme = Kanagawa Wave
+theme = kanagawabones
 
 minimum-contrast = 3
 
 background-opacity = 0.9
 background-blur-radius = 20
-unfocused-split-opacity = 0.9
-
-scrollback-limit = 10000000
-
-window-title-font-family = SF Mono
 
 window-height = 70
 window-width = 90
@@ -35,26 +33,17 @@ shell-integration-features = true
 macos-titlebar-style = tabs
 macos-option-as-alt = right
 macos-titlebar-proxy-icon = visible
+macos-icon = xray
 
 {{ if has "personal" (get . "roles" | default list) -}}
 auto-update-channel = tip
 {{- end }}
 
-keybind = super+physical:one=goto_tab:1
-keybind = super+physical:two=goto_tab:2
-keybind = super+physical:three=goto_tab:3
-keybind = super+physical:four=goto_tab:4
-keybind = super+physical:five=goto_tab:5
-keybind = super+physical:six=goto_tab:6
-keybind = super+physical:seven=goto_tab:7
-keybind = super+physical:eight=goto_tab:8
-keybind = super+physical:nine=last_tab
-keybind = super+physical:zero=unbind
-keybind = super+zero=reset_font_size
+keybind = super+digit_9=last_tab
+keybind = super+digit_0=unbind
+keybind = super+digit_0=reset_font_size
 
 keybind = super+alt+shift+k=write_scrollback_file:open
 keybind = super+shift+k=write_scrollback_file:paste
-keybind = super+alt+shift+j=write_screen_file:open
-keybind = super+shift+j=write_screen_file:paste
 
 keybind = global:super+opt+q=toggle_quick_terminal

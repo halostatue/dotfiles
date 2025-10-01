@@ -276,10 +276,10 @@ const rewriteRemoveTracking = (url: URL): URL => {
 
 const rewrite: UrlRewriteRule[] = [
   {
-    match: (url, { opener }) =>
+    match: (url: URL, { opener }) =>
       opener?.bundleId === 'com.tinyspeck.slackmacgap' ||
       /openid\/connect\/login_initiate_redirect/.test(url.href),
-    url: (url) => {
+    url: (url: URL) => {
       const jwt = url.searchParams.get('login_hint')
 
       if (!jwt) {
@@ -296,8 +296,8 @@ const rewrite: UrlRewriteRule[] = [
     },
   },
   {
-    match: (url) => url.hostname.endsWith('medium.com'),
-    url: (url) => {
+    match: (url: URL) => url.hostname.endsWith('medium.com'),
+    url: (url: URL) => {
       const newUrl = new URL(url.href)
       newUrl.hostname = 'scribe.rip'
       return newUrl
@@ -305,7 +305,7 @@ const rewrite: UrlRewriteRule[] = [
   },
   {
     match: /vk\.com\/away.php/,
-    url: (url) => {
+    url: (url: URL) => {
       const param = url.searchParams.get('to')
 
       if (!param) {
@@ -317,7 +317,7 @@ const rewrite: UrlRewriteRule[] = [
   },
   {
     match: /safelinks\.protection\.outlook\.com/,
-    url: (url) => {
+    url: (url: URL) => {
       const match = url.searchParams.get('url')
 
       if (!match) {
@@ -329,7 +329,7 @@ const rewrite: UrlRewriteRule[] = [
   },
   {
     match: /id\.atlassian\.com\/login\/initiate\/slack\/external/,
-    url: (url) => {
+    url: (url: URL) => {
       const param = url.searchParams.get('target_link_url')
 
       if (!param) {
@@ -360,41 +360,41 @@ let workHandlers: BrowserHandler[] = []
 if (isWork) {
   workHandlers = [
     {
-      match: (url) =>
+      match: (url: URL) =>
         url.hostname.endsWith('github.com') && /\/northernLabs\//i.test(url.pathname),
       browser: Browsers.NorthernLabs,
     },
     {
-      match: (url) =>
+      match: (url: URL) =>
         url.hostname.endsWith('github.com') && /\/fortelabsinc\//i.test(url.pathname),
       browser: Browsers.NorthernLabs,
     },
     {
-      match: (url) =>
+      match: (url: URL) =>
         url.hostname === 'northernlabs.atlassian.net' ||
         url.hostname === 'northern-labs.slack.com' ||
         url.hostname === 'app.scalyr.com',
       browser: Browsers.NorthernLabs,
     },
     {
-      match: (url) =>
+      match: (url: URL) =>
         url.hostname === 'forteio.atlassian.net' || url.hostname === 'forte-io.slack.com',
       browser: Browsers.Forte,
     },
     {
-      match: (url) => url.hostname === 'identity.getpostman.com',
+      match: (url: URL) => url.hostname === 'identity.getpostman.com',
       browser: Browsers.NorthernLabs,
     },
     {
-      match: (url) => url.hostname === 'forte-io.postman.co',
+      match: (url: URL) => url.hostname === 'forte-io.postman.co',
       browser: Browsers.NorthernLabs,
     },
     {
-      match: (url) => url.hostname === 'newreleases.io',
+      match: (url: URL) => url.hostname === 'newreleases.io',
       browser: Browsers.NorthernLabs,
     },
     {
-      match: (url) => /flux\.\w+-dev\.cloud/.test(url.hostname),
+      match: (url: URL) => /flux\.\w+-dev\.cloud/.test(url.hostname),
       browser: Browsers.NorthernLabs,
     },
   ]
@@ -402,19 +402,19 @@ if (isWork) {
 
 handlers = handlers.concat(workHandlers).concat([
   {
-    match: (url) => url.host === 'meet.google.com',
+    match: (url: URL) => url.host === 'meet.google.com',
     browser: Browsers.NorthernLabs || Browsers.GoogleChrome,
   },
   {
-    match: (url) => url.host === 'script.google.com',
+    match: (url: URL) => url.host === 'script.google.com',
     browser: Browsers.GoogleChrome,
   },
   {
-    match: (url) => url.host === 'teams.microsoft.com',
+    match: (url: URL) => url.host === 'teams.microsoft.com',
     browser: Browsers.MicrosoftEdge,
   },
   {
-    match: (url) => url.host.endsWith('zoom.us'),
+    match: (url: URL) => url.host.endsWith('zoom.us'),
     browser: Browsers.Firefox,
   },
   {
@@ -426,11 +426,12 @@ handlers = handlers.concat(workHandlers).concat([
     browser: Browsers.Music,
   },
   {
-    match: (url) => url.host.endsWith('github.com') || url.host.endsWith('github.io'),
+    match: (url: URL) =>
+      url.host.endsWith('github.com') || url.host.endsWith('github.io'),
     browser: Browsers.Safari,
   },
   {
-    match: (_url, { opener }) => !opener?.path && !opener?.name && !opener?.bundleId,
+    match: (_url: URL, { opener }) => !opener?.path && !opener?.name && !opener?.bundleId,
     browser: Browsers.Fallback,
   },
 ])
@@ -439,6 +440,7 @@ export default {
   defaultBrowser: Browsers.Safari,
   options: {
     logRequests: true,
+    keepRunning: true,
   },
   rewrite,
   handlers,

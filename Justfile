@@ -6,8 +6,6 @@ _default:
 # Format various files
 format:
     @npx @biomejs/biome@1 check --config-path=biome.json --write biome.json
-    @npx @biomejs/biome@1 check --config-path=biome.json --write \
-      home/.chezmoitemplates/finicky/finicky.js
     @npx @biomejs/biome@1 check --config-path=biome.json --fix \
       home/.chezmoitemplates/finicky/finicky.ts
     @shfmt -w home/.chezmoiscripts/* lib/lib.bash
