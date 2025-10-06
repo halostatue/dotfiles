@@ -142,8 +142,9 @@ g:rooter_cd_cmd = 'lcd'       # Ensure that rooter only changes the window path
 # jenterkin/vim-autosource
 g:autosource_hashdir = hz#MkXdgVimPath('data', 'site', 'autosource_hashes')
 
-# Donaldttt/fuzzyy
-g:enable_fuzzyy_keymaps = false
+# vim-fuzzbox/fuzzbox.vim
+g:fuzzbox_mappings = false
+g:fuzzbox_devicons = false
 
 # # Enable Eliot00/git-lens.vim
 # g:GIT_LENS_ENABLED = true
@@ -176,4 +177,4 @@ g:nofrils_heavycomments = true        # High-contrast comments
 g:nofrils_heavylinenumbers = true     # Brighter line numbers
 
 # Konfekt/vim-unicode-homoglyphs
-g:is_homoglyphs_on = false
+g:is_homoglyph_on = false

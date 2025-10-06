@@ -104,12 +104,6 @@ ports:
   dotenv-linter:
     category: sysutils
     private: true
-  dunesh:
-    category: shells
-    private: true
-  fish-paket:
-    category: sysutils
-    private: true
   git-branch-stash:
     category: devel
     private: true

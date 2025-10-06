@@ -5,6 +5,6 @@ if !packix#IsPluginInstalled('wincent/ferret')
 endif
 
 nmap <unique> <leader>ff <Plug>(FerretAck)
-nmap <unique> <leader>fl <Plug>(FerretAck)
+nmap <unique> <leader>fl <Plug>(FerretLack)
 nmap <unique> <leader>fr <Plug>(FerretAcks)
 nmap <unique> <leader>fs <Plug>(FerretAckWord)

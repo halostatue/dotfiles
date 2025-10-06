@@ -1,6 +1,6 @@
 vim9script
 
-if !packix#IsPluginInstalled('Donaldttt/fuzzyy')
+if !packix#IsPluginInstalled('vim-fuzzbox/fuzzbox.vim')
   finish
 endif
 
@@ -20,3 +20,9 @@ nnoremap <silent> <leader>tt :FuzzyBuffers<CR>
 if g:->get('enable_fuzzyy_MRU_files')
   nnoremap <silent> <leader>tm :FuzzyMRUFiles<CR>
 endif
+
+# augroup LspFuzzbox
+#   autocmd!
+#   autocmd User FuzzboxOpened call lsp#disable()
+#   autocmd User FuzzboxClosed call lsp#enabled()
+# augroup END

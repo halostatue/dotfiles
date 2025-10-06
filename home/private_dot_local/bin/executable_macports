@@ -248,7 +248,7 @@ def set_port_version(port)
       port[:go_package] = repo
       port[:full_version] = "#{prefix}#{version}"
       repo.gsub!(%r{github.com/}, "")
-      port[:tag_url] = "https://raw.githubusercontent.com/#{repo}/refs/tags/#{port[:full_version]}"
+      port[:tag_url] = "https://raw.githubusercontent.com/#{repo}/refs/tags/#{port[:full_version]}/"
     in nil
     end
   end
@@ -258,7 +258,7 @@ def set_port_version(port)
     in {owner: owner, repo: repo, version: version, prefix: prefix}
       port[:version] = version
       port[:full_version] = "#{prefix}#{version}"
-      port[:tag_url] = "https://raw.githubusercontent.com/#{owner}/#{repo}/refs/tags/#{port[:full_version]}"
+      port[:tag_url] = "https://raw.githubusercontent.com/#{owner}/#{repo}/refs/tags/#{port[:full_version]}/"
     in nil
     end
   end
