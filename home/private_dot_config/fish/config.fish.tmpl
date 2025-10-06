@@ -206,7 +206,9 @@ if status is-interactive
     end
 
     if command --query atuin
-        atuin init fish | source
+        # NOTE: This is temporary until the next atuin release after 18.8.0 and reflects
+        #       issues with Fish 4.1.0.
+        atuin init fish | string replace --all -- '-k ' '' | source
     else if command --query mcfly
         mcfly init fish | source
     end
