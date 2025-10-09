@@ -361,32 +361,22 @@ if (isWork) {
   workHandlers = [
     {
       match: (url: URL) =>
-        url.hostname.endsWith('github.com') && /\/northernLabs\//i.test(url.pathname),
-      browser: Browsers.NorthernLabs,
-    },
-    {
-      match: (url: URL) =>
-        url.hostname.endsWith('github.com') && /\/fortelabsinc\//i.test(url.pathname),
+        (url.hostname.endsWith('.github.com') || url.hostname === 'github.com') &&
+        (/\/northernlabs\//i.test(url.pathname) ||
+          /\/fortelabsinc\//i.test(url.pathname)),
       browser: Browsers.NorthernLabs,
     },
     {
       match: (url: URL) =>
         url.hostname === 'northernlabs.atlassian.net' ||
         url.hostname === 'northern-labs.slack.com' ||
-        url.hostname === 'app.scalyr.com',
+        url.hostname.endsWith('.scalyr.com'),
       browser: Browsers.NorthernLabs,
     },
     {
       match: (url: URL) =>
-        url.hostname === 'forteio.atlassian.net' || url.hostname === 'forte-io.slack.com',
-      browser: Browsers.Forte,
-    },
-    {
-      match: (url: URL) => url.hostname === 'identity.getpostman.com',
-      browser: Browsers.NorthernLabs,
-    },
-    {
-      match: (url: URL) => url.hostname === 'forte-io.postman.co',
+        url.hostname === 'identity.getpostman.com' ||
+        url.hostname === 'forte-io.postman.co',
       browser: Browsers.NorthernLabs,
     },
     {

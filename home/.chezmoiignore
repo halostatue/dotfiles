@@ -2,12 +2,16 @@
 **/.DS_Store
 .Trash/**
 
+.42crunch/**
+
+.aleo/**
 .android/**
 .ansible/**
 .anydesk/**
 .aws/**/*.pem
 .aws/cli/history
 .aws/cli/cache
+.aws/sso
 
 .bash_history
 .bun/**
@@ -124,6 +128,9 @@
 
 .config/vifm/vifminfo.json
 
+# VIM9 now supports XDG-ish configuration files
+.config/vim/spell/*.spl
+
 .config/yarn/**
 
 .config/zed/*
@@ -143,6 +150,8 @@
 .envrc
 
 .fly
+.foundry
+.freelens
 
 .gem/ruby/
 .gem/specs/
@@ -164,9 +173,12 @@
 .k8slens
 .kube
 .kindle
+.kiro
 
 {{/* This is managed by colima. */}}
 .lima
+.lmstudio
+.lmstudio-home-pointer
 
 .lesshst
 
@@ -255,12 +267,15 @@
 
 .ollama
 
+.pgadmin
 .pnpm-state
 .prettierd
 .pry.d
 .python_history
 
 .rustup
+
+.sigstore
 .sobelow
 .sqlite_history
 .ssh/*

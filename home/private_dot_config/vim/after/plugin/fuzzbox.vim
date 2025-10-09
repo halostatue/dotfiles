@@ -7,6 +7,7 @@ endif
 g:files_respect_gitignore = true
 g:fuzzy_devicons = false
 g:fuzzy_dropdown = true
+g:fuzzbox_ripgrep_options = ["--no-ignore-parent"]
 
 nnoremap <silent> <leader>tb :FuzzyInBuffer<CR>
 nnoremap <silent> <leader>tc :FuzzyColors<CR>

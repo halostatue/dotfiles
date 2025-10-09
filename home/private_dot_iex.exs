@@ -41,4 +41,7 @@ defmodule IEx.Bucket do
 end
 
 alias IEx.Bucket, as: B
-B.new
+B.new()
+
+Logger.configure(level: :alert)
+require Protocol
