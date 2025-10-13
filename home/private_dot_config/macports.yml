@@ -1,4 +1,7 @@
 ---
+roots:
+  public: ~/oss/macports/macports-ports
+  private: ~/ports
 ports:
   chezmoi:
     category: sysutils
@@ -22,7 +25,11 @@ ports:
   lima:
     category: sysutils
     stable: true
-    test: |
+    test_script: |
+      #!/usr/bin/env bash
+
+      set -euo pipefail
+      echo "limactl info | jq .version -r"
       limactl info | jq .version -r
     variants:
       - additional_guestagents
@@ -33,6 +40,7 @@ ports:
       lychee --help
   mise:
     category: sysutils
+    cargo_lock: github
     stable: true
     test: |
       mise ls
@@ -48,9 +56,9 @@ ports:
       id="$(basename "${tmp}")"
 
       if ! [[ -f ~/.passage/identities ]]; then
-      mkdir -p ~/.passage
-      age-keygen -o ~/.passage/identities
-      created=true
+        mkdir -p ~/.passage
+        age-keygen -o ~/.passage/identities
+        created=true
       fi
 
       (
@@ -88,117 +96,86 @@ ports:
 
   actions-usage:
     category: sysutils
-    private: true
   chainloop:
     category: security
-    private: true
   changie:
     category: devel
-    private: true
   csvquote:
     category: textproc
-    private: true
   diffoci:
     category: sysutils
-    private: true
   dotenv-linter:
     category: sysutils
-    private: true
   git-branch-stash:
     category: devel
-    private: true
   git-bug:
     category: devel
-    private: true
   git-ce:
     category: devel
-    private: true
     cargo_lock: github
   git-mediate:
     category: devel
-    private: true
   git-some-extras:
     category: devel
-    private: true
   git-stack:
     category: devel
-    private: true
   git-switch-user:
     category: devel
-    private: true
   git-task:
     category: devel
-    private: true
   gitql:
     category: devel
-    private: true
   htmd-cli:
     category: textproc
-    private: true
   jqfmt:
     category: devel
-    private: true
   licensure:
     category: devel
-    private: true
   manifest-tool:
     category: sysutils
-    private: true
   massren:
     category: sysutils
-    private: true
-  mquery:
-    category: sysutils
-    private: true
   mrml:
     category: devel
     cargo_lock: github
-    private: true
   osv-scanner:
     category: security
-    private: true
   prql:
     category: devel
-    private: true
     cargo_lock: github
   prr:
     category: devel
-    private: true
   pug:
     category: sysutils
-    private: true
   scryer-prolog:
     category: lang
-    private: true
   selene:
     category: lua
-    private: true
   shadowenv:
     category: sysutils
-    private: true
     cargo_lock: github
   sol:
     category: devel
-    private: true
   spacer:
     category: textproc
-    private: true
   taplo:
-    category: textproc
-    private: true
+    category: devel
+    cargo_lock: github
+    test_script: |
+      #!/usr/bin/env bash
+
+      set -euo pipefail
+      echo "taplo config schema | jq keys"
+      taplo config schema | jq keys
   terramaid:
     category: sysutils
-    private: true
   titlecase:
     category: textproc
-    private: true
   typos:
     category: devel
-    private: true
     cargo_lock: github
   vv:
     category: graphics
-    private: true
     test: |
       vv ~/Pictures/garden.jpg
 

@@ -12,6 +12,10 @@ require "yaml"
 CONFIG_FILE = File.expand_path("~/.config/macports.yml")
 CONFIG = YAML.load_file(CONFIG_FILE, symbolize_names: true)
 
+CONFIG[:ports].each_key do |port_name|
+  CONFIG[:ports][port_name][:name] = port_name.to_s
+end
+
 EXPLICIT_VERSION = %r{^version[ \t]+(?<version>\S+)}m
 GO_VERSION = %r{^go\.setup[ \t]+(?<repo>\S+)[ \t]+(?<version>\S+)(?:[ \t](?<prefix>\S+))?}m
 GITHUB_VERSION = %r{^github\.setup[ \t]+(?<owner>\S+)[ \t]+(?<repo>\S+)[ \t]+(?<version>\S+)(?:[ \t]+(?<prefix>\S+))?}m
@@ -43,9 +47,10 @@ def __run(command, input: nil)
   end
 end
 
-def run(command, print: true, required: true, input: nil, verbose: false)
+def run(command, print: true, required: true, input: nil, verbose: false, description: nil)
   command = __safe(command)
-  puts "==> #{command.shelljoin}" if print
+  description ||= command.shelljoin
+  puts "==> #{description}" if print
 
   __run(command, input: input) => {stdout:, stderr:, status:}
 
@@ -68,6 +73,12 @@ end
 
 def shell_run(command, ...) = run(%W[sh -c #{__safe(command).shelljoin}], ...)
 
+def capture_or_false(command)
+  __run(command) => {stdout:, stderr:, status:}
+
+  status.success? ? stdout : false
+end
+
 def capture_or(command, message)
   __run(command) => {stdout:, stderr:, status:}
 
@@ -85,6 +96,19 @@ def halt(message, status: 1)
 end
 
 def warn(message) = Kernel.warn "macports #{STACK.last}: #{message}"
+
+public_tree = CONFIG.dig(:roots, :public) || capture_or(
+  %w[zoxide query macports-ports],
+  "Cannot find public macports tree with zoxide for #{port[:name]}."
+)
+
+private_tree = CONFIG.dig(:roots, :private) || "~/ports"
+
+PUBLIC_TREE = File.expand_path(public_tree)
+PRIVATE_TREE = File.expand_path(private_tree)
+
+halt "#{PUBLIC_TREE} does not exist" unless File.directory?(PUBLIC_TREE)
+halt "#{PRIVATE_TREE} does not exist" unless File.directory?(PRIVATE_TREE)
 
 def context(name)
   STACK.push(name.to_s.tr("_", "-"))
@@ -130,13 +154,13 @@ def tested_on
   end
 end
 
-def run_test_script(port)
+def run_test_script(port, verbose: false)
   Tempfile.create(["macports-test-"], binmode: false) do |f|
     f.write(port[:test_script])
     f.fsync
     f.close
     File.chmod(0o755, f.path)
-    run(f.path)
+    run(f.path, verbose: verbose, description: "Test script for #{port[:name]}")
   end
 end
 
@@ -193,22 +217,53 @@ def set_port_type(port)
   port[:needs_go_vendors] = portfile.match?(%r{^go\.vendors})
 end
 
-def resolve_port_root(port)
-  port[:root] =
-    if port[:private]
-      File.expand_path("~/ports")
-    else
-      capture_or(
-        %w[zoxide query macports-ports],
-        "Cannot find public macports tree with zoxide for #{port[:name]}."
-      )
-    end
+def check_port_path(port, tree)
+  return unless port[:category]
 
-  halt "#{port[:root]} does not exist" unless File.exist?(port[:root])
+  candidate = File.join(tree, port[:category], port[:name])
+
+  File.exist?(File.join(candidate, "Portfile")) && candidate
+end
+
+def do_resolve_port_path(port)
+  case [check_port_path(port, PUBLIC_TREE), check_port_path(port, PRIVATE_TREE)]
+  in [path, false]
+    [:public, PUBLIC_TREE, path]
+  in [false, path]
+    [:private, PRIVATE_TREE, path]
+  in [false, false]
+    [:error, :error, :error]
+  in [String, String => path]
+    [:both, PRIVATE_TREE, path]
+  end
+end
+
+def resolve_port_path(port)
+  result, tree, path = do_resolve_port_path(port)
+
+  if result == :error
+    halt "#{port[:category]}/#{port[:name]} not found in either the public or private trees."
+  end
+
+  if result == :both
+    warn "#{port[:category]}/#{port[:name]} found in both public and private trees."
+    warn "  Using the private tree instance. Press Ctrl-C to cancel or ENTER to continue"
+    gets
+
+    result = :private
+  end
+
+  port[:private] = result == :private
+  port[:path] = path
+  port[:root] = tree
 end
 
 def handle_unknown_port(port)
-  candidate = Dir[File.join(port[:root], "*", port[:name], "Portfile")].first
+  candidate = [
+    Dir[File.join(PUBLIC_TREE, "*", port[:name], "Portfile")].first,
+    Dir[File.join(PRIVATE_TREE, "*", port[:name], "Portfile")].first
+  ].compact.first
+
   halt "Unknown port #{port[:name]}." unless candidate
 
   port[:category] = File.basename(File.dirname(candidate, 2))
@@ -389,16 +444,15 @@ end
 
 def do_update_port(port_name, force, target_version)
   port = CONFIG[:ports][port_name.to_sym] || {}
-  port[:name] = port_name
+  port[:name] ||= port_name
 
   if port[:cargo_unstable] && !force
     halt "#{port[:name]} cannot be updated automatically because of Cargo.lock instability."
   end
 
-  resolve_port_root(port)
   handle_unknown_port(port) if port[:category].nil?
 
-  port[:path] = File.join(port[:root], port[:category], port[:name])
+  resolve_port_path(port)
 
   sudo %W[port sync]
 
@@ -463,11 +517,26 @@ def do_update_port(port_name, force, target_version)
 end
 
 def group_ports
-  ports = CONFIG[:ports].group_by { !!_2[:private] }
-  public_ports = ports[false].map { it[0] }
-  private_ports = ports[true].map { it[0] }
+  public_ports = []
+  private_ports = []
+  both = []
 
-  {public_ports:, private_ports:}
+  CONFIG[:ports].each_value do
+    case do_resolve_port_path(it)
+    in [:public, _, _]
+      public_ports << it[:name]
+    in [:private, _, _]
+      private_ports << it[:name]
+    in [:both, _, _]
+      both << it[:name]
+      private_ports << it[:name]
+      public_ports << it[:name]
+    else
+      nil
+    end
+  end
+
+  {both:, public_ports:, private_ports:}
 end
 
 def print_livecheck(name)
@@ -513,6 +582,19 @@ def check_requested(args)
   end
 end
 
+def run_port_test(port_name)
+  port = CONFIG[:ports][port_name.to_sym] || {}
+
+  halt "#{port_name} does not have a defined test." if !port[:test] && !port[:test_script]
+
+  if port[:test]
+    # port[:test] is required to be a shell command; allow pipes, so run via shell.
+    shell_run port[:test]
+  elsif port[:test_script]
+    run_test_script(port, verbose: true)
+  end
+end
+
 # CLI parsing (minimal)
 # Remove verbose arg from ARGV first if present
 ARGV.reject! { |a| a == "--verbose" || a == "-v" }
@@ -521,17 +603,17 @@ command = ARGV.first
 ARGV.shift
 
 case command
-when %r{trac[-_]patch}
+when "trac-patch", "trac_patch"
   trac_patch(ARGV)
-when %r{xcode(?:[-_]version)?}
+when "xcode", "xcode-version", "xcode_version"
   puts xcode_version
-when %r{clt(?:[-_]version)?}
+when "cli", "cli-version", "cli_version"
   puts clt_version
-when %r{tested[-_]on}
+when "tested-on", "tested_on"
   puts tested_on
 when "livecheck"
   livecheck
-when %r{update(?:[-_]port)?}
+when "update", "update-port", "update_port"
   name = nil
   force = false
   target_version = nil
@@ -557,8 +639,12 @@ when %r{update(?:[-_]port)?}
   end
 
   update_port(name, force, target_version)
-when %r{requested}
+when "test"
+  run_port_test(ARGV.first)
+when "requested"
   check_requested(ARGV)
+when %(show)
+  print_ports { puts it }
 else
   warn "Unknown or missing command"
   puts "Usage: #{File.basename($PROGRAM_NAME)} [--verbose] update <portname> [--force] [--version <ver>]"
