@@ -5,7 +5,6 @@ defrole:
     # TODO: These tools should be available in MacPorts, either through a mainline port or
     #       a "private" port that I maintain at halostatue/ports.
     formulae:
-      csvtk: Cross-platform, efficient and practical CSV/TSV toolkit in Golang
       flarectl: CLI application for interacting with a Cloudflare account
       git-graph: Command-line tool to show clear git graphs arranged for your branching model
       syft: CLI for generating a Software Bill of Materials from container images
@@ -20,17 +19,27 @@ defrole:
         act:
         actionlint:
         cloc:
+        dotenv-linter:
         prr:
         rust-script:
         flyctl:
+        git-branch-stash:
         git-branchless:
+        git-bug:
         git-mediate:
         git-some-extras:
+        git-stack:
         git-tools:
+        gitql:
+        gore:
         helix:
         pinact:
+        pkgconfig:
         scc:
+        selene:
+        valkey:
         viddy:
+        watchexec:
         xan:
 
     uv:

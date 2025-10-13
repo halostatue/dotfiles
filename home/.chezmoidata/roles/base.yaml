@@ -79,11 +79,13 @@ defrole:
         cargo:
         chezmoi:
         csvlens:
+        csvtk:
         ctpv:
         czkawka:
         deno:
         difftastic:
         dos2unix:
+        doxx:
         duf:
         dust:
         editorconfig-checker:

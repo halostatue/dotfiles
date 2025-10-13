@@ -18,7 +18,6 @@ defrole:
         docker-index-plugin:
         lazydocker:
         manifest-tool:
-        mquery:
 
     uv:
       # dokter: The doctor for your Dockerfiles
