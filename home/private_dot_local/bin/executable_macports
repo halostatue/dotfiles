@@ -21,12 +21,14 @@ GO_VERSION = %r{^go\.setup[ \t]+(?<repo>\S+)[ \t]+(?<version>\S+)(?:[ \t](?<pref
 GITHUB_VERSION = %r{^github\.setup[ \t]+(?<owner>\S+)[ \t]+(?<repo>\S+)[ \t]+(?<version>\S+)(?:[ \t]+(?<prefix>\S+))?}m
 
 CARGO_CRATES = %r{
+  \n+
   ^cargo\.crates[ \t]*\\\r?\n
   (?:[ \t]*[^\r\n]*\\\r?\n)*
   [ \t]*[^\r\n]*(?:\r?\n|\z)
 }mx
 
 GO_VENDORS = %r{
+  \n+
   ^go\.vendors[ \t]*\\\r?\n
   (?:[ \t]*[^\r\n]*\\\r?\n)*
   [ \t]*[^\r\n]*(?:\r?\n|\z)
@@ -319,10 +321,12 @@ def set_port_version(port)
   end
 
   halt "Cannot determine next target version for #{port[:name]}" unless port[:version]
+
   # Validate port name and version format constraints:
   unless /\A[-a-z0-9_]+\z/.match?(port[:name])
     halt "Invalid port name: #{port[:name]} (allowed: [-a-z0-9_])"
   end
+
   unless /\A[0-9A-Za-z.\-+_]+\z/.match?(port[:version])
     halt "Suspicious version format: #{port[:version]}"
   end
@@ -350,6 +354,7 @@ def check_prs(port)
   rescue
     "false"
   end
+
   if result.strip == "true"
     warn "#{port[:name]}: #{port[:version]} already has an open PR."
     search2 = "#{port[:name]} in:title"
@@ -364,24 +369,27 @@ def apply_crate2port(port)
 
   port[:update].gsub!(CARGO_CRATES, "")
 
-  if port[:cargo_lock] == "github" && port[:tag_url]
-    uri = URI.join(port[:tag_url], "Cargo.lock")
-    res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", read_timeout: 15, open_timeout: 5) do |http|
-      http.get(uri.request_uri)
-    end
-    unless res.is_a?(Net::HTTPSuccess)
-      halt "Failed to fetch Cargo.lock from #{uri} (#{res.code})"
+  crates =
+    if port[:cargo_lock] == "github" && port[:tag_url]
+      uri = URI.join(port[:tag_url], "Cargo.lock")
+      res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", read_timeout: 15, open_timeout: 5) do |http|
+        http.get(uri.request_uri)
+      end
+      unless res.is_a?(Net::HTTPSuccess)
+        halt "Failed to fetch Cargo.lock from #{uri} (#{res.code})"
+      end
+
+      IO.popen(%w[crate2port -], "r+") do |pipe|
+        pipe.puts res.body
+        pipe.close_write
+        pipe.read
+      end
+    else
+      crate = port[:crate] || port[:name]
+      capture!(%W[crate2port #{crate}@#{port[:version]}])
     end
 
-    IO.popen(%w[crate2port -], "r+") do |pipe|
-      pipe.puts res.body
-      pipe.close_write
-      port[:update] << "\n" << pipe.read
-    end
-  else
-    crate = port[:crate] || port[:name]
-    port[:update] << "\n" << capture!(%W[crate2port #{crate}@#{port[:version]}])
-  end
+  port[:update] << "\n\n" << crates if crates
 end
 
 def apply_go2port(port)
@@ -389,7 +397,7 @@ def apply_go2port(port)
 
   port[:update].gsub!(GO_VENDORS, "")
   go2port = %W[go2port #{port[:go_package]} #{port[:full_version]}]
-  port[:update] << "\n" << capture!(go2port)
+  port[:update] << "\n\n" << capture!(go2port)
 end
 
 def prepare_pr(port, branch)
