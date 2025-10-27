@@ -24,9 +24,11 @@ defrole:
       leader-key: Application launcher
       loop: Window manager
       maccy: Clipboard manager
+      macpacker: Archive manager
       macvim-app: Text editor
       meetingbar: Shows the next meeting in the menu bar
       obsidian: Knowledge base that works on top of a local folder of plain text Markdown files
+      pearcleaner: Utility to uninstall apps and remove leftover files from old/uninstalled apps
       qlcolorcode: Quick Look plug-in that renders source code with syntax highlighting
       qlmarkdown: Quick Look generator for Markdown files
       qlstephen: Quick Look plugin for plaintext files without an extension
@@ -66,6 +68,7 @@ defrole:
       1440147259: AdGuard for Safari
       1569813296: 1Password for Safari
       497799835: Xcode
+      6720708363: Obsidian Web Clipper
 
     ports:
       install:

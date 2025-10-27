@@ -13,7 +13,6 @@ defrole:
       eaglefiler: Organise files, archive e-mails, save Web pages and notes, search everything
       hazel: Automated organisation
       kindle-previewer: Preview and audit Kindle eBooks
-      koodo-reader: Open-source epub reader
       macwhisper: Speech recognition tool
       monitorcontrol: Tool to control external monitor brightness & volume
       monodraw: Tool to create text-based art
@@ -22,7 +21,7 @@ defrole:
 
     mas:
       1586435171: Actions
-      993487541: CARROT Weather
+      993487541: CARROTweather
       1502839586: Hand Mirror
       302584613: Kindle
       403504866: PCalc

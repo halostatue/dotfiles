@@ -8,7 +8,6 @@ defrole:
       beekeeper-studio: Cross platform SQL editor and database management app
       # db-browser-for-sqlite: Browser for SQLite databases
       dbeaver-community: Universal database tool and SQL client
-      dbgate: Database manager for MySQL, PostgreSQL, SQL Server, MongoDB, SQLite and others
       # pgadmin4: Administration and development platform for PostgreSQL
       postgres-unofficial: App wrapper for Postgres
 

@@ -7,6 +7,7 @@ defrole:
     ports:
       install:
         oxipng:
+        oxdraw:
         viu:
         vv:
 
@@ -23,7 +24,6 @@ defrole:
 
         mas:
           1289583905: Pixelmator Pro
-          1106867065: Svgsus
 
         uv:
           # Export photos from Apple's macOS Photos app and query the Photos library

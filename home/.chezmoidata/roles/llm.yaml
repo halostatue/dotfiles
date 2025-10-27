@@ -6,7 +6,6 @@ defrole:
   llm:
     casks:
       kiro: Agent-centric IDE with spec-driven development
-      msty: Run LLMs locally
       ollamac: Interact with Ollama models
       pieces: Code snippets, screenshots and workflow context
       pieces-os: Local datastore, server, and ML engine powering the Pieces for Developers Suite

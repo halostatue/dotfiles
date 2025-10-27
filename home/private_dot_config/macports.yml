@@ -11,7 +11,14 @@ ports:
   cocogitto:
     category: devel
     test: |
-      cocogitto --help
+      cog --help
+  ripgrep:
+    category: textproc
+    test: |
+      rg -h
+    cargo_lock: github
+    variants:
+      - pcre
   colima:
     category: sysutils
     stable: true
@@ -41,7 +48,7 @@ ports:
   mise:
     category: sysutils
     cargo_lock: github
-    stable: true
+    # stable: true
     test: |
       mise ls
   passage:
