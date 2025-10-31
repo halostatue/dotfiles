@@ -7,9 +7,9 @@ setopt SHARE_HISTORY
 bindkey -e
 setopt CORRECT # Prompt for spelling correction
 # Remove / from WORDCHARS to jump between path components
-WORDCHARS=${WORDCHARS//[\\/]}
+WORDCHARS=${WORDCHARS//\/}
 
-HISTFILE="${XDG_CACHE_HOME:$HOME/.cache}/zsh/zsh_history"
+HISTFILE="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zsh_history"
 mkdir -p "$(dirname "$HISTFILE")"
 
 ## zim config

@@ -9,7 +9,7 @@ zmodule exa
 zmodule fzf
 zmodule k # kubectl
 zmodule magic-enter
-zmodule kiesman99/zoxide
+zmodule kiesman99/zim-zoxide
 
 zmodule git-info
 zmodule duration-info
