@@ -9,7 +9,6 @@ defrole:
         oxipng:
         oxdraw:
         viu:
-        vv:
 
     casks:
       pika: Colour picker for colours onscreen

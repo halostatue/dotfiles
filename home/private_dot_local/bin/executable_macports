@@ -99,18 +99,14 @@ end
 
 def warn(message) = Kernel.warn "macports #{STACK.last}: #{message}"
 
-public_tree = CONFIG.dig(:roots, :public) || capture_or(
-  %w[zoxide query macports-ports],
-  "Cannot find public macports tree with zoxide for #{port[:name]}."
-)
-
-private_tree = CONFIG.dig(:roots, :private) || "~/ports"
+public_tree = CONFIG.dig(:roots, :public) || halt("Public macports tree not defined")
+private_tree = CONFIG.dig(:roots, :private)
 
 PUBLIC_TREE = File.expand_path(public_tree)
-PRIVATE_TREE = File.expand_path(private_tree)
+PRIVATE_TREE = private_tree && File.expand_path(private_tree)
 
 halt "#{PUBLIC_TREE} does not exist" unless File.directory?(PUBLIC_TREE)
-halt "#{PRIVATE_TREE} does not exist" unless File.directory?(PRIVATE_TREE)
+halt "#{PRIVATE_TREE} does not exist" if PRIVATE_TREE && !File.directory?(PRIVATE_TREE)
 
 def context(name)
   STACK.push(name.to_s.tr("_", "-"))
@@ -220,7 +216,7 @@ def set_port_type(port)
 end
 
 def check_port_path(port, tree)
-  return unless port[:category]
+  return false unless port[:category] && tree
 
   candidate = File.join(tree, port[:category], port[:name])
 
@@ -263,7 +259,7 @@ end
 def handle_unknown_port(port)
   candidate = [
     Dir[File.join(PUBLIC_TREE, "*", port[:name], "Portfile")].first,
-    Dir[File.join(PRIVATE_TREE, "*", port[:name], "Portfile")].first
+    PRIVATE_TREE && Dir[File.join(PRIVATE_TREE, "*", port[:name], "Portfile")].first
   ].compact.first
 
   halt "Unknown port #{port[:name]}." unless candidate

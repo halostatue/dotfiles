@@ -84,7 +84,6 @@ defrole:
         csvlens:
         csvtk:
         ctpv:
-        czkawka:
         deno:
         difftastic:
         dos2unix:
@@ -214,9 +213,5 @@ defrole:
           1522267256: Shareful
           6471380298: StopTheMadness Pro
           1591303229: Vinegar
-
-        ports:
-          install:
-            czkawka:
 
 # vim: ft=yaml

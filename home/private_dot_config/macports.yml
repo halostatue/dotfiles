@@ -1,7 +1,7 @@
 ---
 roots:
   public: ~/oss/macports/macports-ports
-  private: ~/ports
+  private: ~/oss/macports/local-ports
 ports:
   chezmoi:
     category: sysutils
