@@ -16,6 +16,7 @@ defrole:
     ports:
       install:
         jwt-cli:
+        oasdiff:
         oath-toolkit:
         oauth2c:
         redis:

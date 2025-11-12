@@ -26,14 +26,10 @@ defrole:
         prr:
         rust-script:
         flyctl:
-        git-branch-stash:
         git-branchless:
-        git-bug:
         git-mediate:
         git-some-extras:
-        git-stack:
         git-tools:
-        gitql:
         gore:
         helix:
         pinact:

@@ -10,7 +10,6 @@ defrole:
     ports:
       install:
         certstrap:
-        chainloop:
         cosign:
         gitleaks:
         grype:

@@ -7,7 +7,6 @@ defrole:
       install:
         container-diff:
         colima:
-        diffoci:
         diffoscope:
         dive:
         docker:
@@ -17,7 +16,6 @@ defrole:
         docker-credential-helper-osxkeychain:
         docker-index-plugin:
         lazydocker:
-        manifest-tool:
 
     uv:
       # dokter: The doctor for your Dockerfiles
