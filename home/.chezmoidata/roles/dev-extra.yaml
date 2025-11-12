@@ -43,6 +43,7 @@ defrole:
         valkey:
         viddy:
         watchexec:
+        wrkflw:
         xan:
 
     uv:
