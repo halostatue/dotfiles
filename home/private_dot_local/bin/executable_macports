@@ -22,16 +22,17 @@ GITHUB_VERSION = %r{^github\.setup[ \t]+(?<owner>\S+)[ \t]+(?<repo>\S+)[ \t]+(?<
 
 CARGO_CRATES = %r{
   \n+
-  ^cargo\.crates[ \t]*\\\r?\n
-  (?:[ \t]*[^\r\n]*\\\r?\n)*
+  ^cargo\.crates[ \t]*\r?\n
+  (?:[ \t]*[^\r\n]*\r?\n)*
   [ \t]*[^\r\n]*(?:\r?\n|\z)
 }mx
 
 GO_VENDORS = %r{
   \n+
-  ^go\.vendors[ \t]*\\\r?\n
-  (?:[ \t]*[^\r\n]*\\\r?\n)*
-  [ \t]*[^\r\n]*(?:\r?\n|\z)
+  (?<vendors>
+   ^go\.vendors(?:[ \t]*[^\r\n]*\r?\n)*
+   [ \t]*[^\r\n]*(?:\r?\n|\z)
+  )
 }mx
 
 STACK = []
@@ -363,6 +364,8 @@ end
 def apply_crate2port(port)
   return unless port[:needs_cargo_crates]
 
+  raise "No match" unless CARGO_CRATES.match?(port[:update])
+
   port[:update].gsub!(CARGO_CRATES, "")
 
   crates =
@@ -391,9 +394,22 @@ end
 def apply_go2port(port)
   return unless port[:needs_go_vendors]
 
+  raise "No match" unless GO_VENDORS.match?(port[:update])
+
   port[:update].gsub!(GO_VENDORS, "")
-  go2port = %W[go2port #{port[:go_package]} #{port[:full_version]}]
-  port[:update] << "\n\n" << capture!(go2port)
+
+  url =
+    if port[:go_package].split("/").first.include?(".")
+      port[:go_package]
+    else
+      "github.com/#{port[:go_package]}"
+    end
+
+  go2port = capture!(%W[go2port get #{url} #{port[:full_version]}])
+  # !!!! The regex here does not properly exclude go2port's bogus distroot
+  vendors = GO_VENDORS.match(go2port)[:vendors]
+
+  port[:update] << "\n\n" << vendors
 end
 
 def prepare_pr(port, branch)

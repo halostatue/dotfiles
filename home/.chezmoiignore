@@ -173,7 +173,10 @@
 .k8slens
 .kube
 .kindle
-.kiro
+
+.kiro/*
+!.kiro/steering
+!.kiro/steering/*
 
 {{/* This is managed by colima. */}}
 .lima
