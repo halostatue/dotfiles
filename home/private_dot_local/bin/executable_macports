@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "open3"
 require "net/http"
-require "pathname"
+require "open3"
 require "shellwords"
 require "tempfile"
 require "uri"
@@ -20,20 +19,9 @@ EXPLICIT_VERSION = %r{^version[ \t]+(?<version>\S+)}m
 GO_VERSION = %r{^go\.setup[ \t]+(?<repo>\S+)[ \t]+(?<version>\S+)(?:[ \t](?<prefix>\S+))?}m
 GITHUB_VERSION = %r{^github\.setup[ \t]+(?<owner>\S+)[ \t]+(?<repo>\S+)[ \t]+(?<version>\S+)(?:[ \t]+(?<prefix>\S+))?}m
 
-CARGO_CRATES = %r{
-  \n+
-  ^cargo\.crates[ \t]*\r?\n
-  (?:[ \t]*[^\r\n]*\r?\n)*
-  [ \t]*[^\r\n]*(?:\r?\n|\z)
-}mx
+CARGO_CRATES = /\n+(?<crates>^cargo\.crates(?:[^\n]*\n?)*)/
 
-GO_VENDORS = %r{
-  \n+
-  (?<vendors>
-   ^go\.vendors(?:[ \t]*[^\r\n]*\r?\n)*
-   [ \t]*[^\r\n]*(?:\r?\n|\z)
-  )
-}mx
+GO_VENDORS = /\n+(?<vendors>^go\.vendors(?:[^\n]*\n?)*)/
 
 STACK = []
 VERBOSE = !!(ARGV.delete("--verbose") || ARGV.delete("-v"))
@@ -46,7 +34,7 @@ def __run(command, input: nil)
     stdin.puts input if input
     stdin.close
 
-    return {stdout: stdout.read.chomp, stderr: stderr.read.chomp, status: wait.value}
+    {stdout: stdout.read.chomp, stderr: stderr.read.chomp, status: wait.value}
   end
 end
 
@@ -331,7 +319,9 @@ end
 
 def check_merge(port)
   log = begin
-    capture!(%W[git log --grep \\b#{port[:name]}.\\+#{port[:version]} --since 7.days.ago])
+    capture!([
+      "git", "log", "--grep", "\\b#{port[:name]}.\\+#{port[:version]}", "--since", "7 days ago"
+    ])
   rescue
     ""
   end
@@ -406,14 +396,85 @@ def apply_go2port(port)
     end
 
   go2port = capture!(%W[go2port get #{url} #{port[:full_version]}])
-  # !!!! The regex here does not properly exclude go2port's bogus distroot
   vendors = GO_VENDORS.match(go2port)[:vendors]
 
   port[:update] << "\n\n" << vendors
 end
 
+def __offset_to_lines(lines, offset)
+  return nil unless offset
+
+  start_char, end_char = offset
+  first_line = last_line = nil
+  current_char = 0
+
+  lines.each_with_index do |line, index|
+    line_start = current_char
+    line_end = current_char + line.length + 1
+
+    first_line ||= index + 1 if start_char >= line_start && start_char <= line_end
+
+    if end_char > line_start && end_char <= line_end + $/.length
+      last_line = index + 1
+      break
+    end
+
+    current_char = line_end
+  end
+
+  last_line ||= lines.size if first_line
+
+  first_line..last_line
+end
+
+def run_lint(port)
+  puts "==> port lint --nitpick"
+
+  Open3.popen3(*__safe("port lint --nitpick")) do |stdin, stdout, stderr, wait|
+    stdin.close
+    stdout.close
+    {stderr: stderr.read.chomp, status: wait.value}
+  end => {stderr:, status:}
+
+  body = port[:update] || port[:portfile]
+
+  has_platforms = /^platforms\s+darwin$/.match?(body)
+
+  crates_offset = CARGO_CRATES.match(body).offset(:crates) if port[:needs_cargo_crates]
+  vendors_offset = GO_VENDORS.match(body).offset(:vendors) if port[:needs_go_vendors]
+
+  lines = body.split($/, -1)
+  crates_range = __offset_to_lines(lines, crates_offset)
+  vendors_range = __offset_to_lines(lines, vendors_offset)
+
+  stderr =
+    stderr.split($/).map {
+      case it
+      when /^Warning: .+\.crate - missing recommended checksum type/
+        nil
+      when /^Warning: Unnecessary platforms line as darwin is the default/
+        has_platforms ? it : nil
+      when /^Warning: Line (\d+) seems to hardcode the version number/
+        line = $1.to_i
+
+        if crates_range&.include?(line) || vendors_range&.include?(line)
+          nil
+        else
+          it
+        end
+      else
+        it
+      end
+    }.compact.join("\n").strip
+
+  return if stderr.empty? && status.success?
+
+  warn stderr
+  halt "#{port[:name]}: Port lint failed"
+end
+
 def prepare_pr(port, branch)
-  run %W[port lint]
+  run_lint(port)
   sudo %W[port clean]
 
   Array(port.fetch(:variants, [])).each do |variant|
@@ -456,7 +517,7 @@ def create_pr(port, confirm: false)
 
   run(gh_pr_create, input: port[:pr_body], verbose: confirm)
 
-  if confirm
+  if confirm || UNSTABLE
     puts "Press Ctrl-C to cancel or ENTER to continue"
     gets
   end
@@ -498,6 +559,8 @@ def do_update_port(port_name, force, target_version)
 
       apply_crate2port(port)
       apply_go2port(port)
+
+      port[:update] << "\n" unless port[:update].end_with?("\n")
 
       File.write(port[:file], port[:update])
 
@@ -602,6 +665,20 @@ def check_requested(args)
   end
 end
 
+def run_port_lint(port_name)
+  port = CONFIG[:ports][port_name.to_sym] || {}
+  port[:name] ||= port_name
+
+  halt "#{port_name} is not defined" if port[:category].nil?
+
+  resolve_port_path(port)
+
+  Dir.chdir(port[:path]) do
+    set_port_type(port)
+    run_lint(port)
+  end
+end
+
 def run_port_test(port_name)
   port = CONFIG[:ports][port_name.to_sym] || {}
 
@@ -661,6 +738,8 @@ when "update", "update-port", "update_port"
   update_port(name, force, target_version)
 when "test"
   run_port_test(ARGV.first)
+when "lint"
+  run_port_lint(ARGV.first)
 when "requested"
   check_requested(ARGV)
 when %(show)

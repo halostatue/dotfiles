@@ -144,8 +144,6 @@ ports:
     category: devel
   git-stack:
     category: devel
-  git-switch-user:
-    category: devel
   git-task:
     category: devel
   gitql:
