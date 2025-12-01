@@ -52,10 +52,10 @@ gui:
       - bold
 
 git:
-  paging:
-    useConfig: false
+  pagers:
+    - useConfig: false
 # {{- if $diffPager }}
-    pager: '# {{ $diffPager }}'
+      pager: '# {{ $diffPager }}'
 # {{- else }}
     # Use one of the following:
     #   pager: delta --dark --paging=never --side-by-side
