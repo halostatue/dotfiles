@@ -7,7 +7,7 @@ zmodule input
 zmodule utility
 zmodule exa
 zmodule fzf
-zmodule k # kubectl
+whence -c kubectl >/dev/null 2>/dev/null && zmodule k # kubectl
 zmodule magic-enter
 zmodule kiesman99/zim-zoxide
 
