@@ -27,7 +27,7 @@
 {{- end -}}
 
 {{- $githubUser = .github.user -}}
-{{- $githubToken = onepasswordRead "op://Personal/github-cli-tools/credential" .onepassword.personal -}}
+{{- $githubToken = onepasswordRead "op://Austin/github-cli-tools/credential" .onepassword.personal -}}
 
 {{- if $has.interactive_rebase_tool -}}
 {{-   $sequenceEditor = $has.interactive_rebase_tool }}
