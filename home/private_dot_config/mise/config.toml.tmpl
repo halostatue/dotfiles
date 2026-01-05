@@ -8,6 +8,7 @@
 {{- $tools := dict
       "elixir"  "1.18.4-otp-27"
       "erlang"  "27.3.4.2"
+      "github:geofffranks/spruce" "latest"
       "gleam"   "latest"
       "node"    "20"
       "ruby"    "3.4"
@@ -17,7 +18,6 @@
       "zig"     "0.15"
 -}}
 {{- if $work -}}
-{{-   $_ := set $tools "aws-vault" "7" -}}
 {{-   $_ := set $tools "foundry" "latest" -}}
 {{-   $_ := set $tools "go:github.com/KarnerTh/mermerd" "latest" -}}
 {{-   $_ := set $tools "go:github.com/telia-oss/aws-env/cmd/aws-env" "v1.3.0" -}}
