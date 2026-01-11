@@ -6,6 +6,7 @@ defrole:
   k8s:
     casks:
       freelens: Kubernetes IDE
+      kubeterm: Kubernetes graphical management tool
 
     ports:
       install:

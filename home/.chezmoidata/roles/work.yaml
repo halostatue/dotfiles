@@ -9,6 +9,10 @@ defrole:
       drovio: Remote pair programming and team collaboration tool
       postman: Collaboration platform for API development
       slack: Team communication and collaboration software
+      cursor: Write, edit, and chat about your code with AI
+      cursor-cli: Command-line agent for Cursor
+      visualdiffer: Visually compare folders and files
+      zen: Gecko based web browser
 
     mas:
       1451685025: WireGuard
