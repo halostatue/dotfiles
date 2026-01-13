@@ -8,7 +8,7 @@ import type {
 // {{- $work := has "work" (get . "roles" | default list) -}}
 // This file is generated from home/private_dot_finicky.ts.tmpl and
 // home/.chezmoitemplate/finicky/finicky.ts
-// @ts-ignore
+// @ts-expect-error
 const isWork = 'true' === '{{ $work }}'
 
 // {{- $fallbacks := list "Browsers" "Browserosaurus" "BrowserFairy" "OpenIn" -}}
@@ -67,7 +67,7 @@ class InvalidTokenError extends Error {
   }
 }
 
-const base64Re = /^(?:[A-Za-z\d+\/]{4})*?(?:[A-Za-z\d+\/]{2}(?:==)?|[A-Za-z\d+\/]{3}=?)?$/
+const base64Re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/
 const base64Chars = Array.prototype.slice.call(
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
 )
@@ -390,6 +390,17 @@ if (isWork) {
   ]
 }
 
+const alwaysSafariDomains = [
+  'codeberg.org',
+  'forgejo.org',
+  'github.com',
+  'github.io',
+  'gitlab.com',
+  'hex.pm',
+  'hexdocs.pm',
+  'npmjs.com',
+]
+
 handlers = handlers.concat(workHandlers).concat([
   {
     match: (url: URL) => url.host === 'meet.google.com',
@@ -416,8 +427,7 @@ handlers = handlers.concat(workHandlers).concat([
     browser: Browsers.Music,
   },
   {
-    match: (url: URL) =>
-      url.host.endsWith('github.com') || url.host.endsWith('github.io'),
+    match: (url: URL) => alwaysSafariDomains.some((v) => url.host.endsWith(v)),
     browser: Browsers.Safari,
   },
   {

@@ -27,6 +27,12 @@
 
 .codemod
 
+.dbgate/
+.ruby-lsp/
+.rdbg_history
+.web-firefox/
+.lemminx/
+
 {{ if not (stat "/Applications/WezTerm.app") -}}
 .terminfo/77/wezterm
 .local/bin/wezterm
@@ -186,6 +192,8 @@
 .lesshst
 
 .local/bin/chezmoi
+.local/bin/*kiro-cli*
+.local/bin/web
 
 {{ if not (lookPath "brew") -}}
 .local/bin/brew-bump

@@ -81,7 +81,7 @@ require "yaml"
 CONFIG_FN = ".git-wtfrc"
 
 def pluralize(number, value)
-  "#{number} #{value}#{(self != 1) ? "s" : ""}"
+  "#{number} #{value}#{"s" if self != 1}"
 end
 
 if ARGV.delete("--help") || ARGV.delete("-h")
@@ -250,13 +250,13 @@ def show_relations b, all_branches
       local_ahead = b[:local_branch] ? commits_between(b[:local_branch], head) : []
 
       if local_ahead.empty? && remote_ahead.empty?
-        puts "#{widget true, remote_only, local_only} #{name} #{local_only ? "(local-only) " : ""}is merged in"
+        puts "#{widget true, remote_only, local_only} #{name} #{"(local-only) " if local_only}is merged in"
       elsif local_ahead.empty?
         puts "#{widget true, remote_only, local_only, true} #{name} merged in (only locally)"
       else
         behind = commits_between head, (br[:local_branch] || br[:remote_branch])
         ahead = remote_only ? remote_ahead : local_ahead
-        puts "#{widget false, remote_only, local_only} #{name} #{local_only ? "(local-only) " : ""}is NOT merged in (#{ahead_behind_string ahead, behind})"
+        puts "#{widget false, remote_only, local_only} #{name} #{"(local-only) " if local_only}is NOT merged in (#{ahead_behind_string ahead, behind})"
         show_commits ahead unless OPTS[:short]
       end
     end
