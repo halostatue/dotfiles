@@ -40,6 +40,9 @@ defrole:
       webpquicklook: Quick Look plugin for webp files
       xprocheck: Anti-malware scan logging tool
 
+    formulae:
+      mas: Mac App Store command-line interface
+
     fonts:
       0xproto:
       atkinson-hyperlegible-mono:
@@ -125,7 +128,6 @@ defrole:
         lemmeknow:
         lychee:
         mani:
-        mas:
         massren:
         miller:
         mise:
