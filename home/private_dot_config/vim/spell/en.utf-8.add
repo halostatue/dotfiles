@@ -50,6 +50,7 @@ dotfiles
 ebook
 Ecto
 enum
+env
 erlang
 ESLint
 Ethereum
@@ -58,6 +59,7 @@ EVM
 exfiltrate
 falsy
 Fiant
+Figma
 Gemfile
 GhosTTY
 git
@@ -121,6 +123,7 @@ polyfill
 POSIX
 Postgres
 PostgreSQL
+PRD
 Prisma
 PRs
 Pysch
@@ -141,6 +144,7 @@ Rubocop
 Rubygems
 runtimes
 Saša
+Scalyr
 SCSS
 sepolia
 SFTP
@@ -151,6 +155,7 @@ Solana
 Sqitch
 SQLite
 SSO
+struct
 submodules
 SVG
 TBD
@@ -164,6 +169,7 @@ truthy
 Twilio
 Typescript
 ULID
+unquote
 UTXO
 UUID
 UUIDs
@@ -177,7 +183,3 @@ YAML
 zizmor
 ZK
 ZKP
-struct
-Scalyr
-Jira
-unquote
