@@ -7,5 +7,3 @@ defrole:
     casks:
       kiro: Agent-centric IDE with spec-driven development
       ollamac: Interact with Ollama models
-      pieces: Code snippets, screenshots and workflow context
-      pieces-os: Local datastore, server, and ML engine powering the Pieces for Developers Suite
