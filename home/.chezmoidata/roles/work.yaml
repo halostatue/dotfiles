@@ -19,7 +19,6 @@ defrole:
 
     ports:
       install:
-        aws-vault:
         jwt-cli:
         oasdiff:
         oath-toolkit:

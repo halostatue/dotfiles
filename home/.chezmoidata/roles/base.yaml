@@ -175,7 +175,6 @@ defrole:
       halostatue/fish-macports: v1
       halostatue/fish-mise: v1
       halostatue/fish-rake: v1
-      halostatue/fish-ruby-bundler: v2
       halostatue/fish-rust: v2
       halostatue/fish-utils-core: v3
       halostatue/fish-utils-net: v2

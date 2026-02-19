@@ -2,4 +2,31 @@
 #MISE description="Run pinact with GITHUB_TOKEN"
 #MISE dir="{{cwd}}"
 
+declare -a args
+declare updating min_age
+min_age=false
+updating=false
+
+while (($#)); do
+  case "$1" in
+  -m | --min-age)
+    min_age=true
+    args+=("$1")
+    shift
+    ;;
+  -u | --update) updating=true ;;
+  *) ;;
+  esac
+
+  args+=("$1")
+
+  shift
+done
+
+if "${updating}" && ! "${min_age}"; then
+  args+=(--min-age 7)
+fi
+
+set -- "${args[@]}"
+
 GITHUB_TOKEN="$(gh auth token)" pinact run "${@}"

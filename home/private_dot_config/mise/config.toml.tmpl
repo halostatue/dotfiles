@@ -6,25 +6,28 @@
       "RIPGREP_CONFIG_PATH" (joinPath .chezmoi.homeDir ".ripgreprc")
 -}}
 {{- $tools := dict
-      "elixir"  "1.18.4-otp-27"
-      "erlang"  "27.3.4.2"
-      "github:geofffranks/spruce" "latest"
-      "gleam"   "latest"
-      "node"    "20"
-      "ruby"    "3.4"
-      "rust"    "1.90.0"
-      "rumdl"   "latest"
-      "usage"   "latest"
-      "vacuum"  "latest"
-      "zig"     "0.15"
+      "elixir"                  "1.19.4-otp-28"
+      "erlang"                  "28.3"
+      "github:hay-kot/scaffold" "latest"
+      "gleam"                   "latest"
+      "opentofu"                "latest"
+      "node"                    "24"
+      "ruby"                    "3.4"
+      "rust"                    "1.90.0"
+      "rumdl"                   "latest"
+      "usage"                   "latest"
+      "zig"                     "0.15"
 -}}
 {{- if $work -}}
+{{-   $_ := set $tools "aws-vault" "7" -}}
 {{-   $_ := set $tools "foundry" "latest" -}}
-{{-   $_ := set $tools "go:github.com/KarnerTh/mermerd" "latest" -}}
-{{-   $_ := set $tools "go:github.com/telia-oss/aws-env/cmd/aws-env" "v1.3.0" -}}
+{{-   $_ := set $tools "github:geofffranks/spruce" "latest" -}}
+{{-   $_ := set $tools "github:KarnerTh/mermerd" "latest" -}}
+{{-   $_ := set $tools "github:telia-oss/aws-env" "v1.3.0" -}}
 {{-   $_ := set $tools "go:newreleases.io/cmd/newreleases" "latest" -}}
 {{-   $_ := set $tools "k9s" "latest" -}}
 {{-   $_ := set $tools "kubectl" "latest" -}}
+{{-   $_ := set $tools "vacuum" "latest" -}}
 
 {{-   $npm_package_token := ((output "gh" "auth" "token" "--user" .github.work) | trim) -}}
 {{-   $_ := set $env "NPM_PACKAGE_TOKEN" $npm_package_token -}}
@@ -34,7 +37,6 @@
 {{-   $name = printf "%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) -}}
 {{-   $_ := set $env $name $value -}}
 {{- end -}}
-
 
 min_version = "2024.12.23"
 
@@ -67,3 +69,4 @@ run = [
 {{ range $name, $value := $hex_api_keys -}}
 {{ printf "%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) }} = {{ $value | quote }}{{ end }}
 {{ end -}}
+

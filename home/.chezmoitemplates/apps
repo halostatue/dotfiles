@@ -1,0 +1,8 @@
+{{-
+  dict
+    "kiro_cli"    (or  (lookPath "kiro-cli")
+                      (joinPath .chezmoi.homeDir "Library/Application Support/kiro-cli/shell" | stat))
+    "kiro"        (or (lookPath "kiro") (stat "/Applications/Kiro.app"))
+    "lm_studio"   (stat "/Applications/LM Studio.app")
+  | toJson
+-}}

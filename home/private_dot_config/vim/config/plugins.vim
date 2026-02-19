@@ -237,6 +237,9 @@ packix.Setup((px: packix.Packix) => {
   # https://github.com/andykog/fern-highlight.vim
   px.Add('andykog/fern-highlight.vim')
 
+  # https://github.com/nanotee/zoxide.vim
+  px.Add('nanotee/zoxide.vim')
+
   # File Picker
   # https://github.com/vim-fuzzbox/fuzzbox.vim
   px.Add('vim-fuzzbox/fuzzbox.vim')
@@ -412,6 +415,8 @@ packix.Setup((px: packix.Packix) => {
   px.Add('sbdchd/neoformat')
 
   # Colorschemes
+  # https://github.com/romainl/Apprentice
+  px.Add('romainl/Apprentice')
   # https://github.com/cocopon/iceberg.vim
   px.Add('cocopon/iceberg.vim')
   # https://github.com/fenetikm/falcon

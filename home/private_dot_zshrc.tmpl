@@ -1,4 +1,10 @@
-# vim: set ft=zsh.chezmoitmpl
+# chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
+# {{- $apps := includeTemplate "apps" | fromJson -}}
+
+# {{ if $apps.kiro_cli -}}
+kiro_cli_shell="${HOME}/Library/Application Support/kiro-cli/shell"
+builtin source "${kiro_cli_shell}/zshrc.pre.zsh"
+# {{- end }}
 
 ## zsh configuration
 setopt HIST_IGNORE_ALL_DUPS
@@ -57,11 +63,16 @@ zstyle ':zim:prompt-pwd' git-root yes
 # # Automatic rehash
 # zstyle ':completion:*' rehash true
 
-{{ if stat "/Applications/LM Studio.app" -}}
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/austin/.lmstudio/bin"
-# End of LM Studio CLI section
-{{- end }}
-{{ if or (lookPath "kiro") (stat "/Applications/Kiro.app") -}}
-[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
-{{- end}}
+# {{ if $apps.lm_studio }}
+export PATH="${PATH}:/Users/austin/.lmstudio/bin"
+# {{- end }}
+
+# {{ if $apps.kiro -}}
+[[ "${TERM_PROGRAM:-}" == "kiro" ]] && builtin source "$(kiro --locate-shell-integration-path zsh)"
+# {{- end }}
+
+# {{ if $apps.kiro_cli -}}
+builtin source "${kiro_cli_shell}/zshrc.post.zsh"
+unset kiro_cli_shell
+# {{- end }}
+{{/* vim: set ft=zsh.chezmoitmpl */}}

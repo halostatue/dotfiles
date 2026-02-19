@@ -1,4 +1,6 @@
 ---
+gh:
+  user: halostatue
 roots:
   public: ~/oss/macports/macports-ports
   private: ~/oss/macports/local-ports
@@ -6,11 +8,14 @@ ports:
   oasdiff:
     category: devel
     test: |
-      oasdiff --help
+      oasdiff qr
   gitleaks:
     category: security
     test: |
-      gitleaks help
+      # This token is part of the gitleaks test suite.
+      echo 'aws_token := "AKIALALEMEL33243OLIA"' |
+        gitleaks stdin --exit-code 0 2>&1 |
+        grep -q 'leaks found: 1'
   chezmoi:
     category: sysutils
     stable: true
@@ -19,11 +24,15 @@ ports:
   cocogitto:
     category: devel
     test: |
-      cog --help
+      {
+        cog verify \
+          "Your Mother Was A Hamster, And Your Father Smelt Of Elderberries" 2>&1 ||
+        true
+      } | grep -q 'Error: Missing commit type separator `:`'
   ripgrep:
     category: textproc
     test: |
-      rg -h
+      printf "fooXbar\nfoXobar\nfoobaXr\n" | rg X -c | grep -q 3
     cargo_lock: github
     variants:
       - pcre
@@ -31,40 +40,36 @@ ports:
     category: sysutils
     stable: true
     test: |
-      colima status
+      colima list
   jaq:
     cargo_lock: github
     category: textproc
     test: |
-      jaq --help
+      [[ "$(echo '{"foo": true}' | jaq 'has("foo")')" == true ]]
   lima:
     category: sysutils
     stable: true
-    test_script: |
-      #!/usr/bin/env bash
-
-      set -euo pipefail
-      echo "limactl info | jq .version -r"
-      limactl info | jq .version -r
+    test: |
+      limactl list
     variants:
       - additional_guestagents
   lychee:
     cargo_lock: github
     category: devel
     test: |
-      lychee --help
+      echo 'https://canada.com/' | lychee -
   mise:
     category: sysutils
     cargo_lock: github
     stable: true
     test: |
-      mise ls
+      mise doctor
   passage:
     category: security
-    test_script: |
+    test: |
       #!/usr/bin/env bash
 
-      local id created tmp
+      declare id created tmp
       created=false
       tmp="$(mktemp)"
       rm -f "${tmp}"
@@ -87,7 +92,7 @@ ports:
     category: security
     stable: true
     test: |
-      pinact --help
+      pinact version
   rebels-in-the-sky:
     category: games
     crate: rebels
@@ -101,21 +106,19 @@ ports:
   viu:
     category: graphics
     test: |
-      viu ~/Pictures/graden.jpg
+      #!/usr/bin/env bash
+
+      viu ~/Pictures/garden.jpg
   zizmor:
     cargo_lock: github
     category: security
     stable: true
     test: |
-      zizmor -h
+      zizmor --thanks
   taplo:
     category: devel
     cargo_lock: github
-    test_script: |
-      #!/usr/bin/env bash
-
-      set -euo pipefail
-      echo "taplo config schema | jq keys"
+    test: |
       taplo config schema | jq keys
   vv:
     category: graphics
@@ -134,6 +137,10 @@ ports:
     category: sysutils
   dotenv-linter:
     category: sysutils
+    test: |
+      tmp="$(mktemp)"
+      echo 'VAR = value  ' >>"$tmp"
+      { dotenv-linter check --plain "$tmp" || true } | grep -q 'Found 2 problems'
   git-branch-stash:
     category: devel
   git-bug:
@@ -152,6 +159,8 @@ ports:
     category: textproc
   jqfmt:
     category: devel
+    test: |
+      [[ "$(printf 'has(\n\n\"foo\"\n\n)\n\n')" == 'has("foo")' ]]
   licensure:
     category: devel
   manifest-tool:
@@ -188,7 +197,12 @@ ports:
   typos:
     category: devel
     cargo_lock: github
-
+    test: |
+      {
+        echo 'processsor = false' | typos - || true
+      } | grep -q 'error: `processsor` should be `processors`, `processor`'
+  faketty:
+    category: sysutils
 template: |
   #### Description
 

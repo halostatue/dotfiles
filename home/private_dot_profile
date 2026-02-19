@@ -1,32 +1,27 @@
-[ -x "${HOME}/.local/bin/fig" ] && eval "$(fig init bash pre)"
+# shellcheck shell=sh
 
-[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
-[ -x /opt/homebrew/bin/brew ] && eval "$(/opt/homebrew/bin/brew shellenv)"
+case "${SHELL}" in
+bash | */bash)
+  # shellcheck source=/dev/null
+  test -f "${HOME}/.bashrc" && . "${HOME}/.bashrc"
+  ;;
+zsh | */zsh)
+  # shellcheck source=/dev/null
+  test -f "${HOME}/.zshrc" && . "${HOME}/.zshrc"
+  ;;
+*)
+  # shellcheck source=/dev/null
+  test -f "${HOME}/.cargo/env" && . "${HOME}/.cargo/env"
 
-if [ -d /opt/local/bin ]; then
-  export PATH="/opt/local/bin:/opt/local/sbin:${PATH}"
-  export MANPATH="/opt/local/share/man:$MANPATH"
-fi
+  # shellcheck disable=SC2312
+  test -x /opt/homebrew/bin/brew && eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# Disable Less hist
-export LESSHISTFILE=-
+  if test -d /opt/local/bin; then
+    export PATH="/opt/local/bin:/opt/local/sbin:${PATH}"
+    export MANPATH="/opt/local/share/man:${MANPATH}"
+  fi
 
-# # Set XDG BASE DIRECTORIES (breaks some current tools on macOS)
-# export XDG_CONFIG_HOME="$HOME"/.config
-# export XDG_CACHE_HOME="$HOME"/.cache
-# export XDG_DATA_HOME="$HOME"/.local/share
-
-# Change config dirs
-# export CARGO_HOME="$XDG_DATA_HOME"/cargo
-# export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
-# export RUSTUP_HOME="$XDG_DATA_HOME"/rustup
-# export WGETRC="$XDG_CONFIG_HOME/wgetrc"
-
-[ -x "${HOME}/.local/bin/fig" ] && eval "$(fig init bash post)"
-
-case $SHELL in
-bash | */bash) [[ -f "${HOME}/.bashrc" ]] && . "${HOME}/.bashrc" ;;
-zsh | */zsh) [[ -f "${HOME}/.zshrc" ]] && . "${HOME}/.zshrc" ;;
+  # Disable Less hist
+  export LESSHISTFILE=-
+  ;;
 esac
-
-# vim: set ft=bash

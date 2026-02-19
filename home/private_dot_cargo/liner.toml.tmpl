@@ -1,6 +1,5 @@
-{{- $work := has "work" (get . "roles" | default list) -}}
+# chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
 [packages]
-{{ if $work }}amareleo-chain = { version = "*", locked = true }{{ end }}
 basalt-tui = { version = "*", locked = true }
 cargo-audit = { version = "*", locked = true }
 cargo-authors = { version = "*", locked = true }
@@ -29,17 +28,31 @@ cargo-show = { version = "*", locked = true }
 cargo-sort = { version = "*", locked = true }
 cargo-update = { version = "*", locked = true }
 cargo-watch = { version = "*", locked = true }
-{{ if $work }}leo-lang = { version = "*", locked = true }{{ end }}
-mdfried = { version = "*", locked = true }
 prr = { version = "*", locked = true }
 rage = { version = "*", locked = true }
-rbase64 = { version = "*", locked = true, features = ["cli"] }
 rusty-hook = { version = "*", locked = true }
 scm-diff-editor = { version = "*", locked = true }
 serie = { version = "*", locked = true }
-{{ if $work }}snarkos = { version = "*", locked = true }{{ end  }}
 srisum = { version = "*", locked = true }
 tidy-viewer = { version = "*", locked = true }
+
+# {{ if has "work" (get . "roles" | default list) -}}
+amareleo-chain = { version = "*", locked = true }
+leo-lang = { version = "*", locked = true }
+snarkos = { version = "*", locked = true }
+# {{- end }}
+
+[packages.mdfried]
+version = "*"
+locked = true
+default-features = false
+binstall = "never"
+
+[packages.rbase64]
+version = "*"
+locked = true
+features = ["cli"]
+binstall = "never"
 
 [defaults.ship]
 binstall = "auto"
