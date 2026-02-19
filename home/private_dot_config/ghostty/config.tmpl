@@ -1,9 +1,31 @@
-# font-family = Hack
-# Alternates: Cascadia Code, Cascadia Mono, iA Writer Duo V, IBM Plex Mono, JuliaMono,
-#             Monaspace Argon Var, Monaspace Neon Var, Space Mono, SF Mono
+auto-update-channel = tip
+background-blur = 20
+background-opacity = 0.9
 
-# font-feature = zero
+# custom-shader = shaders/crt.glsl
 font-size = 12
+
+minimum-contrast = 3
+
+keybind = global:super+alt+q=toggle_quick_terminal
+keybind = super+alt+shift+k=write_scrollback_file:open,plain
+keybind = super+digit_0=unbind
+keybind = super+digit_0=reset_font_size
+keybind = super+digit_9=last_tab
+keybind = super+shift+k=write_scrollback_file:paste
+
+
+link-previews = true
+macos-icon = xray
+macos-option-as-alt = right
+macos-shortcuts = ask
+macos-titlebar-proxy-icon = visible
+macos-titlebar-style = tabs
+maximize = true
+resize-overlay-duration = 1s 250ms
+resize-overlay-position = top-right
+
+shell-integration-features = cursor,sudo,title,ssh-env,ssh-terminfo,path
 
 # theme = rebecca
 # theme = rose-pine
@@ -11,37 +33,6 @@ font-size = 12
 # theme = Kanagawa Wave
 theme = kanagawabones
 
-minimum-contrast = 3
-
-background-opacity = 0.9
-background-blur-radius = 20
-
 window-height = 70
-window-width = 90
-
 window-new-tab-position = end
-
-window-inherit-working-directory = true
-
-resize-overlay-position = top-right
-resize-overlay-duration = 1s250ms
-
-shell-integration-features = true
-
-# custom-shader = shaders/crt.glsl
-
-macos-titlebar-style = tabs
-macos-option-as-alt = right
-macos-titlebar-proxy-icon = visible
-macos-icon = xray
-
-auto-update-channel = tip
-
-keybind = super+digit_9=last_tab
-keybind = super+digit_0=unbind
-keybind = super+digit_0=reset_font_size
-
-keybind = super+alt+shift+k=write_scrollback_file:open
-keybind = super+shift+k=write_scrollback_file:paste
-
-keybind = global:super+opt+q=toggle_quick_terminal
+window-width = 90

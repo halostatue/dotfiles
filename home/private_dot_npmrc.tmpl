@@ -1,5 +1,4 @@
 {{- if has "work" (get . "roles" | default list) -}}
-always-auth=true
 @fortelabsinc:registry=https://npm.pkg.github.com
 //npm.pkg.github.com/:_authToken=${NPM_PACKAGE_TOKEN}
 //registry.npmjs.org/@sardine-ai/:_authToken={{ onepasswordRead "op://xlol453p46nfdqodyw62qzk63m/vuugozo7bii2dmlzxjcx2gxnji/nl-access-token" .op.personal }}

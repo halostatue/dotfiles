@@ -1,5 +1,5 @@
 # chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
-# {{- $apps := includeTemplate "apps" | fromJson -}}
+# {{- $apps := includeTemplate "apps" . | fromJson -}}
 # shellcheck shell=bash
 
 # Do nothing if not interactive.
@@ -24,13 +24,13 @@ shopt -s histappend
 # Disable ctrl-s and ctrl-q
 stty -ixon
 
-if command -v lesspipe >/dev/null 2>/dev/null; then
+if builtin command -v lesspipe >/dev/null 2>/dev/null; then
   # shellcheck disable=SC2312
   eval "$(SHELL=/bin/sh lesspipe)"
 fi
 
 function has() {
-  if command -v "$1" >/dev/null; then
+  if builtin command -v "$1" >/dev/null; then
     return 0
   else
     return 1
@@ -41,7 +41,7 @@ function has() {
 [[ -r ~/.config/bash/aliases ]] && builtin source ~/.config/bash/aliases
 
 if ! shopt -oq posix; then
-  case "$(command -v bash)" in
+  case "$(builtin command -v bash)" in
   /opt/local/bin/bash)
     completion=/opt/local/share/bash-completion/bash_completion
     ;;
@@ -87,6 +87,6 @@ export PATH="${PATH}:/Users/austin/.lmstudio/bin"
 # {{ if $apps.kiro_cli -}}
 builtin source "${kiro_cli_shell}/bashrc.post.bash"
 unset kiro_cli_shell
-# {{- end }}
+# {{- end -}}
 
-{{/* vim: set ft=bash.chezmoitmpl */}}
+# {{/* vim: set ft=bash.chezmoitmpl */}}

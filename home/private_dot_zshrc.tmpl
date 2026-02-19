@@ -1,5 +1,5 @@
 # chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
-# {{- $apps := includeTemplate "apps" | fromJson -}}
+# {{- $apps := includeTemplate "apps" . | fromJson -}}
 
 # {{ if $apps.kiro_cli -}}
 kiro_cli_shell="${HOME}/Library/Application Support/kiro-cli/shell"
@@ -74,5 +74,6 @@ export PATH="${PATH}:/Users/austin/.lmstudio/bin"
 # {{ if $apps.kiro_cli -}}
 builtin source "${kiro_cli_shell}/zshrc.post.zsh"
 unset kiro_cli_shell
-# {{- end }}
-{{/* vim: set ft=zsh.chezmoitmpl */}}
+# {{- end -}}
+
+# {{/* vim: set ft=zsh.chezmoitmpl */}}

@@ -10,6 +10,7 @@ Aleo's
 Ansible
 AppIdentity
 arity
+auth
 AWS
 backend
 backends
@@ -73,6 +74,7 @@ falsy
 Fediverse
 Fiant
 Figma
+frontends
 frontmatter
 Gemfile
 GhosTTY
@@ -100,6 +102,8 @@ jq
 JSON
 Jurić
 justfile
+JWK
+JWKS
 JWT
 KCS
 Keybase.io
@@ -147,6 +151,7 @@ OTP
 Pagefind
 Pagefindex
 params
+PEM
 PII
 pinact
 plaintext
@@ -177,6 +182,7 @@ RPC
 Rubocop
 Rubygems
 Rubyists
+runbook
 runtimes
 Saša
 Scalyr
