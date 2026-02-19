@@ -39,7 +39,7 @@ defrole:
         valkey:
         viddy:
         watchexec:
-        wrkflw:
+        # wrkflw:
         xan:
 
     uv:
