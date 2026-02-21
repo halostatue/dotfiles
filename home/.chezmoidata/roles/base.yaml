@@ -180,7 +180,7 @@ defrole:
       halostatue/fish-utils-core: v3
       halostatue/fish-utils-net: v2
       halostatue/fish-utils: v4
-      halostatue/sponge: fix-init-failures
+      halostatue/sponge: v1
       ilancosman/clownfish:
       jorgebucaran/autopair.fish:
       jorgebucaran/fisher:
