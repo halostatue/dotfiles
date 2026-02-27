@@ -65,6 +65,8 @@
 .config/chezmoi
 .config/configstore
 
+.config/lazygit/*
+!.config/lazygit/config.yml
 
 .config/fish/completions
 
@@ -193,7 +195,7 @@
 
 .local/bin/chezmoi
 .local/bin/*kiro-cli*
-.local/bin/web
+.local/bin/*kiro-cli*
 
 {{ if not (lookPath "brew") -}}
 .local/bin/brew-bump
