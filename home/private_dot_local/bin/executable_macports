@@ -163,7 +163,7 @@ end
 
 def run_test_script(port, verbose: false)
   test =
-    if /\A#!/.match?(port[:test])
+    if port[:test].start_with?("#!")
       port[:test]
     else
       <<~EOS
@@ -422,14 +422,14 @@ def resume_update_from_recovery(port, recovery_data)
   puts "==> Recovery completed successfully"
 end
 
-def new_port(repo_input, public: false)
+def new_port(repo_input, public: false, force: false)
   verify_gh_user
   context(__callee__) do
-    do_new_port(repo_input, public)
+    do_new_port(repo_input, public, force)
   end
 end
 
-def do_new_port(repo_input, public)
+def do_new_port(repo_input, public, force)
   match = repo_input.match(%r{^(?:(?:https://)?github.com/)?(?<owner>[-a-z0-9A-Z]+)/(?<reponame>[^/]+)(?:\.git)?$})
 
   halt "Invalid format. Use 'owner/repo' or full GitHub URL" unless match
@@ -448,6 +448,10 @@ def do_new_port(repo_input, public)
   target_tree = public ? PUBLIC_TREE : PRIVATE_TREE
   category = determine_category(repo_data)
   port_dir = File.join(target_tree, category, repo)
+
+  if File.exist?(port_dir) && !force
+    halt "Port directory #{port_dir} already exists. Use --force to overwrite."
+  end
 
   run %W[mkdir -p #{port_dir}]
   File.write(File.join(port_dir, "Portfile"), portfile_content)
@@ -512,39 +516,57 @@ def determine_category(repo_data)
 end
 
 def generate_portfile(owner, repo, repo_data, language_info)
-  template = <<~PORTFILE
-    # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+  latest_release = get_latest_release(owner, repo)
+  halt "#{repo}: No releases found. Cannot create port without a release." unless latest_release
 
-    PortSystem          1.0
-    #{generate_portgroups(language_info)}
+  version = latest_release[:tag_name].sub(/^v/, "")
+  prefix = latest_release[:tag_name].start_with?("v") ? "v" : ""
 
-    #{generate_setup_line(owner, repo, repo_data, language_info)}
-    revision            0
+  # Use archive for repos without release assets
+  tarball_from = latest_release[:has_release_assets] ? :releases : :archive
+  tarball_url = build_archive_url(owner, repo, version, prefix)
+  homepage =
+    if repo_data[:homepage] && repo_data[:homepage].empty?
+      repo_data[:html_url]
+    else
+      repo_data[:homepage] || repo_data[:html_url]
+    end
 
-    homepage            #{repo_data[:homepage] || repo_data[:html_url]}
+  puts "==> Calculating checksums for #{tarball_url}"
+  checksums = calculate_checksums(repo, tarball_url)
 
-    description         #{repo_data[:description] || "#{repo} - a command line tool"}
+  <<~PORTFILE.strip
+        # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
-    long_description    {*}{
-        #{generate_long_description(repo_data)}
-    }
+        PortSystem          1.0
+        #{generate_portgroups(language_info)}
 
-    categories          #{determine_category(repo_data)}
-    installs_libs       no
-    license             #{map_license(repo_data[:license])}
-    maintainers         {macports.halostatue.ca:austin @halostatue} \\
-                        openmaintainer
+        #{generate_setup_line(owner, repo, version, prefix, language_info)}
+        #{generate_tarball_from_line(tarball_from, language_info)}
+        revision            0
 
-    checksums           rmd160  PLACEHOLDER_RMD160 \\
-                        sha256  PLACEHOLDER_SHA256 \\
-                        size    PLACEHOLDER_SIZE
+        homepage            #{homepage}
+        description         #{repo_data[:description] || "#{repo} - a command line tool"}
 
-    #{generate_language_specific_sections(owner, repo, language_info)}
+        long_description    {*}{
+            #{generate_long_description(repo_data)}
+        }
 
-    #{generate_completion_section(repo)}
+        categories          #{determine_category(repo_data)}
+        installs_libs       no
+        license             #{map_license(repo_data[:license])}
+        maintainers         {macports.halostatue.ca:austin @halostatue} \\
+                            openmaintainer
+
+        checksums           ${distname}${extract.suffix} \\
+                            rmd160  #{checksums[:rmd160]} \\
+                            sha256  #{checksums[:sha256]} \\
+                            size    #{checksums[:size]}
+
+        #{generate_destroot_section(repo, language_info)}
+
+    -   #{generate_language_specific_sections(owner, repo, version, prefix, language_info)}
   PORTFILE
-
-  template.strip
 end
 
 def generate_portgroups(language_info)
@@ -558,31 +580,49 @@ def generate_portgroups(language_info)
   end
 end
 
-def generate_setup_line(owner, repo, repo_data, language_info)
-  latest_release = get_latest_release(owner, repo)
-
-  if latest_release
-    version = latest_release[:tag_name].sub(/^v/, "")
-    prefix = latest_release[:tag_name].start_with?("v") ? "v" : ""
-  else
-    version = "0.1.0"
-    prefix = ""
-  end
-
+def generate_setup_line(owner, repo, version, prefix, language_info)
   case language_info[:language]
   when :go
     "go.setup            github.com/#{owner}/#{repo} #{version} #{prefix}".strip
   when :rust
-    lines = []
-    lines << "github.setup        #{owner} #{repo} #{version} #{prefix}".strip
-    lines << "github.tarball_from archive" unless latest_release
-    lines.join("\n")
+    "github.setup        #{owner} #{repo} #{version} #{prefix}".strip
   else
-    lines = []
-    lines << "github.setup        #{owner} #{repo} #{version} #{prefix}".strip
-    lines << "github.tarball_from archive" unless latest_release
-    lines.join("\n")
+    "github.setup        #{owner} #{repo} #{version} #{prefix}".strip
   end
+end
+
+def generate_tarball_from_line(tarball_from, language_info)
+  return "" if tarball_from == :releases
+  return "" if language_info[:language] == :go
+
+  "github.tarball_from archive\n"
+end
+
+def generate_destroot_section(repo, language_info)
+  return "" if language_info[:language] == :go
+
+  <<~DESTROOT.chomp
+    destroot {
+        xinstall -m 0755 ${worksrcpath}/target/[cargo.rust_platform]/release/#{repo} ${destroot}${prefix}/bin/
+
+        # TODO: Check if #{repo} supports shell completions
+        # Common patterns: '#{repo} completion', '#{repo} --completion', '#{repo} generate-completion'
+        #
+        # set bash_completions_dir ${destroot}${prefix}/share/bash-completion/completions
+        # set fish_completions_dir ${destroot}${prefix}/share/fish/vendor_completions.d
+        # set zsh_completions_dir ${destroot}${prefix}/share/zsh/site-functions
+        # xinstall -d ${bash_completions_dir} ${fish_completions_dir} ${zsh_completions_dir}
+        #
+        # system "${worksrcpath}/target/[cargo.rust_platform]/release/#{repo} completion bash > ${bash_completions_dir}/#{repo}"
+        # system "${worksrcpath}/target/[cargo.rust_platform]/release/#{repo} completion fish > ${fish_completions_dir}/#{repo}.fish"
+        # system "${worksrcpath}/target/[cargo.rust_platform]/release/#{repo} completion zsh > ${zsh_completions_dir}/_#{repo}"
+    }
+  DESTROOT
+end
+
+def build_archive_url(owner, repo, version, prefix)
+  tag = "#{prefix}#{version}"
+  "https://github.com/#{owner}/#{repo}/archive/refs/tags/#{tag}.tar.gz"
 end
 
 def get_latest_release(owner, repo)
@@ -590,7 +630,12 @@ def get_latest_release(owner, repo)
 
   return nil unless result[:status].success?
 
-  JSON.parse(result[:stdout], symbolize_names: true)
+  release = JSON.parse(result[:stdout], symbolize_names: true)
+
+  # Check if release has actual assets (not just auto-generated source)
+  has_assets = release[:assets]&.any?
+
+  release.merge(has_release_assets: has_assets)
 rescue
   nil
 end
@@ -620,12 +665,12 @@ def map_license(license_info)
   end
 end
 
-def generate_language_specific_sections(owner, repo, language_info)
+def generate_language_specific_sections(owner, repo, version, prefix, language_info)
   case language_info[:language]
   when :go
     generate_go_sections(owner, repo)
   when :rust
-    generate_rust_sections(owner, repo)
+    generate_rust_sections(repo, version, owner, prefix)
   else
     ""
   end
@@ -647,34 +692,47 @@ def generate_go_sections(owner, repo)
   GO_SECTION
 end
 
-def generate_rust_sections(owner, repo)
-  <<~RUST_SECTION
-    # TODO: Run 'crate2port #{repo}' to generate cargo.crates section
+def generate_rust_sections(repo, version, owner, prefix)
+  # Try crates.io first
+  puts "==> Generating cargo.crates with crate2port from crates.io"
+  crates = capture_or_nil(%W[crate2port #{repo}@#{version}])
+
+  if crates&.match?(/^cargo\.crates/)
+    return crates.strip
+  end
+
+  # Fallback to Cargo.lock from repo
+  tag = "#{prefix}#{version}"
+  cargo_lock_url = "https://raw.githubusercontent.com/#{owner}/#{repo}/refs/tags/#{tag}/Cargo.lock"
+
+  puts "==> Fetching Cargo.lock from #{cargo_lock_url}"
+
+  uri = URI(cargo_lock_url)
+  res = Net::HTTP.start(uri.host, uri.port, use_ssl: true, read_timeout: 15, open_timeout: 5) do |http|
+    http.get(uri.request_uri)
+  end
+
+  if res.is_a?(Net::HTTPSuccess)
+    puts "==> Generating cargo.crates with crate2port from Cargo.lock"
+    crates = IO.popen(%w[crate2port -], "r+") do |pipe|
+      pipe.puts res.body
+      pipe.close_write
+      pipe.read
+    end
+
+    return crates.strip if crates&.match?(/^cargo\.crates/)
+  end
+
+  <<~RUST_SECTION.chomp
+    # TODO: Run 'crate2port #{repo}@#{version}' to generate cargo.crates section
     # cargo.crates \\
     #     example-crate                    1.0.0  PLACEHOLDER_CHECKSUM
   RUST_SECTION
-end
-
-def generate_completion_section(repo)
-  <<~COMPLETION_SECTION
-    # TODO: Check if #{repo} supports shell completions
-    # Common patterns: '#{repo} completion', '#{repo} --completion', '#{repo} generate-completion'
-    # If supported, add completion generation in destroot phase:
-    #
-    # destroot {
-    #     xinstall -m 0755 ${worksrcpath}/target/release/#{repo} ${destroot}${prefix}/bin/
-    #
-    #     # Install shell completions
-    #     set bash_completions_dir ${destroot}${prefix}/share/bash-completion/completions
-    #     set fish_completions_dir ${destroot}${prefix}/share/fish/vendor_completions.d
-    #     set zsh_completions_dir ${destroot}${prefix}/share/zsh/site-functions
-    #     xinstall -d ${bash_completions_dir} ${fish_completions_dir} ${zsh_completions_dir}
-    #
-    #     system "${worksrcpath}/target/release/#{repo} completion bash > ${bash_completions_dir}/#{repo}"
-    #     system "${worksrcpath}/target/release/#{repo} completion fish > ${fish_completions_dir}/#{repo}.fish"
-    #     system "${worksrcpath}/target/release/#{repo} completion zsh > ${zsh_completions_dir}/_#{repo}"
-    # }
-  COMPLETION_SECTION
+rescue => e
+  puts "==> Warning: Could not generate cargo.crates: #{e.message}"
+  <<~RUST_SECTION.chomp
+    # TODO: Run 'crate2port #{repo}@#{version}' to generate cargo.crates section
+  RUST_SECTION
 end
 
 def add_port_to_config(port_name, category)
@@ -1599,8 +1657,9 @@ when "new"
   halt "No GitHub repository provided for new." unless repo_input
 
   public = ARGV.include?("--public")
+  force = ARGV.include?("--force")
 
-  new_port(repo_input, public: public)
+  new_port(repo_input, public: public, force: force)
 when "test"
   run_port_test(ARGV.first)
 when "lint"

@@ -12,7 +12,7 @@ defrole:
       anydesk: Allows connection to a computer remotely
       eaglefiler: Organise files, archive e-mails, save Web pages and notes, search everything
       hazel: Automated organisation
-      kindle-previewer: Preview and audit Kindle eBooks
+      # kindle-previewer: Preview and audit Kindle eBooks
       macwhisper: Speech recognition tool
       monitorcontrol: Tool to control external monitor brightness & volume
       monodraw: Tool to create text-based art
