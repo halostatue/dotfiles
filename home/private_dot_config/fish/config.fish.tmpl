@@ -1,3 +1,4 @@
+# chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
 set fish_greeting ''
 
 # Set up local machine configuration files
@@ -190,14 +191,15 @@ if status is-interactive
 
     if functions --query fzf_configure_bindings
         set --local __setup_fzf_bindings \
-            --directory=\ct \
-            --git_log=\cgl \
-            --git_status=\cgs \
-            --processes=\cgp \
-            --history
+            --directory=ctrl-t \
+            --git_log=ctrl-g,l \
+            --git_status=ctrl-g,s \
+            --processes=ctrl-g,p \
+            --history=ctrl-r
 
         if command --query atuin mcfly
             set --erase __setup_fzf_bindings[-1]
+            set --append __setup_fzf_bindings --history=
         end
 
         fzf_configure_bindings $__setup_fzf_bindings
@@ -316,11 +318,10 @@ if status is-interactive
     emit fish_postexec
 end
 
-{{ if stat "/Applications/LM Studio.app" -}}
+# {{ if stat "/Applications/LM Studio.app" -}}
 # Added by LM Studio CLI (lms)
 set -gx PATH $PATH /Users/austin/.lmstudio/bin
-# End of LM Studio CLI section
-{{- end }}
-{{ if or (lookPath "kiro") (stat "/Applications/Kiro.app") -}}
+# {{- end }}
+# {{ if or (lookPath "kiro") (stat "/Applications/Kiro.app") -}}
 string match -q "$TERM_PROGRAM" kiro && source (kiro --locate-shell-integration-path fish)
-{{- end }}
+# {{- end }}
