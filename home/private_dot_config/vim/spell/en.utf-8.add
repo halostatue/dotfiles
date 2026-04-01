@@ -202,6 +202,7 @@ SPDX
 Sqitch
 SQLite
 SSO
+starlist
 struct
 submodules
 SVG
@@ -233,4 +234,3 @@ zizmor
 ZK
 ZKP
 zsh
-||||||| parent of 43cf26b778ef (Updates)
