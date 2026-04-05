@@ -3,13 +3,14 @@ vim9script
 # Configure Vim's builtin markdown configuration.
 g:markdown_fenced_languages = [
   'bash=sh',
-  'console=sh',
   'c++=cpp',
+  'console=sh',
   'css',
   'diff',
   'elixir',
   'erlang',
   'fish',
+  'gleam',
   'go',
   'html',
   'javascript',
@@ -19,10 +20,10 @@ g:markdown_fenced_languages = [
   'rust',
   'scss',
   'sql',
-  'vim',
-  'viml=vim',
   'ts=typescript',
   'typescript',
+  'vim',
+  'viml=vim',
   'xml',
   'zsh=sh',
 ]

@@ -51,6 +51,7 @@ deduplicate
 deduplicated
 deduplicating
 deduplication
+Deno
 Dependabot
 Dependabot's
 devops
@@ -73,6 +74,7 @@ EVM
 exfiltrate
 falsy
 Fediverse
+FFI
 Fiant
 Figma
 frontends
@@ -83,6 +85,8 @@ git
 GitHub
 gitignore
 Gitlab
+gleeunit
+glinter
 GraphQL
 halogenmobile
 halostatue
@@ -161,6 +165,7 @@ plaintext
 PnC
 PNG
 polyfill
+pontil
 POSIX
 Postgres
 PostgreSQL
