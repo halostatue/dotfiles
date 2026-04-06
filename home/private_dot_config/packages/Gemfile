@@ -1,8 +1,5 @@
-gem "bashly"
-gem "bridgetown"
 gem "gem-browse"
 gem "license_finder"
-gem "nanoc"
 gem "standard"
 gem "standard-minitest"
 gem "standard-performance"
