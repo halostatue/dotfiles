@@ -129,6 +129,7 @@ localhost
 loopback
 Lua
 macOS
+mainnet
 metaprogramming
 MIME
 minitar
@@ -214,6 +215,8 @@ SVG
 TBD
 Tcl
 TCS
+testnet
+testnets
 Tidelift
 Tika
 timestamp
@@ -224,6 +227,7 @@ Twilio
 Typescript
 ULID
 unquote
+upsert
 UTXO
 UUID
 UUIDs
