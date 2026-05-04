@@ -29,3 +29,4 @@ aliases:
   whoami-gh-config: config get user -h github.com
   whoami: api user --jq '"\(.login) (\(.name))"'
 
+telemetry: disabled
