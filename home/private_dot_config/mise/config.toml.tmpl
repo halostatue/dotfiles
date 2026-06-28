@@ -64,7 +64,7 @@ description = "Authenticate Private hex.pm Organizations"
 run = [
   "echo Authenticating Private hex.pm Organizations",
 {{- range $_, $name := keys $hex_api_keys }}
-  "mix hex.organizations auth {{ $name }} --key {{ printf "$%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) }}",
+  "mix hex.organization auth {{ $name }} --key {{ printf "$%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) }}",
 {{ end }}
 ]
 

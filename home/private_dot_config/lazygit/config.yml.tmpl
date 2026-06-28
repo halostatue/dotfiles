@@ -86,7 +86,7 @@ keybinding:
   branches:
     viewGitFlowOptions: '<disabled>'
   commits:
-    markCommitAsBaseForRebase: '<c-b>'
+    markCommitAsBaseForRebase: '<ctrl+b>'
 
 customCommands:
   - key: b
@@ -143,7 +143,7 @@ customCommands:
     description: Compare with local copy using the GUI difftool
     output: log
 
-  - key: <c-P>
+  - key: <ctrl+shift+p>
     command: gh pr checkout "{{ .Form.PrNumber }}"
     context: localBranches
     loadingText: Checkout out PR {{ .Form.PrNumber }}
@@ -158,19 +158,19 @@ customCommands:
     description: Check out PR branch
     output: log
 
-  - key: <c-b>
+  - key: <ctrl+b>
     command: tig blame -- "{{ .SelectedFile.Name }}"
     context: files
     description: Blame file at tree
     output: terminal
 
-  - key: <c-b>
+  - key: <ctrl+b>
     command: tig blame "{{ .SelectedSubCommit.Sha }}" -- "{{ .SelectedCommitFile.Name }}"
     context: commitFiles
     description: Blame file at revision
     output: terminal
 
-  - key: <c-B>
+  - key: <ctrl+shift+b>
     command: tig blame -- "{{ .SelectedCommitFile.Name }}"
     context: commitFiles
     description: Blame file at tree
