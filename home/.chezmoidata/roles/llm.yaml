@@ -6,4 +6,12 @@ defrole:
   llm:
     casks:
       kiro: Agent-centric IDE with spec-driven development
+      kiro-cli: AI-powered productivity tool for the command-line
       ollamac: Interact with Ollama models
+
+    ports:
+      install:
+        apfel:
+        # auge:
+        translate:
+

@@ -23,23 +23,25 @@ defrole:
         actionlint:
         cloc:
         dotenv-linter:
-        prr:
-        rust-script:
-        flyctl:
+        entr:
+        faketty:
         git-branchless:
         git-mediate:
         git-some-extras:
         git-tools:
         gore:
+        hcloud:
         helix:
         pinact:
         pkgconfig:
+        prr:
+        rust-script:
         scc:
         selene:
+        sqlite3:
         valkey:
         viddy:
         watchexec:
-        # wrkflw:
         xan:
 
     uv:

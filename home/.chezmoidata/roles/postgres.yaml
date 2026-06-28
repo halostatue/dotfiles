@@ -9,7 +9,7 @@ defrole:
       # db-browser-for-sqlite: Browser for SQLite databases
       dbeaver-community: Universal database tool and SQL client
       # pgadmin4: Administration and development platform for PostgreSQL
-      postgres-unofficial: App wrapper for Postgres
+      postgres-app: App wrapper for Postgres
 
     ports:
       install:

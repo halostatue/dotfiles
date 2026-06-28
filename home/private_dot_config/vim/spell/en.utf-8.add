@@ -11,12 +11,15 @@ Aleo's
 Ansible
 AppIdentity
 arity
+AST
+async
 auth
 AWS
 backend
 backends
 Base64
 behaviours
+benchee
 BIP
 Bitwarden
 blockchain
@@ -32,6 +35,7 @@ CODEOWNER
 CODEOWNERS
 codepoint
 codepoints
+CommonJS
 composability
 composable
 config
@@ -138,6 +142,7 @@ Minitest
 mixins
 mnemonist
 modeline
+monorepo
 MVC
 MVVM
 MySQL
@@ -159,6 +164,7 @@ OTP
 Pagefind
 Pagefindex
 params
+PCRE
 PEM
 PII
 pinact

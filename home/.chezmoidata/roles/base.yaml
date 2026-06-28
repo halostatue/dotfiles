@@ -28,16 +28,11 @@ defrole:
       meetingbar: Shows the next meeting in the menu bar
       obsidian: Knowledge base that works on top of a local folder of plain text Markdown files
       pearcleaner: Utility to uninstall apps and remove leftover files from old/uninstalled apps
-      qlcolorcode: Quick Look plug-in that renders source code with syntax highlighting
-      qlmarkdown: Quick Look generator for Markdown files
-      qlstephen: Quick Look plugin for plaintext files without an extension
-      qlvideo: Thumbnails, static previews, cover art and metadata for video files
-      quicklook-json: Quick Look plugin for JSON files
+      rustcast: Application and utility launcher
       safari-technology-preview: Web browser
       startupfolder: Run anything at startup by simply placing it in a special folder
       thaw: Menu bar manager
       trex: Easy to use text extraction tool
-      webpquicklook: Quick Look plugin for webp files
       xprocheck: Anti-malware scan logging tool
 
     formulae:
@@ -80,6 +75,7 @@ defrole:
         ansifilter:
         antiword:
         atuin:
+        bash:
         bat-extras:
         bat:
         cargo:

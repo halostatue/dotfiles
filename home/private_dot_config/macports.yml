@@ -2,13 +2,13 @@
 gh:
   user: halostatue
 roots:
-  public: ~/oss/macports/macports-ports
-  private: ~/oss/macports/local-ports
+  public: "~/oss/macports/macports-ports"
+  private: "~/oss/macports/local-ports"
 ports:
   oasdiff:
     category: devel
     test: |
-      oasdiff qr
+      oasdiff checks
   gitleaks:
     category: security
     test: |
@@ -124,7 +124,6 @@ ports:
     category: graphics
     test: |
       vv ~/Pictures/garden.jpg
-
   actions-usage:
     category: sysutils
   chainloop:
@@ -202,6 +201,8 @@ ports:
         echo 'processsor = false' | typos - || true
       } | grep -q 'error: `processsor` should be `processors`, `processor`'
   faketty:
+    category: sysutils
+  apfel:
     category: sysutils
 template: |
   #### Description
