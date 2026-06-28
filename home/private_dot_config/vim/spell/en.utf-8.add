@@ -18,6 +18,7 @@ AWS
 backend
 backends
 Base64
+baz
 behaviours
 benchee
 BIP
@@ -44,6 +45,7 @@ CORS
 COVID
 CPAP
 CSS
+cst
 ctags
 ctrl
 CVE
@@ -99,6 +101,7 @@ Hetzner
 hexpm
 HMAC
 Hoe
+hoge
 Homebrew
 HSM
 httpd
@@ -143,6 +146,7 @@ mixins
 mnemonist
 modeline
 monorepo
+multiline
 MVC
 MVVM
 MySQL
@@ -164,6 +168,7 @@ OTP
 Pagefind
 Pagefindex
 params
+parsable
 PCRE
 PEM
 PII
@@ -181,6 +186,7 @@ Prisma
 Pritchard
 PRs
 Pysch
+quux
 Rakefile
 RBAC
 README
@@ -232,7 +238,9 @@ truthy
 Twilio
 Typescript
 ULID
+unparsable
 unquote
+unterminated
 upsert
 UTXO
 UUID

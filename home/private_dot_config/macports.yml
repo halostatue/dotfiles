@@ -7,6 +7,7 @@ roots:
 ports:
   oasdiff:
     category: devel
+    stable: true
     test: |
       oasdiff checks
   gitleaks:
@@ -115,6 +116,15 @@ ports:
     stable: true
     test: |
       zizmor --thanks
+  apfel:
+    category: llm
+    test: |
+      apfel --model-info
+  translate:
+    category: textproc
+    test: |
+      translate --installed
+      translate --from en --to fr Hello
   taplo:
     category: devel
     cargo_lock: github
@@ -201,8 +211,6 @@ ports:
         echo 'processsor = false' | typos - || true
       } | grep -q 'error: `processsor` should be `processors`, `processor`'
   faketty:
-    category: sysutils
-  apfel:
     category: sysutils
 template: |
   #### Description
