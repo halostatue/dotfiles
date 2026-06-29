@@ -113,17 +113,15 @@ g:tagalong_additional_filetypes = [ 'eex.html', 'vue', 'jsx' ]
 
 # sbdchd/neoformat
 g:neoformat_enabled_go = ['gofumpt', 'gofmt', 'gofumports', 'goimports']
-g:neoformat_enabled_javascript = [
-  'biome', 'standard', 'semistandard', 'prettierd', 'prettier', 'denofmt'
-]
+g:neoformat_enabled_javascript = ['biome']
 g:neoformat_enabled_javascriptreact = deepcopy(g:neoformat_enabled_javascript)
-g:neoformat_enabled_json = ['prettierd', 'prettier', 'jq', 'denofmt']
-g:neoformat_enabled_markdown = ['prettierd', 'prettier', 'denofmt', 'mdformat']
+g:neoformat_enabled_json = ['jq', 'denofmt']
+g:neoformat_enabled_markdown = ['denofmt', 'mdformat']
 g:neoformat_enabled_ruby = ['standard', 'rufo', 'rubocop']
-g:neoformat_enabled_typescript = ['biome', 'prettierd', 'prettier', 'denofmt']
+g:neoformat_enabled_typescript = ['biome']
 g:neoformat_enabled_typescriptreact = deepcopy(g:neoformat_enabled_typescript)
-g:neoformat_enabled_xhtml = ['prettydiff', 'tidy']
-g:neoformat_enabled_xml = ['prettierd', 'prettier', 'prettydiff', 'tidy']
+g:neoformat_enabled_xhtml = ['tidy']
+g:neoformat_enabled_xml = ['tidy']
 
 g:neoformat_try_node_exe = 1 # Try a formatter in `node_modules/.bin`
 g:neoformat_only_msg_on_error = 1

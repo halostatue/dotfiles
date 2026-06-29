@@ -5,12 +5,13 @@
 defrole:
   work:
     casks:
-      meld: Visual diff and merge tool
+      bruno: Open source IDE for exploring and testing APIs
+      cursor-cli: Command-line agent for Cursor
+      cursor: Write, edit, and chat about your code with AI
       drovio: Remote pair programming and team collaboration tool
+      meld: Visual diff and merge tool
       postman: Collaboration platform for API development
       slack: Team communication and collaboration software
-      cursor: Write, edit, and chat about your code with AI
-      cursor-cli: Command-line agent for Cursor
       visualdiffer: Visually compare folders and files
       zen: Gecko based web browser
 
@@ -19,6 +20,7 @@ defrole:
 
     ports:
       install:
+        jira-cli:
         jwt-cli:
         oasdiff:
         oath-toolkit:

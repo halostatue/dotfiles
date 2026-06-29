@@ -8,6 +8,7 @@ defrole:
       install:
         oxipng:
         oxdraw:
+        pngcrush:
         viu:
 
     casks:

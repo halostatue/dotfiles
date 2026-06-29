@@ -132,7 +132,7 @@ defrole:
         ov:
         pam-reattach:
         pv:
-        ripgrep:
+        ripgrep: +pcre
         shellcheck:
         shellharden:
         shfmt:
