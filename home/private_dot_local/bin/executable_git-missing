@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# reset environment variables that could interfere with normal usage
+unset -v GREP_OPTIONS
+# put all utility functions here
+
+# make a temporary file
+git_extra_mktemp() {
+    mktemp -t "$(basename "$0")".XXXXXXX
+}
+
+git_extra_default_branch() {
+    local extras_default_branch init_default_branch
+    extras_default_branch=$(git config --get git-extras.default-branch)
+    init_default_branch=$(git config --get init.defaultBranch)
+    if [ -n "$extras_default_branch" ]; then
+        echo "$extras_default_branch"
+    elif [ -n "$init_default_branch" ]; then
+        echo "$init_default_branch"
+    else
+        echo "main"
+    fi
+}
+#
+# check whether current directory is inside a git repository
+#
+
+is_git_repo() {
+  git rev-parse --show-toplevel > /dev/null 2>&1
+  result=$?
+  if test $result != 0; then
+    >&2 echo 'Not a git repo!'
+    exit $result
+  fi
+}
+
+is_git_repo
+
+usage() {
+    echo 1>&2 "usage: git missing [<first branch>] <second branch> [<git log options>] [[--] <path>...]"
+}
+
+if [ "${#}" -lt 1 ]
+then
+    usage
+    exit 1
+fi
+
+declare -a git_log_args=()
+declare -a branches=()
+declare -a pathspec=()
+declare parse_path=false
+
+for arg in "$@" ; do
+
+    if [[ $parse_path == true ]]; then
+        pathspec+=("$@")
+        break
+    fi
+
+    case "$arg" in
+        --)
+            parse_path=true
+            ;;
+        --*)
+            git_log_args+=( "$arg" )
+            ;;
+        *)
+            branches+=( "$arg" )
+            ;;
+    esac
+done
+
+firstbranch=
+secondbranch=
+if [ ${#branches[@]} -eq 2 ]
+then
+    firstbranch="${branches[0]}"
+    secondbranch="${branches[1]}"
+elif [ ${#branches[@]} -eq 1 ]
+then
+    secondbranch="${branches[0]}"
+else
+    echo >&2 "error: at least one branch required"
+    exit 1
+fi
+
+git log "${git_log_args[@]}" "$firstbranch"..."$secondbranch" --format="%m %h %s" --left-right -- "${pathspec[@]}"

@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+# reset environment variables that could interfere with normal usage
+unset -v GREP_OPTIONS
+# put all utility functions here
+
+# make a temporary file
+git_extra_mktemp() {
+    mktemp -t "$(basename "$0")".XXXXXXX
+}
+
+git_extra_default_branch() {
+    local extras_default_branch init_default_branch
+    extras_default_branch=$(git config --get git-extras.default-branch)
+    init_default_branch=$(git config --get init.defaultBranch)
+    if [ -n "$extras_default_branch" ]; then
+        echo "$extras_default_branch"
+    elif [ -n "$init_default_branch" ]; then
+        echo "$init_default_branch"
+    else
+        echo "main"
+    fi
+}
+#
+# check whether current directory is inside a git repository
+#
+
+is_git_repo() {
+  git rev-parse --show-toplevel > /dev/null 2>&1
+  result=$?
+  if test $result != 0; then
+    >&2 echo 'Not a git repo!'
+    exit $result
+  fi
+}
+
+is_git_repo
+#
+# check whether current directory contains any git commit
+#
+
+has_git_commit() {
+  git rev-parse --short HEAD > /dev/null 2>&1
+  result=$?
+  if test $result != 0; then
+    >&2 echo 'Not git commit found!'
+    exit $result
+  fi
+}
+
+has_git_commit
+
+REF=""
+SINCE=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -r|--ref)
+            if [[ -z "$2" ]]; then
+                echo "error: option $1 requires an argument" >&2
+                exit 1
+            fi
+            REF="$2"
+            shift
+            shift
+            ;;
+        *)
+            # non-flag args accumulation, e.g. "last " + "week" -> "last week"
+            SINCE="${SINCE:+$SINCE }$1"
+            shift
+            ;;
+    esac
+done
+
+if [[ -n "$REF" && -n "$SINCE" ]]; then
+    echo "error: '--ref <ref>' and '<date>' are mutually exclusive" >&2
+    exit 1
+fi
+
+SINCE="${SINCE:-last week}"
+
+if [[ -n "$REF" ]]; then
+    git log --pretty='%h %an - %s' "$REF..HEAD"
+else
+    git log --pretty='%h %an - %s' --after="@{$SINCE}"
+fi

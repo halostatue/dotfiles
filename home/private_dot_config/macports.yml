@@ -156,8 +156,6 @@ ports:
     category: devel
   git-mediate:
     category: devel
-  git-some-extras:
-    category: devel
   git-stack:
     category: devel
   git-task:

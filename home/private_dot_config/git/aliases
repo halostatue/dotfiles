@@ -4,9 +4,6 @@
   # A typo that turned useful
   addp = add -p
 
-  # Show current aliases
-  alias = "!git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /"
-
   co = checkout
   sw = switch
 

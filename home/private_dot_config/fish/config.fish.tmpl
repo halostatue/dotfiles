@@ -1,63 +1,21 @@
 # chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
+# {{- $apps := includeTemplate "apps" . | fromJson -}}
 set fish_greeting ''
 
 # Set up local machine configuration files
-if functions --query __machine_config
-    __machine_config platform host user
-end
+functions --query __machine_config && __machine_config platform host user
 
-if not set --query LESSHISTFILE
-    set --global --export LESSHISTFILE -
-end
+set --query LESSHISTFILE || set --global --export LESSHISTFILE -
+set --query EDITOR || set --global --export EDITOR (which vim)
+set --query VISUAL || set --global --export VISUAL $EDITOR
 
-if not set --query EDITOR
-    set --global --export EDITOR (which vim)
-end
-
-if not set --query VISUAL
-    set --global --export VISUAL $EDITOR
-end
-
-if not set --query --global COMPOSER_DOCKER_CLI_BUILD
-    set --global --export COMPOSER_DOCKER_CLI_BUILD 1
-end
-
-if not set --query --global DOCKER_BUILDKIT
-    set --global --export DOCKER_BUILDKIT 1
-end
-
-if not set --query --global FORGIT_NO_ALIASES
-    set --global --export FORGIT_NO_ALIASES 1
-end
-
-# # This should be an external, maybe (`halostatue/fish-tealdeer`?)
-# if command --query tldr && test (command --search tldr) = (path resolve $HOME/.cargo/bin/tldr)
-#     set --local completion
-#     set --local need true
-#     set --local home (path resolve $HOME)
-#     set --local completions (string match --groups-only --regex '('$home'[^ ]+)' $fish_complete_path)
-
-#     for completion in $completions
-#         test -s $completion/tldr.fish || continue
-#         set need false
-#         break
-#     end
-
-#     if $need
-#         set --local vendor (string match --groups-only --regex '('$home'[^ ]+/vendor_completions.d)' $completions)
-
-#         mkdir -p $completion
-#         curl -sSL \
-#             https://raw.githubusercontent.com/dbrgn/tealdeer/main/completion/fish_tealdeer \
-#             -o $completion/tldr.fish
-#     end
-# end
+set --query --global COMPOSER_DOCKER_CLI_BUILD || set --global --export COMPOSER_DOCKER_CLI_BUILD 1
+set --query --global DOCKER_BUILDKIT || set --global --export DOCKER_BUILDKIT 1
+set --query --global FORGIT_NO_ALIASES || set --global --export FORGIT_NO_ALIASES 1
 
 set CDPATH . ~/.links/ ~/personal ~
 
-if command --query kubie
-    set -gx KUBIE_PROMPT_DISABLE 1
-end
+command --query kubie && set -gx KUBIE_PROMPT_DISABLE 1
 
 if command --query pngcrush
     function crush -d pngcrush
@@ -97,24 +55,14 @@ function urlenc -d "url encode the passed string"
     end
 end
 
-if functions --query has_keg
-    if has_keg nnn
-        source (brew --prefix nnn)/share/nnn/quitcd/quitcd.fish
-    end
+if functions --query has_keg and has_keg nnn
+    source (brew --prefix nnn)/share/nnn/quitcd/quitcd.fish
 end
 
 if command --query fzf
-    if command --query rg
-        set -gx FZF_DEFAULT_COMMAND 'rg --files --no-ignore-vcs --hidden'
-    end
-
-    if command --query eza
-        set -g fzf_preview_dir_cmd 'eza --all --color=always --classify=always'
-    end
-
-    if command --query delta
-        set -g fzf_diff_highlighter delta --paging=never --width=20
-    end
+    command --query rg && set -gx FZF_DEFAULT_COMMAND 'rg --files --no-ignore-vcs --hidden'
+    command --query eza && set -g fzf_preview_dir_cmd 'eza --all --color=always --classify=always'
+    command --query delta && set -g fzf_diff_highlighter delta --paging=never --width=20
 
     if functions --query preview && not set --query fzf_preview_file_cmd
         set -g fzf_preview_file_cmd preview
@@ -122,9 +70,7 @@ if command --query fzf
 
     set fzf_directory_opts --bind "ctrl-o:execute($EDITOR {} &> /dev/tty)"
 
-    if command --query fdfind fd
-        set -g fzf_fd_opts --hidden
-    end
+    command --query fdfind fd && set -g fzf_fd_opts --hidden
 
     if not set --query FZF_DEFAULT_OPTS
         set --local colors \
@@ -233,9 +179,7 @@ if not command -q psql && test -d /Applications/Postgres.app/Contents/Versions/l
 end
 
 if test -x $HOME/.bun/bin/bun
-    if ! set --global --query BUN_INSTALL
-        set --global --export BUN_INSTALL $HOME/.bun
-    end
+    set --global --query BUN_INSTALL || set --global --export BUN_INSTALL $HOME/.bun
 
     if ! contains $HOME/.bun/bin $PATH && ! contains $HOME/.bun/bin $fish_user_paths
         fish_add_path --path $HOME/.bun/bin
@@ -297,31 +241,31 @@ if functions --query _sponge_remove_from_history
     set --global --export sponge_purge_only_on_exit true
 end
 
-# Prepare aqua
-
-set --global --export AQUA_CONFIG_DIR "$HOME/.config/aquaproj-aqua"
-set --global --export AQUA_GLOBAL_CONFIG "$AQUA_CONFIG_DIR/aqua.yaml"
-
-if test -f "$AQUA_CONFIG_DIR/policy.yaml"
-    set --global --export AQUA_POLICY_CONFIG "$AQUA_CONFIG_DIR/policy.yaml"
-end
-
-set --global --export AQUA_PROGRESS_BAR true
-set --global --export AQUA_ROOT_DIR "$HOME/.local/share/aquaproj-aqua/bin"
-
 if ! functions --query fish_right_prompt
     function fish_right_prompt
     end
 end
 
-if status is-interactive
-    emit fish_postexec
+if functions --query is_mac && is_mac && status is-interactive
+    # If using 1Password or Secretive for SSH agent.
+    for sock in ~/Library/Group\ Containers/*.com.1password/t/agent.sock ~/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+        test -S $sock
+        or continue
+
+        set -x SSH_AUTH_SOCK $sock
+        break
+    end
 end
 
-# {{ if stat "/Applications/LM Studio.app" -}}
-# Added by LM Studio CLI (lms)
-set -gx PATH $PATH /Users/austin/.lmstudio/bin
+# {{ if $apps.lm_studio -}}
+fish_add_path --path $HOME/.lmstudio/bin
 # {{- end }}
+# {{- if (joinPath .chezmoi.homeDir ".nanosandbox/bin/nanosb" | stat) -}}
+fish_add_path --path $HOME/.nanosandbox/bin
+# {{- end }}
+
 # {{ if or (lookPath "kiro") (stat "/Applications/Kiro.app") -}}
 string match -q "$TERM_PROGRAM" kiro && source (kiro --locate-shell-integration-path fish)
 # {{- end }}
+
+status is-interactive && emit fish_postexec

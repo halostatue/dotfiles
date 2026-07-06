@@ -1,0 +1,11 @@
+aliases:
+  action: gh:halostatue/scaffolds#gleam-action
+  elixir: gh:halostatue/scaffolds#elixir
+  gleam: gh:halostatue/scaffolds#gleam
+  go: gh:halostatue/scaffolds#go
+  monogleam: gh:halostatue/scaffolds#gleam-monorepo
+  ruby: gh:halostatue/scaffolds#ruby
+  rust: gh:halostatue/scaffolds#rust
+
+shorts:
+  gh: https://github.com/

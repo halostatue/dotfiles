@@ -13,6 +13,7 @@ AppIdentity
 arity
 AST
 async
+atuin
 auth
 AWS
 backend

@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# reset environment variables that could interfere with normal usage
+unset -v GREP_OPTIONS
+# put all utility functions here
+
+# make a temporary file
+git_extra_mktemp() {
+    mktemp -t "$(basename "$0")".XXXXXXX
+}
+
+git_extra_default_branch() {
+    local extras_default_branch init_default_branch
+    extras_default_branch=$(git config --get git-extras.default-branch)
+    init_default_branch=$(git config --get init.defaultBranch)
+    if [ -n "$extras_default_branch" ]; then
+        echo "$extras_default_branch"
+    elif [ -n "$init_default_branch" ]; then
+        echo "$init_default_branch"
+    else
+        echo "main"
+    fi
+}
+#
+# check whether current directory is inside a git repository
+#
+
+is_git_repo() {
+  git rev-parse --show-toplevel > /dev/null 2>&1
+  result=$?
+  if test $result != 0; then
+    >&2 echo 'Not a git repo!'
+    exit $result
+  fi
+}
+
+is_git_repo
+set -euo pipefail
+
+PROGRAM=$0
+CURRENT_FILENAME=""
+DESTINATION_FILENAME=""
+
+function usage()
+{
+    echo 1>&2 "USAGE: ${PROGRAM} CURRENT_FILENAME DESTINATION_FILENAME"
+}
+
+while [[ $# -gt 0 ]]
+do
+  key="$1"
+
+  if [[ "$CURRENT_FILENAME" == "" ]]; then
+      CURRENT_FILENAME=$key
+  elif [[ "$DESTINATION_FILENAME" == "" ]]; then
+      DESTINATION_FILENAME=$key
+  else
+      usage
+      exit 30  # Error during arguments parsing
+  fi
+  shift  # past argument or value
+done
+
+if [[ "$DESTINATION_FILENAME" == "" ]]; then
+    usage
+    exit 20  # Missing arguments CURRENT_FILENAME
+elif [[ "$CURRENT_FILENAME" == "" ]]; then
+    usage
+    exit 10  # Missing arguments CURRENT_FILENAME
+else
+    if [ -e "$DESTINATION_FILENAME"  ]; then
+        echo 1>&2 "$DESTINATION_FILENAME already exists."
+        echo 1>&2 "Make sure to remove the destination first."
+        exit 40
+    fi
+
+    if [[ "$DESTINATION_FILENAME" == */ ]]; then
+      echo 1>&2 "$DESTINATION_FILENAME is not a file path."
+      exit 80
+    fi
+    if [[ "$DESTINATION_FILENAME" == */* ]]; then
+      DESTINATION_DIR="${DESTINATION_FILENAME%/*}"
+      if ! mkdir -p "$DESTINATION_DIR"; then
+        echo 1>&2 "Failed to create destination directory: $DESTINATION_DIR"
+        exit 160
+      fi
+    fi
+
+
+    echo "Copying $CURRENT_FILENAME into $DESTINATION_FILENAME"
+
+    # Pre-check that the source and destination will work
+    git mv --dry-run "${CURRENT_FILENAME}" "${DESTINATION_FILENAME}"
+
+    # Make a new branch and switch to it
+    BRANCH_NAME="git-cp-$(date +%s)"
+    git checkout -b "$BRANCH_NAME"
+
+    # Move the original file to the new destination, in this branch
+    git mv "${CURRENT_FILENAME}" "${DESTINATION_FILENAME}"
+    git commit -nm "--Duplicate $CURRENT_FILENAME history into $DESTINATION_FILENAME"
+
+    # Restore the original file to keep it in the history
+    git checkout HEAD~ "${CURRENT_FILENAME}"
+    git commit -nm "--Restore $CURRENT_FILENAME"
+
+    # Switch to the original branch and merge this back in.
+    git checkout -
+    git merge --no-ff "$BRANCH_NAME" -m "Copy $CURRENT_FILENAME into $DESTINATION_FILENAME"
+
+    # We're now done with the branch, so delete it.
+    # We shouldn't need -D here, as we've already merged it back in.
+    git branch -d "$BRANCH_NAME"
+fi

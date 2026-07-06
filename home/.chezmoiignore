@@ -5,6 +5,8 @@
 .42crunch/**
 
 .aleo/**
+.amp/**
+.atuin/**
 .android/**
 .ansible/**
 .anydesk/**
@@ -15,6 +17,7 @@
 
 .bash_history
 .bun/**
+.bun_repl_history
 .bundle/**
 
 .cabal/*
@@ -131,6 +134,7 @@
 .config/op/**
 
 .config/packer/**
+.config/rebar3/**
 
 .config/tabtab/**
 
@@ -175,6 +179,7 @@
 .gore/**
 
 .hex/**
+.homebrew/trust.json.lock
 
 .julia/**
 
@@ -194,7 +199,7 @@
 .lesshst
 
 .local/bin/chezmoi
-.local/bin/*kiro-cli*
+.local/bin/claude
 .local/bin/*kiro-cli*
 
 {{ if not (lookPath "brew") -}}

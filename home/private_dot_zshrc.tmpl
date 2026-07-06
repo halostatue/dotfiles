@@ -1,5 +1,15 @@
 # chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
 # {{- $apps := includeTemplate "apps" . | fromJson -}}
+# {{- $apps := includeTemplate "apps" . | fromJson -}}
+# {{- $paths := list }}
+# {{- if $apps.lm_studio -}}
+# {{-   $paths = mustPrepend $paths "${HOME}/.lmstudio/bin" -}}
+# {{- end -}}
+# {{- if (joinPath .chezmoi.homeDir ".nanosandbox/bin/nanosb" | stat) -}}
+# {{-   $paths = mustPrepend $paths "${HOME}/.nanosandbox/bin" -}}
+# {{- end -}}
+# {{- $path := $paths | join ":" -}}
+# shellcheck shell=bash
 
 # {{ if $apps.kiro_cli -}}
 kiro_cli_shell="${HOME}/Library/Application Support/kiro-cli/shell"
@@ -63,10 +73,6 @@ zstyle ':zim:prompt-pwd' git-root yes
 # # Automatic rehash
 # zstyle ':completion:*' rehash true
 
-# {{ if $apps.lm_studio }}
-export PATH="${PATH}:/Users/austin/.lmstudio/bin"
-# {{- end }}
-
 # {{ if $apps.kiro -}}
 [[ "${TERM_PROGRAM:-}" == "kiro" ]] && builtin source "$(kiro --locate-shell-integration-path zsh)"
 # {{- end }}
@@ -74,6 +80,10 @@ export PATH="${PATH}:/Users/austin/.lmstudio/bin"
 # {{ if $apps.kiro_cli -}}
 builtin source "${kiro_cli_shell}/zshrc.post.zsh"
 unset kiro_cli_shell
-# {{- end -}}
+# {{- end }}
+
+# {{ if $path -}}
+export PATH="# {{ $path }}:${PATH}"
+# {{- end }}
 
 # {{/* vim: set ft=zsh.chezmoitmpl */}}

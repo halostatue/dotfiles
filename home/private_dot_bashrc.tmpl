@@ -1,5 +1,13 @@
 # chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
 # {{- $apps := includeTemplate "apps" . | fromJson -}}
+# {{- $paths := list }}
+# {{- if $apps.lm_studio -}}
+# {{-   $paths = mustPrepend $paths "${HOME}/.lmstudio/bin" -}}
+# {{- end -}}
+# {{- if (joinPath .chezmoi.homeDir ".nanosandbox/bin/nanosb" | stat) -}}
+# {{-   $paths = mustPrepend $paths "${HOME}/.nanosandbox/bin" -}}
+# {{- end -}}
+# {{- $path := $paths | join ":" -}}
 # shellcheck shell=bash
 
 # Do nothing if not interactive.
@@ -75,10 +83,6 @@ HISTTIMEFORMAT='%F %T '
 # <$PWD in blue> <Prompt Sign in Yellow> <Rest in default light white>
 PS1='\[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] '
 
-# {{ if $apps.lm_studio }}
-export PATH="${PATH}:/Users/austin/.lmstudio/bin"
-# {{- end }}
-
 # {{ if $apps.kiro -}}
 # shellcheck source=/dev/null disable=SC2312
 [[ "${TERM_PROGRAM:-}" == "kiro" ]] && builtin source "$(kiro --locate-shell-integration-path bash)"
@@ -87,6 +91,10 @@ export PATH="${PATH}:/Users/austin/.lmstudio/bin"
 # {{ if $apps.kiro_cli -}}
 builtin source "${kiro_cli_shell}/bashrc.post.bash"
 unset kiro_cli_shell
-# {{- end -}}
+# {{- end }}
+
+# {{ if $path -}}
+export PATH="# {{ $path }}:${PATH}"
+# {{- end }}
 
 # {{/* vim: set ft=bash.chezmoitmpl */}}

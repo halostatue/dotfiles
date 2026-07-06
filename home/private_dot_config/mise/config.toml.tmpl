@@ -6,31 +6,31 @@
       "RIPGREP_CONFIG_PATH" (joinPath .chezmoi.homeDir ".ripgreprc")
 -}}
 {{- $tools := dict
-      "elixir"                  "1.19.4-otp-28"
-      "erlang"                  "28.3"
-      "github:hay-kot/scaffold" "latest"
-      "gleam"                   "latest"
-      "opentofu"                "latest"
-      "node"                    "24"
-      "rebar"                   "latest"
-      "ruby"                    "3.4"
-      "rust"                    "1.91"
-      "rumdl"                   "latest"
-      "usage"                   "latest"
-      "zig"                     "0.15"
+      "elixir"                        "1.20-otp-29"
+      "erlang"                        "29"
+      "github:hay-kot/scaffold"       "latest"
+      "github:middlendian/llima-box"  "latest"
+      "gleam"                         "latest"
+      "opentofu"                      "latest"
+      "node"                          "24"
+      "ruby"                          "4.0"
+      "rust"                          "1.96"
+      "rumdl"                         "latest"
+      "usage"                         "latest"
+      "zig"                           "0.16"
 -}}
 {{- if $work -}}
-{{-   $_ := set $tools "aws-vault" "7" -}}
-{{-   $_ := set $tools "foundry" "latest" -}}
-{{-   $_ := set $tools "github:anza-xyz/agave" "latest" -}}
-{{-   $_ := set $tools "github:geofffranks/spruce" "latest" -}}
-{{-   $_ := set $tools "github:KarnerTh/mermerd" "latest" -}}
-{{-   $_ := set $tools "github:telia-oss/aws-env" "v1.3.0" -}}
-{{-   $_ := set $tools "go:newreleases.io/cmd/newreleases" "latest" -}}
-{{-   $_ := set $tools "jsonschema" "latest" -}}
-{{-   $_ := set $tools "k9s" "latest" -}}
-{{-   $_ := set $tools "kubectl" "latest" -}}
-{{-   $_ := set $tools "vacuum" "latest" -}}
+{{-   $_ := set $tools "aws-vault"                          "7" -}}
+{{-   $_ := set $tools "foundry"                            "latest" -}}
+{{-   $_ := set $tools "github:anza-xyz/agave"              "latest" -}}
+{{-   $_ := set $tools "github:geofffranks/spruce"          "latest" -}}
+{{-   $_ := set $tools "github:KarnerTh/mermerd"            "latest" -}}
+{{-   $_ := set $tools "github:telia-oss/aws-env"           "latest" -}}
+{{-   $_ := set $tools "go:newreleases.io/cmd/newreleases"  "latest" -}}
+{{-   $_ := set $tools "jsonschema"                         "latest" -}}
+{{-   $_ := set $tools "k9s"                                "latest" -}}
+{{-   $_ := set $tools "kubectl"                            "latest" -}}
+{{-   $_ := set $tools "vacuum"                             "latest" -}}
 
 {{-   $npm_package_token := ((output "gh" "auth" "token" "--user" .github.work) | trim) -}}
 {{-   $_ := set $env "NPM_PACKAGE_TOKEN" $npm_package_token -}}

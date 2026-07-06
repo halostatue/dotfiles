@@ -1,0 +1,143 @@
+#!/usr/bin/env bash
+# reset environment variables that could interfere with normal usage
+unset -v GREP_OPTIONS
+# put all utility functions here
+
+# make a temporary file
+git_extra_mktemp() {
+    mktemp -t "$(basename "$0")".XXXXXXX
+}
+
+git_extra_default_branch() {
+    local extras_default_branch init_default_branch
+    extras_default_branch=$(git config --get git-extras.default-branch)
+    init_default_branch=$(git config --get init.defaultBranch)
+    if [ -n "$extras_default_branch" ]; then
+        echo "$extras_default_branch"
+    elif [ -n "$init_default_branch" ]; then
+        echo "$init_default_branch"
+    else
+        echo "main"
+    fi
+}
+
+GIT_DIR=$(git rev-parse --git-dir 2>/dev/null)
+
+show_contents() {
+  local file="${2/#~/$HOME}"
+  if [ -f "$file" ]; then
+    echo "$1 gitignore: $2" && cat "$file"
+  else
+    echo "There is no $1 .gitignore yet"
+  fi
+}
+
+cd_to_git_root() {
+  local error_level="$1"
+
+  if ! git rev-parse --git-dir &>/dev/null; then
+    if [ "$error_level" = '--warn' ]; then
+      echo "Warning: Not currently in a Git repository" >&2
+    elif [ "$error_level" = '--error' ]; then
+      echo "Error: Not currently in a Git repository" >&2
+      exit 1
+    fi
+  fi
+
+  local result=
+  if result=$(git rev-parse --show-toplevel 2>/dev/null); then
+    cd "$result" || exit
+  fi
+}
+
+global_ignore() {
+  if ! git config --global core.excludesFile 2>/dev/null; then
+    if [ -f "$HOME/.gitignore" ]; then
+      echo "$HOME/.gitignore"
+    else
+      echo "${XDG_CONFIG_HOME:-$HOME/.config}/git/ignore"
+    fi
+  fi
+}
+
+show_global() {
+  show_contents Global "$(global_ignore)"
+}
+
+add_global() {
+  local global_gitignore
+  global_gitignore="$(global_ignore)"
+  if [ -z "$global_gitignore" ]; then
+    echo "Can't find global .gitignore."
+    echo ""
+    echo "Use 'git config --global --add core.excludesfile ~/.gitignore-global' to set the path to your global gitignore file to '~/.gitignore-global'."
+    echo ""
+  else
+    add_patterns "$global_gitignore" "$@"
+  fi
+}
+
+show_local() {
+  cd_to_git_root --warn
+  show_contents Local .gitignore
+}
+
+add_local() {
+  cd_to_git_root --warn
+  add_patterns .gitignore "$@"
+}
+
+show_private() {
+  cd_to_git_root --error
+  show_contents Private "${GIT_DIR}/info/exclude"
+}
+
+add_private() {
+  cd_to_git_root --error
+  test -d "${GIT_DIR}/info" || mkdir -p "${GIT_DIR}/info"
+  add_patterns "${GIT_DIR}/info/exclude" "$@"
+}
+
+add_patterns() {
+  echo "Adding pattern(s) to: $1"
+  local file="${1/#~/$HOME}"
+  dir_name=$(dirname "$file")
+  if [ ! -d "$dir_name" ]; then
+      mkdir -p "$dir_name"
+  fi
+  if [ -s "$file" ]; then
+      # If the content of $file doesn't end with a newline, add one
+      test "$(tail -c 1 "$file")" != "" && echo "" >> "$file"
+  fi
+  for pattern in "${@:2}"; do
+    echo "... adding '$pattern'"
+    (test -f "$file" && test "$pattern" && grep -q -F -x -- "$pattern" "$file") || echo "$pattern" >> "$file"
+  done
+}
+
+if test $# -eq 0; then
+   show_global
+   echo "---------------------------------"
+   show_local
+   echo "---------------------------------"
+   show_private
+else
+  case "$1" in
+    -l|--local)
+      test $# -gt 1 && add_local "${@:2}" && echo
+      show_local
+      ;;
+    -g|--global)
+      test $# -gt 1 && add_global "${@:2}" && echo
+      show_global
+      ;;
+    -p|--private)
+      test $# -gt 1 && add_private "${@:2}" && echo
+      show_private
+      ;;
+    *)
+      add_local "$@"
+      ;;
+  esac
+fi
+
