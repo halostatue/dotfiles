@@ -3,8 +3,6 @@ cloudfront = true
 
 [default]
 cli_history = enabled
-{{/*
-*/}}
 {{/* Add all '^aws-config: ' documents from all 1Password accounts. */}}
 {{- $mise := or (lookPath "mise") "mise" }}
 {{- $account_vaults := includeTemplate "1p/vaults" . | fromJson -}}

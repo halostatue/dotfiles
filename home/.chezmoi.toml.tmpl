@@ -79,9 +79,6 @@ role = {{ get . "role" | quote }}
 [data.op]
 {{ range $k, $v := $op }}{{ $k }} = {{ $v | quote }}{{ end }}{{ end }}
 
-[data.onepassword]
-personal = {{ promptStringOnce . "onepassword.personal" "1Password Personal Account" | toToml }}
-
 [data.github]
 user = {{ $githubUsername | quote }}
 work = {{ $workGithubUsername | quote }}

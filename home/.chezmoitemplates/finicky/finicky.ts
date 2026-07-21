@@ -45,10 +45,7 @@ const Browsers: Record<
 }
 
 if (isWork) {
-  // The Northern Labs Chrome profile is in the Default folder
-  Browsers.NorthernLabs = { name: 'Google Chrome', profile: 'Default' }
-  // The Forte Chrome profile is in the Profile 1 folder
-  Browsers.Forte = { name: 'Google Chrome', profile: 'Profile 1' }
+  Browsers.Work = { name: 'Google Chrome', profile: 'Work' }
 }
 
 // JWT Decoding from https://github.com/auth0/jwt-decode
@@ -364,28 +361,30 @@ if (isWork) {
         (url.hostname.endsWith('.github.com') || url.hostname === 'github.com') &&
         (/\/northernlabs\//i.test(url.pathname) ||
           /\/fortelabsinc\//i.test(url.pathname)),
-      browser: Browsers.NorthernLabs,
+      browser: Browsers.Work,
     },
     {
       match: (url: URL) =>
         url.hostname === 'northernlabs.atlassian.net' ||
         url.hostname === 'northern-labs.slack.com' ||
+        url.hostname === 'sfox-ticketing.atlassian.net' ||
+        url.hostname === 'sfox.slack.com' ||
         url.hostname.endsWith('.scalyr.com'),
-      browser: Browsers.NorthernLabs,
+      browser: Browsers.Work,
     },
     {
       match: (url: URL) =>
         url.hostname === 'identity.getpostman.com' ||
         url.hostname === 'forte-io.postman.co',
-      browser: Browsers.NorthernLabs,
+      browser: Browsers.Work,
     },
     {
       match: (url: URL) => url.hostname === 'newreleases.io',
-      browser: Browsers.NorthernLabs,
+      browser: Browsers.Work,
     },
     {
       match: (url: URL) => /flux\.\w+-dev\.cloud/.test(url.hostname),
-      browser: Browsers.NorthernLabs,
+      browser: Browsers.Work,
     },
   ]
 }
@@ -404,7 +403,7 @@ const alwaysSafariDomains = [
 handlers = handlers.concat(workHandlers).concat([
   {
     match: (url: URL) => url.host === 'meet.google.com',
-    browser: Browsers.NorthernLabs || Browsers.GoogleChrome,
+    browser: Browsers.Work || Browsers.GoogleChrome,
   },
   {
     match: (url: URL) => url.host === 'script.google.com',
@@ -439,7 +438,7 @@ handlers = handlers.concat(workHandlers).concat([
 export default {
   defaultBrowser: Browsers.Safari,
   options: {
-    logRequests: true,
+    logRequests: false,
     keepRunning: true,
   },
   rewrite,

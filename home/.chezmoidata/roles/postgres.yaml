@@ -13,6 +13,6 @@ defrole:
 
     ports:
       install:
-        postgresql17:
+        postgresql18:
       select:
-        postgresql: postgresql17
+        postgresql: postgresql18
