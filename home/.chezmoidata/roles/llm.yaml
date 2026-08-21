@@ -8,7 +8,6 @@ defrole:
       kiro: Agent-centric IDE with spec-driven development
       kiro-cli: AI-powered productivity tool for the command-line
       msty: Run LLMs locally
-      ollamac: Interact with Ollama models
 
     ports:
       install:

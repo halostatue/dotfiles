@@ -1,10 +1,10 @@
-{{- /* Return a map of 1Password accounts selected in `.onepassword`. */ -}}
+{{- /* Return a map of 1Password accounts selected in `.op`. */ -}}
 {{- $accounts :=
   includeTemplate "1p/accounts/list" .
   | fromJson
-  | jq "map({ ((.url | split(\".\"))[0]) : . }) | add"
+  | jq "map({ (.url) : . }) | add"
   | first
 -}}
 {{- $res := dict -}}
-{{- range $_, $url := .onepassword }}{{ $res = merge $res (pick $accounts $url) }}{{ end -}}
+{{- range $_, $url := .op }}{{ $res = merge $res (pick $accounts $url) }}{{ end -}}
 {{- toJson $res -}}

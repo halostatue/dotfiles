@@ -36,9 +36,9 @@ const Browsers: Record<
 > = {
   Safari: 'Safari',
   // {{- range $_, $browser := list "Firefox" "Microsoft Edge" "Google Chrome" -}}
-  // {{-   $path := printf "/Applications/%s.app" $browser -}}
-  // {{-   if not (stat $path) -}}{{ $path = "" }}{{ end }}
+  // {{-   $path := printf "/Applications/%s.app" $browser -}} {{-   if stat $path }}
   '{{ nospace $browser }}': '{{ $browser }}',
+  // {{-   end }}
   // {{- end }}
   Music: 'Music',
   Fallback,
@@ -411,7 +411,7 @@ handlers = handlers.concat(workHandlers).concat([
   },
   {
     match: (url: URL) => url.host === 'teams.microsoft.com',
-    browser: Browsers.MicrosoftEdge,
+    browser: Browsers.MicrosoftEdge || Browsers.GoogleChrome,
   },
   {
     match: (url: URL) => url.host.endsWith('zoom.us'),

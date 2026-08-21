@@ -1,4 +1,5 @@
 ABAC
+ABNF
 ACH
 ActiveAdmin
 ActiveJob
@@ -94,6 +95,7 @@ gitignore
 Gitlab
 gleeunit
 glinter
+goroutine
 GraphQL
 halogenmobile
 halostatue
@@ -109,16 +111,21 @@ httpd
 IANA
 initialisable
 IpAccessControl
+IPC
+IPv4
+IPv6
 jetenv
 JIRA
 JMeter
 jq
 JSON
+JSONL
 Jurić
 justfile
 JWK
 JWKS
 JWT
+Kamal
 KCS
 Keybase.io
 kiex
@@ -127,10 +134,12 @@ Kiro
 KMS
 Korn
 Kotlin
+Kubernetes
 kustomize
 kx
 KYC
 language
+linters
 LiveChat
 LLM
 localhost
@@ -148,6 +157,7 @@ mnemonist
 modeline
 monorepo
 multiline
+mutex
 MVC
 MVVM
 MySQL
@@ -178,6 +188,7 @@ plaintext
 PnC
 PNG
 PNPM
+Podman
 polyfill
 pontil
 POSIX
@@ -209,6 +220,7 @@ Rubyists
 runbook
 runtimes
 Saša
+SBOM
 Scalyr
 SCSS
 sepolia
@@ -216,6 +228,7 @@ SFTP
 SHA
 shellcheck
 shfmt
+sigstore
 Smalltalk
 Solana
 SPDX
@@ -226,6 +239,7 @@ starlist
 struct
 submodules
 SVG
+syscall
 TBD
 Tcl
 TCS
@@ -247,6 +261,7 @@ upsert
 UTXO
 UUID
 UUIDs
+VPS
 VSCode
 webhook
 webhooks

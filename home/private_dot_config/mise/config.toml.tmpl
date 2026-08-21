@@ -11,12 +11,15 @@
       "github:hay-kot/scaffold"       "latest"
       "github:middlendian/llima-box"  "latest"
       "gleam"                         "latest"
+      "go:golang.org/x/tools/gopls"   "latest"
       "opentofu"                      "latest"
-      "node"                          "24"
+      "node"                          (dict "version" "24" "postinstall" "corepack enable")
       "ruby"                          "4.0"
       "rust"                          "1.96"
       "rumdl"                         "latest"
+      "shellspec"                     "latest"
       "usage"                         "latest"
+      "vacuum"                        "latest"
       "zig"                           "0.16"
 -}}
 {{- if $work -}}

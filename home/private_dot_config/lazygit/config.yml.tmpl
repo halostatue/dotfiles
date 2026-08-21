@@ -52,15 +52,15 @@ gui:
       - bold
 
 git:
-  pagers:
+  diffRenderers:
     - useConfig: false
 # {{- if $diffPager }}
-      pager: '# {{ $diffPager }}'
+      command: '# {{ $diffPager }}'
 # {{- else }}
     # Use one of the following:
-    #   pager: delta --dark --paging=never --side-by-side
-    #   pager: diff-so-fancy
-    #   pager: ydiff -p cat -s --wrap --width={{ columnWidth }}
+    #   command: delta --dark --paging=never --side-by-side
+    #   command: diff-so-fancy
+    #   command: ydiff -p cat -s --wrap --width={{ columnWidth }}
 # {{- end }}
 
   commit:

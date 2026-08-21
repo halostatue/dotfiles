@@ -557,10 +557,6 @@ packix.Setup((px: packix.Packix) => {
     px.Add('halostatue/vim-healthcheck')
   endif
 
-  # Currently imaps C-l and C-f without checking over overrides
-  # https://github.com/greeschenko/vim9-ollama
-  # px.Add('greeschenko/vim9-ollama')
-
   # Buffer History
   # https://github.com/dhruvasagar/vim-buffer-history
   px.Add('dhruvasagar/vim-buffer-history')

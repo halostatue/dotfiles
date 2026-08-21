@@ -6,5 +6,3 @@ defrole:
   web-extra:
     casks:
       google-chrome: Web browser
-      microsoft-edge: Multi-platform web browser
-      orion: WebKit based web browser

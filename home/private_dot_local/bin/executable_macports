@@ -1389,7 +1389,7 @@ def print_livecheck(name)
     if !status.success?
       "error on livecheck: #{stderr.chomp}"
     elsif stdout.chomp.empty?
-      "no updates"
+      nil
     else
       base_output = stdout.chomp.sub(%r{#{name} seems to have been updated }, "").gsub(%r{[()]}, "")
 
@@ -1418,7 +1418,7 @@ def print_livecheck(name)
       end
     end
 
-  puts "#{name}: #{output}"
+  puts "#{name}: #{output}" if output
 end
 
 def print_ports(&block)

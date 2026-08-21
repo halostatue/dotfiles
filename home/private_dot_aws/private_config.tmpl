@@ -6,9 +6,11 @@ cli_history = enabled
 {{/* Add all '^aws-config: ' documents from all 1Password accounts. */}}
 {{- $mise := or (lookPath "mise") "mise" }}
 {{- $account_vaults := includeTemplate "1p/vaults" . | fromJson -}}
+{{- $tags := "" -}}
+{{- if get . "aws_tags" }}{{ $tags = .aws_tags }}{{ end -}}
 {{- range $account_name, $account := $account_vaults -}}
 {{-   $vaults := $account.vaults -}}
-{{-   $params := dict "account" $account.url "startswith" "aws-config: " "tags" $.aws_tags -}}
+{{-   $params := dict "account" $account.url "startswith" "aws-config: " "tags" $tags -}}
 {{-   $documents := includeTemplate "1p/documents" $params | fromJson -}}
 {{-   range $document := $documents -}}
 {{-     $vault_name := (get $vaults $document.vault.id).name }}
@@ -17,4 +19,4 @@ cli_history = enabled
 {{      onepasswordDocument $document.id $document.vault.id $account.url |
           replaceAllRegex "mise" $mise }}
 {{-   end -}}
-{{- end -}}
+{{- end }}

@@ -48,13 +48,13 @@
 {{- $awsConfigTags = concat $awsConfigTags $opts -}}
 {{- $awsTags := promptMultichoiceOnce . "aws_tags" "AWS roles" $awsConfigTags -}}
 {{- if has "Skip" $awsTags }}{{ $awsTags = "" -}}
-{{- else if has "None" $awsTags }}{{ $awsTags = list }}{{ end -}}
+{{- else if has "None" $awsTags }}{{ $awsTags = "**None**" }}{{ end -}}
 
 {{- $gitIdentityTags := includeTemplate "init/1p/git-identity-tags" . | fromJson -}}
 {{- $gitIdentityTags = concat $gitIdentityTags $opts -}}
 {{- $gitIdentities := promptMultichoiceOnce . "git_identities" "Git identities" $gitIdentityTags -}}
 {{- if has "Skip" $gitIdentities }}{{ $gitIdentities = "" -}}
-{{- else if has "None" $gitIdentities }}{{ $gitIdentities = list }}{{ end -}}
+{{- else if has "None" $gitIdentities }}{{ $gitIdentities = "**None**" }}{{ end -}}
 
 [scriptEnv]
 DEBUG_SCRIPTS = "false"

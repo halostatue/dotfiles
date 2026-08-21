@@ -78,7 +78,7 @@ end
 
 def homebrew_bundle
   comment = nil
-  `brew bundle dump --force --file=- --describe`
+  `brew bundle dump --force --file=-`
     .split($/)
     .each_with_object(Hash.new { |h, k| h[k] = [] }) { |line, lines|
       line.chomp!

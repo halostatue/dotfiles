@@ -1,8 +1,10 @@
 {{- $account_vaults := includeTemplate "1p/vaults" . | fromJson -}}
+{{- $tags := list }}
+{{- if get . "git_identities" }}{{ $tags = .git_identities }}{{ end -}}
 {{- $identities := dict }}
 {{- range $account_name, $account := $account_vaults -}}
 {{-   $vaults := $account.vaults -}}
-{{-   $params := dict "account" $account.url "startswith" "git-identities: " "tags" $.git_identities -}}
+{{-   $params := dict "account" $account.url "startswith" "git-identities: " "tags" $tags -}}
 {{-   $documents := includeTemplate "1p/documents" $params | fromJson -}}
 {{-   $a_ids := dict }}
 {{-   range $document := $documents -}}
