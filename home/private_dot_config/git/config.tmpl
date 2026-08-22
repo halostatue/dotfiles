@@ -14,13 +14,7 @@
 {{- $sequenceEditor := "" -}}
 {{- $webBrowser := "" -}}
 
-{{- if and $has.delta $has.ov -}}
-{{-   $corePager = printf "%s --pager='%s -F'" $has.delta $has.ov -}}
-{{-   $showPager = printf "%s --pager='%s -F --header 3 --jump-target section'" $has.delta $has.ov -}}
-{{- else if $has.ov -}}
-{{-   $corePager = printf "%s -F" $has.ov -}}
-{{-   $showPager = printf "%s -F --header 3 --jump-target section" $has.ov -}}
-{{- else if $has.delta -}}
+{{- if $has.delta -}}
 {{-   $corePager = $has.delta -}}
 {{- else if $has.diff_so_fancy -}}
 {{-   $corePager = printf "%s | less --tabs=4 -RFX" $has.diff_so_fancy -}}
@@ -153,20 +147,6 @@
   file-style = bold yellow ul
   file-decoration-style = none
   hunk-header-decoration-style = yellow box
-
-{{- if $has.ov }}
-
-[pager]
-  diff = delta --features ov-diff
-  log  = delta --features ov-log
-
-[delta "ov-diff"]
-  pager= {{ $has.ov }} -F --section-delimiter '^(commit|added:|removed:|renamed:|Δ)' --section-header --pattern '•' --jump-target section
-
-[delta "ov-log"]
-  pager= {{ $has.ov }} -F --section-delimiter '^commit' --section-header-num 3 --jump-target section
-
-{{- end }}
 
 [interactive]
   diffFilter = {{ $has.delta }} --color-only --features=interactive

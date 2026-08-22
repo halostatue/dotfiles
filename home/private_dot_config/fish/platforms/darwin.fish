@@ -114,8 +114,4 @@ if status is-interactive
 
     # test (ssh-add -l | wc -l) -gt 0
     # or ssh-add --apple-load-keychain >/dev/null
-
-    if has_app iTerm && test -f ~/.iterm2_shell_integration.fish && set -q ITERM_PROFILE
-        source ~/.iterm2_shell_integration.fish
-    end
 end

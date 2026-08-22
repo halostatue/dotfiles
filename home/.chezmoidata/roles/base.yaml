@@ -11,7 +11,6 @@ defrole:
       homebrew/services:
 
     casks:
-      alfred: Application launcher and productivity software
       browsers: Open the right browser at the right time
       cleanupbuddy: Clean keyboard and trackpad
       finicky: Utility for customizing which browser to start
@@ -129,7 +128,6 @@ defrole:
         mise:
         mmark:
         moreutils: +doc
-        ov:
         pam-reattach:
         pv:
         ripgrep: +pcre

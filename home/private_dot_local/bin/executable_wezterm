@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec /Applications/WezTerm.app/Contents/MacOS/wezterm "$@"

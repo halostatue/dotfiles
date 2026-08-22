@@ -1,214 +1,142 @@
-.CFUserTextEncoding
-**/.DS_Store
-.Trash/**
+{{- $work := has "work" (get . "roles" | default list) -}}
+{{- $darwin := eq .chezmoi.os "darwin" -}}
 
-.42crunch/**
+# Never store PEM files in chezmoi.
+**/*.pem
 
-.aleo/**
-.amp/**
-.atuin/**
-.android/**
-.ansible/**
-.anydesk/**
-.aws/**/*.pem
-.aws/cli/history
+# Exclude ~/Library/ by default, except for ~/Library/Application Support.
+{{ if $darwin -}}
+Library/*
+!Library/Application Support
+Library/Application Support/*
+!Library/Application Support/BBEdit
+Library/Application Support/BBEdit/*
+!Library/Application Support/BBEdit/Language Modules
+!Library/Application Support/Code
+Library/Application Support/Code/*
+!Library/Application Support/Code/User
+Library/Application Support/Code/User/*
+!Library/Application Support/Code/User/settings.json
+!Library/Application Support/Leader Key
+Library/Application Support/Leader Key/*
+!Library/Application Support/Leader Key/config.json
+Library/LaunchAgents/macports.colima.plist
+{{- else -}}
+Library/
+{{- end }}
+
+{{ if lookPath "amp" }}.amp/**{{ end }}
+{{ if lookPath "atuin" }}.atuin/**{{ end }}
+{{ if stat "/Applications/AnyDesk.app" }}.anydesk/**{{ end }}
+
 .aws/cli/cache
+.aws/cli/history
 .aws/sso
 
 .bash_history
-.bun/**
-.bun_repl_history
-.bundle/**
 
-.cabal/*
-!.cabal/config
-.cache/**
+.bundle/
 
+.cache/
+
+# Ignore all ~/.cargo files except the three we manage
 .cargo/*
 !.cargo/env
+!.cargo/env.fish
 !.cargo/liner.toml
 
-.codemod
+.codemod/
 
-.dbgate/
-.ruby-lsp/
-.rdbg_history
-.web-firefox/
-.lemminx/
-
-{{ if not (stat "/Applications/WezTerm.app") -}}
-.terminfo/77/wezterm
-.local/bin/wezterm
+{{ if lookPath "claude" -}}
+.claude
+.claude.json
 {{- end }}
 
-.terminfo/61
-.terminfo/63
-.terminfo/67
-.terminfo/78
-
-{{ if eq .chezmoi.os "darwin" -}}
+{{ if lookPath "colima" -}}
 .colima/*
+# Keep only the default profile by default, and only default/colima.yaml
+# Additional profiles to be kep will need similar treatment.
 !.colima/default
 .colima/default/*
 !.colima/default/colima.yaml
-.colima/ssh_config
 {{- end }}
 
-{{/* Google Apps Script "clasp" */}}
-.clasprc.json
-
-{{ if not (stat "/Applications/Alfred 5.app") -}}
-.config/Alfred/*
-{{ else }}
-.config/Alfred/Alfred.alfredpreferences/clipboard
-.config/Alfred/Alfred.alfredpreferences/clipboard/*
+{{ if lookPath "op" -}}
+.config/1Password/*
+!.config/1Password/ssh
+!.config/1Password/ssh/agent.coml
+.config/op
 {{- end }}
-.config/Amazon/**
-.config/cheat/cheatsheets/**
+
+.config/act
 .config/chezmoi
-.config/configstore
-
-.config/lazygit/*
-!.config/lazygit/config.yml
 
 .config/fish/completions
-
 .config/fish/conf.d/*
 !.config/fish/conf.d/__abbr.fish
 !.config/fish/conf.d/__aliases.fish
 !.config/fish/conf.d/__custom_functions.fish
-
 .config/fish/fish_variables
-
 .config/fish/functions/*
 !.config/fish/functions/fish_greeting.fish
 !.config/fish/functions/gobin-sources.fish
 !.config/fish/functions/set-docker-host.fish
-
 .config/fish/hosts
-.config/fish/hosts/*
+.config/fish/users
 
+{{ if lookPath "gh" -}}
 .config/gh/hosts.yml
+{{- end }}
+
+# The target for git identities in 1Password, these contain secrets…
 .config/git/identities/*
+# …but _this_ is the script that does the downloading, so it must NOT be ignored.
 !.config/git/identities/git_identities.sh
-.config/git-switch-user
-.config/gita/**
 
-.config/hcp/**
-.config/htop/**
+{{ if lookPath "lazygit" -}}
+.config/lazygit/*
+!.config/lazygit/config.yml
 
-.config/iterm2
-.config/iTerm2
-
-.config/jgit/**
-
-.config/karabiner/*
-!.config/karabiner/karabiner.json
-
-.config/kitty/*
-!.config/kitty/config
-!.config/kitty/config/*
-!.config/kitty/kitty.conf
-
-.config/litecli/*
-!config/litecli/config
-!config/litecli/config/*
-
-.config/lnav/*
+{{   if $darwin -}}
+!Library/Application Support/lazygit
+Library/Application Support/lazygit/*
+!Library/Application Support/lazygit/config.yml
+{{-   end }}
+{{- end }}
 
 .config/massren
-.config/massren/*
 
-.config/micro/buffers
-.config/micro/**/log.txt
-
-.config/nnn
-
-.config/nvim
-.config/nvim.old/.git
-
-.config/1Password/*
-!.config/1Password/ssh
-!.config/1Password/ssh/agent.coml
-
-.config/op/**
-
-.config/packer/**
-.config/rebar3/**
-
-.config/tabtab/**
-
-.config/vifm/vifminfo.json
-
-# VIM9 now supports XDG-ish configuration files
 .config/vim/spell/*.spl
-
-.config/yarn/**
 
 .config/zed/*
 !.config/zed/keymap.json
 !.config/zed/settings.json
 
-.cpan/**
-.cpanm/**
-.cups/**
+.docker/
+.foundry/
 
-.deno/**
-.dlv/*
-!.dlv/config.yml
-.docker/**
-.dotenv-linter-latest-version
-
-.envrc
-
-.fly
-.foundry
+{{ if $work -}}
 .freelens
+{{- end }}
 
-.gem/ruby/
-.gem/specs/
-{{/* git-extras ignore cache file */}}
+# {{/* git-extras ignore cache file */}}
 .gi_list
-.gitlater
-.gk/
-.gnupg
-
-.goful
-
-{{/* Go REPL */}}
-.gore/**
-
-.hex/**
+.gnupg/
+.gore/
+.hex/
 .homebrew/trust.json.lock
-
-.julia/**
-
-.k8slens
-.kube
-.kindle
+.k8slens/
 
 .kiro/*
 !.kiro/steering
 !.kiro/steering/*
 
-{{/* This is managed by colima. */}}
-.lima
-.lmstudio
-.lmstudio-home-pointer
+.kube/
 
 .lesshst
 
-.local/bin/chezmoi
-.local/bin/claude
-.local/bin/*kiro-cli*
 
-{{ if not (lookPath "brew") -}}
-.local/bin/brew-bump
-.local/bin/brew-cleanup
-{{- end }}
-
-
-{{ if regexMatch "py314-awscli2 " (output "port" "echo" "active") }}
+{{ if regexMatch "py3\\d+-awscli2 " (output "port" "echo" "active") }}
 .local/bin/aws
 .local/bin/aws-cli-session-manager
 .local/bin/aws_completer
@@ -216,17 +144,7 @@
 .local/bin/aws-running-instances
 {{ end }}
 
-{{ if lookPath "pipx" -}}
-{{/* pipx-managed files in ~/.local/bin */}}
-{{-   $pipx := output "pipx" "list" "--json" | fromJson }}
-{{-   $entries := $pipx | jq ".venvs | to_entries | map(.value.metadata) | flatten" | first }}
-{{-   $apps := $entries | jq "map(.main_package.apps) | flatten" | first }}
-{{-   $extra := $entries | jq "map(.injected_packages | to_entries | map(.value.apps)) | flatten" | first }}
-{{-   $apps = concat $apps $extra }}
-{{-   $apps = $apps | jq "map(\".local/bin/\" + .)" | first }}
-{{-   range $app := $apps }}
-{{     . }}{{ end }}
-{{- end }}
+.local/bin/trex
 
 {{ if lookPath "uv" -}}
 {{/* uv-managed files in ~/.local/bin */}}
@@ -234,145 +152,71 @@
 {{-   range $line := splitList "\n" $uv }}
 {{-     if hasPrefix "- " $line }}
 {{       mustRegexReplaceAll "^- [^ ]+ [(](.+)[)]" $line "$1" |
-           trimPrefix $.chezmoi.homeDir |
-           trimPrefix "/" }}
+             trimPrefix $.chezmoi.homeDir |
+             trimPrefix "/" }}
 {{-     end }}
 {{-   end }}
 {{- end }}
 
-{{ if not (stat "/Applications/Chime.app") -}}
-{{/* ChimeHQ MacOS Editor: https://github.com/ChimeHQ/Chime */}}
-.local/bin/chime
-{{- end }}
-
-{{ if not (stat "/Applications/iTerm.app") -}}
-.local/bin/it2api
-.local/bin/it2attention
-.local/bin/it2check
-.local/bin/it2copy
-.local/bin/it2dl
-.local/bin/it2getvar
-.local/bin/it2git
-.local/bin/it2setcolor
-.local/bin/it2setkeylabel
-.local/bin/it2ul
-.local/bin/it2universion
-{{- end }}
-
-{{/* tfvm */}}
-.local/bin/terraform
-.local/bin/tfvm
-
-.local/pipx
 .local/share/*
 !.local/share/vim-lsp-settings
 .local/share/vim-lsp-settings/*
 !.local/share/vim-lsp-settings/settings.json
 .local/state
 
-.m2
 .macports
-.macports/history
 .minikube
 .mix
-.rediscli_history
-
-.nb
-.net
 .node_repl_history
 .npm/
-# .npmrc
-
-.ollama
-
-.pgadmin
-.pnpm-state
-.prettierd
-.pry.d
+.ossindex/
+.pgadmin/
 .python_history
-
-.rustup
-
-.sigstore
-.sobelow
+.rediscli_history
+.redocly
+.rustup/
+.semgrep/
+.sigstore/
+.sobelow/
 .sqlite_history
+
 .ssh/*
 !.ssh/allowed_signers
 !.ssh/authorized_keys
 !.ssh/config
-.strec
+
 .swiftpm/
 
-.tclsh_history
-.terraform.d
+.terraform.d/
 .tig_history
-.ts_node_repl_history
 .twilio-cli
 
-.vim/spell/*.spl
 .viminfo
-.vscode
+.vscode/
 
 .wget-hsts
 
-.yarn
-.yarnrc
-
 .zsh_history
 .zsh_sessions
-
-{{ if eq .chezmoi.os "linux" -}}
-Library
-{{ else if eq .chezmoi.os "darwin" -}}
-**/.localized
 
 Applications/
 Desktop/
 Documents/
 Downloads/
-Dropbox/
+Movies/
+Music/
+Pictures/
+Public/
+Sync/
 
-Library/*
-
-!Library/Application Support
-Library/Application Support/*
-
-!Library/Application Support/BBEdit
-Library/Application Support/BBEdit/*
-!Library/Application Support/BBEdit/Language Modules
-
-!Library/Application Support/Code
-Library/Application Support/Code/*
-!Library/Application Support/Code/User
-Library/Application Support/Code/User/*
-!Library/Application Support/Code/User/settings.json
-
-!Library/Application Support/fm
-!Library/Application Support/gh-dash
-
-!Library/Application Support/lazygit
-Library/Application Support/lazygit/*
-!Library/Application Support/lazygit/config.yml
-
-!Library/Application Support/Leader Key
-Library/Application Support/Leader Key/*
-!Library/Application Support/Leader Key/config.json
-
-!Library/Application Support/tealdeer
-
-# Library/LaunchAgents/macports.colima.plist
+.CFUserTextEncoding
+**/.DS_Store
+.Trash/**
+**/.localized
 
 go/
 mess/
 perl5/
-
-Movies/
-Music/
-Pictures/
-Postman/
-Public/
-Sync/
 personal/
 oss/
 work/
-{{- end }}

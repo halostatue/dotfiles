@@ -1,0 +1,301 @@
+#!/usr/bin/env bash
+
+set -o pipefail
+
+SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_NAME
+
+usage() {
+  cat <<EOS
+usage: ${SCRIPT_NAME} [options] list
+       ${SCRIPT_NAME} [options] get [SECRET]
+       ${SCRIPT_NAME} [options] value [SECRET]
+       ${SCRIPT_NAME} [options] sm://SECRET#KEY
+
+Lists or retrieves the secrets from AWS SecretsManager. If no arguments are provided,
+it runs interactively to get a secret value.
+
+Commands:
+
+  list                   List the secrets for the profile with fzf
+  get [SECRET]           Get the specified secret value (full JSON)
+  value [SECRET] [KEY]   Get secret, then pick a key (print and copy)
+  sm://SECRET#KEY        Retrieve value from URI (print and copy)
+
+Options:
+
+  --select-profile, -S   Select from all non-bridge AWS profiles
+  --profile=PROFILE      Use the specified AWS profile
+  --profile PROFILE      Use the specified AWS profile
+EOS
+}
+
+has() {
+  command -v "$@" >/dev/null 2>&1
+}
+
+require() {
+  local ok=true
+
+  for cmd in "$@"; do
+    has "${cmd}" || {
+      warn "error: ${SCRIPT_NAME} requires command '${cmd}'"
+      ok=false
+    }
+  done
+
+  "${ok}" || halt
+}
+
+warn() {
+  echo >&2 "$*"
+}
+
+halt() {
+  local show_usage=false
+  [[ "$1" == usage ]] && {
+    show_usage=true
+    shift
+  }
+
+  warn "$@"
+  "${show_usage}" && usage >&2
+  exit 1
+}
+
+load_aws_profiles() {
+  declare -g -a INTERACTIVE_MENU
+  declare -g -A PROFILE
+
+  for profile in $(aws configure list-profiles); do
+    case "${profile}" in
+    *_bridge) continue ;;
+    default) continue ;;
+    *) PROFILE["${profile}"]="${profile}" ;;
+    esac
+  done
+
+  INTERACTIVE_MENU+=(help)
+
+  readonly INTERACTIVE_MENU PROFILE
+}
+
+discover_copy() {
+  local cmd candidate
+
+  for cmd in pbcopy cb xclip xsel clipboard clip; do
+    has "${cmd}" && {
+      candidate="${cmd}"
+      break
+    }
+  done
+
+  [[ -z "${candidate}" ]] && candidate=pbcopy
+
+  declare -g -a COPY
+
+  case "${candidate}" in
+  cb) COPY=(cb --copy) ;;
+  xclip) COPY=(xclip -sel clip) ;;
+  xsel) COPY=(xsel --clipboard --input) ;;
+  clipboard) COPY=(clipboard --stdin) ;;
+  *) COPY=("${candidate}") ;;
+  esac
+}
+
+get_arg_value() {
+  echo "$1" | cut -f2- -d=
+}
+
+select_profile() {
+  printf "%s\n" "${PROFILE[@]}" |
+    sort -iu |
+    fzf --select-1 --header='AWS profile' --height='~20%'
+}
+
+set_profile() {
+  case "$1" in
+  --select)
+    AWS_PROFILE="$(select_profile)"
+    export AWS_PROFILE
+    ;;
+  *)
+    if [[ -n "${PROFILE["$1"]:-}" ]]; then
+      AWS_PROFILE="$1"
+    else
+      halt "No profile found for '$1'."
+    fi
+    ;;
+  esac
+
+  export AWS_PROFILE
+}
+
+list_secrets() {
+  aws secretsmanager list-secrets |
+    jq -r '.SecretList | map(.Name) | .[]' |
+    sort -i
+}
+
+select_secret() {
+  local -a params
+
+  while (($#)); do
+    [[ "$1" == "--" ]] && {
+      shift
+      break
+    }
+    params+=("$1")
+    shift
+  done
+
+  list_secrets |
+    fzf --select-1 --header="${AWS_PROFILE} Secrets" --height='~30%' "${params[@]}" --query "$*"
+}
+
+fetch_secret_json() {
+  aws secretsmanager get-secret-value --secret-id "${1:?}" |
+    jq -c '.SecretString | fromjson'
+}
+
+# Parse sm://secret/path#key and retrieve that key's value. Print and copy.
+# Returns 0 if uri was a valid sm URI and retrieval succeeded; 1 otherwise.
+run_value_from_uri() {
+  local key secret_id uri
+
+  uri="${1#sm://}"
+
+  if [[ "${uri}" != *'#'* ]]; then
+    halt "Invalid secret uri '$1'."
+  fi
+
+  secret_id="${uri%%#*}"
+  key="${uri#*#}"
+
+  if [[ -z "${secret_id}" ]] || [[ -z "${key}" ]]; then
+    halt "Invalid secret uri '$1'."
+  fi
+
+  fetch_secret_json "${secret_id}" |
+    jq -e -r --arg k "${key}" '.[$k]' |
+    tee /dev/tty |
+    "${COPY[@]}"
+}
+
+default_interactive() {
+  local _case _help choice preview
+
+  printf -v _help 'echo Show usage and exit'
+  printf -v preview "sh -c '%s'" "${_case}"
+
+  choice="$(
+    printf '%s\n' "${INTERACTIVE_MENU[@]}" | fzf \
+      --select-1 \
+      --header='Select profile or help' \
+      --height='~20%' \
+      --preview="${preview}" \
+      --preview-window=right:50%
+  )" || exit 0
+
+  case "${choice}" in
+  help)
+    usage
+    exit 0
+    ;;
+  *)
+    exit 1
+    ;;
+  esac
+}
+
+run_list() {
+  local result
+  result="$(select_secret "--multi")" || true
+  if [[ -z "${result}" ]]; then
+    list_secrets
+  else
+    printf '%s\n' "${result}"
+  fi
+}
+
+run_get() {
+  local secret_id
+  secret_id="$(select_secret -- "$*")"
+  echo "Getting ${secret_id}."
+  fetch_secret_json "${secret_id}"
+}
+
+run_value() {
+  local _copy _preview json_file keys secret_id temp
+
+  secret_id="$(select_secret -- "$*")"
+
+  temp="$(mktemp -d)"
+  trap 'rm -rf -- "${temp}"' EXIT
+
+  json_file="${temp}/data.json"
+
+  fetch_secret_json "${secret_id}" >"${json_file}"
+
+  jq -e 'type == "object"' "${json_file}" >/dev/null ||
+    halt "Secret is not a JSON object."
+
+  keys="$(jq -r 'keys_unsorted[]' "${json_file}")"
+
+  printf -v _preview $'jq -r --arg k \'{}\' \'.[$k]\' \'%s\'' "${json_file}"
+  printf -v _copy "%s | %s" "${_preview}" "${COPY[*]}"
+
+  echo "${keys}" | fzf \
+    --select-1 \
+    --header="Select key (${secret_id}) | Enter: print+copy  Right: print only" \
+    --height='~30%' \
+    --preview "${_preview}" \
+    --preview-window=right:50% \
+    --bind "enter,return:execute(${_copy})+become(${_preview}),right:become(${_preview})"
+}
+
+require aws fzf jq
+load_aws_profiles
+discover_copy
+
+if ! (($#)); then
+  default_interactive
+  set -- value
+fi
+
+declare -a args
+args=()
+
+while (($#)); do
+  case "$1" in
+  --select-profile | -S) set_profile --select ;;
+  --profile=*) set_profile "$(get_arg_value "$1")" ;;
+  --profile)
+    (($# >= 2)) || halt usage "Missing argument for --profile"
+    set_profile "$2"
+    shift
+    ;;
+  *) args+=("$1") ;;
+  esac
+  shift
+done
+
+[[ -n "${AWS_PROFILE:-}" ]] || halt usage "No AWS_PROFILE provided."
+
+set -- "${args[@]}"
+(($#)) || set -- value
+
+cmd="$1"
+shift
+
+case "${cmd}" in
+sm://*)
+  run_value_from_uri "${cmd}" || halt "Failed to resolve sm URI or key not found."
+  ;;
+list | get | value)
+  run_"${cmd}" "$@"
+  ;;
+*)
+  halt usage "Unknown command ${cmd}"
+  ;;
+esac
