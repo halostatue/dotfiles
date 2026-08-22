@@ -55,6 +55,21 @@
 {{- $gitIdentities := promptMultichoiceOnce . "git_identities" "Git identities" $gitIdentityTags -}}
 {{- if has "Skip" $gitIdentities }}{{ $gitIdentities = "" -}}
 {{- else if has "None" $gitIdentities }}{{ $gitIdentities = "**None**" }}{{ end -}}
+{{- $data := dict
+      "email"               $email
+      "name"                $name
+      "debug_scripts"       false
+      "role"                (get . "role")
+      "gnupg_default_key"   (get . "gnupg_default_key")
+      "github"              (dict "user" $githubUsername "work" $workGithubUsername)
+      "ruby"                (dict "hoe" (dict "email" $email)
+                                  "rubygems" (dict "user" $email))
+-}}
+{{- if $awsTags }}{{ $_ := set $data "aws_tags" $awsTags }}{{ end -}}
+{{- if $gitIdentities }}{{ $_ := set $data "git_identities" $gitIdentities }}{{ end -}}
+{{- if $roles }}{{ $_ := set $data "roles" $roles }}{{ end -}}
+{{- if $sshAgent }}{{ $_ := set $data "ssh" (dict "agent" $sshAgent) }}{{ end -}}
+{{- if gt (len $op) 0 }}{{ $_ := set $data "op" $op }}{{ end -}}
 
 [scriptEnv]
 DEBUG_SCRIPTS = "false"
@@ -65,30 +80,4 @@ secrets = "error"
 [diff]
 exclude = ["scripts"]
 
-[data]
-email = {{ $email | quote }}
-name = {{ $name | quote }}
-debug_scripts = false
-gnupg_default_key = {{ get . "gnupg_default_key" | quote }}
-role = {{ get . "role" | quote }}
-{{ if $awsTags }}aws_tags = {{ $awsTags | toToml }}{{ end }}
-{{ if $gitIdentities }}git_identities = {{ $gitIdentities | toToml }}{{ end }}
-{{ if $roles }}roles = {{ $roles | toToml }}{{ end }}
-
-{{ if gt (len $op) 0 -}}
-[data.op]
-{{ range $k, $v := $op }}{{ $k }} = {{ $v | quote }}{{ end }}{{ end }}
-
-[data.github]
-user = {{ $githubUsername | quote }}
-work = {{ $workGithubUsername | quote }}
-
-[data.ruby.hoe]
-email = {{ $email | quote }}
-
-[data.ruby.rubygems]
-user = {{ $email | quote }}
-
-{{ if $sshAgent -}}
-[data.ssh]
-agent = {{ $sshAgent | quote }}{{ end }}
+{{ dict "data" $data | toToml }}

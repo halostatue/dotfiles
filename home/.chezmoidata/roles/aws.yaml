@@ -6,9 +6,9 @@ defrole:
   aws:
     ports:
       install:
-        py312-awscli2:
+        py314-awscli2:
       select:
-        awscli: py312-awscli2
+        awscli: py314-awscli2
 
     cond:
       - if-role: personal

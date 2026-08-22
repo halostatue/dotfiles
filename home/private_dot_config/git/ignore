@@ -110,5 +110,6 @@ erl_crash.dump
 # }}}
 
 .vim-lsp-settings/
+**/.claude/settings.local.json
 
 # vim: ft=gitignore

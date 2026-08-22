@@ -113,11 +113,6 @@ defrole:
       ziglang.vscode-zig:
 
     cond:
-      - if-port: ftgl
-        ports:
-          install:
-            gource:
-
       - if-port: openjdk17
         ports:
           install:
