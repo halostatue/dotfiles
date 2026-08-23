@@ -25,9 +25,19 @@ Library/LaunchAgents/macports.colima.plist
 Library/
 {{- end }}
 
-{{ if lookPath "amp" }}.amp/**{{ end }}
-{{ if lookPath "atuin" }}.atuin/**{{ end }}
-{{ if stat "/Applications/AnyDesk.app" }}.anydesk/**{{ end }}
+{{ if lookPath "amp" }}.amp/{{ end }}
+{{ if lookPath "atuin" }}.atuin/{{ end }}
+{{ if stat "/Applications/AnyDesk.app" }}.anydesk/{{ end }}
+
+{{ if lookPath "bun" -}}
+.bun/
+.bun_repl_history
+{{- end }}
+
+{{ if or (lookPath "kpr") (stat "/Applications/Kindle Previewer 3.app") -}}
+.config/Amazon/
+.kindle/
+{{- end }}
 
 .aws/cli/cache
 .aws/cli/history
@@ -70,6 +80,7 @@ Library/
 
 .config/act
 .config/chezmoi
+.config/configstore
 
 .config/fish/completions
 .config/fish/conf.d/*
@@ -112,6 +123,14 @@ Library/Application Support/lazygit/*
 !.config/zed/keymap.json
 !.config/zed/settings.json
 
+.cpan/
+.cpanm/
+.cups/
+
+{{ if lookPath "deno" }}.deno/{{ end }}
+{{ if lookPath "dlv" }}.dlv/.dbg_history{{ end }}
+{{ if lookPath "fly" }}.fly/{{ end }}
+
 .docker/
 .foundry/
 
@@ -131,10 +150,14 @@ Library/Application Support/lazygit/*
 !.kiro/steering
 !.kiro/steering/*
 
+
 .kube/
 
 .lesshst
 
+# This will need overrides (see `.kiro/*` above) if there are VMs to keep not managed by
+# colima.
+.lima
 
 {{ if regexMatch "py3\\d+-awscli2 " (output "port" "echo" "active") }}
 .local/bin/aws
@@ -143,6 +166,10 @@ Library/Application Support/lazygit/*
 .local/bin/aws-rotate-iam-keys
 .local/bin/aws-running-instances
 {{ end }}
+
+.local/bin/*(kiro-cli-term)
+.local/bin/kiro-cli*
+.local/bin/mermaidtext
 
 .local/bin/trex
 
@@ -187,6 +214,7 @@ Library/Application Support/lazygit/*
 
 .swiftpm/
 
+.terminao/
 .terraform.d/
 .tig_history
 .twilio-cli

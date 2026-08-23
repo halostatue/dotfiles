@@ -1,13 +1,5 @@
 # chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
 # {{- $apps := includeTemplate "apps" . | fromJson -}}
-# {{- $paths := list }}
-# {{- if $apps.lm_studio -}}
-# {{-   $paths = mustPrepend $paths "${HOME}/.lmstudio/bin" -}}
-# {{- end -}}
-# {{- if (joinPath .chezmoi.homeDir ".nanosandbox/bin/nanosb" | stat) -}}
-# {{-   $paths = mustPrepend $paths "${HOME}/.nanosandbox/bin" -}}
-# {{- end -}}
-# {{- $path := $paths | join ":" -}}
 # shellcheck shell=bash
 
 # Do nothing if not interactive.
@@ -89,12 +81,8 @@ PS1='\[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] '
 # {{- end }}
 
 # {{ if $apps.kiro_cli -}}
-builtin source "${kiro_cli_shell}/bashrc.post.bash"
-unset kiro_cli_shell
+# shellcheck source=/dev/null disable=SC2312
+builtin source "${kiro_cli_shell}/bashrc.post.bash" && builtin unset kiro_cli_shell
 # {{- end }}
 
-# {{ if $path -}}
-export PATH="# {{ $path }}:${PATH}"
-# {{- end }}
-
-# {{/* vim: set ft=bash.chezmoitmpl */}}
+# {{- /* vim: set ft=bash.chezmoitmpl */ -}}

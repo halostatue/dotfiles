@@ -257,15 +257,6 @@ if functions --query is_mac && is_mac && status is-interactive
     end
 end
 
-# {{ if $apps.lm_studio -}}
-fish_add_path --path $HOME/.lmstudio/bin
-# {{- end }}
-# {{- if (joinPath .chezmoi.homeDir ".nanosandbox/bin/nanosb" | stat) -}}
-fish_add_path --path $HOME/.nanosandbox/bin
-# {{- end }}
-
-# {{ if or (lookPath "kiro") (stat "/Applications/Kiro.app") -}}
-string match -q "$TERM_PROGRAM" kiro && source (kiro --locate-shell-integration-path fish)
-# {{- end }}
+# {{ if $apps.kiro }}string match -q "$TERM_PROGRAM" kiro && source (kiro --locate-shell-integration-path fish)# {{ end }}
 
 status is-interactive && emit fish_postexec

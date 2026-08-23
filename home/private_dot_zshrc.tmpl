@@ -1,14 +1,5 @@
 # chezmoi:template:left-delimiter="# {{" right-delimiter="}}"
 # {{- $apps := includeTemplate "apps" . | fromJson -}}
-# {{- $apps := includeTemplate "apps" . | fromJson -}}
-# {{- $paths := list }}
-# {{- if $apps.lm_studio -}}
-# {{-   $paths = mustPrepend $paths "${HOME}/.lmstudio/bin" -}}
-# {{- end -}}
-# {{- if (joinPath .chezmoi.homeDir ".nanosandbox/bin/nanosb" | stat) -}}
-# {{-   $paths = mustPrepend $paths "${HOME}/.nanosandbox/bin" -}}
-# {{- end -}}
-# {{- $path := $paths | join ":" -}}
 # shellcheck shell=bash
 
 # {{ if $apps.kiro_cli -}}
@@ -82,8 +73,4 @@ builtin source "${kiro_cli_shell}/zshrc.post.zsh"
 unset kiro_cli_shell
 # {{- end }}
 
-# {{ if $path -}}
-export PATH="# {{ $path }}:${PATH}"
-# {{- end }}
-
-# {{/* vim: set ft=zsh.chezmoitmpl */}}
+# {{- /* vim: set ft=zsh.chezmoitmpl */ -}}
