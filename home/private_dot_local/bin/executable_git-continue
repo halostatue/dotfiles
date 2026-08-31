@@ -5,27 +5,27 @@ unset -v GREP_OPTIONS
 
 # make a temporary file
 git_extra_mktemp() {
-    mktemp -t "$(basename "$0")".XXXXXXX
+  mktemp -t "$(basename "$0")".XXXXXXX
 }
 
 git_extra_default_branch() {
-    local extras_default_branch init_default_branch
-    extras_default_branch=$(git config --get git-extras.default-branch)
-    init_default_branch=$(git config --get init.defaultBranch)
-    if [ -n "$extras_default_branch" ]; then
-        echo "$extras_default_branch"
-    elif [ -n "$init_default_branch" ]; then
-        echo "$init_default_branch"
-    else
-        echo "main"
-    fi
+  local extras_default_branch init_default_branch
+  extras_default_branch=$(git config --get git-extras.default-branch)
+  init_default_branch=$(git config --get init.defaultBranch)
+  if [ -n "$extras_default_branch" ]; then
+    echo "$extras_default_branch"
+  elif [ -n "$init_default_branch" ]; then
+    echo "$init_default_branch"
+  else
+    echo "main"
+  fi
 }
 #
 # check whether current directory is inside a git repository
 #
 
 is_git_repo() {
-  git rev-parse --show-toplevel > /dev/null 2>&1
+  git rev-parse --show-toplevel >/dev/null 2>&1
   result=$?
   if test $result != 0; then
     >&2 echo 'Not a git repo!'
@@ -42,10 +42,10 @@ gitdir="$(git rev-parse --git-dir)" || exit
 
 discover_op() {
   local op
-  for op in cherry_pick merge rebase revert ; do
-      if [ -f "${gitdir}/${op^^}_HEAD" ]; then
-          echo "${op/_/-}"
-      fi
+  for op in cherry_pick merge rebase revert; do
+    if [ -f "${gitdir}/${op^^}_HEAD" ]; then
+      echo "${op/_/-}"
+    fi
   done
 }
 
@@ -65,12 +65,12 @@ validate_op() {
 }
 
 discover_action() {
-    local action=${1/git-/}
-    if [ "$action" != "abort" ] && [ "$action" != "continue" ]; then
-        echo "Invalid action: $1" >&2
-        exit 1
-    fi
-    echo "$action"
+  local action=${1/git-/}
+  if [ "$action" != "abort" ] && [ "$action" != "continue" ]; then
+    echo "Invalid action: $1" >&2
+    exit 1
+  fi
+  echo "$action"
 }
 
 action=$(discover_action "$(basename "$0")")

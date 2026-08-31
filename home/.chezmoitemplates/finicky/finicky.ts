@@ -360,7 +360,8 @@ if (isWork) {
       match: (url: URL) =>
         (url.hostname.endsWith('.github.com') || url.hostname === 'github.com') &&
         (/\/northernlabs\//i.test(url.pathname) ||
-          /\/fortelabsinc\//i.test(url.pathname)),
+          /\/fortelabsinc\//i.test(url.pathname) ||
+          /\/sfoxhq\//i.test(url.pathname)),
       browser: Browsers.Work,
     },
     {
@@ -370,12 +371,6 @@ if (isWork) {
         url.hostname === 'sfox-ticketing.atlassian.net' ||
         url.hostname === 'sfox.slack.com' ||
         url.hostname.endsWith('.scalyr.com'),
-      browser: Browsers.Work,
-    },
-    {
-      match: (url: URL) =>
-        url.hostname === 'identity.getpostman.com' ||
-        url.hostname === 'forte-io.postman.co',
       browser: Browsers.Work,
     },
     {

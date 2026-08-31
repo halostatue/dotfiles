@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+# https://github.com/garybernhardt/dotfiles
+
+# Print a diff summary like:
+#
+#   $ git diff 'master~10..master' | gn
+#   293 lines of diff
+#   185 lines (+200, -15)
+#   650 words (+10, -660)
+#
+# or:
+#
+#   $ gn my-awesome-patch.diff
+#   293 lines of diff
+#   185 lines (+200, -15)
+#   650 words (+10, -660)
+
+import fileinput
+import re
+
+
+def get_lines(diff_lines):
+    # Added lines start with '+' (but not '+++', because that marks a new
+    # file).  The same goes for removed lines, except '-' instead of '+'.
+    added_lines = [
+        line
+        for line in diff_lines
+        if line.startswith("+") and not line.startswith("+++")
+    ]
+    removed_lines = [
+        line
+        for line in diff_lines
+        if line.startswith("-") and not line.startswith("---")
+    ]
+    added = len(added_lines)
+    removed = len(removed_lines)
+
+    return added - removed, added, added_lines, removed, removed_lines
+
+
+def get_words(added_lines, removed_lines):
+    def word_count(lines):
+        return [
+            word for line in lines for word in line.split() if re.match(r"^\w+", word)
+        ]
+
+    added_words = word_count(added_lines)
+    added = len(added_words)
+    removed_words = word_count(removed_lines)
+    removed = len(removed_words)
+
+    return added - removed, added, added_words, removed, removed_words
+
+
+if __name__ == "__main__":
+    with fileinput.input() as f:
+        diff_lines = list(f)
+
+    print(f"{len(diff_lines)} lines of diff")
+
+    diff, added, added_lines, removed, removed_lines = get_lines(diff_lines)
+    print(f"{diff:+d} lines (+{added}, -{removed})")
+
+    diff, added, _, removed, _ = get_words(added_lines, removed_lines)
+    print(f"{diff:+d} words (+{added}, -{removed})")

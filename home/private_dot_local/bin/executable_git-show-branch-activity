@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 # from: https://github.com/paulirish/dotfiles
 
@@ -51,9 +50,7 @@ def main():
         shortsha = sha[0:7]
 
         print(
-            "{}{}{}  {}{}{} {}({}){}:".format(
-                yellow, branch, reset, red, shortsha, reset, green, committerdate, reset
-            )
+            f"{yellow}{branch}{reset}  {red}{shortsha}{reset} {green}({committerdate}){reset}:"
         )
 
         logoutput = subprocess.check_output(
@@ -63,7 +60,7 @@ def main():
                 "--color=always",
                 "--no-merges",
                 "--pretty=format:'%Cred%h%Creset - %s %Cgreen(%cd) %C(bold blue)<%an>%Creset %C(yellow)%d%Creset'",
-                "origin/main..{}".format(branch),
+                f"origin/main..{branch}",
             ]
         )
         lines = logoutput.decode().split("\n")

@@ -5,27 +5,27 @@ unset -v GREP_OPTIONS
 
 # make a temporary file
 git_extra_mktemp() {
-    mktemp -t "$(basename "$0")".XXXXXXX
+  mktemp -t "$(basename "$0")".XXXXXXX
 }
 
 git_extra_default_branch() {
-    local extras_default_branch init_default_branch
-    extras_default_branch=$(git config --get git-extras.default-branch)
-    init_default_branch=$(git config --get init.defaultBranch)
-    if [ -n "$extras_default_branch" ]; then
-        echo "$extras_default_branch"
-    elif [ -n "$init_default_branch" ]; then
-        echo "$init_default_branch"
-    else
-        echo "main"
-    fi
+  local extras_default_branch init_default_branch
+  extras_default_branch=$(git config --get git-extras.default-branch)
+  init_default_branch=$(git config --get init.defaultBranch)
+  if [ -n "$extras_default_branch" ]; then
+    echo "$extras_default_branch"
+  elif [ -n "$init_default_branch" ]; then
+    echo "$init_default_branch"
+  else
+    echo "main"
+  fi
 }
 #
 # check whether current directory is inside a git repository
 #
 
 is_git_repo() {
-  git rev-parse --show-toplevel > /dev/null 2>&1
+  git rev-parse --show-toplevel >/dev/null 2>&1
   result=$?
   if test $result != 0; then
     >&2 echo 'Not a git repo!'
@@ -43,20 +43,20 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
 ARCHIVE_NAME=$(basename "$(git rev-parse --show-toplevel)")
 
 if [[ $BRANCH = tags* ]]; then
-    BRANCH=$(git describe)
-    echo Building for tag "\"$BRANCH\""
-    FILENAME=$ARCHIVE_NAME.$BRANCH.zip
+  BRANCH=$(git describe)
+  echo Building for tag "\"$BRANCH\""
+  FILENAME=$ARCHIVE_NAME.$BRANCH.zip
 else
-    echo Building archive on branch "\"$BRANCH\""
-    # get a version string, so archives will not be overwritten when creating
-    # many of them
-    VERSION=$(git describe --always --long)
-    # if not on master append branch name into the filename
-    if [ "$BRANCH" = "$(git_extra_default_branch)" ]; then
-        FILENAME=$ARCHIVE_NAME.$VERSION.zip
-    else
-        FILENAME=$ARCHIVE_NAME.$VERSION.$BRANCH.zip
-    fi
+  echo Building archive on branch "\"$BRANCH\""
+  # get a version string, so archives will not be overwritten when creating
+  # many of them
+  VERSION=$(git describe --always --long)
+  # if not on master append branch name into the filename
+  if [ "$BRANCH" = "$(git_extra_default_branch)" ]; then
+    FILENAME=$ARCHIVE_NAME.$VERSION.zip
+  else
+    FILENAME=$ARCHIVE_NAME.$VERSION.$BRANCH.zip
+  fi
 fi
 
 # rename invalid chars for the file path

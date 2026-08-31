@@ -5,20 +5,20 @@ unset -v GREP_OPTIONS
 
 # make a temporary file
 git_extra_mktemp() {
-    mktemp -t "$(basename "$0")".XXXXXXX
+  mktemp -t "$(basename "$0")".XXXXXXX
 }
 
 git_extra_default_branch() {
-    local extras_default_branch init_default_branch
-    extras_default_branch=$(git config --get git-extras.default-branch)
-    init_default_branch=$(git config --get init.defaultBranch)
-    if [ -n "$extras_default_branch" ]; then
-        echo "$extras_default_branch"
-    elif [ -n "$init_default_branch" ]; then
-        echo "$init_default_branch"
-    else
-        echo "main"
-    fi
+  local extras_default_branch init_default_branch
+  extras_default_branch=$(git config --get git-extras.default-branch)
+  init_default_branch=$(git config --get init.defaultBranch)
+  if [ -n "$extras_default_branch" ]; then
+    echo "$extras_default_branch"
+  elif [ -n "$init_default_branch" ]; then
+    echo "$init_default_branch"
+  else
+    echo "main"
+  fi
 }
 
 GIT_DIR=$(git rev-parse --git-dir 2>/dev/null)
@@ -103,41 +103,40 @@ add_patterns() {
   local file="${1/#~/$HOME}"
   dir_name=$(dirname "$file")
   if [ ! -d "$dir_name" ]; then
-      mkdir -p "$dir_name"
+    mkdir -p "$dir_name"
   fi
   if [ -s "$file" ]; then
-      # If the content of $file doesn't end with a newline, add one
-      test "$(tail -c 1 "$file")" != "" && echo "" >> "$file"
+    # If the content of $file doesn't end with a newline, add one
+    test "$(tail -c 1 "$file")" != "" && echo "" >>"$file"
   fi
   for pattern in "${@:2}"; do
     echo "... adding '$pattern'"
-    (test -f "$file" && test "$pattern" && grep -q -F -x -- "$pattern" "$file") || echo "$pattern" >> "$file"
+    (test -f "$file" && test "$pattern" && grep -q -F -x -- "$pattern" "$file") || echo "$pattern" >>"$file"
   done
 }
 
 if test $# -eq 0; then
-   show_global
-   echo "---------------------------------"
-   show_local
-   echo "---------------------------------"
-   show_private
+  show_global
+  echo "---------------------------------"
+  show_local
+  echo "---------------------------------"
+  show_private
 else
   case "$1" in
-    -l|--local)
-      test $# -gt 1 && add_local "${@:2}" && echo
-      show_local
-      ;;
-    -g|--global)
-      test $# -gt 1 && add_global "${@:2}" && echo
-      show_global
-      ;;
-    -p|--private)
-      test $# -gt 1 && add_private "${@:2}" && echo
-      show_private
-      ;;
-    *)
-      add_local "$@"
-      ;;
+  -l | --local)
+    test $# -gt 1 && add_local "${@:2}" && echo
+    show_local
+    ;;
+  -g | --global)
+    test $# -gt 1 && add_global "${@:2}" && echo
+    show_global
+    ;;
+  -p | --private)
+    test $# -gt 1 && add_private "${@:2}" && echo
+    show_private
+    ;;
+  *)
+    add_local "$@"
+    ;;
   esac
 fi
-

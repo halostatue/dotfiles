@@ -1,9 +1,9 @@
 def Array.toy(n = 10, &block)
-  Array.new(n, &block || -> { _1 + 1 })
+  Array.new(n, &block || -> { it + 1 })
 end
 
 def Hash.toy(n = 10)
-  Array.toy(n) { (97 + _1).chr }.zip(Array.toy(n)).to_h
+  Array.toy(n) { (97 + it).chr }.zip(Array.toy(n)).to_h
 end
 
 def maybe
@@ -43,9 +43,9 @@ if defined?(ObjectSpace)
     children = {}
     maxlength = root.to_s.length
     ObjectSpace.each_object(Class) do
-      if root != _1 && _1.ancestors.include?(root)
-        (children[_1.superclass] ||= []) << _1
-        maxlength = _1.to_s.length if _1.to_s.length > maxlength
+      if root != it && it.ancestors.include?(root)
+        (children[it.superclass] ||= []) << it
+        maxlength = it.to_s.length if it.to_s.length > maxlength
       end
     end
     maxlength += 3
@@ -74,7 +74,7 @@ if defined?(ObjectSpace)
             s = "#{c[:lines]}#{indentation}|#{ind}"
           end
 
-          "#{prefix.tr("`", " ")}#{s}#{c[:dots]}:.. #{c[:method_names]}#{_1}"
+          "#{prefix.tr("`", " ")}#{s}#{c[:dots]}:.. #{c[:method_names]}#{it}"
         }
 
         strings[0] = "#{prefix}#{c[:lines]}- #{c[:class_names]}#{current_root} #{c[:dots]}"
@@ -106,8 +106,8 @@ if defined?(ObjectSpace)
       if !children[current_root].nil?
         children[current_root].sort_by!(&:to_s)
         children[current_root].each do
-          s = (_1 == children[current_root].last) ? "`" : "|"
-          rprint.call(_1, "#{prefix.tr("`", " ")}#{indentation}#{c[:lines]}#{s}")
+          s = (it == children[current_root].last) ? "`" : "|"
+          rprint.call(it, "#{prefix.tr("`", " ")}#{indentation}#{c[:lines]}#{s}")
         end
       end
     }

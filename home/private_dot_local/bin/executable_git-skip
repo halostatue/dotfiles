@@ -9,12 +9,14 @@
 #
 # http://stackoverflow.com/questions/13630849/git-difference-between-assume-unchanged-and-skip-worktree/13631525#13631525
 
+set -euo pipefile
+
 declare mode root
 
 if (($#)); then
   case "$1" in
-    list | ls) mode=list;;
-    add )) mode=add ;;
+  list | ls) mode=list ;;
+  add) mode=add ;;
   remove | rm) mode=remove ;;
   *)
     echo >&2 "Error: Unknown git-skip subcommand '$1'"
@@ -32,7 +34,11 @@ git-skip-list() {
 }
 
 case "${mode}" in
-  list) git-skip-list ;;
-  add) git update-index --skip-worktree "$@" ;;
-  remove) git update-index --no-skip-worktre "$@" ;;
+list) git-skip-list ;;
+add) git update-index --skip-worktree "$@" ;;
+remove) git update-index --no-skip-worktre "$@" ;;
+*)
+  echo >&2 "Error: Unknown git-skip subcommand '$1'"
+  exit 1
+  ;;
 esac

@@ -5,24 +5,41 @@ _default:
 
 # Format various files
 format:
-    @npx --yes @biomejs/biome@2 check --config-path=biome.json --write biome.json
-    @npx --yes @biomejs/biome@2 check --config-path=biome.json --fix \
-      home/.chezmoitemplates/finicky/finicky.ts
-    @shfmt -w home/.chezmoiscripts/* lib/lib.bash
-    @ruff check --fix \
-      home/private_dot_local/bin/executable_git-blame-colored \
-      home/private_dot_local/bin/executable_git-show-branch-activity \
-      home/private_dot_local/bin/executable_it2api \
-      home/private_dot_local/bin/executable_linkoln
-    @ruff format \
-      home/private_dot_local/bin/executable_git-blame-colored \
-      home/private_dot_local/bin/executable_git-show-branch-activity \
-      home/private_dot_local/bin/executable_it2api \
-      home/private_dot_local/bin/executable_linkoln
-    @standardrb --fix lib/update.rb \
-      home/private_dot_local/bin/executable_git-cleanup \
-      home/private_dot_local/bin/executable_git-wtf \
-      home/private_dot_local/bin/executable_nato
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    biome() {
+      command npx --yes @biomejs/biome@2 "$@"
+    }
+
+    mapfile -t managed < <(chezmoi managed --path-style source-absolute)
+
+    find_files() {
+      local ext shebang
+      ext="${1}"
+      shebang="${2}"
+      shift 2
+
+      {
+        [[ -n "$ext" ]] && fd -H -e "$ext"
+        [[ -n "$shebang" ]] && rg -l -m1 "$shebang" "${managed[@]}" 2>/dev/null
+        (($#)) && printf '%s\n' "$@"
+      } | sort -u
+    }
+
+    biome migrate --config-path=biome.json --write
+    biome check --config-path=biome.json --write biome.json
+    biome check --config-path=biome.json --fix home/.chezmoitemplates/finicky/finicky.ts
+
+    find_files sh.tmpl '' lib/lib.bash | xargs shfmt -w
+    # find_files '' '^#!.*\bbash' | xargs shfmt -w
+
+    mapfile -t pythons < <(find_files py '^#!.*\bpython\d?' home/private_dot_pythonrc)
+
+    ruff check --fix "${pythons[@]}"
+
+    mapfile -t rubies < <(find_files rb '^#!.*ruby' lib/update.rb)
+    standardrb --fix "${rubies[@]}"
 
 # Update all package files
 update-packages: ports homebrew rust code ruby python gh-extensions

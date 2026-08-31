@@ -2,6 +2,7 @@
 
 import subprocess
 from sys import argv
+from typing import ClassVar
 
 from colored import attr, bg, fg
 from pygments import highlight
@@ -63,15 +64,12 @@ PURPLE = "#b294bb"
 
 
 class base16_tomorrow_dark(Style):
-    default_style = ""
+    default_style: ClassVar[str] = ""
 
-    background_color = BACKGROUND
-    highlight_color = SELECTION
+    background_color: ClassVar[str] = BACKGROUND
+    highlight_color: ClassVar[str] = SELECTION
 
-    background_color = BACKGROUND
-    highlight_color = SELECTION
-
-    styles = {
+    styles: ClassVar[dict] = {
         # No corresponding class for the following:
         Text: FOREGROUND,  # class:  ''
         Whitespace: "",  # class: 'w'
@@ -159,10 +157,14 @@ def lines_starting_with(all_lines, prefix):
 def main():
     cmd.extend(argv[1:])
 
-    gbl_raw = subprocess.run(cmd, stdout=subprocess.PIPE).stdout.decode().split("\n")
+    gbl_raw = (
+        subprocess.run(cmd, stdout=subprocess.PIPE, check=False)
+        .stdout.decode()
+        .split("\n")
+    )
     code = "\n".join(lines_starting_with(gbl_raw, "\t"))
     authors_by_line = lines_starting_with(gbl_raw, "author ")
-    authors_unique = sorted(list(set(authors_by_line)))
+    authors_unique = sorted(set(authors_by_line))
 
     formatter = Terminal256Formatter(style=base16_tomorrow_dark)
     highlighted_raw = highlight(code, guess_lexer(code), formatter)

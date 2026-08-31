@@ -16,7 +16,7 @@ git_args=()
 
 # Handle displaying diffs side by side on demand.
 for arg in "${@}"; do
-  if [ "${arg}" = "--side" ]; then
+  if [[ "${arg}" = "--side" ]]; then
     export DELTA_FEATURES="${DELTA_FEATURES} side-by-side"
   else
     git_args+=("${arg}")
