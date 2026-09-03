@@ -1,0 +1,734 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/inline"
+
+gemfile do
+  source "https://rubygems.org"
+  gem "octokit"
+  gem "faraday-retry"
+end
+
+require "json"
+require "open3"
+require "optparse"
+require "uri"
+
+class RepoTool
+  RESOURCES = {
+    settings: {type: :hash, desc: "General settings", default: true},
+    rulesets: {type: :array, desc: "Branch and tag rule sets", default: true},
+    labels: {type: :array, desc: "Issue and pull-request labels", default: true},
+    topics: {type: :array, desc: "Topics", default: true},
+    autolinks: {type: :array, desc: "Auto-linked text patterns", default: true},
+    actions_permissions: {type: :hash, desc: "Permissions for actions", default: true},
+    actions_variables: {type: :array, desc: "Variables defined for actions", default: true},
+    collaborators: {type: :hash, desc: "Collaborators on the repo with permissions level", default: false},
+    environments: {type: :array, desc: "Environments with variables and defined secrets", default: false}
+  }.freeze
+
+  ALL_RESOURCES = RESOURCES.keys.freeze
+  DEFAULT_RESOURCES = RESOURCES.select { |_, meta| meta[:default] }.keys.freeze
+  RESOURCE_KIND = RESOURCES.transform_values { it[:type] }.freeze
+
+  SETTINGS_FIELDS = %i[
+    has_issues has_projects has_downloads has_wiki has_pages has_discussions
+    is_template allow_squash_merge allow_merge_commit allow_rebase_merge
+    allow_auto_merge delete_branch_on_merge allow_update_branch
+    use_squash_pr_title_as_default squash_merge_commit_message
+    squash_merge_commit_title merge_commit_message merge_commit_title
+    security_and_analysis
+  ].freeze
+
+  RULESET_FIELDS = %i[name target enforcement bypass_actors conditions rules].freeze
+
+  PERMISSION_RANK = %i[pull triage push maintain admin].freeze
+
+  def run(argv)
+    mode, *rest = argv
+    usage(1) if mode.nil?
+
+    case mode
+    when "copy" then mode_copy(rest)
+    when "save" then mode_save(rest)
+    when "apply" then mode_apply(rest)
+    when "-?", "-h", "--help", "help" then usage(0)
+    else usage(1)
+    end
+  end
+
+  private
+
+  def bn0
+    @bn0 ||= File.basename($PROGRAM_NAME)
+  end
+
+  def resource_listing
+    width = RESOURCES.keys.map { it.to_s.length }.max
+
+    RESOURCES.map do |name, meta|
+      tag = meta[:default] ? "" : " *"
+      "  #{name.to_s.ljust(width)}  #{meta[:desc]}#{tag}"
+    end.join("\n") + "\n\n  * Excluded by default, use --only or --include."
+  end
+
+  def usage(code)
+    puts <<~USAGE
+      Usage: #{bn0} MODE [OPTIONS] ARGS...
+
+      Work with settings and resources on a GitHub repo.
+
+      Modes:
+        copy [OPTIONS] [SOURCE] TARGET    Copy from SOURCE to TARGET repo
+        save [OPTIONS] [SOURCE] [FILE]    Save from SOURCE repo to FILE
+        apply [OPTIONS] [TARGET] FILE...  Apply from FILE(s) to TARGET repo
+
+      OPTIONS:
+        -q, --quiet             Suppress routine progress output (all modes)
+        -o, --only=RES,RES      Handle only these resources (copy/apply)
+        -x, --exclude=RES,RES   Handle the default resources except these (copy/apply)
+        -i, --include=RES,RES   Handle the default resources plus these (copy/apply)
+
+      RESOURCES:
+      #{resource_listing}
+
+      Rulesets include an equivalent ruleset migrated (read-only) from classic
+      default-branch protection, if the branch has any.
+
+      SOURCE/TARGET default to the repo in the current directory when omitted,
+      and may be given as a local git directory (resolved via gh) or an owner/repo
+      string.
+
+      The default FILENAME is '{owner}-{repo}.json'.
+
+      Examples:
+        #{bn0} copy halostatue/source halostatue/target
+        #{bn0} copy --exclude=topics ../source .
+        #{bn0} save halostatue/source
+        #{bn0} apply --only=labels,topics halostatue/target base.json overrides.json
+        #{bn0} copy --include=collaborators halostatue/source halostatue/target
+    USAGE
+
+    exit code
+  end
+
+  # -- GitHub client -------------------------------------------------------
+
+  def which(cmd)
+    ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).each do |dir|
+      path = File.join(dir, cmd)
+      return path if File.file?(path) && File.executable?(path)
+    end
+
+    nil
+  end
+
+  def gh_available?
+    return @gh_available unless @gh_available.nil?
+
+    @gh_available = !which("gh").nil?
+  end
+
+  def env_token
+    [ENV["GH_TOKEN"], ENV["GITHUB_TOKEN"]].find { it && !it.empty? }
+  end
+
+  def gh_token
+    abort "Error: no GH_TOKEN/GITHUB_TOKEN set and 'gh' is not installed" unless gh_available?
+
+    output, status = Open3.capture2e("gh", "auth", "token")
+    abort "Error: failed to get gh auth token (#{output.strip})" unless status.success?
+
+    output.strip
+  end
+
+  def client
+    @client ||= Octokit::Client.new(access_token: env_token || gh_token, auto_paginate: true)
+  end
+
+  def deep_to_h(obj)
+    case obj
+    when Sawyer::Resource
+      obj.to_h.transform_values { deep_to_h(it) }
+    when Hash
+      obj.transform_values { deep_to_h(it) }
+    when Array
+      obj.map { deep_to_h(it) }
+    else
+      obj
+    end
+  end
+
+  def get(path, params = {}) = deep_to_h(client.get(path, params))
+
+  # -- repo resolution -------------------------------------------------------
+
+  def repo_name_from_gh
+    output, status = Open3.capture2e("gh", "repo", "view", "--json", "nameWithOwner", "--jq", ".nameWithOwner")
+    return nil unless status.success?
+
+    name = output.strip
+    name.empty? ? nil : name
+  end
+
+  # Fallback for when `gh` isn't installed. Only handles the two remote URL
+  # shapes that matter: https?://host/.../owner/repo(.git)? and
+  # [user@]host:owner/repo(.git)? (scp-like syntax, including custom SSH
+  # config Host aliases in place of a real hostname). Doesn't resolve SSH
+  # aliases to a real host the way `gh` does -- it doesn't need to, since
+  # owner/repo is just the last two path segments regardless of what the
+  # host portion says.
+  def parse_owner_repo(url)
+    parts = url.strip.delete_suffix(".git").split(%r{[:/]}).reject(&:empty?)
+    parts.last(2).join("/") if parts.length >= 2
+  end
+
+  def repo_name_from_local_git
+    %w[origin upstream].each do |remote|
+      output, status = Open3.capture2e("git", "remote", "get-url", remote)
+      next unless status.success?
+
+      parsed = parse_owner_repo(output)
+      return parsed if parsed
+    end
+
+    nil
+  end
+
+  def resolve_repo(arg)
+    if File.exist?(arg)
+      return nil unless File.directory?(File.join(arg, ".git"))
+
+      Dir.chdir(arg) { gh_available? ? repo_name_from_gh : repo_name_from_local_git }
+    elsif !arg.start_with?(".", "/") && arg.count("/") == 1
+      arg
+    end
+  end
+
+  def require_repo(arg)
+    resolve_repo(arg) || abort("Error: '#{arg}' is not a git directory (with a GitHub remote) or an owner/repo string")
+  end
+
+  # stderr, not stdout -- stdout is reserved for actual data (the JSON when
+  # FILE is "-"), so progress narration can never corrupt a piped output.
+  def log(msg)
+    warn msg unless @quiet
+  end
+
+  # -q is accepted by all three modes; -o/-x/-i (added by
+  # extract_resource_filter) only make sense for copy/apply.
+  def base_option_parser
+    OptionParser.new do |opts|
+      opts.on("-q", "--quiet", "Suppress routine progress output") { @quiet = true }
+    end
+  end
+
+  def parse_options!(args)
+    args = args.dup
+    base_option_parser.parse!(args)
+    args
+  rescue OptionParser::ParseError => e
+    abort "Error: #{e.message}"
+  end
+
+  def select_resources(only:, exclude:, include:)
+    if only
+      ALL_RESOURCES & only
+    else
+      (DEFAULT_RESOURCES - (exclude || [])) | (include || [])
+    end
+  end
+
+  # copy/apply only -- decides what gets *applied*, never what gets fetched
+  # (collect always fetches everything; see collect below).
+  def extract_resource_filter(args)
+    args = args.dup
+    only = exclude = include = nil
+
+    parser = base_option_parser
+    parser.on("-o", "--only=RES,RES", Array, "Handle only these resources") { |list| only = list.map(&:to_sym) }
+    parser.on("-x", "--exclude=RES,RES", Array, "Handle the default resources except these") { |list| exclude = list.map(&:to_sym) }
+    parser.on("-i", "--include=RES,RES", Array, "Handle the default resources plus these") { |list| include = list.map(&:to_sym) }
+
+    begin
+      parser.parse!(args)
+    rescue OptionParser::ParseError => e
+      abort "Error: #{e.message}"
+    end
+
+    unknown = ((only || []) + (exclude || []) + (include || [])) - ALL_RESOURCES
+    abort "Error: unknown resource(s) #{unknown.join(", ")} (known: #{ALL_RESOURCES.join(", ")})" unless unknown.empty?
+
+    [args, select_resources(only:, exclude:, include:)]
+  end
+
+  # Always fetches every resource, regardless of --only/--exclude/--include --
+  # those only ever filter what gets applied/written, never what gets read.
+  def collect(repo)
+    ALL_RESOURCES.each_with_object({}) do |res, acc|
+      log "Fetching #{res} from #{repo}..."
+      acc[res] = send(:"fetch_#{res}", repo)
+    end
+  end
+
+  # FILE may be "-" to mean stdin.
+  def read_json_source(file)
+    content =
+      if file == "-"
+        log "Loading from stdin..."
+        $stdin.read
+      else
+        abort "Error: #{file} not found" unless File.file?(file)
+        log "Loading #{file}..."
+        File.read(file)
+      end
+
+    JSON.parse(content, symbolize_names: true)
+  rescue JSON::ParserError => e
+    abort "Error: invalid JSON in #{file}: #{e.message}"
+  end
+
+  def resolve_from_to(args)
+    usage(1) if args.empty? || args.length > 2
+
+    if args.length == 1
+      [require_repo("."), require_repo(args[0])]
+    else
+      [require_repo(args[0]), require_repo(args[1])]
+    end
+  end
+
+  def repo_org(repo) = repo.split("/", 2).first
+
+  def highest_permission(perms)
+    return "pull" unless perms
+
+    (PERMISSION_RANK.rfind { perms[it] } || :pull).to_s
+  end
+
+  def deep_merge(a, b)
+    a.merge(b) { |_, av, bv| (av.is_a?(Hash) && bv.is_a?(Hash)) ? deep_merge(av, bv) : bv }
+  end
+
+  # -- settings --------------------------------------------------------------
+
+  def fetch_settings(repo)
+    get("repos/#{repo}").slice(*SETTINGS_FIELDS)
+  rescue Octokit::Error => e
+    abort "Error: failed to fetch settings from #{repo}: #{e.message}"
+  end
+
+  def apply_settings(repo, settings)
+    log "Applying settings to #{repo}..."
+    client.patch("repos/#{repo}", settings)
+  rescue Octokit::Error => e
+    abort "Error: failed to apply settings to #{repo}: #{e.message}"
+  end
+
+  # -- rulesets ----------------------------------------------------------------
+
+  def fetch_rulesets(repo)
+    ids = get("repos/#{repo}/rulesets").map { it[:id] }
+    rulesets = ids.map { get("repos/#{repo}/rulesets/#{it}").slice(*RULESET_FIELDS) }
+
+    migrated = migrate_branch_protection(repo)
+    rulesets << migrated if migrated
+
+    rulesets
+  rescue Octokit::Error => e
+    abort "Error: failed to fetch rulesets from #{repo}: #{e.message}"
+  end
+
+  def apply_rulesets(repo, rulesets)
+    rulesets ||= []
+    if rulesets.empty?
+      log "No rulesets to apply"
+      return
+    end
+
+    rulesets.each do |rs|
+      log "Creating ruleset: #{rs[:name]}"
+      client.post("repos/#{repo}/rulesets", rs)
+    rescue Octokit::Error => e
+      warn "Warning: failed to create ruleset #{rs[:name]} on #{repo}: #{e.message}"
+    end
+  end
+
+  # -- classic branch protection: read-only, migrated into a ruleset -------------
+  #
+  # Classic branch protection is deprecated in favor of rulesets, so this never
+  # writes protection back -- it only reads the default branch's protection (if
+  # any) and folds an equivalent ruleset into fetch_rulesets's result. Push
+  # restrictions (an allow-list of who *can* push) have no ruleset equivalent
+  # (rulesets express who's exempt, not who's allowed) and enforce_admins maps
+  # to "no bypass actors" only approximately, so both are flagged rather than
+  # guessed at.
+
+  def migrate_branch_protection(repo)
+    branch = get("repos/#{repo}")[:default_branch]
+    protection = get("repos/#{repo}/branches/#{branch}/protection")
+    ruleset_from_branch_protection(repo, branch, protection)
+  rescue Octokit::NotFound
+    warn "Warning: skipping branch protection migration on #{repo} (no protection on #{branch}, or lacks admin access)"
+    nil
+  end
+
+  def ruleset_from_branch_protection(repo, branch, protection)
+    rules = []
+
+    if (sc = protection[:required_status_checks])
+      rules << {
+        type: "required_status_checks",
+        parameters: {
+          strict_required_status_checks_policy: sc[:strict] || false,
+          required_status_checks: (sc[:checks] || []).map { {context: it[:context], integration_id: it[:app_id]}.compact }
+        }
+      }
+    end
+
+    if (pr = protection[:required_pull_request_reviews])
+      rules << {
+        type: "pull_request",
+        parameters: {
+          dismiss_stale_reviews_on_push: pr[:dismiss_stale_reviews] || false,
+          require_code_owner_review: pr[:require_code_owner_reviews] || false,
+          require_last_push_approval: pr[:require_last_push_approval] || false,
+          required_approving_review_count: pr[:required_approving_review_count] || 0,
+          required_review_thread_resolution: protection.dig(:required_conversation_resolution, :enabled) || false
+        }
+      }
+    end
+
+    rules << {type: "required_linear_history"} if protection.dig(:required_linear_history, :enabled)
+    rules << {type: "required_signatures"} if protection.dig(:required_signatures, :enabled)
+    rules << {type: "deletion"} unless protection.dig(:allow_deletions, :enabled)
+    rules << {type: "non_fast_forward"} unless protection.dig(:allow_force_pushes, :enabled)
+
+    return nil if rules.empty?
+
+    if protection[:restrictions]
+      warn "Warning: #{repo}##{branch} branch protection has push restrictions -- not translatable to a ruleset, skipped"
+    end
+
+    unless protection.dig(:enforce_admins, :enabled)
+      warn "Warning: #{repo}##{branch} branch protection did not enforce for admins -- the migrated ruleset has no " \
+           "bypass actors, so it WILL apply to admins too; review bypass_actors if that's not wanted"
+    end
+
+    {
+      name: "Migrated from branch protection: #{branch}",
+      target: "branch",
+      enforcement: "active",
+      bypass_actors: [],
+      conditions: {ref_name: {include: ["refs/heads/#{branch}"], exclude: []}},
+      rules:
+    }
+  end
+
+  # -- labels ------------------------------------------------------------------
+
+  def fetch_labels(repo)
+    get("repos/#{repo}/labels").map { it.slice(:name, :color, :description) }
+  rescue Octokit::Error => e
+    abort "Error: failed to fetch labels from #{repo}: #{e.message}"
+  end
+
+  def apply_labels(repo, labels)
+    labels ||= []
+    if labels.empty?
+      log "No labels to apply"
+      return
+    end
+
+    log "Applying labels to #{repo}..."
+
+    labels.each do |label|
+      client.post("repos/#{repo}/labels", label)
+    rescue Octokit::UnprocessableEntity
+      encoded = URI.encode_www_form_component(label[:name])
+      client.patch("repos/#{repo}/labels/#{encoded}", label.except(:name))
+    rescue Octokit::Error => e
+      warn "Warning: failed to apply label #{label[:name]} to #{repo}: #{e.message}"
+    end
+  end
+
+  # -- topics ------------------------------------------------------------------
+
+  def fetch_topics(repo)
+    get("repos/#{repo}/topics")[:names] || []
+  rescue Octokit::Error => e
+    abort "Error: failed to fetch topics from #{repo}: #{e.message}"
+  end
+
+  def apply_topics(repo, topics)
+    log "Applying topics to #{repo}..."
+    client.put("repos/#{repo}/topics", names: topics || [])
+  rescue Octokit::Error => e
+    abort "Error: failed to apply topics to #{repo}: #{e.message}"
+  end
+
+  # -- autolinks ---------------------------------------------------------------
+
+  def fetch_autolinks(repo)
+    get("repos/#{repo}/autolinks").map { it.slice(:key_prefix, :url_template, :is_alphanumeric) }
+  rescue Octokit::NotFound
+    warn "Warning: skipping autolinks on #{repo} (likely lacks admin access)"
+    []
+  rescue Octokit::Error => e
+    abort "Error: failed to fetch autolinks from #{repo}: #{e.message}"
+  end
+
+  def apply_autolinks(repo, autolinks)
+    autolinks ||= []
+    if autolinks.empty?
+      log "No autolinks to apply"
+      return
+    end
+
+    log "Applying autolinks to #{repo}..."
+
+    autolinks.each do |al|
+      client.post("repos/#{repo}/autolinks", al)
+    rescue Octokit::Error => e
+      warn "Warning: failed to create autolink #{al[:key_prefix]} on #{repo}: #{e.message}"
+    end
+  end
+
+  # -- actions permissions -------------------------------------------------------
+
+  def fetch_actions_permissions(repo)
+    perms = get("repos/#{repo}/actions/permissions")
+    perms[:selected_actions] = get("repos/#{repo}/actions/permissions/selected-actions") if perms[:allowed_actions] == "selected"
+    perms[:workflow_permissions] = get("repos/#{repo}/actions/permissions/workflow")
+    perms
+  rescue Octokit::NotFound
+    warn "Warning: skipping actions permissions on #{repo} (likely lacks admin access)"
+    {}
+  rescue Octokit::Error => e
+    abort "Error: failed to fetch actions permissions from #{repo}: #{e.message}"
+  end
+
+  def apply_actions_permissions(repo, perms)
+    return if perms.nil? || perms.empty?
+
+    log "Applying actions permissions to #{repo}..."
+    perms = perms.dup
+    selected = perms.delete(:selected_actions)
+    workflow = perms.delete(:workflow_permissions)
+
+    client.put("repos/#{repo}/actions/permissions", perms)
+    client.put("repos/#{repo}/actions/permissions/selected-actions", selected) if selected
+    client.put("repos/#{repo}/actions/permissions/workflow", workflow) if workflow
+  rescue Octokit::Error => e
+    abort "Error: failed to apply actions permissions to #{repo}: #{e.message}"
+  end
+
+  # -- actions variables -----------------------------------------------------------
+
+  def fetch_actions_variables(repo)
+    (get("repos/#{repo}/actions/variables")[:variables] || []).map { it.slice(:name, :value) }
+  rescue Octokit::NotFound
+    warn "Warning: skipping actions variables on #{repo} (likely lacks admin access)"
+    []
+  rescue Octokit::Error => e
+    abort "Error: failed to fetch actions variables from #{repo}: #{e.message}"
+  end
+
+  def apply_actions_variables(repo, variables)
+    variables ||= []
+    if variables.empty?
+      log "No actions variables to apply"
+      return
+    end
+
+    log "Applying actions variables to #{repo}..."
+
+    variables.each do |var|
+      client.post("repos/#{repo}/actions/variables", var)
+    rescue Octokit::UnprocessableEntity
+      client.patch("repos/#{repo}/actions/variables/#{var[:name]}", value: var[:value])
+    rescue Octokit::Error => e
+      warn "Warning: failed to apply variable #{var[:name]} to #{repo}: #{e.message}"
+    end
+  end
+
+  # -- collaborators (opt-in only: --only=collaborators -- grants access) --------
+
+  def fetch_collaborators(repo)
+    users =
+      begin
+        get("repos/#{repo}/collaborators", affiliation: "direct").map do |c|
+          {login: c[:login], permission: highest_permission(c[:permissions])}
+        end
+      rescue Octokit::NotFound
+        warn "Warning: skipping direct collaborators on #{repo} (likely lacks admin access)"
+        []
+      end
+
+    teams =
+      begin
+        get("repos/#{repo}/teams").map do |t|
+          {slug: t[:slug], permission: highest_permission(t[:permissions])}
+        end
+      rescue Octokit::NotFound
+        warn "Warning: skipping team access on #{repo} (likely lacks admin access)"
+        []
+      end
+
+    {users:, teams:, source_org: repo_org(repo)}
+  rescue Octokit::Error => e
+    abort "Error: failed to fetch collaborators from #{repo}: #{e.message}"
+  end
+
+  def apply_collaborators(repo, data)
+    target_org = repo_org(repo)
+
+    (data[:users] || []).each do |u|
+      client.put("repos/#{repo}/collaborators/#{u[:login]}", permission: u[:permission])
+    rescue Octokit::Error => e
+      warn "Warning: failed to add collaborator #{u[:login]} to #{repo}: #{e.message}"
+    end
+
+    (data[:teams] || []).each do |t|
+      if data[:source_org] != target_org
+        warn "Warning: skipping team @#{data[:source_org]}/#{t[:slug]} - #{repo} is in a different org (#{target_org})"
+        next
+      end
+
+      client.put("orgs/#{target_org}/teams/#{t[:slug]}/repos/#{repo}", permission: t[:permission])
+    rescue Octokit::Error => e
+      warn "Warning: failed to grant team #{t[:slug]} access to #{repo}: #{e.message}"
+    end
+  end
+
+  # -- environments (opt-in only: --only=environments -- reviewers grant access) --
+
+  def fetch_environments(repo)
+    envs = get("repos/#{repo}/environments")[:environments] || []
+    source_org = repo_org(repo)
+
+    envs.map do |env|
+      rules = env[:protection_rules] || []
+      wait_timer = rules.find { it[:type] == "wait_timer" }&.dig(:wait_timer) || 0
+      reviewers = rules.select { it[:type] == "required_reviewers" }
+        .flat_map { it[:reviewers] || [] }
+        .map { {type: it[:type], id: it.dig(:reviewer, :id)} }
+
+      {
+        name: env[:name],
+        wait_timer:,
+        reviewers:,
+        deployment_branch_policy: env[:deployment_branch_policy],
+        source_org:
+      }
+    end
+  rescue Octokit::Error => e
+    abort "Error: failed to fetch environments from #{repo}: #{e.message}"
+  end
+
+  def apply_environments(repo, envs)
+    envs ||= []
+    if envs.empty?
+      log "No environments to apply"
+      return
+    end
+
+    target_org = repo_org(repo)
+
+    envs.each do |env|
+      reviewers = (env[:reviewers] || []).filter_map do |r|
+        next {id: r[:id]} if r[:type] == "User"
+        next nil if env[:source_org] != target_org
+
+        {id: r[:id]}
+      end
+
+      body = {
+        wait_timer: env[:wait_timer],
+        reviewers:,
+        deployment_branch_policy: env[:deployment_branch_policy]
+      }
+
+      log "Creating environment: #{env[:name]}"
+      client.put("repos/#{repo}/environments/#{URI.encode_www_form_component(env[:name])}", body)
+    rescue Octokit::Error => e
+      warn "Warning: failed to create environment #{env[:name]} on #{repo}: #{e.message}"
+    end
+  end
+
+  # -- modes -------------------------------------------------------------------
+
+  def mode_copy(args)
+    args, resources = extract_resource_filter(args)
+    from, to = resolve_from_to(args)
+
+    collected = collect(from)
+    resources.each { |res| send(:"apply_#{res}", to, collected[res]) }
+
+    log "Done!"
+  end
+
+  def mode_save(args)
+    args = parse_options!(args)
+    usage(1) if args.length > 2
+
+    from, file =
+      case args.length
+      when 0
+        f = require_repo(".")
+        [f, "#{f.tr("/", "-")}.json"]
+      when 1
+        if (candidate = resolve_repo(args[0]))
+          [candidate, "#{candidate.tr("/", "-")}.json"]
+        else
+          [require_repo("."), args[0]]
+        end
+      when 2
+        [require_repo(args[0]), args[1]]
+      end
+
+    json = JSON.pretty_generate(collect(from))
+
+    if file == "-"
+      puts json
+    else
+      File.write(file, json)
+      log "Settings saved to #{file}"
+    end
+  end
+
+  def mode_apply(args)
+    args, resources = extract_resource_filter(args)
+    usage(1) if args.empty?
+
+    if (candidate = resolve_repo(args[0]))
+      target = candidate
+      args = args[1..]
+    else
+      target = require_repo(".")
+    end
+
+    usage(1) if args.empty?
+
+    combined = RESOURCE_KIND.slice(*resources).to_h { |res, kind| [res, (kind == :hash) ? {} : []] }
+
+    args.each do |file|
+      data = read_json_source(file)
+
+      combined.each_key do |res|
+        value = data[res]
+        next if value.nil?
+
+        combined[res] = (RESOURCE_KIND[res] == :hash) ? deep_merge(combined[res], value) : combined[res] + value
+      end
+    end
+
+    combined[:topics] = combined[:topics].uniq if combined.key?(:topics)
+
+    resources.each { |res| send(:"apply_#{res}", target, combined[res]) }
+
+    log "Done!"
+  end
+end
+
+RepoTool.new.run(ARGV)

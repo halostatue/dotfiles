@@ -17,7 +17,6 @@ defrole:
       firefox: Web browser
       ghostty: Terminal emulator that uses platform-native UI and GPU acceleration
       hex-fiend: Hex editor focussing on speed
-      imhex: Hex editor for reverse engineers
       itsycal: Menu bar calendar
       leader-key: Application launcher
       loop: Window manager

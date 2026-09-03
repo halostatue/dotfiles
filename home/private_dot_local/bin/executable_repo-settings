@@ -1,0 +1,293 @@
+#!/usr/bin/env bash
+
+set -uo pipefail
+
+bn0=$(basename "$0")
+readonly bn0
+
+usage() {
+  cat <<EOF
+Usage: ${bn0} MODE [OPTIONS]
+
+Modes:
+  copy [SOURCE] TARGET    Copy settings directly from SOURCE to TARGET repo
+  save [SOURCE] [FILE]    Save SOURCE repo settings to FILE (default: SOURCE.json)
+  apply [TARGET] FILE...  Apply settings from FILE(s) to TARGET repo
+
+SOURCE/TARGET default to the repo in the current directory when omitted, and
+may be given as a local git directory (resolved via gh) or an owner/repo string.
+
+Examples:
+  ${bn0} copy halostatue/source halostatue/target
+  ${bn0} copy ../source .            # dirs resolved to owner/repo
+  ${bn0} copy seconddir              # SOURCE defaults to .
+  ${bn0} save halostatue/source
+  ${bn0} save halostatue/source my-settings.json
+  ${bn0} save                        # SOURCE=., FILE derived
+  ${bn0} save my-settings.json       # SOURCE=., FILE=my-settings.json
+  ${bn0} apply halostatue/target settings.json
+  ${bn0} apply halostatue/target base.json overrides.json
+  ${bn0} apply settings.json         # TARGET=.
+EOF
+
+  exit "${1:-0}"
+}
+
+fetch_settings() {
+  gh api "repos/${1:?}" --jq '{
+    has_issues,
+    has_projects,
+    has_downloads,
+    has_wiki,
+    has_pages,
+    has_discussions,
+    is_template,
+    allow_squash_merge,
+    allow_merge_commit,
+    allow_rebase_merge,
+    allow_auto_merge,
+    delete_branch_on_merge,
+    allow_update_branch,
+    use_squash_pr_title_as_default,
+    squash_merge_commit_message,
+    squash_merge_commit_title,
+    merge_commit_message,
+    merge_commit_title,
+    security_and_analysis
+  }' || {
+    echo "Error: Failed to fetch settings from $1" >&2
+    return 1
+  }
+}
+
+fetch_rulesets() {
+  : "${1:?}"
+  local ids rulesets ruleset
+  local -a id_list
+
+  if ! ids=$(gh api "repos/$1/rulesets" --jq '.[].id'); then
+    echo "Error: Failed to fetch rulesets from $1" >&2
+    return 1
+  fi
+
+  if [[ -z "${ids}" ]]; then
+    echo "[]"
+    return
+  fi
+
+  mapfile -t id_list <<<"${ids}"
+
+  rulesets="[]"
+
+  for id in "${id_list[@]}"; do
+    ruleset=$(gh api "repos/$1/rulesets/${id}" --jq '{name, target, enforcement, bypass_actors, conditions, rules}') || {
+      echo "Error: Failed to fetch ruleset $id from $1" >&2
+      return 1
+    }
+    rulesets=$(echo "$rulesets" | jq --argjson r "$ruleset" '. += [$r]')
+  done
+  echo "$rulesets"
+}
+
+apply_settings() {
+  : "${1:?} ${2:?}"
+  echo "Applying settings to $1..."
+  echo "$2" | gh api -X PATCH "repos/$1" --input - || {
+    echo "Error: Failed to apply settings to $1" >&2
+    return 1
+  }
+}
+
+apply_rulesets() {
+  : "${1:?} ${2:?}"
+  local -i count i
+  local ruleset name
+  count=$(echo "$2" | jq 'length')
+
+  if ((count == 0)); then
+    echo "No rulesets to apply"
+    return
+  fi
+
+  for i in $(seq 0 $((count - 1))); do
+    ruleset=$(echo "$2" | jq ".[$i]")
+    name=$(echo "$ruleset" | jq -r '.name')
+    echo "Creating ruleset: $name"
+    echo "$ruleset" | gh api -X POST "repos/$1/rulesets" --input - || echo "Warning: Failed to create ruleset $name" >&2
+  done
+}
+
+repo_name() {
+  gh repo view --json nameWithOwner --jq .nameWithOwner
+}
+
+resolve_repo() {
+  local arg="${1:?}"
+
+  # Any existing filesystem path is a path, not a repo slug -- resolve it if
+  # it's a git dir, otherwise it's unresolvable (never fall through below).
+  if [[ -e "$arg" ]]; then
+    if [[ -d "$arg/.git" ]]; then
+      (cd "$arg" && repo_name)
+      return
+    fi
+    return 1
+  fi
+
+  # Bare owner/repo slug: no leading '.' or '/', and exactly one '/'.
+  if [[ "$arg" != .* && "$arg" != /* && "$arg" == */* && "${arg//[^\/]/}" == "/" ]]; then
+    echo "$arg"
+    return 0
+  fi
+
+  return 1
+}
+
+require_repo() {
+  local arg="${1:?}" resolved
+  resolved=$(resolve_repo "$arg") || {
+    echo "Error: '$arg' is not a git directory (with a GitHub remote) or an owner/repo string" >&2
+    exit 1
+  }
+  echo "$resolved"
+}
+
+mode_copy() {
+  (($# < 1 || $# > 2)) && usage 1
+  local from to settings rulesets
+
+  if (($# == 1)); then
+    from=$(require_repo .) || exit 1
+    to=$(require_repo "$1") || exit 1
+  else
+    from=$(require_repo "$1") || exit 1
+    to=$(require_repo "$2") || exit 1
+  fi
+
+  echo "Fetching settings from $from..."
+  settings=$(fetch_settings "$from") || exit 1
+
+  apply_settings "$to" "$settings" || exit 1
+
+  echo "Fetching rulesets from $from..."
+  rulesets=$(fetch_rulesets "$from") || exit 1
+
+  apply_rulesets "$to" "$rulesets" || exit 1
+
+  echo "Done!"
+}
+
+mode_save() {
+  (($# > 2)) && usage 1
+  local from file settings rulesets combined candidate
+
+  case $# in
+  0)
+    from=$(require_repo .) || exit 1
+    file="${from//\//-}.json"
+    ;;
+  1)
+    if candidate=$(resolve_repo "$1"); then
+      from="$candidate"
+      file="${from//\//-}.json"
+    else
+      from=$(require_repo .) || exit 1
+      file="$1"
+    fi
+    ;;
+  2)
+    from=$(require_repo "$1") || exit 1
+    file="$2"
+    ;;
+  esac
+
+  echo "Fetching settings from $from..."
+  settings=$(fetch_settings "$from") || exit 1
+
+  echo "Fetching rulesets from $from..."
+  rulesets=$(fetch_rulesets "$from") || exit 1
+
+  combined=$(jq -n --argjson s "$settings" --argjson r "$rulesets" '{settings: $s, rulesets: $r}') || {
+    echo "Error: Failed to combine settings and rulesets" >&2
+    exit 1
+  }
+
+  echo "$combined" >"$file"
+  echo "Settings saved to $file"
+}
+
+mode_apply() {
+  (($# < 1)) && usage 1
+  local combined_rulesets combined_settings data file rulesets settings target candidate
+
+  if candidate=$(resolve_repo "$1"); then
+    target="$candidate"
+    shift
+  else
+    target=$(require_repo .) || exit 1
+  fi
+
+  (($# < 1)) && usage 1
+
+  combined_settings="{}"
+  combined_rulesets="[]"
+
+  for file in "$@"; do
+    [[ -f "$file" ]] || {
+      echo "Error: $file not found"
+      exit 1
+    }
+
+    echo "Loading $file..."
+    data=$(cat "$file") || {
+      echo "Error: Failed to read $file" >&2
+      exit 1
+    }
+
+    settings=$(echo "$data" | jq -e '.settings // {}') || {
+      echo "Error: Invalid JSON in $file" >&2
+      exit 1
+    }
+    combined_settings=$(echo "$combined_settings" | jq -e --argjson s "$settings" '. * $s') || {
+      echo "Error: Failed to merge settings from $file" >&2
+      exit 1
+    }
+
+    rulesets=$(echo "$data" | jq -e '.rulesets // []') || {
+      echo "Error: Invalid rulesets in $file" >&2
+      exit 1
+    }
+    combined_rulesets=$(echo "$combined_rulesets" | jq -e --argjson r "$rulesets" '. + $r') || {
+      echo "Error: Failed to merge rulesets from $file" >&2
+      exit 1
+    }
+  done
+
+  apply_settings "$target" "$combined_settings" || exit 1
+  apply_rulesets "$target" "$combined_rulesets" || exit 1
+
+  echo "Done!"
+}
+
+(($# < 1)) && usage 1
+
+case "$1" in
+copy)
+  shift
+  mode_copy "$@"
+  ;;
+save)
+  shift
+  mode_save "$@"
+  ;;
+apply)
+  shift
+  mode_apply "$@"
+  ;;
+-\? | -h | --help | help)
+  usage
+  ;;
+*)
+  usage 1
+  ;;
+esac
