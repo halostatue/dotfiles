@@ -9,6 +9,7 @@ gemfile do
   gem "faraday-retry"
 end
 
+require "erb"
 require "json"
 require "open3"
 require "optparse"
@@ -19,7 +20,7 @@ class RepoTool
     settings: {type: :hash, desc: "General settings", default: true},
     rulesets: {type: :array, desc: "Branch and tag rule sets", default: true},
     labels: {type: :array, desc: "Issue and pull-request labels", default: true},
-    topics: {type: :array, desc: "Topics", default: true},
+    topics: {type: :replace, desc: "Topics", default: true},
     autolinks: {type: :array, desc: "Auto-linked text patterns", default: true},
     actions_permissions: {type: :hash, desc: "Permissions for actions", default: true},
     actions_variables: {type: :array, desc: "Variables defined for actions", default: true},
@@ -31,13 +32,19 @@ class RepoTool
   DEFAULT_RESOURCES = RESOURCES.select { |_, meta| meta[:default] }.keys.freeze
   RESOURCE_KIND = RESOURCES.transform_values { it[:type] }.freeze
 
+  # has_discussions is handled separately (see fetch_has_discussions /
+  # apply_has_discussions) -- it has no REST field, only a GraphQL mutation.
+  # has_pages and has_downloads are deliberately omitted: has_pages needs a
+  # build type + source (a new resource, not a settings field) and
+  # has_downloads is a defunct legacy field with no write support anywhere.
   SETTINGS_FIELDS = %i[
-    has_issues has_projects has_downloads has_wiki has_pages has_discussions
-    is_template allow_squash_merge allow_merge_commit allow_rebase_merge
-    allow_auto_merge delete_branch_on_merge allow_update_branch
-    use_squash_pr_title_as_default squash_merge_commit_message
-    squash_merge_commit_title merge_commit_message merge_commit_title
-    security_and_analysis
+    has_issues has_projects has_wiki
+    is_template allow_forking allow_squash_merge allow_merge_commit
+    allow_rebase_merge allow_auto_merge delete_branch_on_merge
+    allow_update_branch use_squash_pr_title_as_default
+    squash_merge_commit_message squash_merge_commit_title
+    merge_commit_message merge_commit_title security_and_analysis
+    has_pull_requests pull_request_creation_policy web_commit_signoff_required
   ].freeze
 
   RULESET_FIELDS = %i[name target enforcement bypass_actors conditions rules].freeze
@@ -52,6 +59,7 @@ class RepoTool
     when "copy" then mode_copy(rest)
     when "save" then mode_save(rest)
     when "apply" then mode_apply(rest)
+    when "merge" then mode_merge(rest) # undocumented -- see usage()
     when "-?", "-h", "--help", "help" then usage(0)
     else usage(1)
     end
@@ -85,9 +93,11 @@ class RepoTool
 
       OPTIONS:
         -q, --quiet             Suppress routine progress output (all modes)
-        -o, --only=RES,RES      Handle only these resources (copy/apply)
-        -x, --exclude=RES,RES   Handle the default resources except these (copy/apply)
-        -i, --include=RES,RES   Handle the default resources plus these (copy/apply)
+        -r, --remote=NAME       Use this remote when resolving '.' (all modes)
+        -o, --only=RES,RES      Handle only these resources (copy/apply); not combinable with -x/-i
+        -x, --except=RES,RES    Handle the default resources except these (copy/apply); 'all' for every
+                                resource; wins over --include on overlap
+        -i, --include=RES,RES   Handle the default resources plus these (copy/apply); 'all' for every resource
 
       RESOURCES:
       #{resource_listing}
@@ -103,10 +113,11 @@ class RepoTool
 
       Examples:
         #{bn0} copy halostatue/source halostatue/target
-        #{bn0} copy --exclude=topics ../source .
+        #{bn0} copy --except=topics ../source .
         #{bn0} save halostatue/source
         #{bn0} apply --only=labels,topics halostatue/target base.json overrides.json
         #{bn0} copy --include=collaborators halostatue/source halostatue/target
+        #{bn0} apply --include=all --except=rulesets halostatue/target base.json
     USAGE
 
     exit code
@@ -161,6 +172,23 @@ class RepoTool
 
   def get(path, params = {}) = deep_to_h(client.get(path, params))
 
+  # has_discussions has no REST field -- GraphQL's updateRepository mutation
+  # is the only way to read/write it. String keys, not symbols: Octokit's
+  # Connection#request special-cases a symbol :query key on the data hash as
+  # "URL query params" and strips it out before building the body -- which
+  # collides with GraphQL's own required "query" field.
+  def graphql(query, variables = {})
+    result = deep_to_h(client.post("graphql", {"query" => query, "variables" => variables}))
+    abort "Error: GraphQL request failed: #{result[:errors].map { it[:message] }.join("; ")}" if result[:errors]
+
+    result[:data]
+  end
+
+  # For URL *path segments* -- unlike URI.encode_www_form_component (which
+  # encodes spaces as "+", meant for query strings/form bodies), this encodes
+  # spaces as "%20" the way a path segment needs.
+  def path_escape(str) = ERB::Util.url_encode(str)
+
   # -- repo resolution -------------------------------------------------------
 
   def repo_name_from_gh
@@ -171,20 +199,25 @@ class RepoTool
     name.empty? ? nil : name
   end
 
-  # Fallback for when `gh` isn't installed. Only handles the two remote URL
-  # shapes that matter: https?://host/.../owner/repo(.git)? and
-  # [user@]host:owner/repo(.git)? (scp-like syntax, including custom SSH
-  # config Host aliases in place of a real hostname). Doesn't resolve SSH
-  # aliases to a real host the way `gh` does -- it doesn't need to, since
-  # owner/repo is just the last two path segments regardless of what the
-  # host portion says.
+  # Fallback for when `gh` isn't installed, or (see repo_name_from_local_dir)
+  # when it's installed but can't tell which remote is "the" repo. Only
+  # handles the two remote URL shapes that matter:
+  # https?://host/.../owner/repo(.git)? and [user@]host:owner/repo(.git)?
+  # (scp-like syntax, including custom SSH config Host aliases in place of a
+  # real hostname). Doesn't resolve SSH aliases to a real host the way `gh`
+  # does -- it doesn't need to, since owner/repo is just the last two path
+  # segments regardless of what the host portion says.
   def parse_owner_repo(url)
     parts = url.strip.delete_suffix(".git").split(%r{[:/]}).reject(&:empty?)
     parts.last(2).join("/") if parts.length >= 2
   end
 
+  # @remote (set via -r/--remote) pins this to a single named remote --
+  # otherwise tries origin, then upstream.
   def repo_name_from_local_git
-    %w[origin upstream].each do |remote|
+    remotes = @remote ? [@remote] : %w[origin upstream]
+
+    remotes.each do |remote|
       output, status = Open3.capture2e("git", "remote", "get-url", remote)
       next unless status.success?
 
@@ -195,11 +228,20 @@ class RepoTool
     nil
   end
 
+  # -r/--remote forces the local-git path (gh has no way to pick a specific
+  # remote), and gh failing -- e.g. it can't disambiguate multiple remotes --
+  # falls through to local git instead of a hard failure.
+  def repo_name_from_local_dir
+    return repo_name_from_local_git if @remote
+
+    (gh_available? && repo_name_from_gh) || repo_name_from_local_git
+  end
+
   def resolve_repo(arg)
     if File.exist?(arg)
       return nil unless File.directory?(File.join(arg, ".git"))
 
-      Dir.chdir(arg) { gh_available? ? repo_name_from_gh : repo_name_from_local_git }
+      Dir.chdir(arg) { repo_name_from_local_dir }
     elsif !arg.start_with?(".", "/") && arg.count("/") == 1
       arg
     end
@@ -215,11 +257,12 @@ class RepoTool
     warn msg unless @quiet
   end
 
-  # -q is accepted by all three modes; -o/-x/-i (added by
-  # extract_resource_filter) only make sense for copy/apply.
+  # -q and -r are accepted by all modes; -o/-x/-i (added by
+  # extract_resource_filter) only make sense for copy/apply/merge.
   def base_option_parser
     OptionParser.new do |opts|
       opts.on("-q", "--quiet", "Suppress routine progress output") { @quiet = true }
+      opts.on("-r", "--remote=NAME", "Use this remote when resolving '.' (default: origin, then upstream)") { |v| @remote = v }
     end
   end
 
@@ -231,24 +274,43 @@ class RepoTool
     abort "Error: #{e.message}"
   end
 
-  def select_resources(only:, exclude:, include:)
-    if only
-      ALL_RESOURCES & only
-    else
-      (DEFAULT_RESOURCES - (exclude || [])) | (include || [])
-    end
+  # "all" in a --except/--include list expands to every resource, so
+  # --include=all doesn't require spelling out every opt-in resource. --only
+  # doesn't get this -- it's meant for spelling out a specific short list.
+  def expand_all(list)
+    list.map(&:to_sym).flat_map { |r| (r == :all) ? ALL_RESOURCES : [r] }.uniq
   end
 
-  # copy/apply only -- decides what gets *applied*, never what gets fetched
-  # (collect always fetches everything; see collect below).
+  # --except always wins over --include on overlap (it's the more specific,
+  # more recently-stated ask), and --only is exclusive of both -- "only X"
+  # and "everything plus/minus Y" don't compose.
+  def select_resources(only:, except:, include:)
+    selected =
+      if only
+        ALL_RESOURCES & only
+      else
+        (DEFAULT_RESOURCES | (include || [])) - (except || [])
+      end
+
+    abort "Error: no resources selected" if selected.empty?
+
+    selected
+  end
+
+  # copy/apply/merge -- decides what gets *applied* (or merged), never what
+  # gets fetched (collect always fetches everything; see collect below).
+  # Yields the parser before parsing so callers (mode_merge) can add more
+  # options onto the same pass.
   def extract_resource_filter(args)
     args = args.dup
-    only = exclude = include = nil
+    only = except = include = nil
 
     parser = base_option_parser
-    parser.on("-o", "--only=RES,RES", Array, "Handle only these resources") { |list| only = list.map(&:to_sym) }
-    parser.on("-x", "--exclude=RES,RES", Array, "Handle the default resources except these") { |list| exclude = list.map(&:to_sym) }
-    parser.on("-i", "--include=RES,RES", Array, "Handle the default resources plus these") { |list| include = list.map(&:to_sym) }
+    parser.on("-o", "--only=RES,RES", Array, "Handle only these resources (not combinable with --include/--except)") { |list| only = list.map(&:to_sym) }
+    parser.on("-x", "--except=RES,RES", Array, "Handle the default resources except these ('all' for every resource); wins over --include") { |list| except = expand_all(list) }
+    parser.on("-i", "--include=RES,RES", Array, "Handle the default resources plus these ('all' for every resource)") { |list| include = expand_all(list) }
+
+    yield parser if block_given?
 
     begin
       parser.parse!(args)
@@ -256,13 +318,15 @@ class RepoTool
       abort "Error: #{e.message}"
     end
 
-    unknown = ((only || []) + (exclude || []) + (include || [])) - ALL_RESOURCES
+    abort "Error: --only cannot be combined with --include or --except" if only && (except || include)
+
+    unknown = ((only || []) + (except || []) + (include || [])) - ALL_RESOURCES
     abort "Error: unknown resource(s) #{unknown.join(", ")} (known: #{ALL_RESOURCES.join(", ")})" unless unknown.empty?
 
-    [args, select_resources(only:, exclude:, include:)]
+    [args, select_resources(only:, except:, include:)]
   end
 
-  # Always fetches every resource, regardless of --only/--exclude/--include --
+  # Always fetches every resource, regardless of --only/--except/--include --
   # those only ever filter what gets applied/written, never what gets read.
   def collect(repo)
     ALL_RESOURCES.each_with_object({}) do |res, acc|
@@ -286,6 +350,48 @@ class RepoTool
     JSON.parse(content, symbolize_names: true)
   rescue JSON::ParserError => e
     abort "Error: invalid JSON in #{file}: #{e.message}"
+  end
+
+  # -- shared apply/merge machinery ---------------------------------------------
+  #
+  # `merge` (undocumented -- see run()) is the logical equivalent of applying
+  # `apply base o1 o2 o3` multiple times: same skeleton, same per-file merge,
+  # same branch_protection conversion, just printed instead of sent to a repo.
+
+  def merge_skeleton(resources)
+    RESOURCE_KIND.slice(*resources).to_h { |res, kind| [res, (kind == :hash) ? {} : []] }
+  end
+
+  def merge_resource!(combined, res, value)
+    combined[res] =
+      case RESOURCE_KIND[res]
+      when :hash then deep_merge(combined[res], value)
+      when :replace then value # e.g. topics: the API PUTs the whole list, so later files replace, not append
+      else combined[res] + value # rulesets/labels/autolinks/actions_variables/environments: additive, one API call per item
+      end
+  end
+
+  # {branch_protection: {"<branch>": {<raw classic-protection API shape>}}} in
+  # a file converts each entry to a ruleset via ruleset_from_branch_protection
+  # (which is pure -- no API calls -- so this works fine against pasted JSON).
+  def merge_branch_protection!(combined, context, data)
+    return unless combined.key?(:rulesets)
+
+    (data[:branch_protection] || {}).each do |branch, protection|
+      ruleset = ruleset_from_branch_protection(context, branch.to_s, protection)
+      combined[:rulesets] << ruleset if ruleset
+    end
+  end
+
+  def merge_file_into!(combined, file)
+    data = read_json_source(file)
+
+    combined.each_key do |res|
+      value = data[res]
+      merge_resource!(combined, res, value) unless value.nil?
+    end
+
+    merge_branch_protection!(combined, file, data)
   end
 
   def resolve_from_to(args)
@@ -313,16 +419,52 @@ class RepoTool
   # -- settings --------------------------------------------------------------
 
   def fetch_settings(repo)
-    get("repos/#{repo}").slice(*SETTINGS_FIELDS)
+    settings = get("repos/#{repo}").slice(*SETTINGS_FIELDS)
+    settings[:has_discussions] = fetch_has_discussions(repo)
+    settings
   rescue Octokit::Error => e
     abort "Error: failed to fetch settings from #{repo}: #{e.message}"
   end
 
   def apply_settings(repo, settings)
+    settings = settings.dup
+    has_discussions = settings.delete(:has_discussions)
+
     log "Applying settings to #{repo}..."
     client.patch("repos/#{repo}", settings)
+    apply_has_discussions(repo, has_discussions) unless has_discussions.nil?
   rescue Octokit::Error => e
     abort "Error: failed to apply settings to #{repo}: #{e.message}"
+  end
+
+  def fetch_has_discussions(repo)
+    owner, name = repo.split("/", 2)
+    query = <<~GRAPHQL
+      query($owner: String!, $name: String!) {
+        repository(owner: $owner, name: $name) { hasDiscussionsEnabled }
+      }
+    GRAPHQL
+
+    graphql(query, owner:, name:).dig(:repository, :hasDiscussionsEnabled)
+  end
+
+  def apply_has_discussions(repo, enabled)
+    owner, name = repo.split("/", 2)
+    id_query = <<~GRAPHQL
+      query($owner: String!, $name: String!) {
+        repository(owner: $owner, name: $name) { id }
+      }
+    GRAPHQL
+    node_id = graphql(id_query, owner:, name:).dig(:repository, :id)
+
+    mutation = <<~GRAPHQL
+      mutation($id: ID!, $enabled: Boolean!) {
+        updateRepository(input: {repositoryId: $id, hasDiscussionsEnabled: $enabled}) {
+          repository { id }
+        }
+      }
+    GRAPHQL
+    graphql(mutation, id: node_id, enabled:)
   end
 
   # -- rulesets ----------------------------------------------------------------
@@ -347,11 +489,25 @@ class RepoTool
     end
 
     rulesets.each do |rs|
-      log "Creating ruleset: #{rs[:name]}"
-      client.post("repos/#{repo}/rulesets", rs)
+      begin
+        log "Creating ruleset: #{rs[:name]}"
+        client.post("repos/#{repo}/rulesets", rs)
+      rescue Octokit::UnprocessableEntity
+        existing_id = find_ruleset_id(repo, rs[:name])
+        raise if existing_id.nil?
+
+        log "Ruleset #{rs[:name]} already exists on #{repo}, updating instead"
+        client.put("repos/#{repo}/rulesets/#{existing_id}", rs)
+      end
     rescue Octokit::Error => e
-      warn "Warning: failed to create ruleset #{rs[:name]} on #{repo}: #{e.message}"
+      warn "Warning: failed to apply ruleset #{rs[:name]} on #{repo}: #{e.message}"
     end
+  end
+
+  # There's no "update ruleset by name" endpoint -- only by id -- so a name
+  # conflict on create means looking the existing one up first.
+  def find_ruleset_id(repo, name)
+    get("repos/#{repo}/rulesets").find { it[:name] == name }&.dig(:id)
   end
 
   # -- classic branch protection: read-only, migrated into a ruleset -------------
@@ -368,12 +524,15 @@ class RepoTool
     branch = get("repos/#{repo}")[:default_branch]
     protection = get("repos/#{repo}/branches/#{branch}/protection")
     ruleset_from_branch_protection(repo, branch, protection)
-  rescue Octokit::NotFound
+  rescue Octokit::NotFound, Octokit::BranchNotProtected
     warn "Warning: skipping branch protection migration on #{repo} (no protection on #{branch}, or lacks admin access)"
     nil
   end
 
-  def ruleset_from_branch_protection(repo, branch, protection)
+  # `context` is only used to label warnings -- a live repo string when called
+  # from migrate_branch_protection, or a filename when called from a merged
+  # `branch_protection` file input (see merge_branch_protection!).
+  def ruleset_from_branch_protection(context, branch, protection)
     rules = []
 
     if (sc = protection[:required_status_checks])
@@ -407,11 +566,11 @@ class RepoTool
     return nil if rules.empty?
 
     if protection[:restrictions]
-      warn "Warning: #{repo}##{branch} branch protection has push restrictions -- not translatable to a ruleset, skipped"
+      warn "Warning: #{context}##{branch} branch protection has push restrictions -- not translatable to a ruleset, skipped"
     end
 
     unless protection.dig(:enforce_admins, :enabled)
-      warn "Warning: #{repo}##{branch} branch protection did not enforce for admins -- the migrated ruleset has no " \
+      warn "Warning: #{context}##{branch} branch protection did not enforce for admins -- the migrated ruleset has no " \
            "bypass actors, so it WILL apply to admins too; review bypass_actors if that's not wanted"
     end
 
@@ -443,10 +602,11 @@ class RepoTool
     log "Applying labels to #{repo}..."
 
     labels.each do |label|
-      client.post("repos/#{repo}/labels", label)
-    rescue Octokit::UnprocessableEntity
-      encoded = URI.encode_www_form_component(label[:name])
-      client.patch("repos/#{repo}/labels/#{encoded}", label.except(:name))
+      begin
+        client.post("repos/#{repo}/labels", label)
+      rescue Octokit::UnprocessableEntity
+        client.patch("repos/#{repo}/labels/#{path_escape(label[:name])}", label.except(:name))
+      end
     rescue Octokit::Error => e
       warn "Warning: failed to apply label #{label[:name]} to #{repo}: #{e.message}"
     end
@@ -581,15 +741,25 @@ class RepoTool
   end
 
   def apply_collaborators(repo, data)
+    users = data[:users] || []
+    teams = data[:teams] || []
+
+    if users.empty? && teams.empty?
+      log "No collaborators to apply"
+      return
+    end
+
     target_org = repo_org(repo)
 
-    (data[:users] || []).each do |u|
+    log "Applying collaborators to #{repo}..."
+
+    users.each do |u|
       client.put("repos/#{repo}/collaborators/#{u[:login]}", permission: u[:permission])
     rescue Octokit::Error => e
       warn "Warning: failed to add collaborator #{u[:login]} to #{repo}: #{e.message}"
     end
 
-    (data[:teams] || []).each do |t|
+    teams.each do |t|
       if data[:source_org] != target_org
         warn "Warning: skipping team @#{data[:source_org]}/#{t[:slug]} - #{repo} is in a different org (#{target_org})"
         next
@@ -650,7 +820,7 @@ class RepoTool
       }
 
       log "Creating environment: #{env[:name]}"
-      client.put("repos/#{repo}/environments/#{URI.encode_www_form_component(env[:name])}", body)
+      client.put("repos/#{repo}/environments/#{path_escape(env[:name])}", body)
     rescue Octokit::Error => e
       warn "Warning: failed to create environment #{env[:name]} on #{repo}: #{e.message}"
     end
@@ -710,24 +880,38 @@ class RepoTool
 
     usage(1) if args.empty?
 
-    combined = RESOURCE_KIND.slice(*resources).to_h { |res, kind| [res, (kind == :hash) ? {} : []] }
-
-    args.each do |file|
-      data = read_json_source(file)
-
-      combined.each_key do |res|
-        value = data[res]
-        next if value.nil?
-
-        combined[res] = (RESOURCE_KIND[res] == :hash) ? deep_merge(combined[res], value) : combined[res] + value
-      end
-    end
-
-    combined[:topics] = combined[:topics].uniq if combined.key?(:topics)
+    combined = merge_skeleton(resources)
+    args.each { |file| merge_file_into!(combined, file) }
 
     resources.each { |res| send(:"apply_#{res}", target, combined[res]) }
 
     log "Done!"
+  end
+
+  # Undocumented: the logical equivalent of `apply base o1 o2 o3` applying
+  # multiple times, minus the actual application -- prints the merged result
+  # (to stdout by default, or -O/--output=FILE) instead of hitting a repo.
+  # Also accepts {branch_protection: {...}} input (see merge_branch_protection!).
+  def mode_merge(args)
+    output = nil
+
+    args, resources = extract_resource_filter(args) do |parser|
+      parser.on("-O", "--output=FILE", "Write merged JSON to FILE instead of stdout") { |f| output = f }
+    end
+
+    usage(1) if args.empty?
+
+    combined = merge_skeleton(resources)
+    args.each { |file| merge_file_into!(combined, file) }
+
+    json = JSON.pretty_generate(combined)
+
+    if output
+      File.write(output, json)
+      log "Merged output written to #{output}"
+    else
+      puts json
+    end
   end
 end
 
