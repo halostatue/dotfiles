@@ -62,6 +62,7 @@ deduplication
 Deno
 Dependabot
 Dependabot's
+deployments
 devops
 dialyzer
 diff-lcs
@@ -222,6 +223,7 @@ runtimes
 Saša
 SBOM
 Scalyr
+SCD
 SCSS
 sepolia
 SFTP
@@ -261,6 +263,7 @@ upsert
 UTXO
 UUID
 UUIDs
+VPC
 VPS
 VSCode
 webhook
@@ -274,4 +277,3 @@ zizmor
 ZK
 ZKP
 zsh
-VPC
