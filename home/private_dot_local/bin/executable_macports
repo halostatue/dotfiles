@@ -11,6 +11,8 @@ require "tempfile"
 require "uri"
 require "yaml"
 
+VERSION = "20260920"
+
 CONFIG_FILE = File.expand_path("~/.config/macports.yml")
 CONFIG = YAML.load_file(CONFIG_FILE, symbolize_names: true)
 
@@ -46,6 +48,23 @@ def __run(command, input: nil)
     stdin.close
 
     {stdout: stdout.read.chomp, stderr: stderr.read.chomp, status: wait.value}
+  end
+end
+
+def __run?(command, input: nil)
+  __run(command, input:) => {status:}
+  status.success?
+end
+
+def __https_get(uri, headers: {}, use_ssl: nil, read_timeout: 15, open_timeout: 5)
+  uri = URI(uri)
+  use_ssl ||= uri.scheme == "https"
+
+  Net::HTTP.start(uri.host, uri.port, use_ssl:, read_timeout:, open_timeout:) do |http|
+    req = Net::HTTP::Get.new(uri.request_uri)
+    headers.each_pair { req[_1] = _2 }
+    req["User-Agent"] = "macports-#{VERSION}"
+    http.request(req)
   end
 end
 
@@ -124,7 +143,13 @@ ensure
   STACK.pop
 end
 
-def git_main_branch = File.basename(Dir[".git/refs/heads/{main,master}"].first || "main")
+def git_main_branch
+  ref = capture_or_nil(%w[git symbolic-ref --short refs/remotes/origin/HEAD])
+  return File.basename(ref) if ref
+
+  %w[main master].find { __run?(%W[git show-ref --verify --quiet refs/heads/#{it}]) } ||
+    "main"
+end
 
 def xcode_version
   __run(%w[xcodebuild -version]) => {stdout:, status:}
@@ -304,7 +329,6 @@ def save_recovery_state(port, completed_phases)
     version: port[:version],
     branch: "#{port[:name]}-#{port[:version]}",
     timestamp: Time.now.to_i,
-    commit_hash: capture!(%w[git rev-parse HEAD]).strip,
     files_digest: calculate_port_digest(port[:path]),
     completed_phases: completed_phases,
     port_config: port.dup,
@@ -332,13 +356,7 @@ end
 def validate_recovery_state(recovery_data)
   return false unless recovery_data
 
-  result = __run(%W[git rev-parse --verify #{recovery_data[:commit_hash]}])
-  return false unless result[:status].success?
-
-  current_digest = calculate_port_digest(recovery_data[:port_path])
-  files_changed = current_digest != recovery_data[:files_digest]
-
-  if files_changed
+  if calculate_port_digest(recovery_data[:port_path]) != recovery_data[:files_digest]
     recovery_data[:completed_phases] = recovery_data[:completed_phases].select do |phase|
       %w[seaport version_set crates_applied vendors_applied committed].include?(phase)
     end
@@ -632,10 +650,7 @@ def get_latest_release(owner, repo)
 
   release = JSON.parse(result[:stdout], symbolize_names: true)
 
-  # Check if release has actual assets (not just auto-generated source)
-  has_assets = release[:assets]&.any?
-
-  release.merge(has_release_assets: has_assets)
+  release.merge(has_release_assets: release[:assets]&.any?)
 rescue
   nil
 end
@@ -693,7 +708,6 @@ def generate_go_sections(owner, repo)
 end
 
 def generate_rust_sections(repo, version, owner, prefix)
-  # Try crates.io first
   puts "==> Generating cargo.crates with crate2port from crates.io"
   crates = capture_or_nil(%W[crate2port #{repo}@#{version}])
 
@@ -701,16 +715,11 @@ def generate_rust_sections(repo, version, owner, prefix)
     return crates.strip
   end
 
-  # Fallback to Cargo.lock from repo
   tag = "#{prefix}#{version}"
   cargo_lock_url = "https://raw.githubusercontent.com/#{owner}/#{repo}/refs/tags/#{tag}/Cargo.lock"
 
   puts "==> Fetching Cargo.lock from #{cargo_lock_url}"
-
-  uri = URI(cargo_lock_url)
-  res = Net::HTTP.start(uri.host, uri.port, use_ssl: true, read_timeout: 15, open_timeout: 5) do |http|
-    http.get(uri.request_uri)
-  end
+  res = __https_get(cargo_lock_url)
 
   if res.is_a?(Net::HTTPSuccess)
     puts "==> Generating cargo.crates with crate2port from Cargo.lock"
@@ -944,18 +953,37 @@ def get_current_checksums(port_name)
   end
 end
 
-def fetch(port_name, uri, limit = 10, original_uri = nil)
-  halt "#{port_name}: Too many redirects getting #{original_uri || uri}" if limit == 0
+def __fetch(uri, limit = 10, original_uri = nil)
+  return [:error, :too_many_redirects] if limit.zero?
 
-  res = Net::HTTP.get_response(URI(uri))
+  res = __https_get(uri)
   case res
   when Net::HTTPSuccess
-    res.body
+    [:ok, res.body]
   when Net::HTTPRedirection
-    location = res["Location"]
-    fetch(port_name, location, limit - 1, uri)
+    __fetch(res["Location"], limit - 1, original_uri || uri)
   else
-    halt "#{port_name}: #{res.value} getting #{original_uri || uri}"
+    [:error, res.code, res.message]
+  end
+end
+
+def fetch(port_name, uri)
+  case __fetch(uri)
+  in [:error, :too_many_redirects]
+    halt "#{port_name}: Too many redirects getting #{uri}"
+  in [:error, code, message]
+    halt "#{port_name}: #{code} #{message} getting #{uri}"
+  in [:ok, body]
+    body
+  end
+end
+
+def url_exists?(uri)
+  case __fetch(uri)
+  in [:ok, body]
+    true
+  else
+    false
   end
 end
 
@@ -977,6 +1005,56 @@ def replace_checksums_and_version(content, old_data, new_data)
     .gsub(old_data[:version], new_data[:version])
 end
 
+def diagnose_distfile(port, new_url, new_version)
+  lines = <<~EOS.split($/)
+    #{port[:name]}: distfile for #{new_version} not found.
+
+    Tried: #{new_url}
+    Portfile at #{port[:path]} needs a manual distfile update.
+  EOS
+
+  if port[:portgroup_github]
+    case File.read(port[:file]).match(GITHUB_VERSION)
+    in {owner:, repo:, prefix:}
+      tag = "#{prefix}#{new_version}"
+      archive_url = build_archive_url(owner, repo, new_version, prefix)
+
+      lines << if url_exists?(archive_url)
+        <<~EOS
+          GitHub tag archive DOES exist:
+            #{archive_url}
+
+          Upstream may have dropped a release source tarball. Switch the distfile
+          to the tag archive (`github.tarball_from archive`).
+        EOS
+      else
+        <<~EOS
+          GitHub tag archive DOES NOT exist:
+            #{archive_url}
+
+          Confirm the tag name/prefix for #{repo} (expected tag: #{tag}).
+        EOS
+      end
+
+    in nil
+      lines << "  Could not parse github.setup from the Portfile."
+    end
+  end
+
+  if port[:needs_cargo_crates]
+    lines << <<~EOS
+      NOTE: This is a cargo port. `cargo.crates` probably needs to be derived from
+            the GitHub tagged Cargo.lock file instead.
+    EOS
+  elsif port[:needs_go_vendors]
+    lines << <<~EOS
+      NOTE: This is a go port. Remember that `go.vendors` may need regeneration.
+    EOS
+  end
+
+  halt lines.join("\n")
+end
+
 def get_updated_portfile(port, target_version)
   old_version = port[:version] || get_current_version(port[:name])
   new_version = target_version || get_livecheck_version(port[:name])
@@ -985,6 +1063,8 @@ def get_updated_portfile(port, target_version)
   old_checksums = get_current_checksums(port[:name])
   old_checksums[:version] = old_version
   new_url = old_checksums[:url].gsub(/#{Regexp.escape(old_version)}/, new_version)
+
+  diagnose_distfile(port, new_url, new_version) unless url_exists?(new_url)
 
   new_checksums = calculate_checksums(port[:name], new_url)
 
@@ -1054,6 +1134,54 @@ def check_pr_for_branch(branch_name)
   JSON.parse(result).any?
 end
 
+def crates_io_has_version(crate, version)
+  case __fetch("https://crates.io/api/v1/crates/#{crate}")
+  in [:ok, body]
+    versions = JSON.parse(body).dig("versions")
+    return false if versions.nil? || versions.empty?
+    versions.any? { it.is_a?(Hash) && it["num"] == version } ||
+      [false, versions.first(5).map { it["num"] }.join(", ")]
+  else
+    nil
+  end
+rescue
+  nil
+end
+
+def run_crate2port(port, crate)
+  result = __run(%W[crate2port #{crate}@#{port[:version]}])
+  return result[:stdout] if result[:status].success?
+
+  lines = ["#{port[:name]}: crate2port failed for #{crate}@#{port[:version]}."]
+  lines << "crate2port: #{result[:stderr]}" unless result[:stderr].to_s.empty?
+
+  lines << case crates_io_has_version(crate, port[:version])
+  in true
+    <<~EOS
+      Found '#{crate}@#{port[:version]}', but `crate2port` rejected it. Check the
+      the crate2port version format.
+    EOS
+  in [false, versions]
+    <<~EOS
+      Found '#{crate}' with recent versions: #{versions}.
+
+      The crate may have been renamed, split, or version #{port[:version]} was not
+      published to crates.io but is released on GitHub. If the latter is the case,
+      a manual port update and Cargo.lock retrieval from GitHub are likely required
+      and may required a patchfile.
+    EOS
+  else
+    <<~EOS
+      Cannot find '#{crate}' on crates.io.
+
+      If this upgrade previously worked, the crate may have been renamed or split
+      into a separate CLI crate. Apply `crate: {name}` to the port update config.
+    EOS
+  end
+
+  halt lines.join("\n"), status: result[:status].exitstatus
+end
+
 def apply_crate2port(port)
   return unless port[:needs_cargo_crates]
 
@@ -1066,9 +1194,8 @@ def apply_crate2port(port)
   crates =
     if port[:cargo_lock] == "github" && port[:tag_url]
       uri = URI.join(port[:tag_url], "Cargo.lock")
-      res = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", read_timeout: 15, open_timeout: 5) do |http|
-        http.get(uri.request_uri)
-      end
+      res = __https_get(uri)
+
       unless res.is_a?(Net::HTTPSuccess)
         halt "Failed to fetch Cargo.lock from #{uri} (#{res.code})"
       end
@@ -1080,7 +1207,7 @@ def apply_crate2port(port)
       end
     else
       crate = port[:crate] || port[:name]
-      capture!(%W[crate2port #{crate}@#{port[:version]}])
+      run_crate2port(port, crate)
     end
 
   port[:update] << "\n\n" << crates if crates

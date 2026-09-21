@@ -2,32 +2,41 @@
 {{- $llm := has "llm" (get . "roles" | default list) -}}
 {{- $hex_api_keys := dict -}}
 {{- $env := dict
-      "ERL_AFLAGS"          "-kernel shell_history enabled shell_history_file_bytes 5242880"
-      "RIPGREP_CONFIG_PATH" (joinPath .chezmoi.homeDir ".ripgreprc")
+  "ERL_AFLAGS"          "-kernel shell_history enabled shell_history_file_bytes 5242880"
+  "RIPGREP_CONFIG_PATH" (joinPath .chezmoi.homeDir ".ripgreprc")
 -}}
 {{- $tools := dict
-      "elixir"                        "1.20-otp-29"
-      "erlang"                        "29"
-      "github:hay-kot/scaffold"       "latest"
-      "github:middlendian/llima-box"  "latest"
-      "gleam"                         "latest"
-      "go:golang.org/x/tools/gopls"   "latest"
-      "opentofu"                      "latest"
-      "node"                          (dict "version" "24" "postinstall" "corepack enable")
-      "ruby"                          "4.0"
-      "rust"                          "1.96"
-      "rumdl"                         "latest"
-      "shellspec"                     "latest"
-      "usage"                         "latest"
-      "vacuum"                        "latest"
-      "zig"                           "0.16"
+  "elixir"                        (dict
+                                    "version" "1.20-otp-29"
+                                    "postinstall" "mix do local.hex --force + local.rebar --force"
+                                  )
+  "erlang"                        "29"
+  "github:hay-kot/scaffold"       "latest"
+  "github:middlendian/llima-box"  "latest"
+  "github:KarnerTh/mermerd"       "latest"
+  "gleam"                         "latest"
+  "go"                            "1.26"
+  "go:golang.org/x/tools/gopls"   "latest"
+  "opentofu"                      "latest"
+  "node"                          (dict
+                                    "version" "24"
+                                    "postinstall" "corepack enable"
+                                  )
+  "ruby"                          "4.0"
+  "rust"                          "1.96"
+  "rumdl"                         "latest"
+  "shellcheck"                    "latest"
+  "shfmt"                         "latest"
+  "usage"                         "latest"
+  "vacuum"                        "latest"
+  "zig"                           "0.16"
 -}}
+
 {{- if $work -}}
 {{-   $_ := set $tools "aws-vault"                          "7" -}}
 {{-   $_ := set $tools "foundry"                            "latest" -}}
-{{-   $_ := set $tools "github:anza-xyz/agave"              "latest" -}}
-{{-   $_ := set $tools "github:geofffranks/spruce"          "latest" -}}
-{{-   $_ := set $tools "github:KarnerTh/mermerd"            "latest" -}}
+{{- /*   $_ := set $tools "github:anza-xyz/agave"              "latest"  */ -}}
+{{- /*   $_ := set $tools "github:geofffranks/spruce"          "latest"  */ -}}
 {{-   $_ := set $tools "github:telia-oss/aws-env"           "latest" -}}
 {{-   $_ := set $tools "go:newreleases.io/cmd/newreleases"  "latest" -}}
 {{-   $_ := set $tools "jsonschema"                         "latest" -}}

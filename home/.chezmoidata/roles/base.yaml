@@ -5,13 +5,17 @@
 ---
 defrole:
   base:
-    taps:
-      browsers-software/tap:
-      homebrew/bundle:
-      homebrew/services:
+    taps: {}
+
+      # browsers-software/browsers latest release DMG
+      # browsers: Open the right browser at the right time
+
+      # abue-ammar/tinycast latest release DMG
+      # tinycast: replacement for rustcast/raycast/alfred
+
+      # kindle-previewer failed to install properly
 
     casks:
-      browsers: Open the right browser at the right time
       cleanupbuddy: Clean keyboard and trackpad
       finicky: Utility for customizing which browser to start
       firefox: Web browser
@@ -26,7 +30,6 @@ defrole:
       meetingbar: Shows the next meeting in the menu bar
       obsidian: Knowledge base that works on top of a local folder of plain text Markdown files
       pearcleaner: Utility to uninstall apps and remove leftover files from old/uninstalled apps
-      rustcast: Application and utility launcher
       safari-technology-preview: Web browser
       startupfolder: Run anything at startup by simply placing it in a special folder
       thaw: Menu bar manager
@@ -58,7 +61,6 @@ defrole:
       sf-mono:
       source-code-pro:
       space-mono:
-      zed-mono:
 
     mas:
       1440147259: AdGuard for Safari
@@ -199,7 +201,6 @@ defrole:
         mas:
           1601151613: Baking Soda
           1474335294: GoodLinks
-          1619241039: History Book
           1544743900: Hush
           1507396839: Later
           1554029832: MarkDownload - Markdown Web Clipper

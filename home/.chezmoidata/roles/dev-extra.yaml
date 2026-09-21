@@ -15,7 +15,6 @@ defrole:
       viable: Create and run macOS virtual machines on Apple silicon Macs
       vimy: Double-click to run macOS virtual machines on Apple silicon Macs
       visual-studio-code: Open-source code editor
-      zed: Multiplayer code editor
 
     ports:
       install:

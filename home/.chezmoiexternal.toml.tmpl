@@ -1,0 +1,30 @@
+# chezmoi:template:left-delimiter="${{" right-delimiter="}}"
+# ${{- $programs := includeTemplate "programs" . | fromJson -}}
+# ${{- $sevenDays := printf "%dh" (mul 7 24) }}
+
+[".config/vim/pack/plugins/opt/chezmoi.vim"]
+pull = { args = ['--ff-only'] }
+refreshPeriod = '${{ $sevenDays }}'
+type = 'git-repo'
+url = 'https://github.com/alker0/chezmoi.vim.git'
+
+# ${{ if or $programs.ghostty (stat "/Applications/Ghostty.app") }}
+[".config/ghostty/shaders"]
+pull = { args = ['--ff-only'] }
+refreshPeriod = '${{ $sevenDays }}'
+type = 'git-repo'
+url = 'https://github.com/m-ahdal/ghostty-shaders.git'
+# ${{- end }}
+
+["oss/macports/local-ports"]
+pull = { args = ['--ff-only'] }
+refreshPeriod = '${{ $sevenDays }}'
+type = 'git-repo'
+url = 'git+ssh://github.com/halostatue/ports.git'
+
+[".local/share/zim/zimfw.zsh"]
+refreshPeriod = '${{ $sevenDays }}'
+type = 'file'
+url = '${{ gitHubLatestReleaseAssetURL "zimfw/zimfw" "zimfw.zsh" }}'
+
+# ${{/* vim: ft=toml.chezmoitmpl */}}

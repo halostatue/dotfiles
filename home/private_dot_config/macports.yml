@@ -152,6 +152,7 @@ ports:
       { dotenv-linter check --plain "$tmp" || true } | grep -q 'Found 2 problems'
   git-branch-stash:
     category: devel
+    crate: git-branch-stash-cli
   git-bug:
     category: devel
   git-mediate:
@@ -163,12 +164,14 @@ ports:
   gitql:
     category: devel
   htmd-cli:
+    cargo_lock: github
     category: textproc
   jqfmt:
     category: devel
     test: |
       [[ "$(printf 'has(\n\n\"foo\"\n\n)\n\n')" == 'has("foo")' ]]
   licensure:
+    cargo_lock: github
     category: devel
   manifest-tool:
     category: sysutils
@@ -179,6 +182,8 @@ ports:
     cargo_lock: github
   osv-scanner:
     category: security
+    test: |
+      osv-scanner -v
   prql:
     category: devel
     cargo_lock: github
