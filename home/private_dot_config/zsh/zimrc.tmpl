@@ -1,6 +1,22 @@
 # vim: set ft=zsh
 
-zmodule joke/zim-mise
+# PATH composition modules (local, chezmoi-managed). These must load before
+# zim-mise so that `mise` (installed under /opt/local/bin via MacPorts) is on
+# PATH when zim-mise checks for it. Ported from the halostatue fish plugins.
+zmodule $HOME/.config/zsh/modules/00-path
+zmodule $HOME/.config/zsh/modules/elixir
+zmodule $HOME/.config/zsh/modules/brew
+zmodule $HOME/.config/zsh/modules/macports --if-command port
+zmodule $HOME/.config/zsh/modules/rust
+zmodule $HOME/.config/zsh/modules/go --if-command go
+zmodule $HOME/.config/zsh/modules/userpaths
+zmodule $HOME/.config/zsh/modules/bun
+
+# mise: internal port of @halostatue/fish-mise. Uses --no-hook-env so it does
+# not call compinit (that is the completion module's job). Must load before the
+# completion module (it adds mise's completion to fpath) and after the PATH
+# modules (so `mise` is resolvable).
+zmodule $HOME/.config/zsh/modules/mise
 
 zmodule environment
 zmodule input

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+readonly script_name=run_onchange_after-08-zimfw-build.sh.tmpl
+readonly lib_bash='{{ joinPath .chezmoi.workingTree "lib/lib.bash" }}'
+# shellcheck source=lib/lib.bash
+source "${lib_bash}"
+setup '08: Rebuild zim init.zsh'
+
+# Rebuild ${ZIM_HOME}/init.zsh whenever the zimrc or any local PATH module
+# changes. The hashes below make chezmoi re-run this script on any change to
+# those sources.
+#
+# zimrc:
+# {{ include (joinPath .chezmoi.sourceDir "private_dot_config/zsh/zimrc.tmpl") | sha256sum }}
+# modules:
+# {{ range (glob (joinPath .chezmoi.sourceDir "private_dot_config/zsh/modules/*/init.zsh")) }}# {{ include . | sha256sum }}
+# {{ end }}
+
+if ! has zsh; then
+  warn "zsh is not installed"
+  exit 0
+fi
+
+readonly zim_home="${HOME}/.local/share/zim"
+readonly zim_config="${HOME}/.config/zsh/zimrc"
+
+if [[ ! -e "${zim_home}/zimfw.zsh" ]]; then
+  warn "zimfw is not installed at ${zim_home}/zimfw.zsh"
+  exit 0
+fi
+
+if [[ ! -e "${zim_config}" ]]; then
+  warn "zimrc not found at ${zim_config}; has chezmoi applied it yet?"
+  exit 0
+fi
+
+# Run the build in a non-interactive zsh. zimfw's build regenerates
+# ${zim_home}/init.zsh from the (now updated) zimrc and local modules.
+ZIM_HOME="${zim_home}" ZIM_CONFIG_FILE="${zim_config}" \
+  zsh -c 'source "${ZIM_HOME}/zimfw.zsh" build' 2>&1
