@@ -1,11 +1,11 @@
 {{- $work := has "work" (get . "roles" | default list) -}}
-{{- $llm := has "llm" (get . "roles" | default list) -}}
 {{- $hex_api_keys := dict -}}
 {{- $env := dict
   "ERL_AFLAGS"          "-kernel shell_history enabled shell_history_file_bytes 5242880"
   "RIPGREP_CONFIG_PATH" (joinPath .chezmoi.homeDir ".ripgreprc")
 -}}
 {{- $tools := dict
+  "aqua:kjanat/actionlint"        "1.17"
   "elixir"                        (dict
                                     "version" "1.20-otp-29"
                                     "postinstall" "mix do local.hex --force + local.rebar --force"
@@ -61,7 +61,7 @@ always_keep_install = false
 experimental = true
 idiomatic_version_file = false
 legacy_version_file = false
-paranoid = true
+paranoid = {{ not $work | toToml }}
 
 [settings.ruby]
 default_packages_file = {{ joinPath .chezmoi.homeDir ".config/packages/default_gems" | quote }}
