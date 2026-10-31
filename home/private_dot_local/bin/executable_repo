@@ -32,6 +32,15 @@ class RepoTool
   DEFAULT_RESOURCES = RESOURCES.select { |_, meta| meta[:default] }.keys.freeze
   RESOURCE_KIND = RESOURCES.transform_values { it[:type] }.freeze
 
+  # Application order, which differs from RESOURCES (listing/fetch order)
+  # where one resource depends on another existing first: environment
+  # reviewers must already have repo access (collaborators), and rulesets with
+  # a required_deployments rule 422 unless the named environments exist.
+  APPLY_ORDER = %i[
+    settings collaborators environments rulesets labels topics autolinks
+    actions_permissions actions_variables
+  ].freeze
+
   # has_discussions is handled separately (see fetch_has_discussions /
   # apply_has_discussions) -- it has no REST field, only a GraphQL mutation.
   # has_pages and has_downloads are deliberately omitted: has_pages needs a
@@ -294,7 +303,7 @@ class RepoTool
 
     abort "Error: no resources selected" if selected.empty?
 
-    selected
+    selected.sort_by { APPLY_ORDER.index(it) }
   end
 
   # copy/apply/merge -- decides what gets *applied* (or merged), never what
@@ -789,11 +798,48 @@ class RepoTool
         wait_timer:,
         reviewers:,
         deployment_branch_policy: env[:deployment_branch_policy],
+        deployment_branch_policies: fetch_deployment_branch_policies(repo, env),
         source_org:
       }
     end
   rescue Octokit::Error => e
     abort "Error: failed to fetch environments from #{repo}: #{e.message}"
+  end
+
+  # Only populated when the environment uses custom branch policies --
+  # protected_branches mode has no per-name list.
+  def fetch_deployment_branch_policies(repo, env)
+    return [] unless env.dig(:deployment_branch_policy, :custom_branch_policies)
+
+    list_deployment_branch_policies(repo, env[:name]).map { it.slice(:name, :type) }
+  end
+
+  def list_deployment_branch_policies(repo, env_name)
+    get("repos/#{repo}/environments/#{path_escape(env_name)}/deployment-branch-policies", per_page: 100)[:branch_policies] || []
+  end
+
+  # No upsert endpoint and a duplicate POST fails, so skip whatever the target
+  # already has (matched on name + type).
+  def apply_deployment_branch_policies(repo, env)
+    policies = env[:deployment_branch_policies] || []
+    return if policies.empty?
+
+    unless env.dig(:deployment_branch_policy, :custom_branch_policies)
+      warn "Warning: environment #{env[:name]} has deployment branch policies but custom_branch_policies is not set -- skipped"
+      return
+    end
+
+    existing = list_deployment_branch_policies(repo, env[:name]).map { [it[:name], it[:type] || "branch"] }
+
+    policies.each do |policy|
+      type = policy[:type] || "branch"
+      next if existing.include?([policy[:name], type])
+
+      log "Creating deployment #{type} policy for #{env[:name]}: #{policy[:name]}"
+      client.post("repos/#{repo}/environments/#{path_escape(env[:name])}/deployment-branch-policies", {name: policy[:name], type:})
+    rescue Octokit::Error => e
+      warn "Warning: failed to create deployment #{type} policy #{policy[:name]} for #{env[:name]} on #{repo}: #{e.message}"
+    end
   end
 
   def apply_environments(repo, envs)
@@ -821,6 +867,7 @@ class RepoTool
 
       log "Creating environment: #{env[:name]}"
       client.put("repos/#{repo}/environments/#{path_escape(env[:name])}", body)
+      apply_deployment_branch_policies(repo, env)
     rescue Octokit::Error => e
       warn "Warning: failed to create environment #{env[:name]} on #{repo}: #{e.message}"
     end

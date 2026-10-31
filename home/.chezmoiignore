@@ -3,6 +3,7 @@
 
 # Never store PEM files in chezmoi.
 **/*.pem
+.config/zsh/modules/*/*.zwc
 
 # Exclude ~/Library/ by default, except for ~/Library/Application Support.
 {{ if $darwin -}}
@@ -198,12 +199,14 @@ Library/Application Support/lazygit/*
 .npm/
 .ossindex/
 .pgadmin/
+.pkl
 .python_history
 .rediscli_history
 .redocly
 .rustup/
 .semgrep/
 .sigstore/
+.slack/
 .sobelow/
 .sqlite_history
 
@@ -221,11 +224,13 @@ Library/Application Support/lazygit/*
 
 .viminfo
 .vscode/
+.vscode-shared/
 
 .wget-hsts
 
 .zsh_history
 .zsh_sessions
+.zcompdump
 
 Applications/
 Desktop/
