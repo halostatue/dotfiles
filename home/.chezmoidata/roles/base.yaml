@@ -35,6 +35,7 @@ defrole:
       thaw: Menu bar manager
       trex: Easy to use text extraction tool
       xprocheck: Anti-malware scan logging tool
+      wblock: Ad blocker for Safari
 
     formulae:
       mas: Mac App Store command-line interface
@@ -63,7 +64,7 @@ defrole:
       space-mono:
 
     mas:
-      1440147259: AdGuard for Safari
+      # 1440147259: AdGuard for Safari
       1569813296: 1Password for Safari
       497799835: Xcode
       6720708363: Obsidian Web Clipper
