@@ -1,0 +1,369 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "json"
+require "open3"
+require "optparse"
+require "yaml"
+
+class GitFork
+  # A remote URL reduced to the parts that identify a hosted repo. `host` is
+  # the real hostname (SSH Host aliases resolved, so `nlgithub:Org/repo` is
+  # github.com), and `ssh` records the transport so new remotes can match it.
+  # `owner` may contain slashes (GitLab subgroups) -- `name` is always the last
+  # path segment.
+  Location = Data.define(:host, :owner, :name, :ssh) do
+    def full_name = "#{owner}/#{name}"
+
+    # Hosted repo names are case-insensitive, and insteadOf rules don't
+    # normalize case (northernlabs: vs NorthernLabs/), so compare on this.
+    def id = "#{host}/#{full_name}".downcase
+
+    def to_s = "#{host}/#{full_name}"
+
+    def url = ssh ? "git@#{host}:#{full_name}.git" : "https://#{host}/#{full_name}.git"
+  end
+
+  # parent is nil when origin is not a fork; branch is the parent's default
+  # branch and is only known after a live lookup.
+  ForkInfo = Data.define(:parent, :branch)
+
+  # Exit statuses: is-fork, parent, and source-remote are usable as predicates,
+  # so "no" (1) must be distinguishable from "couldn't tell" (2).
+  EXIT_NO = 1
+  EXIT_ERROR = 2
+
+  def run(argv)
+    argv = argv.dup
+    parse_options!(argv, order: true)
+    mode = argv.shift || "status"
+
+    case mode
+    when "status" then mode_status(argv)
+    when "is-fork" then mode_is_fork(argv)
+    when "parent" then mode_parent(argv)
+    when "source-remote" then mode_source_remote(argv)
+    when "sync" then mode_sync(argv)
+    when "add-remote" then mode_add_remote(argv)
+    when "refresh" then mode_refresh(argv)
+    when "help" then usage(0)
+    else usage(EXIT_ERROR)
+    end
+  end
+
+  private
+
+  def bn0
+    @bn0 ||= File.basename($PROGRAM_NAME)
+  end
+
+  def usage(code)
+    (code.zero? ? $stdout : $stderr).puts <<~USAGE
+      Usage: #{bn0} [OPTIONS] [MODE] [MODE OPTIONS]
+
+      Inspect and sync the fork relationship of the current repo. The fork is
+      the repo at the 'origin' remote (or --remote); its parent is looked up on
+      the hosting service and cached in local git config (fork.REMOTE.*).
+
+      Modes:
+        status (default)          Show origin, parent, and the local remote for it
+        is-fork [-v]              Exit 0 if a fork, 1 if not (-v prints the parent)
+        parent [--url]            Print the parent's owner/repo (or clone URL)
+        source-remote             Print the local remote that points at the parent
+        sync [-b BRANCH]          Merge the parent's BRANCH (default: its default
+                                  branch) into the fork on the hosting service
+        add-remote [NAME]         Add the parent as remote NAME (default: upstream)
+        refresh                   Discard the cached parent and look it up again
+
+      Options:
+        -r, --remote=NAME         The fork's remote (default: fork.remote config,
+                                  then origin)
+            --refresh             Ignore the cached parent for this run
+
+      Exit status is 0 on success, 1 when the answer is "no" (not a fork, no
+      matching remote), and 2 on errors.
+
+      Only GitHub (github.com and hosts known to gh) is supported; repos on other
+      hosts are reported as not being forks.
+    USAGE
+
+    exit code
+  end
+
+  def die(msg, code = EXIT_ERROR)
+    warn "#{bn0}: #{msg}"
+    exit code
+  end
+
+  # -- options ------------------------------------------------------------------
+
+  # -r and --refresh are accepted before the mode and after it.
+  def parse_options!(args, order: false)
+    parser = OptionParser.new do |opts|
+      opts.on("-r", "--remote=NAME") { @remote = it }
+      opts.on("--refresh") { @refresh = true }
+      opts.on("-h", "--help") { usage(0) }
+    end
+
+    yield parser if block_given?
+
+    order ? parser.order!(args) : parser.parse!(args)
+  rescue OptionParser::ParseError => e
+    die e.message
+  end
+
+  def no_arguments!(args)
+    die "unexpected argument(s): #{args.join(" ")}" unless args.empty?
+  end
+
+  # -- git ----------------------------------------------------------------------
+
+  # stderr passes through; nil on failure, which covers unset config keys.
+  def git(*args)
+    output, status = Open3.capture2("git", *args)
+    status.success? ? output.strip : nil
+  end
+
+  def config_get(key) = git("config", "--local", "--get", key)
+
+  def config_set(key, value) = git("config", "--local", key, value)
+
+  def remote_name
+    @remote_name ||= @remote || git("config", "--get", "fork.remote") || "origin"
+  end
+
+  def cache_section = "fork.#{remote_name}"
+
+  # `git remote get-url` applies url.*.insteadOf, so these are the URLs git
+  # actually uses.
+  def remotes
+    @remotes ||= (git("remote") || "").lines(chomp: true).to_h do |name|
+      [name, parse_url(git("remote", "get-url", name) || "")]
+    end
+  end
+
+  def origin
+    @origin ||=
+      if !remotes.key?(remote_name)
+        die "no remote named '#{remote_name}'"
+      else
+        remotes[remote_name] || die("remote '#{remote_name}' is not a hosted repo URL")
+      end
+  end
+
+  # -- URLs -----------------------------------------------------------------------
+
+  SCHEME_URL = %r{\A(?<scheme>[a-z][a-z0-9+.-]*)://(?:[^@/]+@)?(?<host>[^/:]+)(?::\d+)?/(?<path>.+)\z}i
+  # scp-like [user@]host:path, where host is often an SSH config Host alias.
+  # A slash before the colon makes it a local path, as git treats it.
+  SCP_URL = %r{\A(?:[^@/:]+@)?(?<host>[^/:]+):(?<path>.+)\z}
+
+  def parse_url(url)
+    url = url.strip
+
+    host, path, ssh =
+      if (m = SCHEME_URL.match(url))
+        [m[:host], m[:path], m[:scheme].match?(/ssh/i)] unless m[:scheme].casecmp?("file")
+      elsif !url.include?("://") && (m = SCP_URL.match(url))
+        [m[:host], m[:path], true]
+      end
+
+    return if host.nil?
+
+    owner, _, name = path.delete_prefix("/").delete_suffix("/").delete_suffix(".git").rpartition("/")
+    return if owner.empty? || name.empty?
+
+    Location.new(host: (ssh ? ssh_hostname(host) : host).downcase, owner:, name:, ssh:)
+  end
+
+  def ssh_hostname(host)
+    @ssh_hostnames ||= {}
+    @ssh_hostnames[host] ||= begin
+      output, status = Open3.capture2("ssh", "-G", host, err: File::NULL)
+      (status.success? && output[/^hostname (\S+)$/, 1]) || host
+    end
+  end
+
+  # -- hosting service --------------------------------------------------------------
+
+  def which(cmd)
+    ENV.fetch("PATH", "").split(File::PATH_SEPARATOR).each do |dir|
+      path = File.join(dir, cmd)
+      return path if File.file?(path) && File.executable?(path)
+    end
+
+    nil
+  end
+
+  def gh_hosts
+    @gh_hosts ||= begin
+      dir = ENV["GH_CONFIG_DIR"] || File.join(ENV["XDG_CONFIG_HOME"] || File.expand_path("~/.config"), "gh")
+      hosts = YAML.safe_load_file(File.join(dir, "hosts.yml")) || {}
+      ["github.com", ENV["GH_HOST"], *hosts.keys].compact.map(&:downcase)
+    rescue SystemCallError, Psych::Exception
+      ["github.com", ENV["GH_HOST"]].compact
+    end
+  end
+
+  def github?(location) = gh_hosts.include?(location.host)
+
+  def gh_repo(location)
+    die "gh is required for GitHub repos" unless which("gh")
+
+    output, error, status = Open3.capture3("gh", "api", "--hostname", location.host, "repos/#{location.full_name}")
+    die "could not look up #{location}: #{error.strip.delete_prefix("gh: ")}" unless status.success?
+
+    JSON.parse(output)
+  end
+
+  # -- fork lookup ----------------------------------------------------------------------
+
+  def fork_info(live: false)
+    return @fork_info if @fork_info && !live
+
+    @fork_info = (!live && !@refresh && cached_fork_info) || lookup_fork_info
+  end
+
+  # The cache records origin's id so it is ignored if the remote's URL changes.
+  def cached_fork_info
+    return unless config_get("#{cache_section}.origin") == origin.id
+
+    parent = config_get("#{cache_section}.parent")
+    return if parent.nil?
+    return ForkInfo.new(parent: nil, branch: nil) if parent.empty?
+
+    host, path = parent.split("/", 2)
+    owner, _, name = path.rpartition("/")
+    ForkInfo.new(parent: Location.new(host:, owner:, name:, ssh: origin.ssh), branch: nil)
+  end
+
+  # Non-GitHub hosts are "not a fork" without a lookup (and aren't cached, as
+  # that costs nothing to recompute).
+  def lookup_fork_info
+    return ForkInfo.new(parent: nil, branch: nil) unless github?(origin)
+
+    parent = gh_repo(origin)["parent"]
+
+    info =
+      if parent
+        location = Location.new(host: origin.host, owner: parent.dig("owner", "login"), name: parent["name"], ssh: origin.ssh)
+        ForkInfo.new(parent: location, branch: parent["default_branch"])
+      else
+        ForkInfo.new(parent: nil, branch: nil)
+      end
+
+    config_set("#{cache_section}.origin", origin.id)
+    config_set("#{cache_section}.parent", info.parent&.to_s || "")
+
+    info
+  end
+
+  def parent! = fork_info.parent || die("#{origin} is not a fork", EXIT_NO)
+
+  # A remote named upstream wins when several point at the parent.
+  def source_remote(parent)
+    matches = remotes.select { |name, loc| name != remote_name && loc&.id == parent.id }.keys
+    matches.include?("upstream") ? "upstream" : matches.first
+  end
+
+  # -- modes ----------------------------------------------------------------------------
+
+  def mode_status(args)
+    parse_options!(args)
+    no_arguments!(args)
+
+    puts "fork:   #{origin} (#{remote_name})"
+
+    unless (parent = fork_info.parent)
+      puts "parent: none"
+      return
+    end
+
+    remote = source_remote(parent)
+    puts "parent: #{parent} (#{remote || "no local remote; use '#{bn0} add-remote'"})"
+
+    divergence = remote && divergence(remote)
+    puts "status: #{divergence}" if divergence
+  end
+
+  # Compares the default branches as last fetched, so no network access.
+  def divergence(remote)
+    branch = git("symbolic-ref", "--quiet", "--short", "refs/remotes/#{remote}/HEAD")&.delete_prefix("#{remote}/")
+    return unless branch
+
+    counts = git("rev-list", "--left-right", "--count", "#{remote_name}/#{branch}...#{remote}/#{branch}")
+    return unless counts
+
+    ahead, behind = counts.split.map(&:to_i)
+    "#{remote_name}/#{branch} is #{ahead} ahead, #{behind} behind #{remote}/#{branch}"
+  end
+
+  def mode_is_fork(args)
+    verbose = false
+    parse_options!(args) { it.on("-v", "--verbose") { verbose = true } }
+    no_arguments!(args)
+
+    parent = fork_info.parent
+    puts parent if verbose && parent
+    exit(parent ? 0 : EXIT_NO)
+  end
+
+  def mode_parent(args)
+    url = false
+    parse_options!(args) { it.on("--url") { url = true } }
+    no_arguments!(args)
+
+    parent = parent!
+    puts url ? parent.url : parent.full_name
+  end
+
+  def mode_source_remote(args)
+    parse_options!(args)
+    no_arguments!(args)
+
+    puts source_remote(parent!) || die("no remote points at #{parent!}", EXIT_NO)
+  end
+
+  # Always a live lookup: it hits the network anyway, and it refreshes the
+  # cache and supplies the parent's current default branch.
+  def mode_sync(args)
+    branch = nil
+    parse_options!(args) { it.on("-b", "--branch=BRANCH") { branch = it } }
+    no_arguments!(args)
+
+    info = fork_info(live: true)
+    die "#{origin} is not a fork", EXIT_NO unless info.parent
+
+    system("gh", "repo", "sync", origin.to_s, "--branch", branch || info.branch)
+    exit($?.exitstatus || EXIT_ERROR) unless $?.success?
+  end
+
+  # Adds the parent using the same transport as origin; url.*.insteadOf then
+  # applies to it as it would to any other remote.
+  def mode_add_remote(args)
+    parse_options!(args)
+    usage(EXIT_ERROR) if args.length > 1
+
+    name = args.first || "upstream"
+    parent = parent!
+
+    if (existing = source_remote(parent))
+      die "#{parent} is already remote '#{existing}'", EXIT_NO
+    end
+
+    die "remote '#{name}' already exists" if remotes.key?(name)
+
+    git("remote", "add", name, parent.url) || die("could not add remote '#{name}'")
+    puts "Added remote '#{name}' for #{parent} (#{git("remote", "get-url", name)})"
+  end
+
+  def mode_refresh(args)
+    parse_options!(args)
+    no_arguments!(args)
+
+    git("config", "--local", "--remove-section", cache_section) if config_get("#{cache_section}.origin")
+    puts "parent: #{fork_info(live: true).parent || "none"}"
+  end
+end
+
+GitFork.new.run(ARGV)

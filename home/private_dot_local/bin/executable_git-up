@@ -4,9 +4,8 @@
 # merging (git-up) or rebasing (git-reup or git-up --rebase). Submodules are
 # quietly recursively updated.
 #
-# If the current repository is a fork of an upstream repo on GitHub with both
-# upstream and downstream remotes, the GitHub API will be used to ensure that
-# it is up to date.
+# If the current repository is a fork (see git-fork), the fork is synced with
+# its parent on the hosting service before fetching.
 #
 # Inspired by Kyle Neath's `git up' alias <http://gist.github.com/249223> and
 # based on git-up by Ryan Tomayko
@@ -25,9 +24,12 @@ An enhanced git-pull that shows a short log of changes immediately after
 merging (git-up) or rebasing (git-reup or git-up --rebase). Submodules are
 quietly recursively updated.
 
-If the current repository is a fork of an upstream repo on GitHub with both
-upstream and downstream remotes, the GitHub API will be used to ensure that it
-is up to date prior to fetching the remote.
+If the current repository is a fork and git-fork is available, the fork is
+synced with its parent on the hosting service prior to fetching, and the
+parent's remote is the authority for tags that have been moved (such as 'v1'
+following 'v1.2.3'). When there is no parent remote, the remote named by the
+string config 'git-up.prefer-tags-from' is used instead; without either, each
+remote updates moved tags in alphabetical order, so the last one wins.
 
 All other options and parameters are passed to 'git-pull'.
 
@@ -37,183 +39,48 @@ Options
   -R, --no-rebase             as 'git-reup'.
                               Boolean config 'git-up.rebase'.
 
-  -m, --merge-upstream        Use the GitHub API to merge the upstream default
-  -M, --no-merge-upstream     branch into the fork default branch. Enabled by
-                              default if there are multiple remotes in the
-                              current repo. This enables --branch, --origin, and
-                              --upstream options.
-                              Boolean config 'git-up.merge-upstream.enabled'.
+  -m, --sync-fork             Sync the fork with its parent with 'git fork sync'.
+  -M, --no-sync-fork          Enabled by default.
+                              Boolean config 'git-up.sync-fork'.
 
   -s, --submodule-update      Updates submodules. Enabled by default.
   -S, --no-submodule-update   Boolean config 'git-up.submodule-update'.
-
-Merge Upstream Options
-
-  --branch BRANCH             The name of the branch to use for updating the
-                              fork. Defaults to the upstream repository default
-                              branch.
-                              String config 'git-up.merge-upstream.branch'.
-
-  --origin NAME               The name of the remote in the current git repo to
-                              use for discovering the target repo. Defaults to
-                              'origin' of the current git repo.
-                              String config 'git-up.merge-upstream.origin'.
-
-  --upstream NAME             The remote, repo name, or URL for the parent
-                              repository; used when '--branch' is not provided.
-                              Defaults 'upstream' of the current git repo.
-                              String config 'git-up.merge-upstream.upstream'.
 
 USAGE
 }
 
 halt-error() {
-  local call_usage
-  call_usage=false
-
-  if [[ "${1:-}" == --usage ]]; then
-    call_usage=true
-    shift
-  fi
-
   echo >&2 "${bn0}: $*"
-  "${call_usage}" && usage >&2
   exit 1
 }
 
 git rev-parse --is-inside-work-tree 2>/dev/null 1>/dev/null ||
   halt-error "${PWD} is not a git working tree"
 
-readonly user_re='[^:@]+'
-readonly pass_re='[^@]+'
-readonly host_re='[^:/?#]+'
-readonly port_re='[0-9]+'
-readonly path_re='/([^?#]*)'
-readonly query_re='\?([^#]+)'
-readonly fragment_re='#(.*)'
-readonly auth_re="(${user_re})(:(${pass_re}))?@"
-readonly connection_re="(${auth_re})?(${host_re})(:(${port_re}))?"
-readonly url_re="^https://${connection_re}(${path_re})?(${query_re})?(${fragment_re})?"
-readonly ssh_re="^ssh://git@([^:]+)(:(${port_re}))?/(.*)$"
-readonly scp_re="^git@([^:]+):(.*)$"
-
-parse-repo-path() {
-  if [[ "${1}" =~ ^([^/]+)/([^/]+)(/.*)?$ ]]; then
-    echo "${BASH_REMATCH[1]}/${BASH_REMATCH[2]/.git/}"
-  else
-    echo >&2 "invalid repo path: ${1}"
-    return 1
-  fi
-}
-
-get-repo-from-url() {
-  parse-repo-url "${1}" repo
-}
-
-get-host-from-url() {
-  parse-repo-url "${1}" host
-}
-
-parse-repo-url() {
-  local url url_part host repo
-  url="${1}"
-  url_part="${2}"
-
-  if [[ "${url}" =~ ${url_re} ]]; then
-    if [[ -z "${BASH_REMATCH[5]}" ]] || [[ -z "${BASH_REMATCH[9]}" ]]; then
-      # Missing host and/or path
-      echo >&2 "invalid URL: ${url}"
-      return 1
-    fi
-
-    if [[ "${BASH_REMATCH[5]}" == github.com ]]; then
-      host=
-    else
-      host="${BASH_REMATCH[5]}${BASH_REMATCH[6]}"
-    fi
-
-    if ! repo="$(parse-repo-path "${BASH_REMATCH[9]}")"; then
-      echo >&2 "${repo}"
-      return 1
-    fi
-  elif [[ "${url}" =~ ${ssh_re} ]]; then
-    if [[ -z "${BASH_REMATCH[1]}" ]] || [[ -z "${BASH_REMATCH[4]}" ]]; then
-      echo "invalid URL: ${url}"
-      return 1
-    fi
-
-    host="${BASH_REMATCH[1]}${BASH_REMATCH[2]}"
-
-    if ! repo="$(parse-repo-path "${BASH_REMATCH[4]}")"; then
-      return 1
-    fi
-  elif [[ "${url}" =~ ${scp_re} ]]; then
-    if [[ -z "${BASH_REMATCH[1]}" ]] || [[ -z "${BASH_REMATCH[2]}" ]]; then
-      echo "invalid URL: ${url}"
-      return 1
-    fi
-
-    host="${BASH_REMATCH[1]}"
-    if ! repo="$(parse-repo-path "${BASH_REMATCH[2]}")"; then
-      return 1
-    fi
-  else
-    echo "invalid URL: ${url}"
-    return 1
-  fi
-
-  case "${url_part}" in
-  host) echo "${host}" ;;
-  repo) echo "${repo}" ;;
-  *)
-    echo "invalid URL part: ${url_part}"
-    return 1
-    ;;
-  esac
-}
-
 declare -a remotes args
-declare -A remote_urls
+declare rebase submodule_update sync_fork tag_remote
+args=()
+tag_remote=
 
-declare merge_upstream rebase submodule_update \
-  branch \
-  origin origin_host origin_repo origin_url \
-  upstream upstream_host upstream_repo upstream_url
-branch=
-origin=
-origin_host=
-origin_repo=
-origin_url=
-upstream=
-upstream_host=
-upstream_repo=
-upstream_url=
-
+# Sorted so that when no remote is the tag authority (no fork parent and no
+# git-up.prefer-tags-from), the last remote alphabetically wins for moved tags.
 # shellcheck disable=SC2312
-readarray -t remotes < <(git remote)
-for remote in "${remotes[@]}"; do
-  remote_urls["${remote}"]="$(git remote get-url "${remote}")"
-done
+readarray -t remotes < <(git remote | LC_ALL=C sort)
 
-merge_upstream=$(git config --get git-up.merge-upstream.enabled)
-rebase=$(git config --get git-up.rebase)
-submodule_update=$(git config --get git-up.submodule-update)
+rebase=$(git config --get --type=bool git-up.rebase)
+submodule_update=$(git config --get --type=bool git-up.submodule-update)
+sync_fork=$(git config --get --type=bool git-up.sync-fork)
 
-if ((${#merge_upstream} == 0)); then
-  if ((${#remotes[@]} > 1)); then
-    merge_upstream=true
+if [[ -z "${rebase}" ]]; then
+  if [[ "${bn0}" == git-reup ]]; then
+    rebase=true
   else
-    merge_upstream=false
+    rebase=false
   fi
 fi
 
-if [[ -z "${rebase}" ]] && [[ "${bn0}" == git-reup ]]; then
-  rebase=true
-fi
-
-if [[ -z "${submodule_update}" ]]; then
-  submodule_update=true
-fi
+[[ -z "${submodule_update}" ]] && submodule_update=true
+[[ -z "${sync_fork}" ]] && sync_fork=true
 
 while (($#)); do
   case "${1}" in
@@ -223,8 +90,8 @@ while (($#)); do
     ;;
   -R | --no-rebase) rebase=false ;;
   -r | --rebase) rebase=true ;;
-  -m | --merge-upstream) merge_upstream=true ;;
-  -M | --no-merge-upstream) merge_upstream=false ;;
+  -m | --sync-fork) sync_fork=true ;;
+  -M | --no-sync-fork) sync_fork=false ;;
   -s | --submodule-update) submodule_update=true ;;
   -S | --no-submodule-update) submodule_update=false ;;
   *) args+=("${1}") ;;
@@ -234,138 +101,84 @@ done
 
 set -- "${args[@]}"
 
-if "${merge_upstream}" && ! command -v gh >/dev/null 2>/dev/null; then
-  merge_upstream=false
+# git-fork caches the parent lookup in local config, so this only touches the
+# network the first time (and for the sync itself).
+if command -v git-fork >/dev/null 2>&1 && git fork is-fork 2>/dev/null; then
+  "${sync_fork}" && git fork sync
+  tag_remote="$(git fork source-remote 2>/dev/null)"
 fi
 
-if "${merge_upstream}"; then
-  origin=$(git config --get git-up.merge-upstream.origin)
-  upstream=$(git config --get git-up.merge-upstream.upstream)
-  branch=$(git config --get git-up.merge-upstream.branch)
+if [[ -z "${tag_remote}" ]]; then
+  tag_remote="$(git config --get git-up.prefer-tags-from)"
 
-  if ((${#remotes[@]} > 1)); then
-    while (($#)); do
-      case "${1}" in
-      -o | --origin)
-        if [[ -z "${2}" ]]; then
-          halt-error "${1} requires a value"
-        fi
-
-        origin="${2}"
-        shift
-        ;;
-      -u | --upstream)
-        if [[ -z "${2}" ]]; then
-          halt-error "${1} requires a value"
-        fi
-
-        upstream="${2}"
-        shift
-        ;;
-      -b | --branch)
-        if [[ -z "${2}" ]]; then
-          halt-error "${1} requires a value"
-        fi
-
-        branch="${2}"
-        shift
-        ;;
-      *)
-        args+=("${1}")
-        ;;
-      esac
-
-      shift
-    done
-
-    set -- "${args[@]}"
-
-    [[ -z "${origin}" ]] && origin=origin
-
-    if ((${#remote_urls["${origin}"]})); then
-      origin_url="${remote_urls["${origin}"]}"
-
-      if ! origin_repo="$(get-repo-from-url "${origin_url}")"; then
-        halt-error "origin remote: ${origin_repo}"
-      fi
-
-      origin_host="$(get-host-from-url "${origin_url}")"
-    elif origin_repo="$(get-repo-from-url "${origin}" 2>/dev/null)"; then
-      origin_host="$(get-host-from-url "${origin}")"
-      origin_url="${origin}"
-    elif origin_repo="$(parse-repo-path "${origin}" 2>/dev/null)"; then
-      :
-    else
-      halt-error "origin remote '${origin}' does not exist in git repo"
-    fi
-
-    if [[ -z "${branch}" ]]; then
-      [[ -z "${upstream}" ]] && upstream=upstream
-
-      if ((${#remote_urls["${upstream}"]})); then
-        upstream_url="${remote_urls["${upstream}"]}"
-
-        if ! upstream_repo="$(get-repo-from-url "${upstream_url}")"; then
-          halt-error "upstream remote: ${upstream_repo}"
-        fi
-
-        upstream_host="$(get-host-from-url "${upstream_url}")"
-      elif upstream_repo="$(get-repo-from-url "${upstream}" 2>/dev/null)"; then
-        upstream_host="$(get-host-from-url "${upstream}")"
-        upstream_url="${upstream}"
-      elif upstream_repo="$(parse-repo-path "${upstream}" 2>/dev/null)"; then
-        :
-      else
-        halt-error "upstream remote '${upstream}' does not exist in git repo"
-      fi
-
-      args=()
-
-      if [[ -n "${upstream_host}" ]] && [[ "${upstream_host}" != github.com ]]; then
-        args=(--hostname "${upstream_host}")
-      fi
-
-      # Get the default branch from the upstream
-      if ! branch="$(gh "${args[@]}" api repos/"${upstream_repo}" --template '{{ .default_branch }}')"; then
-        halt-error "could not get default branch from ${upstream_repo}"
-      fi
-
-      if [[ -z "${branch}" ]]; then
-        halt-error "could not get default branch from ${upstream_repo}"
-      fi
-    fi
-
-    args=()
-
-    if [[ -n "${origin_host}" ]] && [[ "${origin_host}" != github.com ]]; then
-      args=(--hostname "${origin_host}")
-    fi
-
-    if _result="$(gh "${args[@]}" api repos/"${origin_repo}"/merge-upstream -F branch="${branch}")"; then
-      echo "${origin_repo} branch ${branch} merged with ${upstream_repo}"
-    else
-      echo 2>&1 "${bn0}: Error updating upstream branch."
-    fi
-  else
-    echo 2>&1 "${bn0}: Upstream merge enabled but there is only one remote. Skipped."
+  if [[ -n "${tag_remote}" ]] && ! git remote get-url "${tag_remote}" >/dev/null 2>&1; then
+    echo >&2 "${bn0}: git-up.prefer-tags-from remote '${tag_remote}' does not exist; ignored"
+    tag_remote=
   fi
 fi
 
-# Quietly perform a fetch with prune
-git fetch --all --prune --quiet
+# Fetch a remote with prune. Tags that have been moved on the remote (mutable
+# tags like `v1` or `v1.2`) are rejected as "would clobber existing tag" when
+# fetch.pruneTags or --tags is in effect; those are force-updated from the
+# remote and the fetch is retried. If force_tags is false, moved tags are left
+# alone and the remote is fetched without tags instead.
+fetch-remote() {
+  local remote force_tags output
+  local -a tags refspecs
+  remote="${1}"
+  force_tags="${2:-true}"
 
-declare -a pull_args
+  output="$(git fetch --prune "${remote}" 2>&1)" && return 0
 
-if (($#)); then
-  pull_args=("${@}")
-else
-  pull_args=()
-fi
+  # shellcheck disable=SC2312
+  readarray -t tags < <(
+    sed -nE 's/^ ! \[rejected\] +([^ ]+) +-> +[^ ]+ +\(would clobber existing tag\)$/\1/p' <<<"${output}"
+  )
+
+  if ((${#tags[@]} == 0)); then
+    echo >&2 "${output}"
+    return 1
+  fi
+
+  if ! "${force_tags}"; then
+    git -c fetch.pruneTags=false fetch --prune --quiet --no-tags "${remote}"
+    return
+  fi
+
+  refspecs=("${tags[@]/#/+refs/tags/}")
+  for i in "${!tags[@]}"; do
+    refspecs[i]="${refspecs[i]}:refs/tags/${tags[i]}"
+  done
+
+  if git fetch --quiet --no-tags "${remote}" "${refspecs[@]}" &&
+    git fetch --prune --quiet "${remote}"; then
+    echo "Updated tags from ${remote}: ${tags[*]}"
+  else
+    echo >&2 "${output}"
+    return 1
+  fi
+}
+
+# The tag authority (a fork's parent, or git-up.prefer-tags-from) is the only
+# remote allowed to move tags; a fork that hasn't synced tags must not revert
+# them. It is fetched last because fetch.pruneTags on the other remotes prunes
+# tags that only it has.
+for remote in "${remotes[@]}"; do
+  if [[ -z "${tag_remote}" ]]; then
+    fetch-remote "${remote}"
+  elif [[ "${remote}" != "${tag_remote}" ]]; then
+    fetch-remote "${remote}" false
+  fi
+done
+
+[[ -n "${tag_remote}" ]] && fetch-remote "${tag_remote}"
 
 # when invoked as git-reup, run as `git pull --rebase'
-"${rebase}" && pull_args=(--rebase "${pull_args[@]}")
+"${rebase}" && set -- --rebase "${@}"
 
-git pull "${pull_args[@]}"
+# Tags were handled above; keep pull's own fetch from tripping over them again
+# (fetch.pruneTags adds a non-forced tag refspec that --no-tags doesn't remove).
+git -c fetch.pruneTags=false pull --no-tags "${@}"
 echo
 
 # show diffstat of all changes if we're pulling with --rebase. not

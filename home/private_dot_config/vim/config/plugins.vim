@@ -425,8 +425,6 @@ packix.Setup((px: packix.Packix) => {
   px.Add('yorickpeterse/vim-paper')
   # https://github.com/dfxyz/CandyPaper.vim
   px.Add('dfxyz/CandyPaper.vim')
-  # https://github.com/DFHX5694/vim-plaintext
-  px.Add('DFHX5694/vim-plaintext')
   # https://github.com/NLKNguyen/papercolor-theme
   px.Add('NLKNguyen/papercolor-theme')
 
