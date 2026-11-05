@@ -1,5 +1,4 @@
-{{- $work := has "work" (get . "roles" | default list) -}}
-{{- $hex_api_keys := dict -}}
+{{- $work := has "work" (get . "roles" | default list) -}} {{- $hex_api_keys := dict -}}
 {{- $env := dict
   "ERL_AFLAGS"          "-kernel shell_history enabled shell_history_file_bytes 5242880"
   "RIPGREP_CONFIG_PATH" (joinPath .chezmoi.homeDir ".ripgreprc")
@@ -7,15 +6,15 @@
 {{- $tools := dict
   "aqua:kjanat/actionlint"        "1.17"
   "elixir"                        (dict
-                                    "version" "1.20-otp-29"
+                                    "version" "1.20.5-otp-29"
                                     "postinstall" "mix do local.hex --force + local.rebar --force"
                                   )
-  "erlang"                        "29"
+  "erlang"                        "29.1"
   "github:hay-kot/scaffold"       "latest"
   "github:middlendian/llima-box"  "latest"
   "github:KarnerTh/mermerd"       "latest"
   "gleam"                         "latest"
-  "go"                            "1.26"
+  "go"                            "1.27"
   "go:golang.org/x/tools/gopls"   "latest"
   "opentofu"                      "latest"
   "node"                          (dict
@@ -23,13 +22,13 @@
                                     "postinstall" "corepack enable"
                                   )
   "ruby"                          "4.0"
-  "rust"                          "1.96"
+  "rust"                          "1.99"
   "rumdl"                         "latest"
   "shellcheck"                    "latest"
   "shfmt"                         "latest"
   "usage"                         "latest"
   "vacuum"                        "latest"
-  "zig"                           "0.16"
+  "zig"                           "0.17"
 -}}
 
 {{- if $work -}}

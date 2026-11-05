@@ -103,9 +103,9 @@ set -- "${args[@]}"
 
 # git-fork caches the parent lookup in local config, so this only touches the
 # network the first time (and for the sync itself).
-if command -v git-fork >/dev/null 2>&1 && git fork is-fork 2>/dev/null; then
+if command -v git-fork >/dev/null 2>&1 &&
+  tag_remote="$(git fork is-fork --source-remote 2>/dev/null)"; then
   "${sync_fork}" && git fork sync
-  tag_remote="$(git fork source-remote 2>/dev/null)"
 fi
 
 if [[ -z "${tag_remote}" ]]; then
@@ -117,68 +117,63 @@ if [[ -z "${tag_remote}" ]]; then
   fi
 fi
 
-# Fetch a remote with prune. Tags that have been moved on the remote (mutable
-# tags like `v1` or `v1.2`) are rejected as "would clobber existing tag" when
-# fetch.pruneTags or --tags is in effect; those are force-updated from the
-# remote and the fetch is retried. If force_tags is false, moved tags are left
-# alone and the remote is fetched without tags instead.
-fetch-remote() {
-  local remote force_tags output
-  local -a tags refspecs
-  remote="${1}"
-  force_tags="${2:-true}"
-
-  output="$(git fetch --prune "${remote}" 2>&1)" && return 0
-
-  # shellcheck disable=SC2312
-  readarray -t tags < <(
-    sed -nE 's/^ ! \[rejected\] +([^ ]+) +-> +[^ ]+ +\(would clobber existing tag\)$/\1/p' <<<"${output}"
-  )
-
-  if ((${#tags[@]} == 0)); then
-    echo >&2 "${output}"
-    return 1
-  fi
-
-  if ! "${force_tags}"; then
-    git -c fetch.pruneTags=false fetch --prune --quiet --no-tags "${remote}"
-    return
-  fi
-
-  refspecs=("${tags[@]/#/+refs/tags/}")
-  for i in "${!tags[@]}"; do
-    refspecs[i]="${refspecs[i]}:refs/tags/${tags[i]}"
-  done
-
-  if git fetch --quiet --no-tags "${remote}" "${refspecs[@]}" &&
-    git fetch --prune --quiet "${remote}"; then
-    echo "Updated tags from ${remote}: ${tags[*]}"
-  else
-    echo >&2 "${output}"
-    return 1
-  fi
+tag-refs() {
+  git for-each-ref --format='%(refname:strip=2) %(objectname)' refs/tags | LC_ALL=C sort
 }
 
-# The tag authority (a fork's parent, or git-up.prefer-tags-from) is the only
-# remote allowed to move tags; a fork that hasn't synced tags must not revert
-# them. It is fetched last because fetch.pruneTags on the other remotes prunes
-# tags that only it has.
-for remote in "${remotes[@]}"; do
-  if [[ -z "${tag_remote}" ]]; then
-    fetch-remote "${remote}"
-  elif [[ "${remote}" != "${tag_remote}" ]]; then
-    fetch-remote "${remote}" false
-  fi
-done
+# Fetch a remote with prune, force-updating tags that have been moved on the
+# remote (mutable tags like `v1` or `v1.2`) instead of rejecting them as "would
+# clobber existing tag". Moved tags are found by comparing local tag refs, so
+# this costs one fetch.
+fetch-tags-from() {
+  local remote before after
+  local -a moved
+  remote="${1}"
 
-[[ -n "${tag_remote}" ]] && fetch-remote "${tag_remote}"
+  before="$(tag-refs)"
+  git fetch --prune --quiet --force --tags "${remote}" || return
+  after="$(tag-refs)"
+
+  # shellcheck disable=SC2312
+  readarray -t moved < <(
+    LC_ALL=C join <(echo "${before}") <(echo "${after}") | awk '$2 != $3 { print $1 }'
+  )
+
+  ((${#moved[@]} == 0)) || echo "Updated tags from ${remote}: ${moved[*]}"
+}
+
+if [[ -n "${tag_remote}" ]]; then
+  # The tag authority (a fork's parent, or git-up.prefer-tags-from) is the only
+  # remote allowed to move tags; a fork that hasn't synced tags must not revert
+  # them, or prune tags that only the authority has. The others are fetched
+  # together without tags.
+  declare -a others
+  others=()
+  for remote in "${remotes[@]}"; do
+    [[ "${remote}" == "${tag_remote}" ]] || others+=("${remote}")
+  done
+
+  if ((${#others[@]})); then
+    git -c fetch.pruneTags=false fetch --prune --quiet --no-tags \
+      --multiple --jobs="${#others[@]}" "${others[@]}"
+  fi
+
+  fetch-tags-from "${tag_remote}"
+else
+  # Without an authority, each remote updates moved tags in turn, so the last
+  # one alphabetically wins.
+  for remote in "${remotes[@]}"; do
+    fetch-tags-from "${remote}"
+  done
+fi
 
 # when invoked as git-reup, run as `git pull --rebase'
 "${rebase}" && set -- --rebase "${@}"
 
 # Tags were handled above; keep pull's own fetch from tripping over them again
-# (fetch.pruneTags adds a non-forced tag refspec that --no-tags doesn't remove).
-git -c fetch.pruneTags=false pull --no-tags "${@}"
+# (fetch.pruneTags adds a non-forced tag refspec that --no-tags doesn't remove),
+# and from refetching every remote when fetch.all is set.
+git -c fetch.pruneTags=false -c fetch.all=false pull --no-tags "${@}"
 echo
 
 # show diffstat of all changes if we're pulling with --rebase. not

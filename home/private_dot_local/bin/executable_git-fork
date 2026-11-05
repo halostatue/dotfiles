@@ -67,7 +67,8 @@ class GitFork
 
       Modes:
         status (default)          Show origin, parent, and the local remote for it
-        is-fork [-v]              Exit 0 if a fork, 1 if not (-v prints the parent)
+        is-fork [-v] [-s]         Exit 0 if a fork, 1 if not (-v prints the
+                                  parent, -s the source remote if there is one)
         parent [--url]            Print the parent's owner/repo (or clone URL)
         source-remote             Print the local remote that points at the parent
         sync [-b BRANCH]          Merge the parent's BRANCH (default: its default
@@ -300,11 +301,16 @@ class GitFork
 
   def mode_is_fork(args)
     verbose = false
-    parse_options!(args) { it.on("-v", "--verbose") { verbose = true } }
+    show_source = false
+    parse_options!(args) do
+      it.on("-v", "--verbose") { verbose = true }
+      it.on("-s", "--source-remote") { show_source = true }
+    end
     no_arguments!(args)
 
     parent = fork_info.parent
     puts parent if verbose && parent
+    puts source_remote(parent) if show_source && parent && source_remote(parent)
     exit(parent ? 0 : EXIT_NO)
   end
 
