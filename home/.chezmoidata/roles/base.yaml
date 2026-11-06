@@ -6,7 +6,6 @@
 defrole:
   base:
     taps:
-      abue-ammar/tinycast:
       browsers-software/tap:
 
     casks:
@@ -86,6 +85,7 @@ defrole:
         difftastic:
         dos2unix:
         doxx:
+        dua-cli:
         duf:
         dust:
         editorconfig-checker:

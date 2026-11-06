@@ -1,5 +1,5 @@
 {
-  "trustedtaps": [
-    "browsers-software/tap"
+  "trustedcasks": [
+    "browsers-software/tap/browsers"
   ]
 }

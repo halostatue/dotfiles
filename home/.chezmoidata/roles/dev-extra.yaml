@@ -20,15 +20,18 @@ defrole:
         act:
         actionlint:
         cloc:
+        config-file-validator:
         dotenv-linter:
         entr:
         faketty:
         gore:
         hcloud:
         helix:
+        nushell:
         pinact:
         pkgconfig:
         prr:
+        q:
         rust-script:
         scc:
         selene:
@@ -36,6 +39,7 @@ defrole:
         timeout:
         viddy:
         watchexec:
+        wrkflw:
         xan:
 
     uv:
