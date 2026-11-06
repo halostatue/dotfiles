@@ -5,15 +5,12 @@
 ---
 defrole:
   base:
-    taps: {}
-
-      # browsers-software/browsers latest release DMG
-      # browsers: Open the right browser at the right time
-
-      # abue-ammar/tinycast latest release DMG
-      # tinycast: replacement for rustcast/raycast/alfred
+    taps:
+      abue-ammar/tinycast:
+      browsers-software/tap:
 
     casks:
+      browsers: Open the right browser at the right time
       cleanupbuddy: Clean keyboard and trackpad
       finicky: Utility for customizing which browser to start
       firefox: Web browser
@@ -29,12 +26,18 @@ defrole:
       peel: App uninstaller and disk space cleaner
       safari-technology-preview: Web browser
       thaw: Menu bar manager
+      tinycast: Application launcher and productivity tool
       trex: Easy to use text extraction tool
       xprocheck: Anti-malware scan logging tool
       wblock: Ad blocker for Safari
 
     formulae:
       mas: Mac App Store command-line interface
+      # Experimental
+      concord: Terminal user interface client for Discord
+      ec: TUI 3-way git mergetool
+      elio: Batteries-included terminal file manager with rich previews
+      nuls: NuShell-inspired ls with colorful table output
 
     fonts:
       0xproto:
@@ -55,7 +58,6 @@ defrole:
       juliamono:
       maple-mono:
       monaspace:
-      sf-mono:
       source-code-pro:
       space-mono:
 

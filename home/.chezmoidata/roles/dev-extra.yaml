@@ -33,6 +33,7 @@ defrole:
         scc:
         selene:
         sqlite3:
+        timeout:
         viddy:
         watchexec:
         xan:

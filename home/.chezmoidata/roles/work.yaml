@@ -6,7 +6,7 @@ defrole:
   work:
     casks:
       bruno: Open source IDE for exploring and testing APIs
-      drovio: Remote pair programming and team collaboration tool
+      claude-code: Terminal-based AI coding assistant
       meld: Visual diff and merge tool
       slack: Team communication and collaboration software
       visualdiffer: Visually compare folders and files

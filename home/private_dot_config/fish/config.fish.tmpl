@@ -195,10 +195,6 @@ if command --query fortune && status is-interactve
     fortune -s
 end
 
-if command --query fly && command --query flyctl
-    complete --command fly --wraps flyctl
-end
-
 if command --query vim && not set --query PSQL_EDITOR
     set --global --export PSQL_EDITOR (command --search vim) -c ':set ft=sql'
 end
