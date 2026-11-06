@@ -149,6 +149,7 @@ linters
 LiveChat
 LLM
 localhost
+lockfile
 loopback
 Lua
 macOS

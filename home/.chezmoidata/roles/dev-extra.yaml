@@ -14,7 +14,6 @@ defrole:
       liviable: Create and run Linux virtual machines on Apple silicon Macs
       viable: Create and run macOS virtual machines on Apple silicon Macs
       vimy: Double-click to run macOS virtual machines on Apple silicon Macs
-      visual-studio-code: Open-source code editor
 
     ports:
       install:
@@ -24,10 +23,6 @@ defrole:
         dotenv-linter:
         entr:
         faketty:
-        git-branchless:
-        git-mediate:
-        git-some-extras:
-        git-tools:
         gore:
         hcloud:
         helix:
@@ -38,7 +33,6 @@ defrole:
         scc:
         selene:
         sqlite3:
-        valkey:
         viddy:
         watchexec:
         xan:

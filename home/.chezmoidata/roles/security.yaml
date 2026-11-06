@@ -11,10 +11,8 @@ defrole:
       install:
         certstrap:
         cosign:
-        gitleaks:
         grype:
         minisign:
         mkcert:
-        rage:
         step-cli:
         trivy:

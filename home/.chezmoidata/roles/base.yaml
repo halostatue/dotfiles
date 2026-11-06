@@ -13,8 +13,6 @@ defrole:
       # abue-ammar/tinycast latest release DMG
       # tinycast: replacement for rustcast/raycast/alfred
 
-      # kindle-previewer failed to install properly
-
     casks:
       cleanupbuddy: Clean keyboard and trackpad
       finicky: Utility for customizing which browser to start
@@ -22,16 +20,14 @@ defrole:
       ghostty: Terminal emulator that uses platform-native UI and GPU acceleration
       hex-fiend: Hex editor focussing on speed
       itsycal: Menu bar calendar
-      leader-key: Application launcher
       loop: Window manager
       maccy: Clipboard manager
       macpacker: Archive manager
       macvim-app: Text editor
       meetingbar: Shows the next meeting in the menu bar
       obsidian: Knowledge base that works on top of a local folder of plain text Markdown files
-      pearcleaner: Utility to uninstall apps and remove leftover files from old/uninstalled apps
+      peel: App uninstaller and disk space cleaner
       safari-technology-preview: Web browser
-      startupfolder: Run anything at startup by simply placing it in a special folder
       thaw: Menu bar manager
       trex: Easy to use text extraction tool
       xprocheck: Anti-malware scan logging tool
@@ -77,8 +73,8 @@ defrole:
         antiword:
         atuin:
         bash:
-        bat-extras:
         bat:
+        bat-extras:
         cargo:
         chezmoi:
         csvlens:
@@ -94,15 +90,18 @@ defrole:
         eza: +doc+git
         fastmod:
         fd:
-        fish:
+        fish: +docs
         fswatch:
         gawk:
         gh:
+        git: +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
         git-absorb:
+        git-branchless:
         git-delta:
         git-interactive-rebase-tool:
+        git-mediate:
+        git-tools:
         git-who:
-        git: +credential_osxkeychain+diff_highlight+doc+pcre+perl5_34
         glow:
         gmake:
         go:
@@ -130,6 +129,7 @@ defrole:
         mise:
         mmark:
         moreutils: +doc
+        mpstats:
         pam-reattach:
         pv:
         ripgrep: +pcre

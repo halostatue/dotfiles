@@ -7,8 +7,8 @@ defrole:
     ports:
       install:
         cargo2port:
+        dockhand:
         go2port:
-        mpstats:
         seaport:
 
 # vim: ft=yaml

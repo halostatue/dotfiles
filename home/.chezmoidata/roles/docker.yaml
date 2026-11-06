@@ -5,8 +5,8 @@ defrole:
   docker:
     ports:
       install:
-        container-diff:
         colima:
+        container-diff:
         diffoscope:
         dive:
         docker:

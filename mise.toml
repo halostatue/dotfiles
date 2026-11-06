@@ -1,0 +1,14 @@
+[tools]
+biome = "2.6"
+chezmoi = "2.74"
+tombi = "1.9"
+
+[tasks.update]
+depends = [
+  "update:ports",
+  "update:homebrew",
+  "update:cargo-liner",
+  "update:gems",
+  "update:gh",
+  "update:uv",
+]

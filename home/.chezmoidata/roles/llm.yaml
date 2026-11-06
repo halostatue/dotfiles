@@ -7,11 +7,10 @@ defrole:
     casks:
       kiro: Agent-centric IDE with spec-driven development
       kiro-cli: AI-powered productivity tool for the command-line
-      msty: Run LLMs locally
 
     ports:
       install:
-        # apfel:
-        # auge:
-        # translate:
+        apfel:
+        auge:
+        translate:
 
