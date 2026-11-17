@@ -1,4 +1,4 @@
-{{- $work := has "work" (get . "roles" | default list) -}} {{- $hex_api_keys := dict -}}
+{{- $work := has "work" (get . "roles" | default list) -}}
 {{- $env := dict
   "ERL_AFLAGS"          "-kernel shell_history enabled shell_history_file_bytes 5242880"
   "RIPGREP_CONFIG_PATH" (joinPath .chezmoi.homeDir ".ripgreprc")
@@ -43,44 +43,16 @@
 {{-   $_ := set $tools "kubectl"                            "latest" -}}
 {{-   $_ := set $tools "vacuum"                             "latest" -}}
 
-{{-   $npm_package_token := ((output "gh" "auth" "token" "--user" .github.work) | trim) -}}
-{{-   $_ := set $env "NPM_PACKAGE_TOKEN" $npm_package_token -}}
-{{-   $_ := set $hex_api_keys "vivo" (onepasswordRead "op://xlol453p46nfdqodyw62qzk63m/rlvbids4mm46mozbxeplzfphem/credential" .op.personal) -}}
-{{- end -}}
-{{- range $name, $value := $hex_api_keys -}}
-{{-   $name = printf "%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) -}}
-{{-   $_ := set $env $name $value -}}
 {{- end -}}
 
-min_version = "2024.12.23"
+min_version = { soft = "2026.11.9", hard = "2026.11.4" }
 
 [settings]
-always_keep_download = false
 always_keep_install = false
 experimental = true
 idiomatic_version_file = false
 legacy_version_file = false
 paranoid = {{ not $work | toToml }}
 
-[settings.ruby]
-default_packages_file = {{ joinPath .chezmoi.homeDir ".config/packages/default_gems" | quote }}
-
 {{ dict "env" $env | toToml }}
 {{ dict "tools" $tools | toToml }}
-
-{{- if gt (len $hex_api_keys) 0 }}
-
-[tasks.hex-auth]
-description = "Authenticate Private hex.pm Organizations"
-run = [
-  "echo Authenticating Private hex.pm Organizations",
-{{- range $_, $name := keys $hex_api_keys }}
-  "mix hex.organization auth {{ $name }} --key {{ printf "$%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) }}",
-{{ end }}
-]
-
-[tasks.hex-auth.env]
-{{ range $name, $value := $hex_api_keys -}}
-{{ printf "%s_HEX_API_KEY" ($name | jq "ascii_upcase" | first) }} = {{ $value | quote }}{{ end }}
-{{ end -}}
-

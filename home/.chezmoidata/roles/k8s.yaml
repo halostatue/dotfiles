@@ -4,11 +4,13 @@
 ---
 defrole:
   k8s:
+    formulae:
+      kubectl-explore: Better kubectl explain with the fuzzy finder
+      sofka: Kubernetes TUI, reimagined in Rust
+
     casks:
       freelens: Kubernetes IDE
       kubeterm: Kubernetes graphical management tool
-      kubectl-explore: Better kubectl explain with the fuzzy finder
-      sofka: Kubernetes TUI, reimagined in Rust
 
     ports:
       install:

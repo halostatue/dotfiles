@@ -64,6 +64,7 @@ deployments
 devops
 dialyzer
 diff-lcs
+DML
 Dockerfile
 Dockerized
 dotenv
@@ -71,10 +72,13 @@ Dotenvy
 dotfiles
 DSN
 ebook
+ECR
 Ecto
+entrypoint
 enum
 env
 erlang
+ERTS
 ESLint
 Ethereum
 Everything
@@ -85,6 +89,7 @@ Fediverse
 FFI
 Fiant
 Figma
+filesystem
 frontends
 frontmatter
 GDPR
@@ -263,6 +268,7 @@ Tika
 timestamp
 toc
 TOML
+toolchain
 TOTP
 truthy
 Twilio
