@@ -342,6 +342,10 @@ packix.Setup((px: packix.Packix) => {
   # https://github.com/amadeus/vim-mjml
   px.Add('amadeus/vim-mjml')
 
+  # Nu (shell)
+  # https://github.com/elkasztano/nushell-syntax-vim
+  px.Add('elkasztano/nushell-syntax-vim')
+
   # Perl5
   # https://github.com/vim-perl/vim-perl
   px.Add('vim-perl/vim-perl')

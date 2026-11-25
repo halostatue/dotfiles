@@ -1,0 +1,137 @@
+# https://raw.githubusercontent.com/rvben/rumdl/main/rumdl.schema.json
+
+# User-level rumdl config, approximating `deno fmt` output for GFM.
+# Used only when no project-level rumdl config is found.
+
+[global]
+flavor = "gfm"
+line-length = 80
+extend-enable = [
+  # Nested code fence fixing
+  "MD070",
+  # Detect invisible characters
+  "MD084",
+  # Fix paragraph continuation indents
+  "MD085",
+  # Report unused disable comments
+  "MD087",
+  # No HR before heading (slide decks use this, but so do agents)
+  "MD090",
+  # No markdown in HTML
+  "MD091",
+  # Detect link destination confusables
+  "MD095",
+]
+
+disable = [
+  # Unused link/image reference definitions. Warning only.
+  "MD053",
+]
+
+# Headings: ATX, no closing hashes.
+[MD003]
+style = "atx"
+
+# Unordered lists: dashes, two-space indent.
+[MD004]
+style = "dash"
+
+[MD007]
+indent = 2
+
+# deno fmt wraps prose (proseWrap = "always") at an 80 column width, but its
+# lines top out at 78 characters. 78 reproduces its wrapping in rumdl.
+[MD013]
+line-length = 78
+code-blocks = true
+code-block-line-length = 120
+tables = true
+headings = false
+reflow = true
+
+[MD018]
+magiclink = true
+
+# Keep ordered lists consistent.
+[MD029]
+style = "consistent"
+
+# Require a blank line before and after lists, with no lazy continuations.
+[MD032]
+allow-lazy-continuation = false
+
+# Allow HTML that can't be written as Markdown, plus <br>.
+[MD033]
+allowed-elements = ["no-markdown-equivalent", "br"]
+allowed-inside = ["details"]
+fix = true
+
+# Horizontal rules are `---`.
+[MD035]
+style = "---"
+
+# Fix and normalize language labels
+[MD040]
+style = "consistent"
+
+# Force fenced code blocks.
+[MD046]
+style = "fenced"
+
+# Fenced code uses backticks.
+[MD048]
+style = "backtick"
+
+# Emphasis uses underscores.
+[MD049]
+style = "underscore"
+
+# Strong uses asterisks.
+[MD050]
+style = "asterisk"
+
+# Check for shortcut references that are missing
+[MD052]
+shortcut-syntax = true
+
+# Supported link formats
+[MD054]
+collapsed = false
+shortcut = false
+url-inline = false
+
+# Table formatting consistency
+[MD055]
+style = "leading-and-trailing"
+
+[MD057]
+absolute-links = "warn"
+compact-paths = true
+self-referential-links = true
+
+# Tables are aligned and padded.
+[MD060]
+enabled = true
+style = "aligned"
+max-width = 105
+
+# Heading capitalization
+[MD063]
+enabled = true
+style = "consistent"
+
+# Frontmatter
+[MD072]
+enabled = true
+key-order = ["title", "date", "author", "tags", "categories"]
+
+# List continuation line alignment.
+[MD077]
+style = "aligned"
+
+# Normalize to ASCII quotes and spaces, but don't convert — to --.
+[MD088]
+enabled = true
+normalize-quotes = true
+normalize-dashes = false
+normalize-spaces = true
