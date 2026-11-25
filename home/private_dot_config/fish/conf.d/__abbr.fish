@@ -53,12 +53,6 @@ end
 
 abbr --add autocd --regex '.*/' --function autocd
 
-function multicd
-    set --function length (math (string length -- $argv[1]) - 1)
-    echo cd (string repeat -n $length ../)
-end
-abbr --add dotdot --regex '^\.\.+$' --function multicd
-
 function histreplace
     switch $argv[1]
         case '!!'
