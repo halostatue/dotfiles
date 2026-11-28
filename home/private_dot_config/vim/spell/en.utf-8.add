@@ -9,6 +9,7 @@ Aleo
 Ansible
 AppIdentity
 arity
+ARN
 AST
 async
 atuin
@@ -67,6 +68,7 @@ diff-lcs
 DML
 Dockerfile
 Dockerized
+doctests
 dotenv
 Dotenvy
 dotfiles
@@ -135,6 +137,7 @@ JWK
 JWKS
 JWT
 Kamal
+kanban
 KCS
 Keybase.io
 keychain
@@ -219,6 +222,7 @@ RBAC
 README
 ReBAC
 rebase
+recurses
 recuse
 Redis
 refactor
@@ -255,6 +259,7 @@ SQLite
 SSO
 starlist
 struct
+structs
 submodules
 SVG
 syscall

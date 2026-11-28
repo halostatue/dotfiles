@@ -1,5 +1,8 @@
 {
   "trustedcasks": [
     "browsers-software/tap/browsers"
+  ],
+  "trustedtaps": [
+    "abue-ammar/tinycast"
   ]
 }
